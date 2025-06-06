@@ -43,11 +43,12 @@ const batchStatusUpdateSchema = z.object({
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -302,11 +303,12 @@ export async function PUT(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(

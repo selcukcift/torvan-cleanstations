@@ -33,7 +33,7 @@ export async function GET(
   const { templateId } = await params;
   try {
     const user = await getAuthUser();
-    if (!checkUserRole(user, ['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'])) {
+    if (!user || !checkUserRole(user, ['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -68,7 +68,7 @@ export async function PUT(
   const { templateId } = await params;
   try {
     const user = await getAuthUser();
-    if (!checkUserRole(user, ['ADMIN'])) {
+    if (!user || !checkUserRole(user, ['ADMIN'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -160,7 +160,7 @@ export async function DELETE(
   const { templateId } = await params;
   try {
     const user = await getAuthUser();
-    if (!checkUserRole(user, ['ADMIN'])) {
+    if (!user || !checkUserRole(user, ['ADMIN'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

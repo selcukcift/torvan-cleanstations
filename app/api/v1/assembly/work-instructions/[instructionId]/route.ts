@@ -27,18 +27,19 @@ const UpdateWorkInstructionSchema = z.object({
 })
 
 interface RouteParams {
-  params: { instructionId: string }
+  params: Promise<{ instructionId: string }>
 }
 
 // GET /api/v1/assembly/work-instructions/[instructionId] - Get specific work instruction
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const resolvedParams = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 
-    const { instructionId } = params
+    const { instructionId } = resolvedParams
 
     const workInstruction = await prisma.workInstruction.findUnique({
       where: { id: instructionId },
@@ -121,6 +122,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // PATCH /api/v1/assembly/work-instructions/[instructionId] - Update work instruction
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const resolvedParams = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return createAPIResponse(createUnauthorizedResponse())
@@ -135,7 +137,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    const { instructionId } = params
+    const { instructionId } = resolvedParams
     const body = await request.json()
     const validatedData = UpdateWorkInstructionSchema.parse(body)
 
@@ -262,6 +264,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 // DELETE /api/v1/assembly/work-instructions/[instructionId] - Delete work instruction
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const resolvedParams = await params
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return createAPIResponse(createUnauthorizedResponse())
@@ -276,7 +279,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    const { instructionId } = params
+    const { instructionId } = resolvedParams
 
     // Check if work instruction exists and if it's safe to delete
     const existingInstruction = await prisma.workInstruction.findUnique({

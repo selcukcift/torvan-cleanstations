@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       categoryFilter, 
       limit, 
       offset 
-    })
+    }) as { accessories: any[], pagination: any }
     
     return NextResponse.json({ 
       success: true, 

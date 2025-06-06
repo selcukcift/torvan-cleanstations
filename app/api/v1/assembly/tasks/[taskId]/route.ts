@@ -45,11 +45,12 @@ const statusUpdateSchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -58,7 +59,7 @@ export async function GET(
       )
     }
 
-    const { taskId } = params
+    const { taskId } = resolvedParams
 
     const task = await prisma.task.findUnique({
       where: { id: taskId },
@@ -216,11 +217,12 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -229,7 +231,7 @@ export async function PATCH(
       )
     }
 
-    const { taskId } = params
+    const { taskId } = resolvedParams
     const body = await request.json()
     
     const validation = updateTaskSchema.safeParse(body)
@@ -456,11 +458,12 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -480,7 +483,7 @@ export async function DELETE(
       )
     }
 
-    const { taskId } = params
+    const { taskId } = resolvedParams
 
     // Check if task exists and get dependencies
     const task = await prisma.task.findUnique({

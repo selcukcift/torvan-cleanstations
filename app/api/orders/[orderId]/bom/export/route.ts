@@ -138,7 +138,7 @@ function generateCSVResponse(bom: any, order: any) {
     csvRows.push(['', '', '', '', '', '', '']) // Empty row
 
     // Add BOM items organized by category
-    Object.entries(groupedItems).forEach(([category, items]: [string, any[]]) => {
+    Object.entries(groupedItems).forEach(([category, items]) => {
       // Category header
       csvRows.push([
         `## ${category}`,
@@ -146,7 +146,7 @@ function generateCSVResponse(bom: any, order: any) {
       ])
 
       // Items in this category
-      items.forEach((item, index) => {
+      (items as any[]).forEach((item, index) => {
         csvRows.push([
           '1', // Level - can be enhanced with actual hierarchy
           item.partIdOrAssemblyId,

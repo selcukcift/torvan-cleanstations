@@ -49,11 +49,12 @@ const bulkApprovalSchema = z.object({
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { serviceOrderId: string } }
+  { params }: { params: Promise<{ serviceOrderId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -329,6 +330,7 @@ export async function PUT(request: NextRequest) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(

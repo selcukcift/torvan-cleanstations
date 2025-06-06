@@ -29,11 +29,12 @@ const UPLOAD_DIR = process.env.UPLOADS_DIR || './uploads'
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -42,7 +43,7 @@ export async function GET(
       )
     }
 
-    const { fileId } = params
+    const { fileId } = resolvedParams
 
     // Get file record from database
     const fileRecord = await prisma.fileUpload.findUnique({
@@ -168,17 +169,18 @@ export async function GET(
  */
 export async function HEAD(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   const requestId = getRequestId(request)
   
   try {
+    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return new Response(null, { status: 401 })
     }
 
-    const { fileId } = params
+    const { fileId } = resolvedParams
 
     const fileRecord = await prisma.fileUpload.findUnique({
       where: { id: fileId },

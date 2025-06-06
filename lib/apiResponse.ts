@@ -366,3 +366,32 @@ export const HTTP_STATUS_CODES = {
 export function getHTTPStatusForError(errorCode: string): number {
   return HTTP_STATUS_CODES[errorCode as keyof typeof HTTP_STATUS_CODES] || 500
 }
+
+/**
+ * Creates a standardized API response with automatic Next.js Response wrapper
+ */
+export function createStandardAPIResponse<T>(
+  data: T,
+  status: number = 200,
+  pagination?: PaginationOptions,
+  requestId?: string
+): Response {
+  const response = createSuccessResponse(data, pagination, requestId)
+  return createAPIResponse(response, status)
+}
+
+/**
+ * Creates a standardized error response with automatic Next.js Response wrapper
+ */
+export function createStandardErrorResponse(
+  code: string,
+  message: string,
+  status?: number,
+  details?: any,
+  requestId?: string
+): Response {
+  const errorObj: APIError = { code, message, details }
+  const response = createErrorResponse(errorObj, requestId)
+  const httpStatus = status || getHTTPStatusForError(code)
+  return createAPIResponse(response, httpStatus)
+}

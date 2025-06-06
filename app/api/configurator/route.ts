@@ -11,13 +11,14 @@ export async function GET(request: NextRequest) {
     // Add authentication as per Prompt 2.B
     try {
       const user = await getAuthUser()
-      console.log('User authenticated:', user.username)
       if (!user) {
+        console.log('User authentication failed')
         return NextResponse.json(
           { success: false, message: 'Authentication required' },
           { status: 401 }
         )
       }
+      console.log('User authenticated:', user.username)
     } catch (authError) {
       console.error('Authentication error:', authError)
       return NextResponse.json(
@@ -89,7 +90,7 @@ export async function GET(request: NextRequest) {
           configuratorService.getPegboardOptions(),
           configuratorService.getBasinTypeOptions(),
           configuratorService.getBasinSizeOptions(),
-          configuratorService.getFaucetTypeOptions(undefined),
+          configuratorService.getFaucetTypeOptions(''),
           configuratorService.getSprayerTypeOptions()
         ])
         return NextResponse.json({
