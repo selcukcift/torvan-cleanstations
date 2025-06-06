@@ -118,6 +118,8 @@ export async function POST(request: NextRequest) {
     // Authenticate user using centralized utility
     const user = await getAuthUser()
     
+    console.log('Auth user:', user) // Debug log
+    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
@@ -144,6 +146,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the main order
+    console.log('Creating order with userId:', user.id) // Debug log
+    
     const order = await prisma.order.create({
       data: {
         poNumber: customerInfo.poNumber,
