@@ -75,7 +75,82 @@ export async function PUT(
     const body = await request.json();
     const validatedData = QcTemplateUpdateSchema.parse(body);
 
-    // Use transaction to ensure atomicity
+    // Check if template has been used in any QC results
+    const usageCount = await prisma.orderQcResult.count({
+      where: { qcFormTemplateId: templateId }
+    });
+
+    // If template has been used, create a new version instead of updating
+    if (usageCount > 0) {
+      // Get the current template
+      const currentTemplate = await prisma.qcFormTemplate.findUnique({
+        where: { id: templateId },
+        include: { items: true }
+      });
+
+      if (!currentTemplate) {
+        return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+      }
+
+      // Parse current version and increment
+      const versionParts = currentTemplate.version.split('.');
+      const majorVersion = parseInt(versionParts[0]) || 1;
+      const minorVersion = parseInt(versionParts[1]) || 0;
+      const newVersion = `${majorVersion}.${minorVersion + 1}`;
+
+      // Create new template version
+      const newTemplate = await prisma.$transaction(async (tx) => {
+        // Deactivate the old template
+        await tx.qcFormTemplate.update({
+          where: { id: templateId },
+          data: { isActive: false }
+        });
+
+        // Create new template with incremented version
+        const template = await tx.qcFormTemplate.create({
+          data: {
+            name: validatedData.name || currentTemplate.name,
+            version: validatedData.version || newVersion,
+            description: validatedData.description !== undefined ? validatedData.description : currentTemplate.description,
+            appliesToProductFamily: validatedData.appliesToProductFamily !== undefined ? validatedData.appliesToProductFamily : currentTemplate.appliesToProductFamily,
+            isActive: validatedData.isActive !== undefined ? validatedData.isActive : true,
+            items: {
+              create: validatedData.items ? validatedData.items.map(item => ({
+                section: item.section,
+                checklistItem: item.checklistItem,
+                itemType: item.itemType,
+                options: item.options || undefined,
+                expectedValue: item.expectedValue,
+                order: item.order,
+                isRequired: item.isRequired
+              })) : currentTemplate.items.map(item => ({
+                section: item.section,
+                checklistItem: item.checklistItem,
+                itemType: item.itemType,
+                options: item.options || undefined,
+                expectedValue: item.expectedValue,
+                order: item.order,
+                isRequired: item.isRequired
+              }))
+            }
+          },
+          include: {
+            items: {
+              orderBy: { order: 'asc' }
+            }
+          }
+        });
+
+        return template;
+      });
+
+      return NextResponse.json({ 
+        template: newTemplate, 
+        message: `Template has been used in ${usageCount} QC results. A new version (${newVersion}) has been created.`
+      });
+    }
+
+    // If template hasn't been used, update it directly
     const updatedTemplate = await prisma.$transaction(async (tx) => {
       // Update template basic info
       await tx.qcFormTemplate.update({

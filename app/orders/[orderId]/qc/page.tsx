@@ -2,16 +2,21 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { QCFormInterface } from "@/components/qc/QCFormInterface"
-import { Loader2, AlertCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Loader2, AlertCircle, Info } from "lucide-react"
 
 export default function QCInspectionPage() {
   const params = useParams()
+  const { data: session } = useSession()
   const { toast } = useToast()
   const [orderData, setOrderData] = useState<any>(null)
+  const [qcTemplate, setQcTemplate] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [templateLoading, setTemplateLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -24,7 +29,15 @@ export default function QCInspectionPage() {
       const response = await nextJsApiClient.get(`/orders/${params.orderId}`)
       
       if (response.data.success) {
-        setOrderData(response.data.data)
+        const order = response.data.data
+        setOrderData(order)
+        
+        // Check order status and fetch appropriate QC template
+        if (order.status === 'ReadyForPreQC') {
+          await fetchQCTemplate('Pre-Production Check')
+        } else if (order.status === 'ReadyForFinalQC') {
+          await fetchQCTemplate('Final QC')
+        }
       } else {
         setError("Order not found")
       }
@@ -38,6 +51,33 @@ export default function QCInspectionPage() {
       })
     } finally {
       setLoading(false)
+    }
+  }
+  
+  const fetchQCTemplate = async (formType: string) => {
+    try {
+      setTemplateLoading(true)
+      const response = await nextJsApiClient.get(`/orders/${params.orderId}/qc/template?formType=${encodeURIComponent(formType)}`)
+      
+      if (response.data.success) {
+        setQcTemplate(response.data.template)
+      } else {
+        console.error('No QC template found for form type:', formType)
+        toast({
+          title: "Warning",
+          description: `No ${formType} template found. Please contact admin.`,
+          variant: "destructive"
+        })
+      }
+    } catch (error: any) {
+      console.error('Error fetching QC template:', error)
+      toast({
+        title: "Error",
+        description: "Failed to load QC template",
+        variant: "destructive"
+      })
+    } finally {
+      setTemplateLoading(false)
     }
   }
 
@@ -58,6 +98,15 @@ export default function QCInspectionPage() {
     )
   }
 
+  // Determine which QC phase we're in
+  const getQCPhase = () => {
+    if (orderData?.status === 'ReadyForPreQC') return 'Pre-Production Check'
+    if (orderData?.status === 'ReadyForFinalQC') return 'Final QC'
+    return 'Unknown'
+  }
+
+  const isValidQCStatus = orderData?.status === 'ReadyForPreQC' || orderData?.status === 'ReadyForFinalQC'
+
   return (
     <div className="space-y-6">
       <div>
@@ -65,17 +114,55 @@ export default function QCInspectionPage() {
         <p className="text-slate-600">
           Conduct quality control inspection for PO: {orderData.poNumber}
         </p>
+        <div className="mt-2">
+          <span className="text-sm font-medium">Phase: </span>
+          <span className="text-sm text-blue-600">{getQCPhase()}</span>
+        </div>
       </div>
 
-      <QCFormInterface
-        orderId={params.orderId as string}
-        orderData={{
-          poNumber: orderData.poNumber,
-          customerName: orderData.customerName,
-          productFamily: orderData.productFamily || "T2 Sink",
-          buildNumbers: orderData.buildNumbers
-        }}
-      />
+      {!isValidQCStatus && (
+        <Alert>
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            This order is not ready for QC inspection. Current status: {orderData?.status || 'Unknown'}
+            {orderData?.status === 'OrderCreated' && ' (Waiting for procurement approval)'}
+            {orderData?.status === 'PartsSent' && ' (Waiting for parts to arrive)'}
+            {orderData?.status === 'ReadyForProduction' && ' (Currently in production)'}
+            {orderData?.status === 'ReadyForShip' && ' (QC complete, ready for shipping)'}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {templateLoading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <span>Loading QC template...</span>
+        </div>
+      )}
+
+      {isValidQCStatus && qcTemplate && (
+        <QCFormInterface
+          orderId={params.orderId as string}
+          orderData={{
+            poNumber: orderData.poNumber,
+            customerName: orderData.customerName,
+            productFamily: orderData.productFamily || "T2 Sink",
+            buildNumbers: orderData.buildNumbers,
+            status: orderData.status
+          }}
+          template={qcTemplate}
+          session={session}
+        />
+      )}
+
+      {isValidQCStatus && !templateLoading && !qcTemplate && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No QC template available for {getQCPhase()}. Please contact system administrator.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   )
 }

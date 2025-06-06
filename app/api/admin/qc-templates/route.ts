@@ -39,7 +39,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const includeInactive = searchParams.get('includeInactive') === 'true';
+    const productFamily = searchParams.get('productFamily');
+
+    // Build where clause
+    const where: any = {};
+    if (!includeInactive) {
+      where.isActive = true;
+    }
+    if (productFamily) {
+      where.appliesToProductFamily = productFamily;
+    }
+
     const templates = await prisma.qcFormTemplate.findMany({
+      where,
       include: {
         items: {
           orderBy: { order: 'asc' }
@@ -48,10 +62,53 @@ export async function GET(request: NextRequest) {
           select: { orderQcResults: true }
         }
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: [
+        { isActive: 'desc' },
+        { createdAt: 'desc' }
+      ]
     });
 
-    return NextResponse.json({ templates });
+    // Group templates by name and product family to show version history
+    const templateGroups = templates.reduce((groups, template) => {
+      const key = `${template.name}|${template.appliesToProductFamily || 'generic'}`;
+      if (!groups[key]) {
+        groups[key] = {
+          name: template.name,
+          productFamily: template.appliesToProductFamily,
+          activeVersion: null,
+          versions: []
+        };
+      }
+      
+      if (template.isActive) {
+        groups[key].activeVersion = template;
+      }
+      groups[key].versions.push(template);
+      
+      return groups;
+    }, {} as Record<string, any>);
+
+    // Sort versions within each group
+    Object.values(templateGroups).forEach((group: any) => {
+      group.versions.sort((a: any, b: any) => {
+        const aVersionParts = a.version.split('.').map((p: string) => parseInt(p) || 0);
+        const bVersionParts = b.version.split('.').map((p: string) => parseInt(p) || 0);
+        
+        for (let i = 0; i < Math.max(aVersionParts.length, bVersionParts.length); i++) {
+          const aPart = aVersionParts[i] || 0;
+          const bPart = bVersionParts[i] || 0;
+          if (aPart !== bPart) {
+            return bPart - aPart; // Descending order
+          }
+        }
+        return 0;
+      });
+    });
+
+    return NextResponse.json({ 
+      templates,
+      templateGroups: Object.values(templateGroups)
+    });
   } catch (error) {
     console.error('Error fetching QC templates:', error);
     return NextResponse.json({ error: 'Failed to fetch QC templates' }, { status: 500 });

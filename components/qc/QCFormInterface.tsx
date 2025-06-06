@@ -32,20 +32,20 @@ import { useRouter } from "next/navigation"
 
 interface QCTemplateItem {
   id: string
-  text: string
-  itemType: 'PASS_FAIL' | 'TEXT_INPUT' | 'NUMERIC_INPUT' | 'SELECT_OPTION' | 'DATE_INPUT' | 'CHECKBOX'
-  required: boolean
-  category: string
+  section: string
+  checklistItem: string
+  itemType: 'PASS_FAIL' | 'TEXT_INPUT' | 'NUMERIC_INPUT' | 'SINGLE_SELECT' | 'MULTI_SELECT' | 'DATE_INPUT' | 'CHECKBOX'
+  isBasinSpecific: boolean
+  isRequired: boolean
   order: number
-  selectOptions?: string[]
-  numericMin?: number
-  numericMax?: number
-  notes?: string
+  options?: string[]
+  expectedValue?: string
 }
 
 interface QCTemplate {
   id: string
-  name: string
+  formName: string
+  formType: string
   version: string
   description?: string
   appliesToProductFamily?: string
@@ -67,23 +67,44 @@ interface QCFormInterfaceProps {
     customerName: string
     productFamily: string
     buildNumbers: string[]
+    status?: string
   }
+  template?: QCTemplate
+  session?: any
 }
 
-export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
+export function QCFormInterface({ orderId, orderData, template: templateProp, session }: QCFormInterfaceProps) {
   const { toast } = useToast()
   const router = useRouter()
-  const [template, setTemplate] = useState<QCTemplate | null>(null)
+  const [template, setTemplate] = useState<QCTemplate | null>(templateProp || null)
   const [formData, setFormData] = useState<QCFormData>({})
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!templateProp)
   const [submitting, setSubmitting] = useState(false)
   const [saving, setSaving] = useState(false)
   const [overallResult, setOverallResult] = useState<'PASSED' | 'FAILED' | null>(null)
   const [inspectorNotes, setInspectorNotes] = useState("")
 
   useEffect(() => {
-    fetchQCTemplate()
-  }, [orderId])
+    if (templateProp) {
+      setTemplate(templateProp)
+      initializeFormData(templateProp)
+      setLoading(false)
+    } else {
+      fetchQCTemplate()
+    }
+  }, [orderId, templateProp])
+
+  const initializeFormData = (qcTemplate: QCTemplate) => {
+    const initialFormData: QCFormData = {}
+    qcTemplate.items.forEach((item: QCTemplateItem) => {
+      initialFormData[item.id] = {
+        value: item.itemType === 'CHECKBOX' ? false : '',
+        notes: '',
+        passed: undefined
+      }
+    })
+    setFormData(initialFormData)
+  }
 
   const fetchQCTemplate = async () => {
     try {
@@ -164,7 +185,7 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
   const handleSubmitQC = async () => {
     try {
       // Validate required fields
-      const requiredItems = template?.items.filter(item => item.required) || []
+      const requiredItems = template?.items.filter(item => item.isRequired) || []
       const missingItems = requiredItems.filter(item => {
         const value = formData[item.id]?.value
         return !value || (item.itemType === 'PASS_FAIL' && formData[item.id]?.passed === undefined)
@@ -173,7 +194,7 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
       if (missingItems.length > 0) {
         toast({
           title: "Validation Error",
-          description: `Please complete all required fields: ${missingItems.map(item => item.text).join(', ')}`,
+          description: `Please complete all required fields: ${missingItems.map(item => item.checklistItem).join(', ')}`,
           variant: "destructive"
         })
         return
@@ -198,19 +219,34 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
         notes: data.notes
       }))
 
-      const response = await nextJsApiClient.post(`/orders/${orderId}/qc`, {
+      // Prepare submission payload with digital signature as per Sprint 3.1
+      const submissionPayload = {
         templateId: template?.id,
-        status: overallResult === 'PASSED' ? 'COMPLETED' : 'FAILED',
-        qcItems,
-        notes: inspectorNotes
-      })
+        overallStatus: overallResult === 'PASSED' ? 'PASSED' : 'FAILED',
+        notes: inspectorNotes,
+        itemResults: qcItems,
+        digitalSignature: {
+          userId: session?.user?.id || session?.user?.email,
+          timestamp: new Date().toISOString(),
+          userName: session?.user?.name || 'Unknown User'
+        }
+      }
+
+      console.log('Submitting QC form with digital signature:', submissionPayload)
+      
+      const response = await nextJsApiClient.post(`/orders/${orderId}/qc`, submissionPayload)
 
       if (response.data.success) {
+        const isPreQC = orderData?.status === 'ReadyForPreQC'
+        const nextStatus = isPreQC ? 'Ready for Production' : 'Ready for Ship'
+        
         toast({
           title: "QC Submitted",
-          description: `QC inspection ${overallResult.toLowerCase()} and submitted successfully`
+          description: `QC inspection ${overallResult.toLowerCase()} and submitted successfully. Order status updated to ${nextStatus}.`
         })
-        router.push('/dashboard')
+        
+        // Redirect back to order details page
+        router.push(`/orders/${orderId}`)
       }
     } catch (error: any) {
       console.error('Error submitting QC:', error)
@@ -269,27 +305,48 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
             type="number"
             value={itemData.value}
             onChange={(e) => handleItemValueChange(item.id, e.target.value)}
-            min={item.numericMin}
-            max={item.numericMax}
-            placeholder={`Enter number${item.numericMin !== undefined ? ` (${item.numericMin}-${item.numericMax})` : ''}`}
+            placeholder={`Enter number${item.expectedValue ? ` (${item.expectedValue})` : ''}`}
             className="w-full"
           />
         )
 
-      case 'SELECT_OPTION':
+      case 'SINGLE_SELECT':
         return (
           <Select value={itemData.value} onValueChange={(value) => handleItemValueChange(item.id, value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select an option..." />
             </SelectTrigger>
             <SelectContent>
-              {item.selectOptions?.map((option) => (
+              {item.options?.map((option) => (
                 <SelectItem key={option} value={option}>
                   {option}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+        )
+
+      case 'MULTI_SELECT':
+        return (
+          <div className="space-y-2">
+            {item.options?.map((option) => (
+              <div key={option} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`${item.id}-${option}`}
+                  checked={(itemData.value || []).includes(option)}
+                  onCheckedChange={(checked) => {
+                    const currentValues = itemData.value || []
+                    if (checked) {
+                      handleItemValueChange(item.id, [...currentValues, option])
+                    } else {
+                      handleItemValueChange(item.id, currentValues.filter((v: string) => v !== option))
+                    }
+                  }}
+                />
+                <Label htmlFor={`${item.id}-${option}`}>{option}</Label>
+              </div>
+            ))}
+          </div>
         )
 
       case 'DATE_INPUT':
@@ -341,7 +398,7 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
 
   // Group items by category
   const itemsByCategory = template.items.reduce((acc, item) => {
-    const category = item.category || 'General'
+    const category = item.section || 'General'
     if (!acc[category]) acc[category] = []
     acc[category].push(item)
     return acc
@@ -356,7 +413,7 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
             <div className="space-y-2">
               <CardTitle className="flex items-center gap-2">
                 <ClipboardCheck className="w-5 h-5" />
-                {template.name}
+                {template.formName}
               </CardTitle>
               <CardDescription>{template.description}</CardDescription>
               <div className="flex items-center gap-4 text-sm text-slate-600">
@@ -407,11 +464,12 @@ export function QCFormInterface({ orderId, orderData }: QCFormInterfaceProps) {
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <Label className="text-base font-medium flex items-center gap-2">
-                                {item.text}
-                                {item.required && <span className="text-red-500">*</span>}
+                                {item.checklistItem}
+                                {item.isRequired && <span className="text-red-500">*</span>}
+                                {item.isBasinSpecific && <Badge variant="outline" className="text-xs ml-2">Basin Specific</Badge>}
                               </Label>
-                              {item.notes && (
-                                <p className="text-sm text-slate-600 mt-1">{item.notes}</p>
+                              {item.expectedValue && (
+                                <p className="text-sm text-slate-600 mt-1">Expected: {item.expectedValue}</p>
                               )}
                             </div>
                           </div>

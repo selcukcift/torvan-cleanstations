@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useOrderCreateStore, SelectedAccessory } from "@/stores/orderCreateStore"
 import { DetailedReviewSection } from "./DetailedReviewSection"
 import { BOMViewer } from "./BOMViewer"
@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from "lucide-react"
 import { nextJsApiClient } from '@/lib/api'
+import { useRouter } from 'next/navigation'
 
 interface OrderSubmitResponse {
   success: boolean
@@ -38,10 +39,13 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
     accessories, 
     resetForm 
   } = useOrderCreateStore()
+  const router = useRouter()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState<OrderSubmitResponse | null>(null)
+  const [bomPreviewLoading, setBomPreviewLoading] = useState(false)
+  const [bomPreviewError, setBomPreviewError] = useState<string | null>(null)
 
   const handleSubmitOrder = async () => {
     setIsSubmitting(true)
@@ -73,11 +77,20 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       
       if (result.success) {
         setSubmitSuccess(result)
-        // Reset form after successful submission (only for new orders)
+        // Reset form and redirect after successful submission
         if (!isEditMode) {
           setTimeout(() => {
             resetForm()
+            // Redirect to the new order's page as per Sprint 2.3
+            if (result.orderId) {
+              router.push(`/orders/${result.orderId}`)
+            }
           }, 3000)
+        } else if (orderId) {
+          // For edit mode, redirect back to the order page
+          setTimeout(() => {
+            router.push(`/orders/${orderId}`)
+          }, 2000)
         }
       } else {
         setSubmitError(result.message || `Order ${isEditMode ? 'update' : 'submission'} failed`)
@@ -119,6 +132,45 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
 
   const getTotalSinkCount = () => {
     return sinkSelection.buildNumbers.length
+  }
+
+  // Trigger BOM preview on component mount as per Sprint 2.3 requirements
+  useEffect(() => {
+    previewBOM()
+  }, [])
+
+  const previewBOM = async () => {
+    setBomPreviewLoading(true)
+    setBomPreviewError(null)
+    
+    try {
+      const orderData = {
+        customerInfo: {
+          ...customerInfo,
+          wantDate: customerInfo.wantDate?.toISOString() || new Date().toISOString()
+        },
+        sinkSelection,
+        configurations,
+        accessories
+      }
+      
+      console.log('Generating BOM preview for order configuration:', orderData)
+      
+      // POST to the preview-bom endpoint as specified in Sprint 2.3
+      const response = await nextJsApiClient.post('/orders/preview-bom', orderData)
+      
+      if (response.data.success) {
+        console.log('BOM preview generated successfully:', response.data)
+        // The BOMViewer component will handle the display of the preview data
+      } else {
+        setBomPreviewError(response.data.error || 'Failed to generate BOM preview')
+      }
+    } catch (error: any) {
+      console.error('Error generating BOM preview:', error)
+      setBomPreviewError('Failed to generate BOM preview. The order can still be submitted.')
+    } finally {
+      setBomPreviewLoading(false)
+    }
   }
 
   if (submitSuccess) {
@@ -167,6 +219,12 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
           />
 
           {/* BOM Viewer Section */}
+          {bomPreviewError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{bomPreviewError}</AlertDescription>
+            </Alert>
+          )}
           <BOMViewer 
             orderData={configurations}
             customerInfo={customerInfo}
