@@ -24,7 +24,9 @@
       "Bash(true)",
       "Bash(npx prisma migrate:*)",
       "Bash(npm run prisma:seed:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }
