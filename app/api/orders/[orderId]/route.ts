@@ -240,7 +240,7 @@ export async function PUT(
           customerName: validatedData.customerInfo.customerName,
           projectName: validatedData.customerInfo.projectName || null,
           salesPerson: validatedData.customerInfo.salesPerson,
-          wantDate: validatedData.customerInfo.wantDate ? new Date(validatedData.customerInfo.wantDate) : null,
+          wantDate: validatedData.customerInfo.wantDate ? new Date(validatedData.customerInfo.wantDate) : undefined,
           language: validatedData.customerInfo.language,
           notes: validatedData.customerInfo.notes || null,
         }
@@ -273,14 +273,12 @@ export async function PUT(
             sinkModelId: config.sinkModelId,
             width: config.sinkWidth || config.width,
             length: config.sinkLength || config.length,
-            legsTypeId: config.legTypeId || config.legsTypeId,
+            legsTypeId: config.legTypeId,
             feetTypeId: config.feetTypeId,
             workflowDirection: config.workflowDirection,
             pegboard: config.hasPegboard || config.pegboard || false,
-            pegboardTypeId: config.pegboardType || config.pegboardTypeId,
-            pegboardColorId: config.pegboardColor || config.pegboardColorId,
-            hasDrawersAndCompartments: config.hasDrawersAndCompartments || false,
-            drawersAndCompartments: config.drawersAndCompartments || [],
+            pegboardTypeId: config.pegboardType,
+            pegboardColorId: config.pegboardColor,
             controlBoxId: config.controlBoxId
           }
         })
@@ -291,7 +289,7 @@ export async function PUT(
             data: {
               orderId,
               buildNumber,
-              basinType: basin.basinType,
+              basinTypeId: basin.basinType,
               basinSizePartNumber: basin.basinSize,
               customWidth: basin.customWidth,
               customLength: basin.customLength,

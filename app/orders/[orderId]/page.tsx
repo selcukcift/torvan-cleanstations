@@ -28,7 +28,7 @@ import {
   Edit
 } from "lucide-react"
 import { format } from "date-fns"
-import { BOMDisplay } from "@/components/order/BOMDisplay"
+import { BOMViewer } from "@/components/order/BOMViewer"
 import { OrderSummaryCard } from "@/components/order/OrderSummaryCard"
 import { OrderTimeline } from "@/components/order/OrderTimeline"
 import { QCOrderIntegration } from "@/components/qc/QCOrderIntegration"
@@ -57,6 +57,76 @@ const statusDisplayNames: Record<string, string> = {
   READY_FOR_FINAL_QC: "Ready for Final QC",
   READY_FOR_SHIP: "Ready for Ship",
   SHIPPED: "Shipped"
+}
+
+// Part/Assembly description mappings
+const partDescriptions: Record<string, string> = {
+  // Sink Models
+  'T2-36': 'T2 CleanStation 36" Standard',
+  'T2-48': 'T2 CleanStation 48" Standard',
+  'T2-60': 'T2 CleanStation 60" Standard',
+  'T2-72': 'T2 CleanStation 72" Standard',
+  'T2-84': 'T2 CleanStation 84" Standard',
+  'T2-96': 'T2 CleanStation 96" Standard',
+  'T2-108': 'T2 CleanStation 108" Standard',
+  'T2-120': 'T2 CleanStation 120" Standard',
+  
+  // Legs
+  'T2-DL27-KIT': 'Fixed Height 27" Stainless Steel Legs',
+  'T2-DL14-KIT': 'Fixed Height 14" Stainless Steel Legs',
+  'T2-LC1-KIT': 'Height Adjustable Stainless Steel Legs (27-35")',
+  'T2-DL27-FH-KIT': 'Fixed Height 27" Legs with Front Handle',
+  'T2-DL14-FH-KIT': 'Fixed Height 14" Legs with Front Handle',
+  
+  // Feet
+  'T2-LEVELING-CASTOR-475': 'Leveling Casters with Brake (4x)',
+  'T2-SEISMIC-FEET': 'Seismic Feet for Earthquake Safety',
+  
+  // Control Boxes
+  'T2-CB-BASIC': 'Basic Control Box - Manual Controls',
+  'T2-CB-ADVANCED': 'Advanced Control Box - Digital Display',
+  'T2-CB-PREMIUM': 'Premium Control Box - Touch Screen',
+  
+  // Pegboard Types
+  'STANDARD': 'Standard Pegboard - Basic Configuration',
+  'PREMIUM': 'Premium Pegboard - Enhanced Organization',
+  'CUSTOM': 'Custom Pegboard - Tailored Layout',
+  
+  // Pegboard Colors
+  'WHITE': 'White Pegboard Finish',
+  'GREY': 'Grey Pegboard Finish', 
+  'BLACK': 'Black Pegboard Finish',
+  
+  // Basin Types
+  'E_SINK': 'Standard E-Sink Basin',
+  'E_SINK_DI': 'E-Sink Basin with Deionized Water',
+  'E_DRAIN': 'E-Drain Basin for Drainage',
+  
+  // Basin Sizes
+  '1824': 'Basin 18" x 24" x 8"',
+  '2430': 'Basin 24" x 30" x 10"',
+  '3036': 'Basin 30" x 36" x 12"',
+  '3642': 'Basin 36" x 42" x 14"',
+  
+  // Faucet Types
+  'T2-FAUCET-STANDARD': 'Standard Single Handle Faucet',
+  'T2-FAUCET-DUAL': 'Dual Handle Hot/Cold Faucet',
+  'T2-FAUCET-SENSOR': 'Sensor Activated Touchless Faucet',
+  'T2-FAUCET-KNEE': 'Knee Operated Hands-Free Faucet',
+  
+  // Sprayer Types
+  'T2-SPRAYER-HANDHELD': 'Handheld Flexible Sprayer',
+  'T2-SPRAYER-FIXED': 'Fixed Position Sprayer',
+  'T2-SPRAYER-RETRACTABLE': 'Retractable Pull-Out Sprayer',
+  
+  // Add-ons
+  'T2-OA-MS-1026': 'P-Trap Assembly with Overflow',
+  'T2-ADDON-DRAIN': 'Additional Drain Assembly',
+  'T2-ADDON-SOAP': 'Soap Dispenser Assembly'
+}
+
+const getPartDescription = (partId: string): string => {
+  return partDescriptions[partId] || partId
 }
 
 export default function OrderDetailsPage() {
@@ -222,21 +292,21 @@ export default function OrderDetailsPage() {
   const canUpdateStatus = allowedStatuses.length > 0
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+    <div className="space-y-4">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between py-3 border-b">
+        <div className="flex items-center space-x-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.push("/dashboard")}
+            className="p-2"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Order Details</h1>
-            <p className="text-slate-600">PO Number: {order.poNumber}</p>
+            <h1 className="text-xl font-bold">Order Details</h1>
+            <p className="text-sm text-slate-600">PO: {order.poNumber}</p>
           </div>
         </div>
         <Badge className={statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"}>
@@ -244,8 +314,8 @@ export default function OrderDetailsPage() {
         </Badge>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
+      <Tabs defaultValue="overview" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="bom">Bill of Materials</TabsTrigger>
@@ -255,74 +325,88 @@ export default function OrderDetailsPage() {
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-4">
-          {/* Enhanced Order Summary Card */}
+        <TabsContent value="overview" className="space-y-3">
           <OrderSummaryCard order={order} />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Customer Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Customer Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <Label className="text-sm text-slate-500">Customer Name</Label>
-                  <p className="font-medium">{order.customerName}</p>
-                </div>
-                {order.projectName && (
+          {/* Unified Order Information */}
+          <Card className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-3">
+                <h4 className="font-medium text-slate-700 border-b pb-1">Customer</h4>
+                <div className="space-y-2 text-sm">
                   <div>
-                    <Label className="text-sm text-slate-500">Project Name</Label>
-                    <p className="font-medium">{order.projectName}</p>
+                    <span className="text-slate-500 block">Name</span>
+                    <span className="font-medium">{order.customerName}</span>
                   </div>
-                )}
-                <div>
-                  <Label className="text-sm text-slate-500">Sales Person</Label>
-                  <p className="font-medium">{order.salesPerson}</p>
+                  {order.projectName && (
+                    <div>
+                      <span className="text-slate-500 block">Project</span>
+                      <span className="font-medium">{order.projectName}</span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-slate-500 block">Sales Person</span>
+                    <span className="font-medium">{order.salesPerson}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Language</span>
+                    <span className="font-medium">
+                      {order.language === "EN" ? "English" : 
+                       order.language === "FR" ? "French" : "Spanish"}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm text-slate-500">Language</Label>
-                  <p className="font-medium">
-                    {order.language === "EN" ? "English" : 
-                     order.language === "FR" ? "French" : "Spanish"}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Order Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <Label className="text-sm text-slate-500">Build Numbers</Label>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {order.buildNumbers.map((bn: string) => (
-                      <Badge key={bn} variant="outline">{bn}</Badge>
-                    ))}
+              <div className="space-y-3">
+                <h4 className="font-medium text-slate-700 border-b pb-1">Order Details</h4>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-slate-500 block">PO Number</span>
+                    <span className="font-medium">{order.poNumber}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Build Numbers</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {order.buildNumbers.map((bn: string) => (
+                        <Badge key={bn} variant="outline" className="text-xs">{bn}</Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <Label className="text-sm text-slate-500">Created By</Label>
-                  <p className="font-medium">{order.createdBy.fullName}</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-medium text-slate-700 border-b pb-1">Timeline</h4>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-slate-500 block">Created</span>
+                    <span className="font-medium">{format(new Date(order.createdAt), "MMM dd, yyyy")}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Want Date</span>
+                    <span className="font-medium">{format(new Date(order.wantDate), "MMM dd, yyyy")}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Created By</span>
+                    <span className="font-medium">{order.createdBy.fullName}</span>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm text-slate-500">Created Date</Label>
-                  <p className="font-medium">
-                    {format(new Date(order.createdAt), "MMM dd, yyyy")}
-                  </p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-medium text-slate-700 border-b pb-1">Status</h4>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-slate-500 block">Current Status</span>
+                    <Badge className={statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"}>
+                      {statusDisplayNames[order.orderStatus] || order.orderStatus}
+                    </Badge>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm text-slate-500">Want Date</Label>
-                  <p className="font-medium">
-                    {format(new Date(order.wantDate), "MMM dd, yyyy")}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </Card>
 
           {/* Notes */}
           {order.notes && (
@@ -384,134 +468,405 @@ export default function OrderDetailsPage() {
 
         {/* Configuration Tab */}
         <TabsContent value="configuration" className="space-y-4">
-          {order.buildNumbers.map((buildNumber: string) => (
-            <Card key={buildNumber}>
-              <CardHeader>
-                <CardTitle>Build Number: {buildNumber}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Basin Configurations */}
-                {order.basinConfigurations
-                  .filter((bc: any) => bc.buildNumber === buildNumber)
-                  .map((basin: any, idx: number) => (
-                    <div key={idx} className="space-y-2">
-                      <h4 className="font-medium">Basin {idx + 1}</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-slate-500">Type:</span> {basin.basinTypeId}
-                        </div>
-                        <div>
-                          <span className="text-slate-500">Size:</span> {basin.basinSizePartNumber}
-                        </div>
-                        {basin.addonIds.length > 0 && (
-                          <div className="col-span-2">
-                            <span className="text-slate-500">Add-ons:</span> {basin.addonIds.join(", ")}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+          {order.buildNumbers.map((buildNumber: string) => {
+            // Get sink configuration for this build number
+            const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber) || {}
+            const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
+            const faucetConfigs = order.faucetConfigurations?.filter((fc: any) => fc.buildNumber === buildNumber) || []
+            const sprayerConfigs = order.sprayerConfigurations?.filter((sc: any) => sc.buildNumber === buildNumber) || []
+            const accessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
 
-                {/* Faucet Configurations */}
-                {order.faucetConfigurations
-                  .filter((fc: any) => fc.buildNumber === buildNumber)
-                  .map((faucet: any, idx: number) => (
-                    <div key={idx} className="space-y-2">
-                      <h4 className="font-medium">Faucet Configuration</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-slate-500">Type:</span> {faucet.faucetTypeId}
+            return (
+              <Card key={buildNumber}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Build Number: {buildNumber}</span>
+                    <Badge variant="outline">{buildNumber}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Sink Configuration */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Model:</span>
+                          <span className="font-medium">{getPartDescription(sinkConfig.sinkModelId) || 'N/A'}</span>
                         </div>
-                        <div>
-                          <span className="text-slate-500">Quantity:</span> {faucet.faucetQuantity}
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Width:</span>
+                          <span className="font-medium">{sinkConfig.width || 'N/A'} inches</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Length:</span>
+                          <span className="font-medium">{sinkConfig.length || 'N/A'} inches</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Workflow Direction:</span>
+                          <span className="font-medium">{sinkConfig.workflowDirection?.replace('_', ' to ') || 'N/A'}</span>
                         </div>
                       </div>
                     </div>
-                  ))}
 
-                {/* Sprayer Configurations */}
-                {order.sprayerConfigurations
-                  .filter((sc: any) => sc.buildNumber === buildNumber)
-                  .map((sprayer: any, idx: number) => (
-                    <div key={idx} className="space-y-2">
-                      <h4 className="font-medium">Sprayer Configuration</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-slate-500">Has Sprayer:</span> {sprayer.hasSpray ? "Yes" : "No"}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Support Structure</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Legs:</span>
+                          <span className="font-medium">{getPartDescription(sinkConfig.legsTypeId) || 'N/A'}</span>
                         </div>
-                        {sprayer.hasSpray && (
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Feet:</span>
+                          <span className="font-medium">{getPartDescription(sinkConfig.feetTypeId) || 'N/A'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Control Box:</span>
+                          <span className="font-medium">{getPartDescription(sinkConfig.controlBoxId) || 'None'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Pegboard & Storage</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Has Pegboard:</span>
+                          <span className="font-medium">{sinkConfig.pegboard ? 'Yes' : 'No'}</span>
+                        </div>
+                        {sinkConfig.pegboard && (
                           <>
-                            <div>
-                              <span className="text-slate-500">Quantity:</span> {sprayer.sprayerQuantity}
+                            <div className="flex justify-between">
+                              <span className="text-slate-500">Pegboard Type:</span>
+                              <span className="font-medium">{getPartDescription(sinkConfig.pegboardTypeId) || 'N/A'}</span>
                             </div>
-                            <div className="col-span-2">
-                              <span className="text-slate-500">Types:</span> {sprayer.sprayerTypeIds.join(", ")}
+                            <div className="flex justify-between">
+                              <span className="text-slate-500">Pegboard Color:</span>
+                              <span className="font-medium">{getPartDescription(sinkConfig.pegboardColorId) || 'N/A'}</span>
                             </div>
                           </>
                         )}
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Drawers & Compartments:</span>
+                          <span className="font-medium">{sinkConfig.hasDrawersAndCompartments ? 'Yes' : 'No'}</span>
+                        </div>
                       </div>
                     </div>
-                  ))}
+                  </div>
 
-                {/* Accessories */}
-                {order.selectedAccessories
-                  .filter((sa: any) => sa.buildNumber === buildNumber)
-                  .length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Accessories</h4>
-                      <div className="space-y-1">
-                        {order.selectedAccessories
-                          .filter((sa: any) => sa.buildNumber === buildNumber)
-                          .map((accessory: any, idx: number) => (
-                            <div key={idx} className="text-sm">
-                              {accessory.assemblyId} (Qty: {accessory.quantity})
+                  {/* Basin Configurations */}
+                  {basinConfigs.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Basin Configurations</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {basinConfigs.map((basin: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-slate-50 rounded-lg">
+                            <h5 className="font-medium mb-2">Basin {idx + 1}</h5>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Type:</span>
+                                <span className="font-medium">{getPartDescription(basin.basinTypeId)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Size:</span>
+                                <span className="font-medium">{getPartDescription(basin.basinSizePartNumber)}</span>
+                              </div>
+                              {basin.customWidth && (
+                                <div className="flex justify-between">
+                                  <span className="text-slate-500">Custom Width:</span>
+                                  <span className="font-medium">{basin.customWidth}"</span>
+                                </div>
+                              )}
+                              {basin.customLength && (
+                                <div className="flex justify-between">
+                                  <span className="text-slate-500">Custom Length:</span>
+                                  <span className="font-medium">{basin.customLength}"</span>
+                                </div>
+                              )}
+                              {basin.customDepth && (
+                                <div className="flex justify-between">
+                                  <span className="text-slate-500">Custom Depth:</span>
+                                  <span className="font-medium">{basin.customDepth}"</span>
+                                </div>
+                              )}
+                              {basin.addonIds?.length > 0 && (
+                                <div>
+                                  <span className="text-slate-500 block">Add-ons:</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {basin.addonIds.map((addon: string, addonIdx: number) => (
+                                      <Badge key={addonIdx} variant="secondary" className="text-xs">{addon}</Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          ))}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
-              </CardContent>
-            </Card>
-          ))}
+
+                  {/* Faucet Configurations */}
+                  {faucetConfigs.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Faucet Configurations</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {faucetConfigs.map((faucet: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-blue-50 rounded-lg">
+                            <h5 className="font-medium mb-2">Faucet {idx + 1}</h5>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Type:</span>
+                                <span className="font-medium">{getPartDescription(faucet.faucetTypeId)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Quantity:</span>
+                                <span className="font-medium">{faucet.faucetQuantity}</span>
+                              </div>
+                              {faucet.faucetPlacement && (
+                                <div className="flex justify-between">
+                                  <span className="text-slate-500">Placement:</span>
+                                  <span className="font-medium">{faucet.faucetPlacement}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sprayer Configurations */}
+                  {sprayerConfigs.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sprayer Configurations</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {sprayerConfigs.map((sprayer: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-green-50 rounded-lg">
+                            <h5 className="font-medium mb-2">Sprayer {idx + 1}</h5>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Has Sprayer:</span>
+                                <span className="font-medium">{sprayer.hasSpray ? 'Yes' : 'No'}</span>
+                              </div>
+                              {sprayer.hasSpray && (
+                                <>
+                                  <div className="flex justify-between">
+                                    <span className="text-slate-500">Quantity:</span>
+                                    <span className="font-medium">{sprayer.sprayerQuantity}</span>
+                                  </div>
+                                  {sprayer.sprayerTypeIds?.length > 0 && (
+                                    <div>
+                                      <span className="text-slate-500 block">Types:</span>
+                                      <div className="flex flex-wrap gap-1 mt-1">
+                                        {sprayer.sprayerTypeIds.map((type: string, typeIdx: number) => (
+                                          <Badge key={typeIdx} variant="secondary" className="text-xs">{getPartDescription(type)}</Badge>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Accessories */}
+                  {accessories.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Selected Accessories</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {accessories.map((accessory: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-purple-50 rounded-lg">
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Assembly ID:</span>
+                                <span className="font-medium">{accessory.assemblyId}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Quantity:</span>
+                                <span className="font-medium">{accessory.quantity}</span>
+                              </div>
+                              {accessory.name && (
+                                <div className="flex justify-between">
+                                  <span className="text-slate-500">Name:</span>
+                                  <span className="font-medium">{accessory.name}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )
+          })}
         </TabsContent>
 
         {/* BOM Tab */}
-        <TabsContent value="bom" className="space-y-4">
+        <TabsContent value="bom" className="space-y-3">
+
           {/* Edit Configuration Button - Only show for orders that can be edited */}
           {order.orderStatus === 'ORDER_CREATED' && (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">Need to modify the configuration?</h3>
-                    <p className="text-sm text-slate-600 mt-1">
-                      You can edit the sink configuration while the order is in "Order Created" status
-                    </p>
-                  </div>
-                  <Button 
-                    variant="outline"
-                    onClick={() => router.push(`/orders/edit/${order.id}`)}
-                    className="flex items-center gap-2"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Edit Configuration
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div>
+                <h4 className="font-medium text-blue-900">Configuration Editable</h4>
+                <p className="text-sm text-blue-700">
+                  You can edit the sink configuration while the order is in "Order Created" status
+                </p>
+              </div>
+              <Button 
+                variant="outline"
+                onClick={() => router.push(`/orders/edit/${order.id}`)}
+                className="flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Config
+              </Button>
+            </div>
           )}
           
-          {order.generatedBoms && order.generatedBoms.length > 0 ? (
-            <BOMDisplay
-              orderId={order.id}
-              poNumber={order.poNumber}
-              bomItems={order.generatedBoms[0]?.bomItems || []}
-            />
+          {(order.generatedBoms || order.boms) && (order.generatedBoms || order.boms).length > 0 ? (
+            <>
+              {(() => {
+                const bomData = order.generatedBoms?.[0] || order.boms?.[0]
+                const bomItems = bomData?.bomItems || []
+                
+                return (
+                  <>
+                    {/* BOM Statistics */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-600">Total Items</span>
+                          <span className="text-2xl font-bold text-blue-600">{bomItems.length || 0}</span>
+                        </div>
+                      </Card>
+                      <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-600">Unique Parts</span>
+                          <span className="text-2xl font-bold text-green-600">
+                            {new Set(bomItems.map((item: any) => item.partIdOrAssemblyId)).size || 0}
+                          </span>
+                        </div>
+                      </Card>
+                      <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-600">Assemblies</span>
+                          <span className="text-2xl font-bold text-purple-600">
+                            {bomItems.filter((item: any) => item.itemType?.includes('ASSEMBLY')).length || 0}
+                          </span>
+                        </div>
+                      </Card>
+                      <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-600">Custom Items</span>
+                          <span className="text-2xl font-bold text-orange-600">
+                            {bomItems.filter((item: any) => item.isCustom).length || 0}
+                          </span>
+                        </div>
+                      </Card>
+                    </div>
+
+                    {/* Enhanced BOM Viewer */}
+                    <BOMViewer
+                      orderId={order.id}
+                      poNumber={order.poNumber}
+                      bomItems={bomItems}
+                      showDebugInfo={true}
+                    />
+
+                    {/* BOM Analysis */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>BOM Analysis</CardTitle>
+                        <CardDescription>
+                          Detailed breakdown of bill of materials by categories and types
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {/* Category Breakdown */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-slate-700">By Category</h4>
+                            {Object.entries(
+                              bomItems.reduce((acc: any, item: any) => {
+                                const category = item.category || 'MISCELLANEOUS'
+                                acc[category] = (acc[category] || 0) + 1
+                                return acc
+                              }, {})
+                            ).map(([category, count]) => (
+                              <div key={category} className="flex justify-between text-sm">
+                                <span className="text-slate-600">{category.replace(/_/g, ' ')}</span>
+                                <Badge variant="secondary">{count as number}</Badge>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Item Type Breakdown */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-slate-700">By Item Type</h4>
+                            {Object.entries(
+                              bomItems.reduce((acc: any, item: any) => {
+                                const type = item.itemType || 'UNKNOWN'
+                                acc[type] = (acc[type] || 0) + 1
+                                return acc
+                              }, {})
+                            ).map(([type, count]) => (
+                              <div key={type} className="flex justify-between text-sm">
+                                <span className="text-slate-600">{type.replace(/_/g, ' ')}</span>
+                                <Badge variant="outline">{count as number}</Badge>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Quantity Analysis */}
+                          <div className="space-y-3">
+                            <h4 className="font-medium text-slate-700">Quantity Analysis</h4>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-slate-600">Total Quantity</span>
+                                <span className="font-medium">
+                                  {bomItems.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-600">Avg per Item</span>
+                                <span className="font-medium">
+                                  {(
+                                    bomItems.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0) /
+                                    (bomItems.length || 1)
+                                  ).toFixed(1)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-600">Max Quantity</span>
+                                <span className="font-medium">
+                                  {bomItems.length > 0 ? Math.max(...bomItems.map((item: any) => item.quantity || 0)) : 0}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </>
+                )
+              })()}
+            </>
           ) : (
             <Card>
               <CardContent className="text-center py-8">
                 <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                 <p className="text-slate-600">No BOM generated for this order</p>
+                <p className="text-sm text-slate-500 mt-2">
+                  The BOM will be automatically generated when the order moves to production status.
+                </p>
               </CardContent>
             </Card>
           )}
@@ -570,24 +925,3 @@ export default function OrderDetailsPage() {
   )
 }
 
-// Helper function to render BOM items recursively
-function renderBomItems(items: any[], level: number) {
-  return items.map((item: any) => (
-    <div key={item.id} style={{ marginLeft: `${level * 20}px` }}>
-      <div className="flex items-center justify-between py-2 border-b">
-        <div className="flex items-center space-x-2">
-          <Package className="w-4 h-4 text-slate-400" />
-          <span className={level === 0 ? "font-medium" : "text-sm"}>
-            {item.name}
-          </span>
-          {item.isCustom && <Badge variant="outline" className="text-xs">Custom</Badge>}
-        </div>
-        <div className="flex items-center space-x-4 text-sm">
-          <span className="text-slate-500">Part: {item.partIdOrAssemblyId}</span>
-          <span className="font-medium">Qty: {item.quantity}</span>
-        </div>
-      </div>
-      {item.children && item.children.length > 0 && renderBomItems(item.children, level + 1)}
-    </div>
-  ))
-}

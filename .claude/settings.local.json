@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(npm run test:unit:*)",
+      "Bash(ls:*)",
+      "Bash(npm run prisma:generate:*)",
+      "Bash(npm run prisma:migrate:*)",
+      "Bash(npm run build:*)",
+      "Bash(node fix-routes.js)",
+      "Bash(rm:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(git add:*)",
+      "Bash(chmod:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(npm run lint)",
+      "Bash(sed:*)",
+      "Bash(npx tsc:*)",
+      "Bash(true)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npm run prisma:seed:*)",
+      "Bash(node:*)"
+    ],
+    "deny": []
+  }
+}

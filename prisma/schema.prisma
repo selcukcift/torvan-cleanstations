@@ -139,6 +139,9 @@ model BasinConfiguration {
   basinTypeId         String
   basinSizePartNumber String?
   basinCount          Int      @default(1)
+  customWidth         Float?
+  customLength        Float?
+  customDepth         Float?
   addonIds            String[]
   orderId             String
   order               Order    @relation(fields: [orderId], references: [id])

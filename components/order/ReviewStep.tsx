@@ -130,17 +130,17 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
             <h2 className="text-2xl font-bold text-green-700">
               Order {isEditMode ? 'Updated' : 'Submitted'} Successfully!
             </h2>
-            <p className="text-muted-foreground">
+            <div className="text-muted-foreground">
               {isEditMode 
                 ? `Order ${orderId} has been updated successfully.`
                 : `Your order has been created and assigned ID: ${submitSuccess.orderId}`
               }
               {!isEditMode && <Badge variant="secondary" className="ml-2">{submitSuccess.orderId}</Badge>}
-            </p>
+            </div>
             {submitSuccess.bomId && (
-              <p className="text-muted-foreground">
+              <div className="text-muted-foreground">
                 BOM {isEditMode ? 'regenerated' : 'generated'} with ID: <Badge variant="outline">{submitSuccess.bomId}</Badge>
-              </p>
+              </div>
             )}
             <p className="text-sm text-muted-foreground">
               {isEditMode 

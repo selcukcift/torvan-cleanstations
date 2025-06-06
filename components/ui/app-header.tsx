@@ -6,6 +6,8 @@ import { LogoutButton } from "@/components/ui/logout-button"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { NotificationBell } from "@/components/notifications/NotificationBell"
+import { useNavigation } from "@/hooks/use-navigation"
+import { cn } from "@/lib/utils"
 
 interface AppHeaderProps {
   title?: string
@@ -21,6 +23,7 @@ export function AppHeader({
   const { data: session } = useSession()
   const user = session?.user
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { isActive } = useNavigation()
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen)
 
@@ -42,11 +45,37 @@ export function AppHeader({
 
           {/* Desktop Navigation */}
           {showUserInfo && user && (
-            <div className="hidden md:flex items-center space-x-4">
-              {/* Notification Bell */}
-              <NotificationBell />
-              
-              <div className="flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Main Navigation Links */}
+              <nav className="flex items-center space-x-6">
+                <Button 
+                  variant={isActive("/dashboard") ? "secondary" : "ghost"} 
+                  size="sm" 
+                  asChild
+                >
+                  <a href="/dashboard" className="text-sm font-medium">
+                    Dashboard
+                  </a>
+                </Button>
+                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.role)) && (
+                  <Button 
+                    variant={isActive("/orders/create") ? "secondary" : "ghost"} 
+                    size="sm" 
+                    asChild
+                  >
+                    <a href="/orders/create" className="text-sm font-medium">
+                      Create Order
+                    </a>
+                  </Button>
+                )}
+              </nav>
+
+              {/* User Actions */}
+              <div className="flex items-center space-x-4">
+                {/* Notification Bell */}
+                <NotificationBell />
+                
+                <div className="flex items-center space-x-3">
                 {/* User Avatar */}
                 <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
@@ -65,6 +94,7 @@ export function AppHeader({
 
               {/* Logout Button */}
               <LogoutButton />
+              </div>
             </div>
           )}
 
@@ -106,8 +136,34 @@ export function AppHeader({
                 </div>
               </div>
 
-              {/* Mobile Actions */}
+              {/* Mobile Navigation Links */}
               <div className="px-2 space-y-2">
+                <Button 
+                  variant={isActive("/dashboard") ? "secondary" : "ghost"} 
+                  size="sm" 
+                  asChild 
+                  className="w-full justify-start"
+                >
+                  <a href="/dashboard" className="text-sm font-medium">
+                    Dashboard
+                  </a>
+                </Button>
+                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.role)) && (
+                  <Button 
+                    variant={isActive("/orders/create") ? "secondary" : "ghost"} 
+                    size="sm" 
+                    asChild 
+                    className="w-full justify-start"
+                  >
+                    <a href="/orders/create" className="text-sm font-medium">
+                      Create Order
+                    </a>
+                  </Button>
+                )}
+              </div>
+
+              {/* Mobile Actions */}
+              <div className="px-2 space-y-2 border-t border-slate-200 pt-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Notifications</span>
                   <NotificationBell />

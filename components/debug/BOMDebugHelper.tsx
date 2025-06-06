@@ -18,7 +18,6 @@ import {
   CheckCircle,
   Download,
   Search,
-  DollarSign,
   TreePine,
   List
 } from "lucide-react"
@@ -38,8 +37,6 @@ interface BOMItem {
   quantity: number
   category?: string
   subItems?: BOMItem[]
-  price?: number
-  unitPrice?: number
   partNumber?: string
   id?: string
   level?: number
@@ -57,7 +54,6 @@ interface BOMData {
   missingRequiredFields: string[]
   hierarchical?: BOMItem[]
   topLevelItems?: number
-  totalPrice?: number
 }
 
 export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleVisibility }: BOMDebugHelperProps) {
@@ -84,7 +80,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['sink-body', 'basin', 'accessories', 'accessory-storage', 'accessory-lighting']))
   const [searchTerm, setSearchTerm] = useState('')
   const [viewMode, setViewMode] = useState<'categorized' | 'hierarchical'>('hierarchical')
-  const [showPrices, setShowPrices] = useState(false)
   const [maxDepth, setMaxDepth] = useState(3)
   const [accessoryAnalysis, setAccessoryAnalysis] = useState<any>(null)
 
@@ -399,11 +394,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           console.warn('No sink body generated due to missing dimensions')
         }
         
-        // Calculate total price if prices are available
-        const totalPrice = items.reduce((sum: number, item: BOMItem) => {
-          const itemPrice = item.price || (item.unitPrice && item.quantity ? item.unitPrice * item.quantity : 0)
-          return sum + itemPrice
-        }, 0)
 
         setBomData({
           items: items,
@@ -411,8 +401,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           isComplete: currentMissingFields.length === 0,
           missingRequiredFields: currentMissingFields,
           hierarchical: hierarchicalItems,
-          topLevelItems: bomResult.topLevelItems || 0,
-          totalPrice: totalPrice > 0 ? totalPrice : undefined
+          topLevelItems: bomResult.topLevelItems || 0
         })
       } else {
         console.error('BOM generation failed:', response)
@@ -523,13 +512,50 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       'other': []
     }
 
+    // First, aggregate items by ID to combine quantities
+    const aggregatedItems = new Map<string, any>()
+    
+    items.forEach(item => {
+      const itemId = item.id || item.assemblyId || item.partNumber || 'unknown'
+      const key = `${itemId}-${item.name || 'unnamed'}`
+      
+      if (aggregatedItems.has(key)) {
+        // Item already exists, add quantities
+        const existingItem = aggregatedItems.get(key)!
+        existingItem.quantity = (existingItem.quantity || 1) + (item.quantity || 1)
+        
+        
+        // Keep track of source contexts for debugging
+        if (!existingItem.sourceContexts) {
+          existingItem.sourceContexts = [existingItem.category || 'unknown']
+        }
+        existingItem.sourceContexts.push(item.category || 'unknown')
+        
+        console.log(`🔧 BOM Debug: Aggregated ${itemId} - Total quantity: ${existingItem.quantity}`, {
+          originalQuantity: existingItem.quantity - (item.quantity || 1),
+          addedQuantity: item.quantity || 1,
+          newTotal: existingItem.quantity,
+          sourceContexts: existingItem.sourceContexts
+        })
+      } else {
+        // New item, add it with source context
+        const newItem = { 
+          ...item, 
+          sourceContexts: [item.category || 'unknown'],
+          quantity: item.quantity || 1 
+        }
+        aggregatedItems.set(key, newItem)
+      }
+    })
+
     // Helper function to extract part number prefix
     const getPartNumberPrefix = (id: string): string => {
       const match = id.match(/^(\d{3}\.\d+)/);
       return match ? match[1] : '';
     }
 
-    items.forEach(item => {
+    // Now categorize the aggregated items
+    Array.from(aggregatedItems.values()).forEach(item => {
       const id = (item.assemblyId || item.partNumber || '').toLowerCase()
       const name = (item.name || item.description || '').toLowerCase()
       const category = item.category || ''
@@ -749,15 +775,12 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       configuration: orderConfig,
       bom: {
         totalItems: bomData.totalItems,
-        totalPrice: bomData.totalPrice,
         items: bomData.items.map(item => ({
           id: item.id || item.assemblyId || item.partNumber,
           name: item.name,
           description: item.description,
           quantity: item.quantity,
-          category: item.category,
-          unitPrice: item.unitPrice,
-          totalPrice: item.price || (item.unitPrice && item.quantity ? item.unitPrice * item.quantity : 0)
+          category: item.category
         }))
       }
     }
@@ -793,8 +816,35 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       return null
     }
     
-    return items.map((item, index) => {
-      const itemPrice = item.price || (item.unitPrice && item.quantity ? item.unitPrice * item.quantity : 0)
+    // Aggregate items by ID at each level to handle duplicate components
+    const aggregatedItems = new Map<string, BOMItem>()
+    
+    items.forEach((item, originalIndex) => {
+      const itemId = item.id || item.assemblyId || item.partNumber || `unknown-${originalIndex}`
+      const key = `${itemId}-${item.name || 'unnamed'}`
+      
+      if (aggregatedItems.has(key)) {
+        // Item already exists, combine quantities
+        const existingItem = aggregatedItems.get(key)!
+        existingItem.quantity = (existingItem.quantity || 1) + (item.quantity || 1)
+        
+        
+        // Merge children if any
+        if (item.children || item.components) {
+          const existingChildren = existingItem.children || existingItem.components || []
+          const newChildren = item.children || item.components || []
+          existingItem.children = [...existingChildren, ...newChildren]
+          existingItem.components = existingItem.children // Keep both for compatibility
+        }
+        
+        console.log(`🔧 Hierarchical BOM: Aggregated ${itemId} at level ${level} - Total quantity: ${existingItem.quantity}`)
+      } else {
+        // New item, add with unique index for key generation
+        aggregatedItems.set(key, { ...item, _originalIndex: originalIndex })
+      }
+    })
+    
+    return Array.from(aggregatedItems.values()).map((item, index) => {
       const hasMatch = !searchTerm || filteredItems([item]).length > 0
       
       const childItems = item.children || item.components || []
@@ -992,7 +1042,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       const indentSymbol = getIndentSymbol(level)
 
       return (
-        <div key={`${item.id || item.assemblyId || item.partNumber || index}-${level}`}>
+        <div key={`${item.id || item.assemblyId || item.partNumber || 'unknown'}-${level}-${index}-${item._originalIndex || 0}`}>
           {(hasMatch || level === 0) && (
             <div 
               className={levelStyle.className}
@@ -1034,6 +1084,11 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                           ✓ Selected Component
                         </p>
                       )}
+                      {item.sourceContexts && item.sourceContexts.length > 1 && (
+                        <p className="text-xs text-purple-600 font-medium">
+                          📊 Qty aggregated from {item.sourceContexts.length} sources
+                        </p>
+                      )}
                       {hasChildren && (
                         <p className={`text-xs ${
                           level === 0 ? 'text-purple-600' : 
@@ -1052,13 +1107,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                   <Badge variant={isSelectedComponent && level === 0 ? "default" : "outline"} className="text-xs">
                     Qty: {item.quantity || 1}
                   </Badge>
-                  {showPrices && itemPrice > 0 && (
-                    <div className={`text-xs font-medium ${
-                      level === 0 ? 'text-green-600' : 'text-green-500'
-                    }`}>
-                      ${itemPrice.toFixed(2)}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -1109,14 +1157,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           <div className="flex items-center gap-1">
             {bomData && (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPrices(!showPrices)}
-                  title="Toggle price display"
-                >
-                  <DollarSign className={`w-4 h-4 ${showPrices ? 'text-green-600' : ''}`} />
-                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -1189,11 +1229,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
               {bomData.missingRequiredFields.length > 0 && (
                 <Badge variant="destructive">
                   {bomData.missingRequiredFields.length} missing
-                </Badge>
-              )}
-              {showPrices && bomData.totalPrice && (
-                <Badge variant="secondary" className="bg-green-100">
-                  Total: ${bomData.totalPrice.toFixed(2)}
                 </Badge>
               )}
             </div>
@@ -1360,7 +1395,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                         const isChild = item.isChild || indentLevel > 0
                         const isPart = item.isPart || item.category === 'PART'
                         
-                        const itemPrice = item.price || (item.unitPrice && item.quantity ? item.unitPrice * item.quantity : 0)
                         const relationshipText = getRelationshipText(item)
                         
                         // Check if this is a selected component
@@ -1471,7 +1505,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                         
                         return (
                           <div 
-                            key={`${item.id || item.assemblyId || item.partNumber || index}`} 
+                            key={`${categoryId}-${item.id || item.assemblyId || item.partNumber || 'unknown'}-${index}`} 
                             className={`p-2 border rounded-md ${
                               isChild ? 'bg-gray-50 border-gray-200 ml-4' : 
                               isSelectedComponent ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-300'
@@ -1531,11 +1565,6 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                                     Qty: {item.quantity || 1}
                                   </Badge>
                                 </div>
-                                {showPrices && itemPrice > 0 && (
-                                  <div className="text-xs text-green-600 font-medium">
-                                    ${itemPrice.toFixed(2)}
-                                  </div>
-                                )}
                               </div>
                             </div>
                           </div>

@@ -3,8 +3,11 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { Save, Eye, Home } from "lucide-react"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { AppHeader } from "@/components/ui/app-header"
+import { PageHeader, QuickActions } from "@/components/ui/page-header"
+import { Button } from "@/components/ui/button"
 import { OrderWizard } from "@/components/order/OrderWizard"
 
 export default function CreateOrderPage() {
@@ -43,16 +46,37 @@ export default function CreateOrderPage() {
       <AppHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Create New Order
-          </h1>
-          <p className="text-slate-600">
-            Follow the 5-step process to create a new CleanStation order with custom configurations.
-          </p>
-        </div>
+        <PageHeader
+          title="Create New Order"
+          description="Follow the 5-step process to create a new CleanStation order with custom configurations."
+          breadcrumbs={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Create New Order" }
+          ]}
+          showBackButton
+          backUrl="/dashboard"
+          backLabel="Back to Dashboard"
+          actions={
+            <QuickActions>
+              <Button variant="outline" size="sm" asChild>
+                <a href="/dashboard" className="flex items-center">
+                  <Eye className="h-4 w-4 mr-2" />
+                  View All Orders
+                </a>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <a href="/dashboard" className="flex items-center">
+                  <Home className="h-4 w-4 mr-2" />
+                  Dashboard
+                </a>
+              </Button>
+            </QuickActions>
+          }
+        />
 
-        <OrderWizard />
+        <div className="mt-8">
+          <OrderWizard />
+        </div>
       </main>
     </div>
   )
