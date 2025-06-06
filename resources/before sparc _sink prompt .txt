@@ -1,0 +1,80 @@
+Hi. I m looking to create a web application that will be used on our production workflow digitalizing process on TORVAN MEDICAL CLEANSTATION REPROCESSING SINKS. you can find the features about our sink and data sheet about them. Let me tell you a life cycle and current practices for building our sinks.
+ So i ll pass the sales and customer relations (invoicing, quotes) i m looking for to point that everything agreed with price vs configuration, and ready to create a production order. my app should start with Production coordinator fill out a form about details about customer details  want date PO Number Sales Person details, ordered sink quantities and configurations ( Sink Structure legs with or without pegboard , Basin(s) types, sizes, add on items  Faucet  types and placements and ordered  sink accessories. After that those details entered. Order going to be created and will be saved to database with its Unique PO number.
+In database all information going to be saved in the database with uploaded documents that uploaded in configuration phase.
+Several people will use this application Production Coordinator, Admin(me) Procurement specialist, QC Person, and The Assembler. Every role going to have different dashboard boards  but at the same time every role can see the order's pool with different authorization levels. 
+
+ the Whole workflow: So Production coordinator going to enter the order to the system with whole details, then procurement going to see the order details. System going to automatically create an order details page with accessories and tailored BOM according to sink configurations that coordinator entered. procurement  going to check all details and auto generated bom, - inside this bom needs to create a set of parts to send  to outside company needed while creating the sink structure.
+After procurement approve the bom send the parts to outside company sink order status going to change as Parts Sent , Waiting for Arrival . When sink comes procurement going to update the status of the order as Ready for Pre-Qc. In this phase its QC person's turn. He will see the details about the initial order, and he is going to see every details in technical drawing , Order Confirmation Document, Po Document. he is going to check every details on that arrived sink against to the documents.(sink dims accessories, and other configuration options. After he is approval Order status updated as Ready for production. Production(assembler) going to see the order in his dash board as ready for production, then he is going to Assign himself to the production and according to sink configuration he is going to see auto generated  tailored tasks list sequence , parts and tools needed, and work isnstructions while accomplish this task. after tasks done there is going to be a testing session and form  that Assembler needs to perform. every items in the task list needs to be checked of before testing session starts. After testing successfull finished. Assembler going to proceed to packaging step.The sink peripherals, accessories needs to be packaged with correct types and quantities. this section also going to be tailored and auto generated and assembler going to see the items packaging step. After Assembler done packaging he going to mark the order status as ready for final Qc. Qc person again see the order as ready for qc and he is going to perform the final qc as again with his tailor checklist for final qc.(pre qc forms and final qc forms are going to be different.) When final qc done. order going to become a ready for ship  status. only status update  after this is  going to be shipped which going to be performed by Production Coordinator. this is the end of this web app workflow.
+
+Database pools 
+so in this app going to be interact with several database pools
+Order details pool
+Inventory Pool
+Work instructions pool 
+Task list pool
+Tools pool 
+These pools going to interact to each other  with  creating Work instructions of Assemblies from Sub assemblies, Performing a task, and Generating tailored BOM, 
+
+Also there is going to be another profile page and user which not involving any of this work flow it is Service Department. Service department only going to use this app while ordering service parts from the inventory. it is going to be like  a shopping cart but without prices.when service departmant ordered a part it s going to be seen in procurement's and production users dashboard.
+
+Also we need to create easy to edit, clearly showing Parent child relation ships,has  hierarcialy visual information database.   
+I also attached csv inventory. Its parent Child relationships as indicated with dot notations.it  has 19 Categories 219 Assemblies and 481 Sub assemblies.(Please confirm) Assemblies and Sub Assemblies need to have its own details page that showing their  actual photos technical drawing urls/photos and If it is an assembly there is a work instruction section too .Also a section for generating a QR code  
+
+You can check our company if you needed more information www.torvanmedical.com But no need to get any information about layout and color codes.also like i said at the beginning i m only interested to create a workflow about TORVAN MEDICAL CLEANSTATION REPROCESSING SINKS in this site.
+
+Our company has a certification of Torvan Medical, an ISO 13485:2016 registered manufacturer of Medical Devices and with this digitizing mission it needs adhere all the rules and spec that certification rules. 
+Please think throughfully and create me prompt for Ai coding agent in Sparc format. Divide as phases to not overwhelm the agent.   
+
+you can use the below as ui and layout options 
+i m happy with next.js
+
+You are a senior frontend engineer designing a **workflow management web application** using **ShadCN UI** with **Tailwind CSS**. The app must have a sleek, modern, and professional interface tailored for operational clarity, task prioritization, and seamless user flow.
+
+🎯 Design Intent:
+Create an interface that supports:
+- High cognitive efficiency for professionals managing complex workflows.
+- Fast scannability of task status, dependencies, and assigned users.
+- Fluid interaction patterns that reduce friction and increase focus.
+
+🧩 Component Usage:
+- Use ShadCN components consistently: `card`, `dialog`, `popover`, `tabs`, `data-table`, `tooltip`, `badge`, and `form` components are essential.
+- Customize components for a professional tone (rounded-xl or 2xl, medium shadows, subtle transitions).
+- Use `lucide-react` icons for cues — e.g., status indicators, action buttons, breadcrumbs.
+
+📐 Layout Strategy:
+- Follow a **dashboard-style layout** with fixed sidebar navigation, top toolbar, and responsive content panes.
+- Use `flex` and `grid` for alignment. Components must align cleanly with consistent gutters (`gap-4`, `p-4`, `space-y-6`).
+- Support multi-panel views for items like workflow boards, kanban stages, or task timelines.
+
+🎨 Styling Rules:
+- Use a neutral base (`#f9fafb`, `#f1f5f9`) with contrast in key areas (e.g., cards on a subtle panel background).
+- A single accent color (blue, green, or indigo) for actions, with muted variants for states like `in progress`, `on hold`, or `done`.
+- Typography should use `text-xl` for headlines, `text-base` for body, and thoughtful weight (`font-semibold` for labels, `font-medium` for descriptions).
+
+🎞️ Interactions:
+- Use Framer Motion to animate dropdowns, modals, and step transitions (fade-in, slide-up, staggered lists).
+- Hover/focus states should be clean, tactile, and consistent across components.
+- Include toasts or snackbars for form submissions and background actions.
+
+🧠 UX Patterns to Prioritize:
+- Breadcrumb navigation for workflow stages.
+- Task cards with expandable details.
+- Multi-step forms with logical progression.
+- Filtering, search, and tagging tools with responsive feedback.
+
+♿ Accessibility:
+- Use semantic HTML5, ARIA roles, and respect contrast/keyboard rules.
+- Add `aria-live` regions for real-time updates or task changes.
+
+📵 Avoid:
+- Cluttered UI, overuse of modals, inconsistent spacing, overly vibrant color schemes, and non-standard components.
+
+💡 Design Benchmark:
+Match or exceed the UX polish of modern SaaS tools like Notion, Linear, ClickUp, or Superhuman. Your layout should feel like a premium operations console used by fast-paced professional teams.
+
+
+
+
+
+             
+          

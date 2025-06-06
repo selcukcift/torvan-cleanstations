@@ -1,0 +1,2001 @@
+{
+  "metadata": {
+    "generated_at": "2025-05-29T23:56:52.839Z",
+    "source_file": "final.json",
+    "version": "1.0.0",
+    "description": "Normalized parts catalog - individual components and materials",
+    "total_parts": 283
+  },
+  "parts": {
+    "1916": {
+      "name": "TO CONNECT GESTURE SENSOR TO CM3-PANEL-U",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1930": {
+      "name": "TO CRIMP WIRE INTO POLULU PART 1916",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "2783": {
+      "name": "2\" PEGBOARD CLOSED GROMET",
+      "manufacturer_part_number": "2783",
+      "manufacturer_info": "MCMASTER",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "4995": {
+      "name": "SILICONE RJ-45 DUST COVER INSERTS - 10 PACK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "9683": {
+      "name": "STRIGHT SCREW CONNECTION, REQUIRED FOR 3/4\" AUK COLLAR AND ORING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "10972": {
+      "name": "FLOW METER 6 - 40 L/MIN, INLET: G3/4\" MALE THREAD, OUTLET: G3/4\" SWIVEL NUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "15862": {
+      "name": "POWERCORD FOR CBD, BLACK CABLE",
+      "manufacturer_part_number": "15862",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "21651": {
+      "name": "6-32 WELL NUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "59800": {
+      "name": "ELECTRIC DRAIN VALVE 12VDC",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "70501": {
+      "name": "FILL SOLENOID, 24 V = (DC) 100 % DUTY CYCLE ,INLET: G 3/4 MALE THREAD, OUTLET: G 3/4 MALE THREAD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "76902": {
+      "name": "FILL SOLENOID NC WITH INTEGRATED TURBINE FLOW METER , INLET/OUTLET: G 3/4 MALE THREAD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "92105": {
+      "name": "1/2\" WHITE PEX-A TUBING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "95400": {
+      "name": "CHECK VALVE INLET: SWIVEL NUT G 3/4 FEMALE THREAD, OUTLET: G 3/4 MALE THREAD, DN 12 , P: MAX. 10 BAR",
+      "manufacturer_part_number": "095400",
+      "manufacturer_info": "A. u. K. MULLER gMBh & Co. KG",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "95403": {
+      "name": "TEMPERATURE SENSOR PORT HOUSING INLET: SWIVEL NUT G 3/4 FEMALE THREAD, OUTLET: G 3/4 MALE THREAD, DN 15 , P: MAX. 10 BAR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "914759": {
+      "name": "90 DEGREE SNAP-IN BRACKET FOR LINAK DPF1K PUSH BUTTON",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1201578": {
+      "name": "DINRAIL ADAPTER UNIVERSAL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "2302081": {
+      "name": "CABLE ASSY DB15 SHIELDED GRAY 2M",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "2926438": {
+      "name": "ASSEMBLED SHIELDED ROUND CABLE CONNECTION DSUB PIN STRIP (1X 15-POSITION); CABLE LENGTH: 0.5 M",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "14629990": {
+      "name": "10K NTC G1/4 TEMPERATURE SENSOR WITH SEAL AND 300 MM CABLE",
+      "manufacturer_part_number": "14629990",
+      "manufacturer_info": "WIKA INSTRUMENTS LTD",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "101020083": {
+      "name": "PAJ7620U2 GESTURE SENSOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1212010001": {
+      "name": "DIN VALVE CONNECTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-BINRAIL-24": {
+      "name": "BIN RAIL, 24\"",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "8-32 PAN HEAD SCREWS 1/2\"": {
+      "name": "TO SECURE THE POWERBAR ON THE BRACKET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "832-NL-NT": {
+      "name": "#8-32 NYLOCK NUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-BINRAIL-36": {
+      "name": "BIN RAIL, 36\"",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-BINRAIL-48": {
+      "name": "BIN RAIL, 48\"",
+      "manufacturer_part_number": "T1-CABRAIL-01-R1-48",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PFW1236FM": {
+      "name": "WIRE BASKET, SLOT BRACKET HELD, CHROME, 36\"W X 12\"D",
+      "manufacturer_part_number": "PFW1236FM",
+      "manufacturer_info": "ACART",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PWBRACKETSLT": {
+      "name": "WIRE BASKET SLOT BRACKET SET, TILT-ADJUST (L & R)",
+      "manufacturer_part_number": "PWBRACKETSLT",
+      "manufacturer_info": "ACART",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PWBRACKET": {
+      "name": "WIRE BASKET SLOT BRACKET SET, RIGHT ANGLE (L& R)",
+      "manufacturer_part_number": "PWBRACKET",
+      "manufacturer_info": "ACART",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PFW1218FM": {
+      "name": "WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18\"W X 12\"D WITH BRACKETS",
+      "manufacturer_part_number": "PFW1218FM",
+      "manufacturer_info": "ACART",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PFW1818FM": {
+      "name": "WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18\"W X 18\"D WITH BRACKETS",
+      "manufacturer_part_number": "PFW1818FM",
+      "manufacturer_info": "ACART",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-SSSHELF-1812": {
+      "name": "STAINLESS STEEL SLOT SHELF, 18\"W X 12\"D",
+      "manufacturer_part_number": "T-OA-SSSHELF-1812",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-SSSHELF-1812-BOLT-ON": {
+      "name": "STAINLESS STEEL SHELF, 18\"W X 12\"D BOLT ON (FOR SOLID PEGBOARD)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-SSSHELF-3612": {
+      "name": "STAINLESS STEEL SLOT SHELF, 36\"W X 12\"D",
+      "manufacturer_part_number": "T-OA-SSSHELF-3612",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-SSSHELF-3612-BOLT-ON": {
+      "name": "STAINLESS STEEL SLOT SHELF, 36\"W X 12\"D BOLT ON (FOR SOLID PEGBOARD)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-SSSHELF-2712-INSTRO": {
+      "name": "STAINLESS STEEL SLOT SHELF FOR INSTROSINK OVERHEAD LIGHT, 27\"W X 12\"D",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-OHL-LED": {
+      "name": "OVERHEAD LED LIGHT FOR SINKS 6000K 24VDC (CUSTOM LENGTH)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-B110505": {
+      "name": "BLUE, 10-7/8\" X 5-1/2\" X 5\" HANGING AND STACKING BIN",
+      "manufacturer_part_number": "A30230P09",
+      "manufacturer_info": "AK-WEST INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-B110807": {
+      "name": "BLUE, 10-7/8\" X 8-1/8\" X 7\" HANGING AND STACKING BIN",
+      "manufacturer_part_number": "A30239P09",
+      "manufacturer_info": "AK-WEST INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-B111105": {
+      "name": "BLUE, 10-7/8\" X 11\" X 5\" HANGING AND STACKING BIN",
+      "manufacturer_part_number": "A30235P09",
+      "manufacturer_info": "AK-WEST INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "B210-BLUE": {
+      "name": "BLUE PLASTIC BIN, 5.75\"X4.125\"X3\"",
+      "manufacturer_part_number": "30210",
+      "manufacturer_info": "AK-WEST INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-LT-SSSHELF-LRG": {
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 10\"X20\", FOR LARGE SCOPE",
+      "manufacturer_part_number": "T2-OA-LT-SSSHELF-LRG",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-LT-SSSHELF-SML": {
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 6\"X10\", FOR SMALL SCOPE",
+      "manufacturer_part_number": "T2-OA-LT-SSSHELF-SML",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-CUST-SHELF-HA-SML": {
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-CUST-SHELF-HA-LRG": {
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-RAIL-SHELF-ADDER-SML": {
+      "name": "RAIL SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-RAIL-SHELF-ADDER-LRG": {
+      "name": "RAIL SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-CROSSRAIL": {
+      "name": "MOUNTING TUBE FRAME (CUSTOM LENGTH AS SPECIFIED ON DRAWING)",
+      "manufacturer_part_number": "ADW-T2-CROSSRAIL",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1/4-20 TRUSS SCREW PH": {
+      "name": "1/4-20 TRUSS SCREW PH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1/4-20 SS FLAT WASHER": {
+      "name": "1/4-20 SS FLAT WASHER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-DOSINGESK-BTMSHELF": {
+      "name": "BOTTOM SHELF FOR DOSING PUMP",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-1BRUSH-ORG-PB": {
+      "name": "STAY-PUT SINGLE HOOK FOR PEGBOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "90015A286": {
+      "name": "6-32 TRUSS SCREW",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-6BRUSH-ORG-PB": {
+      "name": "STAY-PUT 6 HOOK ORGANIZER FOR PEGBOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-WRK-FLW-PB": {
+      "name": "PEGBOARD MOUNT WORKFLOW INDICATOR (SET OF 3)",
+      "manufacturer_part_number": "T-OA-WRK-FLW-PB",
+      "manufacturer_info": "PLANET ADVANCE DIGITAL PRINT",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PPRACK-2066": {
+      "name": "STAINLESS STEEL PEEL POUCH RACK, 20.5 X 6 X 6",
+      "manufacturer_part_number": "T-OA-PPRACK-2066",
+      "manufacturer_info": "DURALINE BIOSYSTEMS INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PB-SS-1L-SHLF": {
+      "name": "ONE LITRE DOUBLE BOTTLE HOLDER, STAINLESS STEEL",
+      "manufacturer_part_number": "T-OA-PB-SS-1L-SHLF",
+      "manufacturer_info": "MMWMAN",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PB-SS-2G-SHLF": {
+      "name": "ONE GALLON DOUBLE DETERGENT HOLDER, STAINLESS STEEL",
+      "manufacturer_part_number": "T-OA-PB-SS-2G-SHLF",
+      "manufacturer_info": "MMWMAN",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PB-SS-1GLOVE": {
+      "name": "SINGLE GLOVE DISPENSER, STAINLESS STEEL, 6\"W X 11\"H",
+      "manufacturer_part_number": "H-6121",
+      "manufacturer_info": "ULINE",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PB-SS-2GLOVE": {
+      "name": "DOUBLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 11\"H",
+      "manufacturer_part_number": "H-9047",
+      "manufacturer_info": "ULINE",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-PB-SS-3GLOVE": {
+      "name": "TRIPLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 17\"H",
+      "manufacturer_part_number": "H-6122",
+      "manufacturer_info": "ULINE",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-SC-2020-SS": {
+      "name": "SINK STAGING COVER FOR 20X20 BASIN, STAINLESS STEEL",
+      "manufacturer_part_number": "T2-OA-SC-2020-SS",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-SC-2420-SS": {
+      "name": "SINK STAGING COVER FOR 24X20 BASIN, STAINLESS STEEL",
+      "manufacturer_part_number": "T2-OA-SC-2420-SS",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-SC-3020-SS": {
+      "name": "SINK STAGING COVER FOR 30X20 BASIN, STAINLESS STEEL",
+      "manufacturer_part_number": "T2-OA-SC-3020-SS",
+      "manufacturer_info": "MMW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-AER-TUBEORG": {
+      "name": "AER TUBING ORGANIZER",
+      "manufacturer_part_number": "T2-AER-TUBEORG",
+      "manufacturer_info": "MARSHAN METAL WORKS INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MLIGHT-CCLAMP": {
+      "name": "MAGNIFYING LIGHT, 5\" LENS, C-CLAMP MOUNT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MAG-LIGHT-PB-BRKT": {
+      "name": "PEGBOARD MOUNTING BRACKET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-DIM-MLIGHT-CCLAMP": {
+      "name": "DIMMABLE MAGNIFYING LIGHT, 5\" LENS, C-CLAMP MOUNT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-TASKLIGHT-PB": {
+      "name": "GOOSENECK 27\" LED TASK LIGHT, 10DEG FOCUSING BEAM, IP65 HEAD, 24VDC, PB MOUNT",
+      "manufacturer_part_number": "FG SL9-227B10L",
+      "manufacturer_info": "SUNNEX",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "ACC 14085": {
+      "name": "MAGNIFIER LENS FOR TASK LIGHT HEAD, 2X MAGNIFICATION (4 DIOPTER)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MNT-ARM": {
+      "name": "WALL MONITOR PIVOT, SINGLE MONITOR MOUNT",
+      "manufacturer_part_number": "45-232-200",
+      "manufacturer_info": "PC CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MNT-ARM-1EXT": {
+      "name": "WALL MONITOR ARM, 1 EXTENSION, SINGLE MONITOR MOUNT",
+      "manufacturer_part_number": "45-233-200",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MNT-ARM-2EXT": {
+      "name": "WALL MONITOR ARM, 2 EXTENSION, SINGLE MONITOR MOUNT",
+      "manufacturer_part_number": "45-234-200",
+      "manufacturer_info": "PC CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-KB-MOUSE-ARM": {
+      "name": "WALL KEYBOARD ARM, KEYBOARD MOUNT WITH SLIDE-OUT MOUSE TRAY",
+      "manufacturer_part_number": "45-354-026",
+      "manufacturer_info": "PC CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-2H-CPUSM": {
+      "name": "CPU HOLDER, VERTICAL, SMALL (80-063-200)",
+      "manufacturer_part_number": "80-063-200",
+      "manufacturer_info": "PC CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-2H-CPULG": {
+      "name": "CPU HOLDER, VERTICAL, LARGE (97-468-202)",
+      "manufacturer_part_number": "97-468-202",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-2H-CPUUV": {
+      "name": "CPU HOLDER, TETHERED, UNIVERSAL (80-105-064)",
+      "manufacturer_part_number": "80-105-064",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MMA-PB": {
+      "name": "MONITOR MOUNT ARM, SINGLE, PB MOUNT (45-353-026)",
+      "manufacturer_part_number": "45-353-026",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MMA-DUAL": {
+      "name": "MONITOR MOUNT ADAPTER, DUAL MONITOR (97-783)",
+      "manufacturer_part_number": "97-783",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MMA-LTAB": {
+      "name": "MONITOR MOUNT ADAPTER, TABLET, LOCKING (45-460-026)",
+      "manufacturer_part_number": "45-460-026",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MMA-LAP": {
+      "name": "MONITOR MOUNT ADAPTER, LAPTOP TRAY (50-193-200)",
+      "manufacturer_part_number": "50-193-200",
+      "manufacturer_info": "CDW CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-OA-MNT-SINGLE-COMBO-PB": {
+      "name": "COMBO ARM, KEYBOARD & MONITOR MOUNT FOR PEGBOARD (BLACK)",
+      "manufacturer_part_number": "45-230-200",
+      "manufacturer_info": "PC CANADA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "B-2342-WB": {
+      "name": "10\" WRIST BLADE FAUCET",
+      "manufacturer_part_number": "B-2342-WB",
+      "manufacturer_info": "T&S BRASS & BRONZE WORKS, INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "B-0230-K": {
+      "name": "1/2\" NPT NIPPLE, LOCK NUT & WASHER, SHORT ELBOW (1/2\" NPT FEMALE X MALE)",
+      "manufacturer_part_number": "B-0230-K",
+      "manufacturer_info": "T&S BRASS & BRONZE WORKS, INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PFX146332": {
+      "name": "3/8 C X 1/2 FIP 60 STAINLESS STEEL SINK CONNECTOR",
+      "manufacturer_part_number": "PFX146332",
+      "manufacturer_info": "AMRE SUPPLY",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "B-0133-A10-B08": {
+      "name": "PRE-RINSE COMBO FAUCET, SPRING ACTION, 8\" WALL MOUNT BASE, 10\" ADD-ON NOZZLE, WALL BRACKET, WITH SPRAY VALVE",
+      "manufacturer_part_number": "B-0133-A10-B08",
+      "manufacturer_info": "T&S BRASS & BRONZE WORKS, INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-DI-GOOSENECK-FAUCET": {
+      "name": "GOOSENECK TREATED WATER FAUCET KIT, DI COMPATABLE, PICOTAPS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "5076K42": {
+      "name": "WORM-DRIVE CLAMPS, 1/2\" TO 7/8\" CLAMP ID",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "5218K795": {
+      "name": "PLASTIC BARBED HOSE FITTING, FOR WATER, ELBOW, 1/2\" HOSE ID, 1/2 NPT MALE, 150 PSI",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-CLEANING-GUN": {
+      "name": "DINA CLEANING KIT (WATER AND AIR GUN) WITH TIPS STANDARD SET AND STABLE RACK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "BL-4500-02": {
+      "name": "MODIFIED TIN LINED TURRET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "BL-4249": {
+      "name": "PANEL FLANGE, SUPPLY NIPPLE BL-4250-03, BL-5500-07 MOD TIN-LINED",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-WTR-GN-HLDR-1": {
+      "name": "WATER/AIR GUN AND TIPS HOLDER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DSP-HOLDER": {
+      "name": "ROSETTE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "BL-4350-01": {
+      "name": "TURRET FOR AIRGUN",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "BL-5500-07": {
+      "name": "PANEL SUPPLY NIPPLE W/ LOCK NUT AND WASHER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-MS-1026": {
+      "name": "ST24 P-TRAP DISINFECTION DRAIN UNIT",
+      "manufacturer_part_number": "ST24",
+      "manufacturer_info": "MOVEOMED GMBH",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-SINK-STRAINER": {
+      "name": "SINK STRAINER WITH TORVAN LOGO",
+      "manufacturer_part_number": "T2-OA-SINK-STRAINER",
+      "manufacturer_info": "ALIBABA",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BASIN-LIGHT": {
+      "name": "IN-BASIN LED LIGHT 27W DRAIN PLUG LIGHT WHITE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-LIGHT-BTN": {
+      "name": "LED RING BUTTON FOR DRAIN WITH RJ45 AND BASIN LIGHT SYMBOL LASERED, ORING AND NUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M8-3P-TERMCON-F": {
+      "name": "CONN RCPT FMALE 3POS GOLD SCREW",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M8-3P-MF-STR-3M": {
+      "name": "CBL 3POS MALE TO FMALE 3M",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "50785K144": {
+      "name": "HIGH-PRESSURE BRASS PIPE FITTING LOCKNUT, 1/2 NPT FEMALE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "91367A929": {
+      "name": "CHEMICAL-RESISTANT FLUOROSILICONE SEALING WASHER FOR 3/4\" SCREW SIZE,.740\" ID, 1.5\" OD,.052\" TO .072\" THICK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-EYEWASH-FAUCET-MNT": {
+      "name": "EYEWASH FAUCET ATTACHMENT S19-200B",
+      "manufacturer_part_number": "S19-200B",
+      "manufacturer_info": "GRAINGER",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-2D-152012-STACKED": {
+      "name": "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-UHMW-LINER": {
+      "name": "SLIPPERY WHITE UHMW POLYETHYLENE SHEET 1/4\" THK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OA-PO-SHLF-1212": {
+      "name": "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-USER-MANUAL-EN": {
+      "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PREINST-MANUAL-EN": {
+      "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-USER-MANUAL-FR": {
+      "name": "FRENCH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PREINST-MANUAL-FR": {
+      "name": "FRENCH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-USER-MANUAL-SP": {
+      "name": "SPANISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-INSTRO-FRAME-1B": {
+      "name": "SINGLE BOWL SINK HEIGHT ADJUS, 36\" INSTRO SINK FRAME",
+      "manufacturer_part_number": "T2-ADW-INSTRO-FRAME-1B",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-INSTRO-BASE-1B": {
+      "name": "INSTRO SINK BASE SHELF",
+      "manufacturer_part_number": "T2-ADW-INSTRO-BASE-1B",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DL14-KIT": {
+      "name": "HEIGHT ADJUSTABLE ELECTROMECHANICAL COLUMN KIT (DL14)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PWRBAR-KIT": {
+      "name": "9 PORT POWER BAR WITH MOUNTING BRACKET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-48-60-FRAME": {
+      "name": "SINK FRAME (COVERS 48\" UP TO 60\")",
+      "manufacturer_part_number": "T2-ADW-48-60-FRAME",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-LINAKFRAME-8": {
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 8IN BASIN ALLOWED OVER LIFTERS)",
+      "manufacturer_part_number": "ADW-T2-LINAKFRAME",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-CASTERPLATE-PAIR": {
+      "name": "MOUNTING PLATE FOR CASTERS AND LINAK LEGS, SET OF 2 PLATES (1 LEFT AND 1 RIGHT)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-61-72-FRAME": {
+      "name": "SINK FRAME (COVERS 61\" UP TO 72\")",
+      "manufacturer_part_number": "T2-ADW-61-72-FRAME",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-73-120-FRAME": {
+      "name": "SINK FRAME (COVERS 73\" UP TO 120\")",
+      "manufacturer_part_number": "T2-ADW-73-120-FRAME",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-LINAKFRAME-10": {
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 10IN BASIN ALLOWED OVER LIFTERS)",
+      "manufacturer_part_number": "T2-ADW-LINAKFRAME-10",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-CASTERPLATE-LEFT": {
+      "name": "MOUNTING PLATE FOR CASTERS AND LINAK LEGS, FOR LEFT SIDE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-CASTERPLATE-RIGHT": {
+      "name": "MOUNTING PLATE FOR CASTERS AND LINAK LEGS, FOR RIGHT SIDE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "9563K43": {
+      "name": "CASTOR PLATE GROMETS TO COVER BACK HOLES (1/2\" THRU)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PWRBAR": {
+      "name": "TRIPP LITE POWER BAR PS-615-HG",
+      "manufacturer_part_number": "PS-615-HG",
+      "manufacturer_info": "ELECTRO SONIC GROUP, INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-POWER-STRIP-BRKT": {
+      "name": "BRACKET TO MOUNT POWERBAR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "8-32 RIVNUTS": {
+      "name": "TO BE INSTALLED ON THE POWERBAR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "8-32 FLAT HEAD SCREWS 1.25\"": {
+      "name": "TO SECURE THE POWERBAR BRACKET ONTO THE SINK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-LEVELING-CASTOR-475": {
+      "name": "LEVELING CASTER, 2200LBS CAPACITY, 4.75\" OVERALL HEIGHT",
+      "manufacturer_part_number": "SLL1000-B20H-NY",
+      "manufacturer_info": "ALLGOOD",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-SEISMIC-FEET": {
+      "name": "STAINLESS STEEL ADJUSTABLE SEISMIC FEET 1-5/8\"OD X 6\"H",
+      "manufacturer_part_number": "A47-9932-C",
+      "manufacturer_info": "Component Hardware",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-CBD6SH00040A-709": {
+      "name": "CONTROL BOX - 4 CHANNEL",
+      "manufacturer_part_number": "CBD6SH00040A-709",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DL270CA00300455": {
+      "name": "DL27 ACTUACTOR 300MM",
+      "manufacturer_part_number": "DL270CA00300455",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DPF1K00-010006": {
+      "name": "UP / DOWN BUTTON BLACK",
+      "manufacturer_part_number": "DPF1K00-010006",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "0617102-1000": {
+      "name": "MOTOR CABLES *PVC-FREE CABLE *1000MM LENGTH",
+      "manufacturer_part_number": "0617102-1000",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "0617110-2500": {
+      "name": "MOTOR CABLES *PVC-FREE CABLE *2500MM LENGTH",
+      "manufacturer_part_number": "0617110-2500",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DPF1C00-012016": {
+      "name": "DESK PANEL HAPTIC PUSH BUTTON WITH LED DISPLAY",
+      "manufacturer_part_number": "DPF1C00-012016",
+      "manufacturer_info": "LINAK U.S. INC",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DL14000A0E660525": {
+      "name": "DL14 LIFTING COLUMNS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CAB0964764": {
+      "name": "ADAPTER CABLE FOR LC1 LIFTERS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CAB0617102-1550": {
+      "name": "MOTOR CABLES *PVC-FREE CABLE *1550MM LENGTH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "J42099": {
+      "name": "LC1 TRIPLE COLUMN LIFTER, STROKE 500MM, INSTALL DIM 400MM",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1053W8012": {
+      "name": "TOP AND BOTTOM PLATES KIT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "TP101000DK": {
+      "name": "TPI WATERPROOF SWITCH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-BASIN20X20X8": {
+      "name": "SINK BASIN 20X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "manufacturer_part_number": "ADW-T2-BASIN20X20X8",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-BASIN24X20X8": {
+      "name": "SINK BASIN 24X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "manufacturer_part_number": "ADW-T2-BASIN24X20X8",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-BASIN24X20X10": {
+      "name": "SINK BASIN 24X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "manufacturer_part_number": "ADW-T2-BASIN24X20X10",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-BASIN30X20X8": {
+      "name": "SINK BASIN 30X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "manufacturer_part_number": "ADW-T2-BASIN30X20X8",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-BASIN30X20X10": {
+      "name": "SINK BASIN 30X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "manufacturer_part_number": "ADW-T2-BASIN30X20X10",
+      "manufacturer_info": "ADWEL",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BOTTOM-FILL": {
+      "name": "INCLUDES THE LEVER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DRAIN-VALVE": {
+      "name": "ELECTRONIC DRAIN SOLENOID WITH TAILPIECE AND RUBBER COUPLINGS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DRAIN-HOSE-KIT": {
+      "name": "DRAINAGE HOSE 1.5\" WITH CLAMPS TO SECURE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-DRAIN-BTN": {
+      "name": "PV7FWY0SS-3R1 BUTTON WITH RJ45 AND DRAIN SYMBOL LASERED, O-RING AND NUT",
+      "manufacturer_part_number": "PV7F2Y0SS3R1-WA2438MM",
+      "manufacturer_info": "TORVAN",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-OVFL": {
+      "name": "IN-BASIN OPTICAL OVERFLOW SENSOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-ETCH": {
+      "name": "LITRE/GALLON LASER ETCHING (60L OR 80L DEPENDING ON SIZE)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-EDR-TEMP-KIT": {
+      "name": "TEMPERATURE MONITORING KIT FOR EDRAIN",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DRAIN-BSKT": {
+      "name": "SS STRAINER ASSY WITH BASKET, GALVANIZED SHELL AND BRASS TAILPIECE",
+      "manufacturer_part_number": "FRAN1140",
+      "manufacturer_info": "NEXT PUMBLING - HYDRONICS",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PEX-FLANGE-THIN": {
+      "name": "CUSTOM 303 SS FITTING FLANGE TO 1/2 PEX-A FITTING SS303",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-DRAIN-BTN-COVER": {
+      "name": "MSM 22IN BUTTON COVER SILICONE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DRAIN-BSKT-SEAL": {
+      "name": "NO-PUTTY GASKET KITCHEN SINK & SHOWER DRAINS, 4-1/4″ OD X 3-3/8″ ID",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-VALVE-PLATE-AUK-DI": {
+      "name": "DI WATER SPECIFIC VALVE PLATE, DOES NOT SUPPORT TEMPERATURE CONTROLLED MODES WITH E-SINK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-EMERGSTOP-BTN": {
+      "name": "EMERGNECY BUTTON AND CABLE ASSEMBLY",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-TS7": {
+      "name": "ESINK TOUCHSCREEN",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ESK-TEMP-KIT": {
+      "name": "ESINK BASIN TEMPERATURE PROBE KIT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-VALVE-PLATE-AUK": {
+      "name": "ESINK TEMPERATURE MIXING AND FILLING ASSEMBLY",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-KIT-ESK-DOSE": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - COMPLETE ASSEMBLY",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-DOSINGESK": {
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP MODULE (ESINK COMPATIBLE)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "FLX-CMD-1.5X25": {
+      "name": "1.5\" FLEXTHANE FLEX HOSE",
+      "manufacturer_part_number": "FLX-CMD-1.5X25",
+      "manufacturer_info": "C&C HOSE AND FITTINGS SUPPLY",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-HS-CLMP-1.5-2": {
+      "name": "GEAR HOSE CLAMP 1.5-2\"",
+      "manufacturer_part_number": "T2-HS-CLMP-1.5-2",
+      "manufacturer_info": "PACIFIC FASTENER",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DER-1899-14-CC": {
+      "name": "SINGLE LEVER MIXING VALVE WITH FLEX HOSE",
+      "manufacturer_part_number": "DER-1899-14-CC",
+      "manufacturer_info": "BARIL MANUFACTURIER INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-NIPPLE-1/2": {
+      "name": "1/2\" BRASS CLOSE NIPPLE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "12PF196090": {
+      "name": "1/2″ POLY F1960 EXPANSION PEX ELBOW",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "6.65E+11": {
+      "name": "SIZE: 3/4\" BSP X 1/2\" NPT MALE-MALE REDUCTION THREAD ADAPTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M8-3P-FP-STR-1.5M": {
+      "name": "M8 3PIN CABLE FEMALE TO PIGTAILS 1.5M, OD 4.7MM-5MM",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CK115": {
+      "name": "1-1/2 X 1-1/2 COPPER TO COPPER RUBBER COUPLING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "112X4RBSINKTLPC": {
+      "name": "1-1/2 X 4 FLG TAILPIECE RB 0",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "E0508-WHITE": {
+      "name": "22WG FERRULE (WHITE)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "M8-DUST-CAP-F": {
+      "name": "M8 OUTER THREAD COVER TO CAP UNUSED MALE FEMALE M8 END",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "01SPBB010001V-GP": {
+      "name": "O-RING 10MM ID X 1MM CS IN VITON 75",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "LL-NUT-PLA": {
+      "name": "M10 X 1 BLACK PLASTIC NUT (78B)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "LLC500A3": {
+      "name": "OVERFLOW SENSOR OPTICAL LL BASIC, POLYSULFONE, M10, 3-WIRE",
+      "manufacturer_part_number": "LLC500A3",
+      "manufacturer_info": "SST SENSING LTD",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "SFR25H0002201FR500": {
+      "name": "RES 2.2K OHM 1/2W 1% AXIAL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PCT-223-CLEAR": {
+      "name": "QUICK CONNECTOR TERMINAL 3 IN-3 OUT, LEVER WIRE CONNECTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PCT-223-12P": {
+      "name": "QUICK CONNECTOR TERMINAL 12 IN-12 OUT, LEVER WIRE CONNECTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-TMP-DSPLY-MNT-BRKT": {
+      "name": "TEMPERATURE SENSOR MOUNTING BRACKET SS304",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "AEKS8-832-80": {
+      "name": "832 X .42 FLT KNL OPN KEYLESS RIVNUT STL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-TEMP-CF": {
+      "name": "2\" DIGITAL THERMOMETER, (50MM) SS CASE WITH \"TORVAN MEDICAL\" LOGO",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "832-FLT-UC": {
+      "name": "#832 FLATHEAD UNDERCUT MACHINE SCREW",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "832-MS-FW": {
+      "name": "#8-32 MILL SPEC FLAT WASHER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "832-BH-MS-375": {
+      "name": "#8-32 BUTTON HEAD MACHINE SCREW 0.375\" LONG",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PROVALVES": {
+      "name": "DN15, SS304, 4-20MA CONTROL, NPT THREAD, SIZE: DN15, VALVE BODY: STAINLESS 2 WAY VALVE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "12F1960RINGB": {
+      "name": "F1960 EXPANSION PEX RINGS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "12F1960RINGR": {
+      "name": "F1960 EXPANSION PEX RINGS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "12F1960RING": {
+      "name": "F1960 EXPANSION PEX RINGS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "UAB280LFCA": {
+      "name": "SHARKBITE 1/2-INCH PEX-A EXPANSION X 1/2-INCH MNPT ELBOW",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "UAB362LFCA": {
+      "name": "SHARKBITE 1/2-INCH PEX-A EXPANSION BRASS TEE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "UAB120LFCA": {
+      "name": "SHARKBITE 1/2-INCH PEX-A EXPANSION X 1/2-INCH MNPT BRASS ADAPTER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PEXA-WHITE-1/2": {
+      "name": "1/2″ WHITE PEX-A EXPANSION TUBING, (100 FT COIL)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PEXA-BLUE-1/2": {
+      "name": "1/2″ BLUE PEX-A EXPANSION TUBING, (100 FT COIL)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-PEXA-RED-1/2": {
+      "name": "1/2″ RED PEX-A EXPANSION TUBING, (100 FT COIL)",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "AEKS8-832-130": {
+      "name": "RIVNUTS .266\"",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-MV-AKM-MNT-PLT-1": {
+      "name": "VALVES AND PIPING MOUNTING PLATE - BLACK ANODIZED",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "9262K783": {
+      "name": "OIL-RESISTANT BUNA-N O-RING 3.5 MM WIDE, 11 MM ID FOR G1/4 TEMPERATURE SENSOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-TEMP-PROBE": {
+      "name": "TEMPERATURE PROBE (IN BASIN), TT08-10KC8-T105-1500",
+      "manufacturer_part_number": "1912-1037-ND",
+      "manufacturer_info": "DIGI KEY CORP",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "G-INS-M12-S68N-PNES-GY": {
+      "name": "BASIN TEMPERATURE PROBE MOUNTING GLAND, 1411123",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "A-INL-M12-P-GY": {
+      "name": "COUNTER NUT, FOR THREADS M12 X 1.5, COLOR: SILVER-GREY RAL 7001, 1411205",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PCT-222-CLEAR": {
+      "name": "QUICK CONNECTOR TERMINAL 2 IN-2 OUT, LEVER WIRE CONNECTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-EMERG-BTN-M5.1": {
+      "name": "EMERGENCY STOP PUSH BUTTON SWITCH, 1NO 1NC SWITCH",
+      "manufacturer_part_number": "T2-EMERG-BTN-M5.1",
+      "manufacturer_info": "ALIEXPRESS",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M5.1-CONNECTOR": {
+      "name": "EMERGENCY BUTTON CONNECTOR HARNESS, COLOR: M5.1 CONNECTOR, 1NO 1NC SWITCH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CM3-PANEL-UE": {
+      "name": "PANEL PC CARRIER BOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CM3-MODULE": {
+      "name": "RASPBERRY PI COMPUTE MODULE 3+",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CS-33723-06": {
+      "name": "ESINK TOUCHSCREEN CONNECTION CABLE WITH SHIELDING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "QM-NBF940-50": {
+      "name": "OPTICAL 940NM FILTER FOR GESTURE SENSOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CS-33715-16CM": {
+      "name": "ESINK TOUCHSCREEN WIRING HARNESS WITH SHIELDING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "C146959-AL": {
+      "name": "GESTURE SENSOR COVER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "9864K25": {
+      "name": "O-RING CORD STOCK, 3/32 FRACTIONAL WIDTH, 0.103\" ACTUAL WIDTH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "91698A204": {
+      "name": "BLACK-OXIDE 18-8 PHILLIPS FLAT HEAD SCREWS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "93625A101": {
+      "name": "18-8 STAINLESS STEEL NYLON-INSERT LOCKNUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "95610A110": {
+      "name": "NYLON PLASTIC WASHER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-TS7-SHELL": {
+      "name": "E SINK TOUCHSCREEN HOUSING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-3436": {
+      "name": "34X36 PEGBOARD (COVERS 34\" - 47\")",
+      "manufacturer_part_number": "T2-ADW-PB-3436",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-4836": {
+      "name": "48X36 PEGBOARD (COVERS 48\" - 59\")",
+      "manufacturer_part_number": "T2-ADW-PB-4836",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-6036": {
+      "name": "60X36 PEGBOARD (COVERS 60\" - 71\")",
+      "manufacturer_part_number": "T2-ADW-PB-6036",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-7236": {
+      "name": "72X36 PEGBOARD (COVERS 72\" - 83\")",
+      "manufacturer_part_number": "T2-ADW-PB-7236",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-8436": {
+      "name": "84X36 PEGBOARD (COVERS 84\" - 95\")",
+      "manufacturer_part_number": "T2-ADW-PB-8436",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-9636": {
+      "name": "96X36 PEGBOARD (COVERS 95\" - 107\")",
+      "manufacturer_part_number": "T2-ADW-PB-9636",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-10836": {
+      "name": "108X36 PEGBOARD (COVERS 108\" - 119\")",
+      "manufacturer_part_number": "T2-ADW-PB-10836",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-PB-12036": {
+      "name": "120X36 PEGBOARD (COVERS 120\" - 130\")",
+      "manufacturer_part_number": "T2-ADW-PB-12036",
+      "manufacturer_info": "ADW",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ADW-OHL-HOUSING": {
+      "name": "OVERHEAD LIGHT HOUSING (CUSTOM LENGTH FROM 60\" UP TO 120\")",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "22MP20026": {
+      "name": "2\" PEGBOARD OPEN GROMET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CUST-POST-1104": {
+      "name": "11” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CUST-POST-1404": {
+      "name": "14” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CUST-POST-1804": {
+      "name": "18” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "ADW-T2-OHL-HOUSING": {
+      "name": "OVERHEAD LIGHT HOUSING SS WITH BRACKETS (FROM 48\" UP TO 120\")",
+      "manufacturer_part_number": "ADW-T2-OHL-HOUSING",
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "9600K21": {
+      "name": "SBR RUBBER GROMMET FOR 3/4\" HOLE DIAMETER AND 1/16\" MATERIAL THICKNESS, 9/16\" ID",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1/4-20 NYLON NUT": {
+      "name": "1/4-20 NYLON NUT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "1/4-20 NYLON FLAT WASHER": {
+      "name": "1/4-20 NYLON FLAT WASHER",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-OHL-LED-6000K-24V": {
+      "name": "SUNSTAR 20301 ALUMINUM EXTRUSION WITH LED STRIP 6000K 24V ALL LENGTHS WITH M8 3PIN FEMALE",
+      "manufacturer_part_number": "T2-OHL-LED-6000K-24V",
+      "manufacturer_info": "SUNSTAR LED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M8-3P-FP-STR-0.30M": {
+      "name": "CBL 3POS FEMALE TO PIGTAILS STRIAGHT 0.30M",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "Q13404-02": {
+      "name": "CONTROL BOX ENCLOSURE FOR UP TO DUAL BASIN SINKS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PW-105R3-06": {
+      "name": "RIGHT ANGLE POWER CABLE - SJT",
+      "manufacturer_part_number": "PW-105R3-06",
+      "manufacturer_info": "INFINITE CABLES INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-M8-3P-MP-STR-0.61M": {
+      "name": "CBL 3POS MALE TO WIRE 4.92'",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "HDR-150-24": {
+      "name": "DIN RAIL POWER SUPPLIES 150W",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-EDRAIN-BOARD-R3": {
+      "name": "EDRAIN W/ OVERFLOW CONTROL BOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-BOX-BRKT": {
+      "name": "BRACKET FOR ENCLOSURE WITH HOOKS FOR 1\" SQUARE TUBING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "E7512-L-BLUE": {
+      "name": "WIRE FERRULE, SINGLE WIRE, 20 AWG, 0.75 MM², 12 MM, BLUE, E SERIES",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "M8-DUST-CAP-M": {
+      "name": "M8 INNER THREAD COVER TO CAP UNUSED M8 I/O",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01": {
+      "name": "MCU BOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-BSN-OHL-BTN": {
+      "name": "PUSH BUTTON WITH RJ45, O-RING AND NUT WITH OVERHEAD LIGHT LOGO LASERING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "320X12539X": {
+      "name": "DSUB GENDER CHANGER DB15F DB15F",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-RJ45-SPLITTER": {
+      "name": "STRAIGHT THROUGH RJ45 SPLITTER TO PROVIDE CONNECTION TO MULTIPLE BOARDS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-ESINK-BOARD-R3": {
+      "name": "ESINK CONTROL BOARD",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "MD-D237-1": {
+      "name": "RJ45 8P8C JACK 4-WAY BUSS BREAKOUT BOARD, TERMINAL BLOCK, CONNECTOR",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "N204-S01-BL-UD": {
+      "name": "CAT6 GIGABIT ANGLED SLIM PATCH CABLE, RIGHT ANGLE UP AND DOWN, 1FT",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "Q13404-01": {
+      "name": "CONTROL BOX ENCLOSURE FOR TRIPLE BASIN SINKS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "PW-105R3-03": {
+      "name": "POWER CABLE SJT 3FT",
+      "manufacturer_part_number": "PW-105R3-03",
+      "manufacturer_info": "INFINITE CABLES INC.",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "LLC500D3L": {
+      "name": "EDRAIN SYSTEM GEN 1, LIQUID LEVEL SENSOR, -25 TO +80DEGC, M10",
+      "manufacturer_part_number": "LLC500D3L",
+      "manufacturer_info": "DIGIKEY",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "2369024-3": {
+      "name": "22MM O-RING FOR PUSH BUTTONS",
+      "manufacturer_part_number": "2369024-3",
+      "manufacturer_info": "DIGIKEY",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-ESK": {
+      "name": "MCU BOARD FOR ESINK SYSTEM",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-EDR": {
+      "name": "MCU BOARD FOR EDRAIN SYSTEM",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-OHL": {
+      "name": "MCU BOARD FOR OVERHEAD LIGHT",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-BSNL": {
+      "name": "MCU BOARD FOR BASIN LIGHT SYSTEM",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-DOSE": {
+      "name": "MCU BOARD FOR DOSING PUMP",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T-ESOM-F4-01-FLUSH": {
+      "name": "MCU BOARD FOR FLUSHING PUMP",
+      "manufacturer_part_number": "T-ESOM-F4-01",
+      "manufacturer_info": "PCBWAY.COM LIMITED",
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-DOSINGESK-EXR": {
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-CON-01D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - BASIN DISPENSING TUBESET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-CON-02D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - MOUNTED ON SINK",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T8-CON-03D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - INTAKE TUBESET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "CAT5E-10BK": {
+      "name": "RJ45 CAT5E 350MHZ MOLDED PATCH CABLE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-DRAIN-ELEC-R-SWTCH-BRKT-1": {
+      "name": "EDRAIN RETROFIT KIT ESWITCH MOUNTING BRACKET",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-UPG-CTRL-BOX-BRKT": {
+      "name": "BRACKET FOR ENCLOSURE WITH HOOKS FOR 1.25\" SQUARE TUBING",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-RFK-BRD-MNT": {
+      "name": "ACRYLIC ADAPTER PLATE TO MOUNT V3 CONTROL BOARD INSIDE ENCLOSURE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-RK3-SHELL": {
+      "name": "V1 ENCLOUSURE/SHELL WITH RJ45 PORTS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "52-67001-7": {
+      "name": "RJ45 PANEL MOUNT SNAP IN PORT WITH 1FT CABLE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "DC11.0031.201": {
+      "name": "AC POWER ENTRY MODULES SNAP-IN 2-POLE 10A GRN ILL 1.5MM PANEL",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T4072014031-001": {
+      "name": "M8.MLE.PNLFRONT.3POS.STR WIRE",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "LRS-100-24": {
+      "name": "SWITCHING POWER SUPPLIES 108W 24V 4.5A",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-EDR-RK3": {
+      "name": "E-DRAIN V1 CONTROL BOX UPGRADE KIT - SINGLE BASIN",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-EDR2": {
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN BASINS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-EDR3": {
+      "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-ESK-RK3": {
+      "name": "E-SINK V1 CONTROL BOX UPGRADE KIT - SINGLE BASIN",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-ESK2": {
+      "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "T2-CTRL-ESK3": {
+      "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
+      "manufacturer_part_number": null,
+      "manufacturer_info": null,
+      "type": "COMPONENT",
+      "status": "ACTIVE"
+    },
+    "708.77": {
+      "name": "COLORSAFE+ PEGBOARD COLOR COMPONENT",
+      "category": "PEGBOARD",
+      "subcategory": "PEGBOARD_COLOR",
+      "type": "COMPONENT",
+      "vendor": "TORVAN",
+      "status": "ACTIVE",
+      "description": "Color component for pegboard customization - available in 8 colors"
+    }
+  }
+}

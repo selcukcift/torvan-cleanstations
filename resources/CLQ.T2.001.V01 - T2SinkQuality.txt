@@ -1,0 +1,57 @@
+﻿SINK QUALITY CHECKLISTPROJECT:PO#:BUILD #:FIRST PASS:☐ Yes ☐ NoHI-POT TEST COMPLETED:☐ Yes ☐ NoMODEL:
+[A] 
+PROJECT VERIFICATION1. Check Project PO and ensure that Model matches with what has been ordered (Size, type)
+2. Verify shop drawing, and engineering drawing (sign off by customer if applicable) match with sink model
+3. Checklist has been filled out by tech (all boxes are marked, serial numbers are written down)
+4. Check for sharp edges, cleanliness on sink (shavings left from drilling etc.)
+5. Verify testing has been completed by production team
+6. Apply sink build label on right side of the skirt (bottom-left) and on the back☐[B] SINK GENERAL CHECK  1. PEGBOARD:
+a. LED Light is installed in bracket with correct hardware.  Overhead light swivels and stays in set place
+b. [E-SINK] Touchscreen per E-Sink Basin: ☐ Packaged  ☐ Mounted.
+2. SINK BACKSPLASH:
+a. Torvan logo mounted onto left side
+b. All sink faucets are mounted according to engineering drawing (or packed if not mounted)
+c. [E-DRAIN] Drain button mounted per E-Drain Basin
+d. [E-DRAIN] Light button mounted (per sink)
+e. [E-SINK] Emergency button mounted. 
+f. [E-SINK] Temperature sensor mounted per E-Sink Basin
+3. Check casters are ok.
+4. Check height adjustable buttons are mounted ☐☐ [C] 
+BASIN 11. Basin is clean of shavings, metal, dirt etc.
+2. Bottom fill hole connected to:
+a. ☐ [E-DRAIN] Bottom fill mixing valve
+b. ☐ [E-SINK] Valve plate
+3. Basin Light included and Basin Light Button mounted on backsplash. 
+a. Check if N/A: ☐
+4. Overflow sensor installed 
+5. Basin level etched onto back of basin.  Etching level is correct per drawing (60L vs 80L)
+6. [E-SINK] Dosing port mounted ☐☐ [D] 
+BASIN 21. Basin is clean of shavings, metal, dirt etc.
+2. Bottom fill hole connected to:
+a. ☐ [E-DRAIN] Bottom fill mixing valve
+b. ☐ [E-SINK] Valve plate
+3. Basin Light included and Basin Light Button mounted on backsplash. 
+a. Check if N/A: ☐
+4. Overflow sensor installed 
+5. Basin level etched onto back of basin. Etching level is correct per drawing (60L vs 80L)
+6. [E-SINK] Dosing port mounted☐☐ [E]
+BASIN 31. Basin is clean of shavings, metal, dirt etc.
+2. Bottom fill hole connected to:
+a. ☐ [E-DRAIN] Bottom fill mixing valve
+b. ☐ [E-SINK] Valve plate
+3. Basin Light included and Basin Light Button mounted on backsplash. 
+a. Check if N/A: ☐
+4. Overflow sensor installed 
+5. Basin level etched onto back of basin. Etching level is correct per drawing (60L vs 80L)
+6. [E-SINK] Dosing port mounted☐[F] 
+PACKAGING1. Electronic solenoid(s) are bubble wrapped and packed
+2. 1x Sink strainer per basin is included (each lasered with Torvan Medical logo)
+3. Ø1.5 Flex Hose (4ft) per sink drain + 2x Hose Clamps
+4. 1x Drain assembly per basin included
+5. Manuals included
+a. [ALL] Site prep & Install and Operations
+b. [E-SINK] E-Sink Automation
+6. Temperature sensor, mount and hardware included per E-drain basin 
+7. Anti-fatigue matt per sink is included ☐
+03 OF 03CLQ.T2.01V01Page 1 of 2
+

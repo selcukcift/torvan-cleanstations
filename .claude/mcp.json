@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "mcp-server-sequential-thinking"
+    },
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": [
+        "postgresql://postgres:postgres@localhost:5432/torvan-db"
+      ]
+    },
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": [
+        "/media/selcuk/project files/Clean-stations"
+      ]
+    },
+    "memory": {
+      "command": "mcp-server-memory"
+    },
+    "brave-search": {
+      "command": "mcp-server-brave-search",
+      "env": {
+        "BRAVE_API_KEY": "BSAe7FiTb62lN_g3Qctb-L97QJIqkDF"
+      }
+    },
+    "puppeteer": {
+      "command": "mcp-server-puppeteer"
+    }
+  }
+}

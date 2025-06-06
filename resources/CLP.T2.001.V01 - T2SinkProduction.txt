@@ -1,0 +1,320 @@
+﻿ 
+
+SECTION 1
+PRE-PRODUCTION CHECK
+
+
+
+JOB ID#:
+
+# OF BASINS:
+
+INITIALS
+
+
+☐
+Check Final Sink Dimensions, basin dimensions, & BOM
+
+
+Check dimensions of the entire sink, each basin, and any other dimension mentioned on the drawing
+☐
+Attach the final approved drawing and paperwork 
+☐
+Pegboard installed – dimensions match drawing 
+N/A
+☐
+Location of sink faucet holes and mounting holes match drawing/customer order requirements
+
+☐
+Sink has: 
+☐ Lock & levelling castors
+☐  Levelling Feet
+
+
+☐ BASIN 1
+☐ BASIN 2   ☐ N/A
+☐ BASIN 3   ☐ N/A
+Standard:
+☐ Bottom fill hole
+☐ Drain Button
+☐ Basin Light
+☐ Bottom fill hole
+☐ Drain Button
+☐ Basin Light
+☐ Bottom fill hole
+☐ Drain Button
+☐ Basin Light
+Drain Location:
+☐ Center   
+☐ Other:   
+☐ Center   
+☐ Other:   
+☐ Center   
+☐ Other:   
+Sink Faucet Location:
+☐ Center of basin 
+☐ Between Basins 1/2
+☐ Between Basins 1/2
+☐ Between Basins 2/3
+☐ Center
+☐ Between Basins 2/3
+☐ Center
+
+
+
+SECTION 2
+SINK PRODUCTION CHECK
+
+
+
+PO#:
+
+
+BUILD #:
+
+
+
+☐
+Sink Overhead LED Light Bracket is mounted with plastic washers (if there is a Pegboard)
+N/A
+☐
+Sink Overhead LED Light button lasered and installed
+N/A
+☐
+Standard Basin Faucets installed
+N/A
+☐
+Lifters Control Button Installed: 
+☐ DPF1K (Non-Programmable)
+☐ DP1C (Programmable)
+
+☐
+Lifter Controller Installed underneath the sink
+
+☐
+Torvan Logo attached on left side of sink
+N/A
+☐
+Power Bar is installed
+
+☐
+Installed necessary control boxes (E-Drain, E-Sink)
+N/A
+☐
+All cables are labelled with ‘D#’ or ‘S#’.  Overhead Light cables labelled L4 & S4
+N/A
+☐
+Sink is clean of metal shavings, and waste 
+N/A
+EXTRAS
+☐
+Air Gun components (BL-4350-01 and BL-5500-07) installed
+N/A
+
+☐
+Water Gun components (BL-4500-02 and BL-4249) installed
+N/A
+
+☐
+DI Faucet installed
+N/A
+
+☐
+Combo Basin Faucet installed 
+N/A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SECTION 3
+BASIN PRODUCTION
+
+
+
+E-DRAIN BASIN CHECKS
+BASIN 1
+BASIN 2
+BASIN 3
+N/A
+Installed Bottom-Fill Mixing Valve & Faucet
+☐
+☐
+☐
+☐
+Bottom Fill Assembly installed:
+Mixing Valve [DER-1899-14-CC] → 1/2” Male NPT to 3/4BSPP adapter → Check valve → ½” PEX Adaptor →  ½” PEX Piping → Bottom Fill hole
+☐
+☐
+☐
+☐
+Pipes labelled as Hot Water and Cold Water
+☐
+☐
+☐
+☐
+Overflow sensor installed
+☐
+☐
+☐
+☐
+
+
+E-SINK BASIN CHECKS
+BASIN 1
+BASIN 2
+BASIN 3
+N/A
+Mixing Valve plate is installed
+☐
+☐
+☐
+☐
+Emergency Stop buttons installed
+☐
+☐
+☐
+☐
+E-Sink touchscreen mounted onto Sink
+☐
+☐
+☐
+☐
+E-Sink touchscreen mounted onto Sink and connected to E-Sink Control Box
+☐
+☐
+☐
+☐
+Overflow sensor installed
+☐
+☐
+☐
+☐
+Install dosing port on backsplash
+☐
+☐
+☐
+☐
+Install basin temperature cable gland on backsplash
+☐
+☐
+☐
+☐
+
+
+
+SECTION 4
+STANDARD PACKAGING & KITS:
+
+
+
+
+STANDARD ITEMS
+☐
+Anti-Fatigue Mat
+
+☐
+Sink strainer per sink bowl (lasered with Torvan Medical logo)
+☐
+Ø1.5 Flex Hose (4ft) per sink drain + 2x Hose Clamps
+
+☐
+1x Temp. Sensor packed per E-Drain basin
+If N/A: ☐
+☐
+1x Electronic Drain Solenoid per Basin (Wired, tested and labelled)
+
+☐
+1x Drain assembly per basin
+☐
+1x shelf for dosing pump
+1x Tubeset per dosing pump.  
+If N/A: ☐
+
+☐
+Drain gasket per basin
+☐
+Air Gun Kit:
+1x 64-20900-00, 1x Gun & Tip Holder Bracket
+☐
+Water Gun Kit:
+1x 64-20900-00, 1x DI Compatible Hose & Water Gun, 1x Gun & Tip Holder Bracket
+☐
+Pre-Rinse Faucet:
+1x B-0133, 1x B-0230-K, 2x PFX146332
+☐
+Faucet Kit:
+1x B-2342, 1x B-0230-K, 2x PFX146332
+☐
+Install & Operations Manual:
+IFU.T2.SinkInstUser.
+☐
+Install & Operations Manual French:
+IFU.T2.SinkInstUserFR.
+☐
+E-Sink Automation Manual French:
+IFU.T2.ESinkInstUserFR.
+
+
+
+I, 
+
+have checked this cabinet on, 
+
+and verify that it is ready for inspection.  
+
+(Signature)
+
+(Date)
+
+
+TORVAN
+
+PROJECT:
+
+
+
+
+
+PO#:
+
+
+
+
+
+BUILD#:
+
+
+
+
+
+
+
+
+
+
+01 OF 02
+CLP.T2.01
+V01
+Page 1 of 2
+
+

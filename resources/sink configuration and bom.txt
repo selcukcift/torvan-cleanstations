@@ -1,0 +1,270 @@
+these revisions are for current create new order page
+Order Information  
+ 
+"I need a 5-step order creation process where users first enter customer information, then  sink selection  sink families  with quantity and Build number entry  then select sink configurations, then configure add on accessories , and finally review everything before submission."
+Every selections has a part number starting with 700's indicated with the their implementation logic( these part numbers are going to be in the order Summary page as a generate Bom button and allowing to share and export sections ) check the inventory database to fetch the full details of the bom items(parent child relations full part no and part name)   
+
+
+First step 
+Customer Information 
+ 1. Order Information:
+    - poNumber: PO Number (string, min 3 characters)
+    - customerName: Customer Name (string, min 3 characters)
+    - projectName:(string,min 3 characters, optional)
+    - salesPerson: Sales Person (string, min 3 characters )
+    - wantDate: Desired delivery date (date, must be in future)
+    - po document upload area 
+    - Notes (text entry)
+    - EN,FR
+
+Next page
+
+Sink Configuration 
+
+First
+CleanStation Reprocessing Sinks has 3 families
+ 	
+-MDRD
+-Endoscope CleanStation	
+-InstroSink
+
+	We are going to implement only for the MDRD versions other 2 selection brings us to TODO page (under construction)
+  
+In here with selection also quantity and unique build number  needs to be submitted. every Sink configuration could be different and they have their own configuration page after finishing one sink completely. the button needs to redirect to remaining sinks for start again  	 
+After the build number entry now on it is going to be its unique identifier and all configuration settings align to this build number 
+
+after that  we can separate the sink configurations as      Sink Body 
+ 
+1 Sink body: 
+
+	Sink Model: (T2-B1, T2-B2, T2-B3) drop down selection 
+	This is determines how many basin that sink going to have B1 is one basin b2 is 2 basins b3 is 3 	basins 
+		
+	Sink Dims:  text boxes ( text entry as inches for width and Length)
+	According to the length entry. One of the  those assembly needed to be in the BOM  for example if the length entered 54in    709.82	T2-BODY-48-60-HA this part going to be on the BOM
+		
+		709.82	T2-BODY-48-60-HA
+		709.83	T2-BODY-61-72-HA
+		709.84	T2-BODY-73-120-HA 
+
+    	Legs: Type of legs 
+
+  		Height Adjustable  
+			(DL27, DL14,LC1)
+
+			711.97	T2-DL27-KIT
+			711.98	T2-DL14-KIT
+			711.99	T2-LC1-KIT
+ 
+ 		 Fixed Height (DL27,DL14)
+
+			711.100	T2-DL27-FH-KIT
+			711.101	T2-DL14-FH-KIT
+
+	Feet:  Lock & Leveling Casters
+			711.95	T2-LEVELING-CASTOR-475
+	       S.S Adjustable Seismic Feet
+			711.96	T2-SEISMIC-FEET
+	
+	Pegboard  (boolean)
+			
+		if yes 
+			Colorsafe+
+				(Green,Black,Yellow,Grey,Red,Blue,Orange,White)
+					708.77	T-OA-PB-COLOR
+
+		
+			Perforated 
+		
+
+			Solid 
+
+
+		Size  
+ 
+                Same as Sink Length
+		Custom Size       
+ 			
+		Same as sink length selection is automatically select the part below according to sinks dims selection we dont the need 		to show those in drop down 
+
+	        			34X36 PEGBOARD (COVERS 34" - 47"), 
+ 					48X36 PEGBOARD (COVERS 48" - 59"), 
+ 					60X36 PEGBOARD (COVERS 60" - 71"), 
+					72X36 PEGBOARD (COVERS 72" - 83"), 
+ 					84X36 PEGBOARD (COVERS 84" - 95"), 
+ 					96X36 PEGBOARD (COVERS 95" - 107"), 
+ 					108X36 PEGBOARD (COVERS 108" - 119"), 
+ 					120X36 PEGBOARD (COVERS 120" - 130"), 
+		 
+		Custom size (size text entry width x length ) 
+
+		Part numbers 
+					715.120	T2-ADW-PB-3436	
+					715.121	T2-ADW-PB-4836	
+					715.122	T2-ADW-PB-6036	
+					715.123	T2-ADW-PB-7236	
+					715.124	T2-ADW-PB-8436	
+					715.125	T2-ADW-PB-9636	
+					715.126	T2-ADW-PB-10836	
+					715.127	T2-ADW-PB-12036
+	
+					if custom size selected part number auto generated  if custom selected system going to assign a new part 					number and code as the  720.215.002  T2-ADW-PB- "width x length"
+			
+			716.128	T2-OHL-MDRD-KIT ( this is mandatorily be in the bom  additionally if pegboard selected) 					716.130	T2-ADW-PB-PERF-KIT( this is mandatorily be in the bom additionally if perforated selected)
+			716.131	T2-ADW-PB-SOLID-KIT (this is mandatorily be in the bom  addiditonally if solid selected) 
+
+			
+	Work Flow Direction(Left to Right, Right to Left)
+
+
+2 Basin Configuration:
+    - BasinType: E-Sink
+		 E-Sink DI 
+		 E-Drain
+	
+		If E sink selected 
+			713.109	T2-BSN-ESK-KIT 		this part should be on BOM
+		If Edrain Selected
+			713.107	T2-BSN-EDR-KIT 		this part should be on BOM
+		if E sink DI selected
+			713.108	T2-BSN-ESK-DI-KIT       this part should be on BOM
+
+
+    - basinSize: Size of basin (20X20X8
+				24X20X8
+				24X20X10
+				30X20X8
+				30X20X10
+				Custom)
+If custom selected there going to be  3 dims text entry in inches (WidthxLengthxDepth)
+
+These are the corresponding part numbers in the BOM. if custom selected system going to assign a new part number and code as the  720.215.001 T2-ADW-BASIN "width x length x Depth"
+ 		
+				712.102	T2-ADW-BASIN20X20X8
+				712.103	T2-ADW-BASIN24X20X8
+				712.104	T2-ADW-BASIN24X20X10
+				712.105	T2-ADW-BASIN30X20X8
+				712.106	T2-ADW-BASIN30X20X10
+
+If according to e drain and e sink basin combinations one of this control box part is mandatory in the BOM
+
+				719.176	T2-CTRL-EDR1		CONTROL BOX ONLY FOR 1 EDRAIN BASIN
+				719.177	T2-CTRL-ESK1		CONTROL BOX ONLY FOR 1 ESINK BASIN
+				719.178	T2-CTRL-EDR1-ESK1	CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS
+				719.179	T2-CTRL-EDR2		CONTROL BOX ONLY FOR 2 EDRAIN BASINS
+				719.180	T2-CTRL-ESK2		CONTROL BOX ONLY FOR 2 ESINK BASINS
+				719.181	T2-CTRL-EDR3		CONTROL BOX ONLY FOR 3 EDRAIN BASINS
+				719.182	T2-CTRL-ESK3		CONTROL BOX ONLY FOR 3 ESINK BASINS
+				719.183	T2-CTRL-EDR1-ESK2	CONTROL BOX ONLY FOR 1 EDRAIN AND 2 ESINK BASINS
+				719.184	T2-CTRL-EDR2-ESK1	CONTROL BOX ONLY FOR 2 EDRAIN AND 1 ESINK BASINS
+
+ Basin Add-ons(  P-TRAP DISINFECTION DRAIN UNIT, BASIN LIGHT)
+ 
+	if p trap selected this is going to be in the BOM 
+ 	706.65	T2-OA-MS-1026
+	if Basin light selected part number going to be differentiate if e sink or edrain selected in basin type 
+    	basin light and e drain   706.67	T2-OA-BASIN-LIGHT-EDR-KIT
+	basin light and e sink    706.68	T2-OA-BASIN-LIGHT-ESK-KIT
+
+
+
+ 4. Faucet Configuration:
+    - faucetType: Type of faucet (10" WRIST BLADE SWING SPOUT WALL MOUNTED FAUCET KIT,
+				 PRE-RINSE OVERHEAD SPRAY UNIT KIT,
+				 GOOSENECK TREATED WATER FAUCET KIT PVC)
+	If E-Sink DI selected GOOSENECK TREATED WATER FAUCET KIT PVC automatically selected. 
+    -Quantity (In 1 and 2 basin selections maximum 2 3 basin selections it is 3) 
+
+		These are the part numbers 
+		706.58	T2-OA-STD-FAUCET-WB-KIT 	10" WRIST BLADE, SWING SPOUT, WALL MOUNTED FAUCET KIT
+		706.59	T2-OA-PRE-RINSE-FAUCET-KIT	PRE-RINSE OVERHEAD SPRAY UNIT KIT
+		706.60	T2-OA-DI-GOOSENECK-FAUCET-KIT	GOOSENECK TREATED WATER FAUCET KIT, PVC
+
+
+
+    - faucetPlacement: (Center, Between Basins " this is automatically adjust itself to the basin number selections)
+
+    -Sprayer (Boolean)
+	If yes  (DI WATER GUN KIT & TURRET, 
+		DI WATER GUN KIT & ROSETTE,
+		AIR GUN KIT & TURRET,
+		AIR GUN KIT & ROSETTE)
+
+    -Sprayer Quantity (number entry 1 or 2) 
+	part numbers 
+		706.61	T2-OA-WATERGUN-TURRET-KIT 
+		706.62	T2-OA-WATERGUN-ROSETTE-KIT 
+		706.63	T2-OA-AIRGUN-TURRET-KIT
+		706.64	T2-OA-AIRGUN-ROSETTE-KIT
+
+Sprayer Location (Left Side, Right Side)
+
+Accessories
+		Accessories could be in the next page for the library 
+We need to create neat good organized of those items below which they are ready to pick and add to finish the sink configuration
+
+702.4	T-OA-BINRAIL-24-KIT	BIN RAIL, 24" KIT
+702.5	T-OA-BINRAIL-36-KIT	BIN RAIL, 36" KIT
+702.6	T-OA-BINRAIL-48-KIT	BIN RAIL, 48" KIT
+702.7	T-OA-PFW1236FM-KIT	WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 36"W X 12"D WITH BRACKETS
+702.8	T-OA-PFW1218FM-KIT	WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18"W X 12"D WITH BRACKETS
+702.9	T-OA-PFW1818FM-KIT	WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18"W X 18"D WITH BRACKETS
+702.10	T-OA-SSSHELF-1812	STAINLESS STEEL SLOT SHELF, 18"W X 12"D 
+702.11	T-OA-SSSHELF-1812-BOLT-ON-KIT	STAINLESS STEEL SHELF, 18"W X 12"D BOLT ON (FOR SOLID PEGBOARD) KIT
+702.12	T-OA-SSSHELF-3612	STAINLESS STEEL SLOT SHELF, 36"W X 12"D 
+702.13	T-OA-SSSHELF-3612-BOLT-ON-KIT	STAINLESS STEEL SLOT SHELF, 36"W X 12"D BOLT ON (FOR SOLID PEGBOARD) KIT
+702.14	T2-OHL-INSTRO-KIT	OVERHEAD LIGHT SHELF WITH LED LIGHT (ONLY FOR INSTROSINK)
+702.15	T-OA-B110505	BLUE, 10-7/8" X 5-1/2" X 5" HANGING AND STACKING BIN
+702.16	T-OA-B110807	BLUE, 10-7/8" X 8-1/8" X 7" HANGING AND STACKING BIN
+702.17	T-OA-B111105	BLUE, 10-7/8" X 11" X 5" HANGING AND STACKING BIN
+702.18	B210-BLUE	BLUE PLASTIC BIN, 5.75"X4.125"X3"
+702.19	T2-OA-LT-SSSHELF-LRG	STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 10"X20", FOR LARGE SCOPE 
+702.20	T2-OA-LT-SSSHELF-SML	STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 6"X10", FOR SMALL SCOPE 
+702.21	T-OA-SSSHELF-LGHT-1812-KIT	STAINLESS STEEL SLOT SHELF WITH UNDERLIGHT, 18"W X 12"D KIT
+702.22	T-OA-SSSHELF-LGHT-3612-KIT	STAINLESS STEEL SLOT SHELF WITH UNDERLIGHT, 36"W X 12"D KIT
+702.23	T2-OA-CUST-SHELF-HA-SML	HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS LESS THEN 84")
+702.24	T2-OA-CUST-SHELF-HA-LRG	HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS GREATER THEN 84")
+702.25	T-OA-RAIL-SHELF-ADDER-SML	RAIL SHELF ADDER (LENGTHS LESS THEN 84")
+702.26	T-OA-RAIL-SHELF-ADDER-LRG	RAIL SHELF ADDER (LENGTHS GREATER THEN 84")
+702.27	T-OA-FOOTREST-RAIL-KIT	FOOT RAIL REST KIT
+702.28	T2-OA-DOSINGESK-BTMSHELF	BOTTOM SHELF FOR DOSING PUMP 
+703.29	T-OA-1BRUSH-ORG-PB-KIT	SINGLE BRUSH HOLDER, STAY-PUT PEGBOARD MOUNT
+703.30	T-OA-6BRUSH-ORG-PB-KIT	6 BRUSH ORGANIZER, STAY-PUT PEGBOARD MOUNT 
+703.31	T-OA-WRK-FLW-PB	PEGBOARD MOUNT WORKFLOW INDICATOR (SET OF 3)
+703.32	T-OA-PPRACK-2066	STAINLESS STEEL PEEL POUCH RACK, 20.5 X 6 X 6
+703.33	T-OA-PB-SS-1L-SHLF 	ONE LITRE DOUBLE BOTTLE HOLDER, STAINLESS STEEL
+703.34	T-OA-PB-SS-2G-SHLF	ONE GALLON DOUBLE DETERGENT HOLDER, STAINLESS STEEL
+703.35	T-OA-PB-SS-1GLOVE	SINGLE GLOVE DISPENSER, STAINLESS STEEL, 6"W X 11"H
+703.36	T-OA-PB-SS-2GLOVE	DOUBLE GLOVE DISPENSER, STAINLESS STEEL, 10"W X 11"H
+703.37	T-OA-PB-SS-3GLOVE	TRIPLE GLOVE DISPENSER, STAINLESS STEEL, 10"W X 17"H
+703.38	T2-OA-SC-2020-SS	SINK STAGING COVER FOR 20X20 BASIN, STAINLESS STEEL
+703.39	T2-OA-SC-2420-SS	SINK STAGING COVER FOR 24X20 BASIN, STAINLESS STEEL
+703.40	T2-OA-SC-3020-SS	SINK STAGING COVER FOR 30X20 BASIN, STAINLESS STEEL
+703.41	T2-AER-TUBEORG	AER TUBING ORGANIZER 
+704.42	T-OA-MLIGHT-PB-KIT	MAGNIFYING LIGHT, 5" LENS, PEGBOARD MOUNT KIT
+704.43	T-OA-DIM-MLIGHT-PB-KIT	DIMMABLE MAGNIFYING LIGHT, 5" LENS, PEGBOARD MOUNT  KIT
+704.44	T-OA-TASKLIGHT-PB	GOOSENECK 27" LED TASK LIGHT, 10DEG FOCUSING BEAM, IP65 HEAD, 24VDC, PB MOUNT
+704.45	T-OA-TASKLIGHT-PB-MAG-KIT	GOOSENECK LED TASK LIGHT WITH MAGNIFIER, FOCUSING BEAM, PB MOUNT KIT
+705.46	T-OA-MNT-ARM	WALL MONITOR PIVOT, SINGLE MONITOR MOUNT
+705.47	T-OA-MNT-ARM-1EXT	WALL MONITOR ARM, 1 EXTENSION, SINGLE MONITOR MOUNT
+705.48	T-OA-MNT-ARM-2EXT	WALL MONITOR ARM, 2 EXTENSION, SINGLE MONITOR MOUNT
+705.49	T-OA-KB-MOUSE-ARM	WALL KEYBOARD ARM, KEYBOARD MOUNT WITH SLIDE-OUT MOUSE TRAY
+705.50	T-OA-2H-CPUSM	CPU HOLDER, VERTICAL, SMALL (80-063-200)
+705.51	T-OA-2H-CPULG	CPU HOLDER, VERTICAL, LARGE (97-468-202)
+705.52	T-OA-2H-CPUUV	CPU HOLDER, TETHERED, UNIVERSAL (80-105-064)
+705.53	T-OA-MMA-PB	MONITOR MOUNT ARM, SINGLE, PB MOUNT (45-353-026)
+705.54	T-OA-MMA-DUAL	MONITOR MOUNT ADAPTER, DUAL MONITOR (97-783)
+705.55	T-OA-MMA-LTAB	MONITOR MOUNT ADAPTER, TABLET, LOCKING (45-460-026)
+705.56	T-OA-MMA-LAP	MONITOR MOUNT ADAPTER, LAPTOP TRAY (50-193-200)
+705.57	T-OA-MNT-SINGLE-COMBO-PB	COMBO ARM, KEYBOARD & MONITOR MOUNT FOR PEGBOARD (BLACK)
+
+every this going to have those items mandatory with these conditions 
+
+
+
+
+
+
+
+
+ 

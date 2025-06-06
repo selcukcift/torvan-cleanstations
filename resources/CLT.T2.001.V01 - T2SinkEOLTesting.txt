@@ -1,0 +1,94 @@
+﻿TESTER:TEST DATE:
+
+BASIN TEST SET UP:
+1. Install drain assembly onto basin for testing
+2. Install and connect drain solenoid to drain and drain hose
+3. Connect valve plate/bottom fill faucet to hot and cold-water lines.
+4. For E-Sink Basins: 
+a. Loosing the temperature sensor and place inside of basin
+b. Attach a calibrated temperature sensor probe inside bottom fill and another near the middle of the basin (close to the basin temperature sensor)
+TEMPERATURE CALIBRATION STEPS:
+Materials Required: 
+• Calibrated Fluke 52 II Dual Probe Digital Thermometer or similar
+• Insulated cup 
+Procedure:
+1. Press the cog on the top right of the main page 
+2. Enter “1111” to access the configuration settings page 
+3. Press “Temperature” tab on the left side bar 
+4. First calibrate a low temperature point by pressing on the “Cold” button 
+5. Wait for 1 minute.
+6. Collect some water in the insulated cup
+7. Insert Fluke temperature probe marked T1 into the insulated cup 
+8. Drop the basin temperature sensor in the insulated cup
+9. Insert 1 Fluke temperature probe marked T2 into the bottom fill outlet from the basin 
+10. Wait for 3 min 
+11. Check to see if the raw sensor readings have stabilized (within ± 3 units)
+12. Once stabilized, click sample under the “Mixing” column and “Cold” row and input the Fluke reading from the temperature probe inside the bottom fill port 
+13. Click sample under the “Basin” column and “Cold” row and input the Fluke reading from the temperature probe inside the insulated cup 
+14. Repeat for “Mixing” and “Hot” row for “Mixing” and “Basin” columns 
+FLOW METER CALIBRATION PROCEDURE:
+Materials Required: 
+• Level 
+Procedure: 
+1. Ensure the sink is level (can be leveled using the leveling feet) 
+2. Press the cog on the top right of the main page 
+3. Enter “1111” to access the configuration settings page 
+4. Disable temperature control on the configuration page to not deplete hot water during calibration
+5. Press on “Flow” tab on the left side bar 
+6. Press “Drain” and ensure there is no water in the sink basin and then press “Stop” once empty 
+7. Press “Reset” to reset the flow meter counter 
+8. Press “Fill” to start bottom filling 
+9. Press “Stop” once the water level is at the 40L mark corresponding to the basin volume etching 
+10. Press “Mark” and input “40” Liters 
+
+
+GENERAL SINK TEST: 
+TESTPROCEDUREEXPECTATIONPASSTest 1-APlug sinks main power cord into electrical outletE-Drain: All buttons are lit and 
+E-Sink: GUI on touchscreen(s) are displayed☐Test 2-APress height adjustment button on sink to raise sinkSink height increases when pressing up. ☐Test 2-BPress height adjustment button on sink to lower sinkSink height decreases when pressing down☐
+E-DRAIN TEST PROCEDURE:TESTPROCEDUREEXPECTATIONBASIN 1
+☐ N/ABASIN 2
+☐ N/ABASIN 3
+☐ N/ATest 1-AOpen bottom fill faucet to fill basin below the overflow sensorWater level will rise☐☐☐Test 1-BPress E-Drain Button to drain water until timer endsWater level will decrease until basin is empty.☐☐☐Test 2-AFill basin until overflow sensor is activated.  Drain will open and water level will decrease☐☐☐Test 2-BWait for 10 – 15 seconds for overflow sensor to de-activateDrain will close☐☐☐Test 2-CStart filling basin again to ensure drain is closedWater level will increase again☐☐☐Test 3-A
+☐ N/APress Overhead LED Light Button to cycle through modes and then turn LED light off. LED light will cycle through brightness and then turn off☐☐☐Test 3-B
+☐ N/APress Basin Light to turn light on/off Basin light will turn on/off☐☐☐
+NOTE: If the mixing procedure is timing out, enter configuration page (1111) and on the “Mixing” tab, factory reset the parameters 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BASIN 1
+☐ N/ABASIN 2
+☐ N/ABASIN 3
+☐ N/ATouchscreen SN [T2-TS7]:Touchscreen Software Version:Valve Plate SN [T2-VALVE-PLATE]:Control Box SN:Control Box QE:Control Box QFU:Dosing Pump SN:Dosing Pump QE:Dosing Pump QFU:
+
+E-SINK TEST PROCEDURE:TESTPROCEDUREEXPECTATION123Test 1-ACalibrate sink and basin temperature by following the Temperature Calibration ProcedureWater temperature is calibrated to the calibrated thermometer and reading within 2C☐☐☐Test 1-BCalibrate flow meter by following Flow Meter Calibration ProcedureFlow meter is now calibrated, water level should match etched marking on sink basin once filling is complete☐☐☐Test 2-AFill:
+Set mixing temp to 20 deg C.
+Push Fill button
+
+Water will begin flowing.
+Verify there are no leaks in the valve plate or bottom fill assembly.
+If there are leaks, turn bottom fill faucet off, use stop button on touchscreen or emergency stop button on sink.
+Stop filling to proceed.☐☐☐Test 2-BWith calibrated thermometer, insert probe into bottom-fill faucet location.Drain valve closes when mixing temperature is reached.
+Calibrated thermometer shows water flowing through bottom fill within 4 deg C of target mixing (40C) temperature.☐☐☐Set mixing temp to 40 deg C
+Push Fill buttonWait for water to reach mixing temperature.Test 2-CWith calibrated thermometer, insert probe into basin alongside the basin’s temperature sensor.Calibrated thermometer shows water flowing through bottom fill within 2 deg C of target mixing (40C) temperature.☐☐☐Test 3-AFill sink basin to the level of the overflow sensorE-Sink Basin:
+Drain will open and overflow message will appear on screen☐☐☐Test 3-BWait for water level to drop.  Wait 5 seconds after water is below the overflow sensorOverflow message will disappear off the screen.
+Drain will close and water will continue filling.☐☐☐Test 4-A
+☐ N/APress Overhead LED Light Button to cycle through modes and then turn LED light off. LED light will cycle through brightness and then turn off☐☐☐Test 4-B
+☐ N/APress Basin light button on GUI to turn basin light on/offBasin light will turn on/off☐☐☐Test 5-A
+☐ N/APress the dose button on the GUIDosing Pump starts spinning.  Completes on its own after a short time☐☐☐
+SINK BASIN END OF LINE TESTING 
+SINK BUILD #:
+
+CLT.T2.01REV 1.0Page 1 of 2
+

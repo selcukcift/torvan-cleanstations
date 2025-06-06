@@ -1,0 +1,530 @@
+{
+  "metadata": {
+    "generated_at": "2025-05-29T23:56:52.839Z",
+    "source_file": "final.json",
+    "version": "1.0.0",
+    "description": "Category tree - organizational hierarchy with assembly references",
+    "total_categories": 6
+  },
+  "categories": {
+    "718": {
+      "name": "CONTROL BOX",
+      "description": "Category for control box",
+      "subcategories": {
+        "718.001": {
+          "name": "1 BASIN",
+          "description": "Subcategory for 1 basin",
+          "assembly_refs": [
+            "T2-CTRL-EDR1",
+            "T2-CTRL-ESK1"
+          ]
+        },
+        "718.002": {
+          "name": "2 BASINS",
+          "description": "Subcategory for 2 basins",
+          "assembly_refs": [
+            "T2-CTRL-EDR1-ESK1",
+            "T2-CTRL-EDR2",
+            "T2-CTRL-ESK2"
+          ]
+        },
+        "718.003": {
+          "name": "3 BASINS",
+          "description": "Subcategory for 3 basins",
+          "assembly_refs": [
+            "T2-CTRL-EDR1-ESK2",
+            "T2-CTRL-EDR2-ESK1",
+            "T2-CTRL-EDR3",
+            "T2-CTRL-ESK3"
+          ]
+        }
+      }
+    },
+    "719": {
+      "name": "SERVICE PARTS",
+      "description": "Category for service parts",
+      "subcategories": {
+        "719.001": {
+          "name": "WIRE BASKET BRACKET",
+          "description": "Subcategory for wire basket bracket",
+          "assembly_refs": [
+            "T-OA-PWBRACKETSLT",
+            "T-OA-PWBRACKET"
+          ]
+        },
+        "719.002": {
+          "name": "ESINK TOUCHSCREEN",
+          "description": "Subcategory for esink touchscreen",
+          "assembly_refs": [
+            "T2-TS7"
+          ]
+        },
+        "719.003": {
+          "name": "EMERGENCY BUTTON",
+          "description": "Subcategory for emergency button",
+          "assembly_refs": [
+            "T2-EMERG-BTN-M5.1"
+          ]
+        },
+        "719.004": {
+          "name": "ESINK VALVE PLATE",
+          "description": "Subcategory for esink valve plate",
+          "assembly_refs": [
+            "14629990",
+            "T2-VALVE-PLATE-AUK"
+          ]
+        },
+        "719.005": {
+          "name": "VALVE PLATE",
+          "description": "Subcategory for valve plate",
+          "assembly_refs": [
+            "T2-DRAIN-VALVE"
+          ]
+        },
+        "719.006": {
+          "name": "DI VALVE PLATE",
+          "description": "Subcategory for di valve plate",
+          "assembly_refs": [
+            "95400"
+          ]
+        },
+        "719.007": {
+          "name": "FAUCET COMPONENT",
+          "description": "Subcategory for faucet component",
+          "assembly_refs": [
+            "PFX146332",
+            "B-0230-K",
+            "B-0133-A10-B08",
+            "012442-40NS",
+            "012443-40NS",
+            "B-2342-WB"
+          ]
+        },
+        "719.008": {
+          "name": "AIR/WATER GUNS",
+          "description": "Subcategory for air/water guns",
+          "assembly_refs": [
+            "209L-DW-NS",
+            "209L-AIR-NS"
+          ]
+        },
+        "719.009": {
+          "name": "BOTTOM FILL",
+          "description": "Subcategory for bottom fill",
+          "assembly_refs": [
+            "DER-1899-14-CC"
+          ]
+        },
+        "719.010": {
+          "name": "TEMPERATURE SENSOR",
+          "description": "Subcategory for temperature sensor",
+          "assembly_refs": [
+            "T2-EDR-TEMP-KIT",
+            "T2-BSN-TEMP-PROBE"
+          ]
+        },
+        "719.011": {
+          "name": "POWER BAR",
+          "description": "Subcategory for power bar",
+          "assembly_refs": [
+            "T2-PWRBAR"
+          ]
+        },
+        "719.012": {
+          "name": "SINK CASTERS/LEVELING FEET",
+          "description": "Subcategory for sink casters/leveling feet",
+          "assembly_refs": [
+            "T2-LEVELING-CASTOR-475"
+          ]
+        },
+        "719.013": {
+          "name": "OVERFLOW SENSOR",
+          "description": "Subcategory for overflow sensor",
+          "assembly_refs": [
+            "LLC500A3-RK3"
+          ]
+        },
+        "719.014": {
+          "name": "LIFTER COMPONENT",
+          "description": "Subcategory for lifter component",
+          "assembly_refs": [
+            "0617110-2500",
+            "0617102-1000",
+            "DL270CA00300455",
+            "T-CBD6SH00040A-709",
+            "DPF1C00-012016",
+            "DPF1K00-010006"
+          ]
+        },
+        "719.015": {
+          "name": "ACCESSORY FAUCET",
+          "description": "Subcategory for accessory faucet",
+          "assembly_refs": [
+            "T2-OA-DI-GOOSENECK-FAUCET-KIT"
+          ]
+        },
+        "719.016": {
+          "name": "CONTROL BOX",
+          "description": "Subcategory for control box",
+          "assembly_refs": [
+            "T2-CTRL-EDR1",
+            "T2-CTRL-ESK1",
+            "T2-CTRL-EDR1-ESK1",
+            "T2-CTRL-EDR2",
+            "T2-CTRL-ESK2",
+            "T2-CTRL-EDR3",
+            "T2-CTRL-ESK3",
+            "T2-CTRL-EDR1-ESK2",
+            "T2-CTRL-EDR2-ESK1"
+          ]
+        },
+        "719.017": {
+          "name": "DRAIN HOSE COMPONENT",
+          "description": "Subcategory for drain hose component",
+          "assembly_refs": [
+            "T2-HS-CLMP-1.5-2",
+            "FLX-CMD-1.5X25"
+          ]
+        },
+        "719.018": {
+          "name": "OTHERS",
+          "description": "Subcategory for others",
+          "assembly_refs": [
+            "15862",
+            "T2-DRAIN-BSKT",
+            "PW-105R3-06",
+            "PW-105R3-03",
+            "T2-BSN-DRAIN-BTN",
+            "LLC500D3L",
+            "2369024-3",
+            "T2-OHL-LED-6000K-24V"
+          ]
+        },
+        "719.019": {
+          "name": "E-SINK BOARD",
+          "description": "Subcategory for e-sink board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-ESK"
+          ]
+        },
+        "719.020": {
+          "name": "E-DRAIN BOARD",
+          "description": "Subcategory for e-drain board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-EDR"
+          ]
+        },
+        "719.021": {
+          "name": "OVERHEAD LIGHT BOARD",
+          "description": "Subcategory for overhead light board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-OHL"
+          ]
+        },
+        "719.022": {
+          "name": "BASIN LIGHT BOARD",
+          "description": "Subcategory for basin light board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-BSNL"
+          ]
+        },
+        "719.023": {
+          "name": "DOSING PUMP BOARD",
+          "description": "Subcategory for dosing pump board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-DOSE"
+          ]
+        },
+        "719.024": {
+          "name": "FLUSHING PUMP BOARD",
+          "description": "Subcategory for flushing pump board",
+          "assembly_refs": [
+            "T-ESOM-F4-01-FLUSH"
+          ]
+        },
+        "719.025": {
+          "name": "DOSING PUMP",
+          "description": "Subcategory for dosing pump",
+          "assembly_refs": [
+            "T8-DOSINGESK-EXR"
+          ]
+        },
+        "719.026": {
+          "name": "DOSING PUMP & TUBE SET",
+          "description": "Subcategory for dosing pump & tube set",
+          "assembly_refs": [
+            "T8-CON-01D",
+            "T8-CON-02D",
+            "T8-CON-03D",
+            "T8-KIT-ESK-DOSE",
+            "T8-DOSINGESK-EXR",
+            "T8-DOSINGESK"
+          ]
+        },
+        "719.027": {
+          "name": "UPGRADE KITS",
+          "description": "Subcategory for upgrade kits",
+          "assembly_refs": [
+            "T2-UPG-LIFTER-FH-HA",
+            "T2-UPG-EDR-1BSN",
+            "T2-UPG-EDR-2BSN",
+            "T2-UPG-EDR-3BSN",
+            "T2-UPG-ESK-1BSN",
+            "T2-UPG-ESK-2BSN",
+            "T2-UPG-ESK-3BSN",
+            "T2-CTRL-EDR-RK3",
+            "T2-CTRL-ESK-RK3"
+          ]
+        }
+      }
+    },
+    "720": {
+      "name": "ACCESSORY LIST",
+      "description": "Category for accessory list",
+      "subcategories": {
+        "720.702": {
+          "name": "BASKETS, BINS & SHELVES",
+          "description": "Subcategory for baskets, bins & shelves",
+          "assembly_refs": [
+            "T-OA-BINRAIL-24-KIT",
+            "T-OA-BINRAIL-36-KIT",
+            "T-OA-BINRAIL-48-KIT",
+            "T-OA-PFW1236FM-KIT",
+            "T-OA-PFW1218FM-KIT",
+            "T-OA-PFW1818FM-KIT",
+            "T-OA-SSSHELF-1812",
+            "T-OA-SSSHELF-1812-BOLT-ON-KIT",
+            "T-OA-SSSHELF-3612",
+            "T-OA-SSSHELF-3612-BOLT-ON-KIT",
+            "T2-OHL-INSTRO-KIT",
+            "T-OA-B110505",
+            "T-OA-B110807",
+            "T-OA-B111105",
+            "B210-BLUE",
+            "T2-OA-LT-SSSHELF-LRG",
+            "T2-OA-LT-SSSHELF-SML",
+            "T-OA-SSSHELF-LGHT-1812-KIT",
+            "T-OA-SSSHELF-LGHT-3612-KIT",
+            "T2-OA-CUST-SHELF-HA-SML",
+            "T2-OA-CUST-SHELF-HA-LRG",
+            "T-OA-RAIL-SHELF-ADDER-SML",
+            "T-OA-RAIL-SHELF-ADDER-LRG",
+            "T-OA-FOOTREST-RAIL-KIT",
+            "T2-OA-DOSINGESK-BTMSHELF"
+          ]
+        },
+        "720.703": {
+          "name": "HOLDERS, PLATES & HANGERS",
+          "description": "Subcategory for holders, plates & hangers",
+          "assembly_refs": [
+            "T-OA-1BRUSH-ORG-PB-KIT",
+            "T-OA-6BRUSH-ORG-PB-KIT",
+            "T-OA-WRK-FLW-PB",
+            "T-OA-PPRACK-2066",
+            "T-OA-PB-SS-1L-SHLF",
+            "T-OA-PB-SS-2G-SHLF",
+            "T-OA-PB-SS-1GLOVE",
+            "T-OA-PB-SS-2GLOVE",
+            "T-OA-PB-SS-3GLOVE",
+            "T2-OA-SC-2020-SS",
+            "T2-OA-SC-2420-SS",
+            "T2-OA-SC-3020-SS",
+            "T2-AER-TUBEORG"
+          ]
+        },
+        "720.704": {
+          "name": "LIGHTING ADD-ONS",
+          "description": "Subcategory for lighting add-ons",
+          "assembly_refs": [
+            "T-OA-MLIGHT-PB-KIT",
+            "T-OA-DIM-MLIGHT-PB-KIT",
+            "T-OA-TASKLIGHT-PB",
+            "T-OA-TASKLIGHT-PB-MAG-KIT"
+          ]
+        },
+        "720.705": {
+          "name": "ELECTRONIC & DIGITAL ADD-ONS",
+          "description": "Subcategory for electronic & digital add-ons",
+          "assembly_refs": [
+            "T-OA-MNT-ARM",
+            "T-OA-MNT-ARM-1EXT",
+            "T-OA-MNT-ARM-2EXT",
+            "T-OA-KB-MOUSE-ARM",
+            "T-OA-2H-CPUSM",
+            "T-OA-2H-CPULG",
+            "T-OA-2H-CPUUV",
+            "T-OA-MMA-PB",
+            "T-OA-MMA-DUAL",
+            "T-OA-MMA-LTAB",
+            "T-OA-MMA-LAP",
+            "T-OA-MNT-SINGLE-COMBO-PB"
+          ]
+        },
+        "720.706": {
+          "name": "FAUCET, OUTLET, DRAIN, SPRAYER KITS",
+          "description": "Subcategory for faucet, outlet, drain, sprayer kits",
+          "assembly_refs": [
+            "T2-OA-STD-FAUCET-WB-KIT",
+            "T2-OA-PRE-RINSE-FAUCET-KIT",
+            "T2-OA-DI-GOOSENECK-FAUCET-KIT",
+            "T2-OA-WATERGUN-TURRET-KIT",
+            "T2-OA-WATERGUN-ROSETTE-KIT",
+            "T2-OA-AIRGUN-TURRET-KIT",
+            "T2-OA-AIRGUN-ROSETTE-KIT",
+            "T2-OA-MS-1026",
+            "T2-OA-SINK-STRAINER",
+            "T2-OA-BASIN-LIGHT-EDR-KIT",
+            "T2-OA-BASIN-LIGHT-ESK-KIT",
+            "T2-EYEWASH-FAUCET-MNT"
+          ]
+        },
+        "720.707": {
+          "name": "DRAWERS & COMPARTMENTS",
+          "description": "Subcategory for drawers & compartments",
+          "assembly_refs": [
+            "T2-OA-2D-152012-STACKED-KIT",
+            "T2-OA-PO-SHLF-1212"
+          ]
+        },
+        "720.701": {
+          "name": "MANUAL",
+          "description": "Subcategory for manual",
+          "assembly_refs": [
+            "T2-STD-MANUAL-EN-KIT",
+            "T2-STD-MANUAL-FR-KIT",
+            "T2-STD-MANUAL-SP-KIT"
+          ]
+        }
+      }
+    },
+    "721": {
+      "name": "SINK BODY",
+      "description": "Category for sink body",
+      "subcategories": {
+        "721.709": {
+          "name": "SINK BODY ASSEMBLY",
+          "description": "Subcategory for sink body assembly",
+          "assembly_refs": [
+            "T2-1B-INSTRO-HA",
+            "T2-BODY-48-60-HA",
+            "T2-BODY-61-72-HA",
+            "T2-BODY-73-120-HA"
+          ]
+        },
+        "721.710": {
+          "name": "SINK BODY TYPE",
+          "description": "Subcategory for sink body type",
+          "assembly_refs": [
+            "T2-ADW-48-60-FRAME",
+            "T2-ADW-61-72-FRAME",
+            "T2-ADW-73-120-FRAME",
+            "T2-ADW-LINAKFRAME-8",
+            "T2-ADW-LINAKFRAME-10",
+            "T2-ADW-CROSSRAIL",
+            "T2-ADW-INSTRO-FRAME-1B",
+            "T2-ADW-INSTRO-BASE-1B",
+            "T2-ADW-CASTERPLATE-PAIR",
+            "T2-PWRBAR-KIT"
+          ]
+        },
+        "721.711": {
+          "name": "CASTERS AND LIFTERS",
+          "description": "Subcategory for casters and lifters",
+          "assembly_refs": [
+            "T2-LEVELING-CASTOR-475",
+            "T2-SEISMIC-FEET",
+            "T2-DL27-KIT",
+            "T2-DL14-KIT",
+            "T2-LC1-KIT",
+            "T2-DL27-FH-KIT",
+            "T2-DL14-FH-KIT"
+          ]
+        }
+      }
+    },
+    "722": {
+      "name": "BASIN",
+      "description": "Category for basin",
+      "subcategories": {
+        "722.712": {
+          "name": "SINK BASIN SIZES",
+          "description": "Subcategory for sink basin sizes",
+          "assembly_refs": [
+            "T2-ADW-BASIN20X20X8",
+            "T2-ADW-BASIN24X20X8",
+            "T2-ADW-BASIN24X20X10",
+            "T2-ADW-BASIN30X20X8",
+            "T2-ADW-BASIN30X20X10"
+          ]
+        },
+        "722.713": {
+          "name": "BASIN TYPE",
+          "description": "Subcategory for basin type",
+          "assembly_refs": [
+            "T2-BSN-EDR-KIT",
+            "T2-BSN-ESK-DI-KIT",
+            "T2-BSN-ESK-KIT"
+          ]
+        },
+        "722.714": {
+          "name": "SINK BASIN SUB-ASSEMBLY",
+          "description": "Subcategory for sink basin sub-assembly",
+          "assembly_refs": [
+            "T2-DRAIN-HOSE-KIT",
+            "T2-BOTTOM-FILL",
+            "T2-DRAIN-VALVE",
+            "T2-BSN-OVFL",
+            "T2-VALVE-PLATE-AUK-DI",
+            "T2-EDR-TEMP-KIT",
+            "T2-VALVE-PLATE-AUK",
+            "T2-ESK-TEMP-KIT",
+            "T2-EMERGSTOP-BTN",
+            "T2-TS7"
+          ]
+        }
+      }
+    },
+    "723": {
+      "name": "PEGBOARD",
+      "description": "Category for pegboard",
+      "subcategories": {
+        "723.715": {
+          "name": "PEGBOARD SIZES",
+          "description": "Subcategory for pegboard sizes",
+          "assembly_refs": [
+            "T2-ADW-PB-3436",
+            "T2-ADW-PB-4836",
+            "T2-ADW-PB-6036",
+            "T2-ADW-PB-7236",
+            "T2-ADW-PB-8436",
+            "T2-ADW-PB-9636",
+            "T2-ADW-PB-10836",
+            "T2-ADW-PB-12036"
+          ]
+        },
+        "723.716": {
+          "name": "PEGBOARD CONFIGURATION",
+          "description": "Subcategory for pegboard configuration",
+          "assembly_refs": [
+            "T2-OHL-MDRD-KIT",
+            "T2-OHL-INSTRO-KIT",
+            "T2-ADW-PB-PERF-KIT",
+            "T2-ADW-PB-SOLID-KIT",
+            "T2-CUST-POST-1104",
+            "T2-CUST-POST-1404",
+            "T2-CUST-POST-1804",
+            "2783"
+          ]
+        },
+        "723.717": {
+          "name": "OVERHEAD LIGHT SUB ASSEMBLY",
+          "description": "Subcategory for overhead light sub assembly",
+          "assembly_refs": [
+            "T2-ADW-OHL-HOUSING",
+            "T-OA-OHL-LED"
+          ]
+        }
+      }
+    }
+  }
+}
