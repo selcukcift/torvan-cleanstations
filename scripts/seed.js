@@ -20,7 +20,8 @@ async function resetDatabase() {
 }
 
 async function main() {
-  console.log('Starting seeding process...');
+  console.log('🚀 Starting comprehensive seeding process...');
+  console.log('This will seed: Core Data → QC Templates → Enhanced Features');
 
   // Option to reset database - uncomment the line below to enable automatic reset.
   // WARNING: This will WIPE your database. Use with caution.
@@ -233,7 +234,50 @@ async function main() {
     console.log(`Seeded user: ${user.username} (${user.role})`);
   }
 
-  console.log('Seeding finished successfully.');
+  console.log('✅ Core seeding finished successfully.');
+  
+  // Now run additional seeding modules
+  console.log('\n📋 Seeding QC Templates...');
+  try {
+    const { seedQcTemplates } = require('./seedQcTemplates.js');
+    await seedQcTemplates();
+    console.log('✅ QC Templates seeded successfully.');
+  } catch (error) {
+    console.error('❌ QC Templates seeding failed:', error.message);
+    // Continue with other seeding even if this fails
+  }
+
+  console.log('\n🔧 Seeding Enhanced Models...');
+  try {
+    const { seedEnhancedModels } = require('./seed-enhanced-models.js');
+    await seedEnhancedModels();
+    console.log('✅ Enhanced Models seeded successfully.');
+  } catch (error) {
+    console.error('❌ Enhanced Models seeding failed:', error.message);
+    // Continue with verification even if this fails
+  }
+
+  console.log('\n🔍 Verifying Pegboard Kits...');
+  try {
+    // Run verification inline since it's a simple check
+    const pegboardKits = await prisma.assembly.findMany({
+      where: {
+        assemblyId: {
+          startsWith: 'T2-ADW-PB-'
+        }
+      }
+    });
+    
+    if (pegboardKits.length >= 128) {
+      console.log(`✅ Pegboard verification passed: ${pegboardKits.length} pegboard kits found`);
+    } else {
+      console.log(`⚠️  Pegboard verification: Only ${pegboardKits.length} pegboard kits found (expected 128+)`);
+    }
+  } catch (error) {
+    console.error('❌ Pegboard verification failed:', error.message);
+  }
+
+  console.log('\n🎉 Comprehensive seeding process completed!');
 }
 
 main()

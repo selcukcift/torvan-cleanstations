@@ -479,11 +479,37 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                       <Input
                         type="number"
                         value={currentConfig.length || ''}
-                        onChange={(e) => updateConfig({ length: parseInt(e.target.value) || null })}
+                        onChange={(e) => {
+                          const inputValue = e.target.value
+                          const numericValue = inputValue === '' ? null : parseInt(inputValue)
+                          
+                          // Allow typing (don't block during input), only warn on complete invalid values
+                          updateConfig({ length: numericValue })
+                          
+                          // Show warning for completed invalid values
+                          if (numericValue !== null && numericValue < 48) {
+                            console.warn('Length must be at least 48 inches')
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const value = parseInt(e.target.value)
+                          // Enforce minimum value when user finishes typing
+                          if (!isNaN(value) && value < 48) {
+                            updateConfig({ length: 48 })
+                            console.warn('Length automatically corrected to minimum value: 48')
+                          }
+                        }}
                         placeholder="e.g., 60"
                         min="48"
                         max="120"
+                        className={currentConfig.length && currentConfig.length < 48 ? "border-red-500" : ""}
                       />
+                      {currentConfig.length && currentConfig.length < 48 && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          Minimum length is 48 inches
+                        </p>
+                      )}
                     </div>
 
                     {/* Legs */}

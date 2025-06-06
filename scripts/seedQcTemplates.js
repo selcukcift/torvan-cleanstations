@@ -1211,7 +1211,10 @@ async function seedQcTemplates() {
     console.error('❌ Error seeding QC templates:', error);
     throw error;
   } finally {
-    await prisma.$disconnect();
+    // Don't disconnect here when called from main seed script
+    if (require.main === module) {
+      await prisma.$disconnect();
+    }
   }
 }
 

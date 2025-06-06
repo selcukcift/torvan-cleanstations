@@ -365,14 +365,27 @@ async function generateBOMForOrder(orderData) {
         const actualLength = length || sinkLength;
         let sinkBodyAssemblyId;
         if (actualLength) { // Check if length is provided and valid
-            if (actualLength >= 48 && actualLength <= 60) sinkBodyAssemblyId = 'T2-BODY-48-60-HA'; // T2-BODY-48-60-HA
-            else if (actualLength >= 61 && actualLength <= 72) sinkBodyAssemblyId = 'T2-BODY-61-72-HA'; // T2-BODY-61-72-HA
-            else if (actualLength >= 73 && actualLength <= 120) sinkBodyAssemblyId = 'T2-BODY-73-120-HA'; // T2-BODY-73-120-HA
+            // Validate minimum length
+            if (actualLength < 48) {
+                console.warn(`Invalid sink length: ${actualLength}" - minimum length is 48"`);
+                throw new Error(`Sink length must be at least 48". Current length: ${actualLength}"`);
+            }
+            
+            // Original rules based on available body assemblies
+            if (actualLength >= 48 && actualLength <= 60) {
+                sinkBodyAssemblyId = 'T2-BODY-48-60-HA';
+            } else if (actualLength >= 61 && actualLength <= 72) {
+                sinkBodyAssemblyId = 'T2-BODY-61-72-HA';
+            } else if (actualLength >= 73 && actualLength <= 120) {
+                sinkBodyAssemblyId = 'T2-BODY-73-120-HA';
+            }
             
             if (sinkBodyAssemblyId) {
+                console.log(`Selected sink body assembly: ${sinkBodyAssemblyId} for length: ${actualLength}`);
                 await addItemToBOMWithPartNumber(sinkBodyAssemblyId, 1, 'SINK_BODY', bom, new Set());
             } else {
-                console.warn(`No sink body assembly found for length: ${actualLength}`);
+                console.warn(`No sink body assembly found for length: ${actualLength} - length must be between 48" and 120"`);
+                throw new Error(`No sink body assembly available for length: ${actualLength}". Supported range: 48"-120"`);
             }
         } else if (sinkModelId) {
             // Fallback or primary logic: if sinkModelId is intended to be the main assembly including the body.

@@ -10,12 +10,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev:backend` - Start only Node.js backend on port 3001
 - `npm run build` - Build Next.js application for production
 - `npm run lint` - Run ESLint with Next.js configuration
-- `npm test` - No tests configured yet
+- `npm test` - Run Jest unit tests
 
 ### Database Operations
 - `npm run prisma:generate` - Generate Prisma client after schema changes
 - `npm run prisma:migrate` - Create and apply database migrations
-- `npm run prisma:seed` - Seed database with initial data from scripts/seed.js
+- `npm run prisma:seed` - **COMPREHENSIVE SEEDING** - Runs ALL seeding in sequence:
+  1. Core data (parts, assemblies, users, categories)
+  2. QC Templates (4 templates, 150+ checklist items)
+  3. Enhanced features (work instructions, tools, inventory)
+  4. Pegboard kit verification (138 kit combinations)
 
 ### Production
 - `npm start` - Start both frontend and backend in production mode
@@ -48,9 +52,10 @@ This is a **hybrid Next.js + Node.js application** for Torvan Medical CleanStati
 
 ### Database
 - **PostgreSQL** with **Prisma ORM**
-- Schema: `prisma/schema.prisma`
-- Migrations: `prisma/migrations/`
+- Schema: `prisma/schema.prisma` (9 migrations applied)
+- Current data: **284 parts**, **318 assemblies** (including 138 pegboard kits), **6 users**
 - Main models: User, Order, Part, Assembly, QcFormTemplate, OrderQcResult, ServiceOrder
+- Enhanced features: WorkInstruction, Task, InventoryItem, SystemNotification, AuditLog
 
 ## Authentication System
 
@@ -97,9 +102,11 @@ import { nextJsApiClient } from '@/lib/api';
 - **API**: `app/api/orders/` - Order CRUD operations
 
 ### BOM Generation
-- **Service**: `src/services/bomService.js` - Bill of Materials generation logic
+- **Service**: `src/services/bomService.js` - Bill of Materials generation logic with sink length validation (min 48")
 - **API**: `app/api/orders/[orderId]/bom/` - BOM export functionality
 - **Preview API**: `app/api/orders/preview-bom/` - BOM preview before order submission
+- **Components**: `components/order/BOMViewer.tsx` - Unified BOM display with quantity aggregation
+- **Debug Helper**: `components/debug/BOMDebugHelper.tsx` - Real-time BOM preview during configuration
 - **Legacy**: `bom-generator.js` - Original BOM logic
 
 ### Quality Control System
@@ -113,6 +120,12 @@ import { nextJsApiClient } from '@/lib/api';
 - **API**: `app/api/service-orders/` - Service order management
 - **Components**: `components/service/` - Service order interfaces
 - **Parts API**: `app/api/service-parts/` - Service parts catalog
+
+### Assembly & Task Management
+- **Models**: WorkInstruction, Task, TaskDependency in Prisma schema
+- **API**: `app/api/v1/assembly/` - Assembly task management
+- **Components**: `components/assembly/` - Task management, work instructions, tool requirements
+- **Features**: Task dependencies, time tracking, tool requirements, work instruction steps
 
 ## Database Setup
 
@@ -191,14 +204,50 @@ The configurator service uses specific assembly IDs that must match the database
 
 If legs/feet don't appear in configurator, verify these assembly IDs exist in database.
 
+### Pegboard Kit System (138 Combinations)
+The system includes 138 pegboard kit combinations following the pattern:
+- **Pattern**: `T2-ADW-PB-{size}-{color}-{type}-KIT`
+- **Sizes**: 8 options (3436, 4836, 6036, 7236, 8436, 9636, 10836, 12036)
+- **Colors**: 8 options (GREEN, BLACK, YELLOW, GREY, RED, BLUE, ORANGE, WHITE)
+- **Types**: 2 options (PERF, SOLID)
+- **Total**: 8 × 8 × 2 = 128 combinations + 10 existing accessories
+
+### Sink Length Validation
+- **Minimum length**: 48 inches (enforced in both frontend and backend)
+- **Frontend**: Real-time validation in `components/order/ConfigurationStep.tsx`
+- **Backend**: Validation in `src/services/bomService.js` with clear error messages
+- **Sink body assembly ranges**: 48-60", 61-72", 73-120"
+
 ### BOM Preview Integration
 The BOM preview in ReviewStep uses the same `generateBOMForOrder` service as actual order creation, ensuring accuracy. Preview endpoint: `POST /api/orders/preview-bom`
+
+### BOM Quantity Aggregation
+The BOMViewer component automatically aggregates duplicate items (e.g., P-trap components appearing in multiple basins) and displays combined quantities with source context.
 
 ### Environment Loading
 Node.js backend loads environment files in precedence order:
 1. `.env.local` (highest priority)
 2. `.env.development` 
 3. `.env` (lowest priority)
+
+### Testing & Quality Assurance
+- **Unit Tests**: Jest with React Testing Library (`__tests__/` directories)
+- **Integration Tests**: API and database integration tests
+- **E2E Tests**: Playwright tests in `e2e/` directory
+- **QC Templates**: 4 comprehensive QC templates with 150+ checklist items
+- **Test Commands**: `npm test`, `npm run test:e2e`, `npm run test:coverage`
+
+### Rate Limiting & Security
+- **Middleware**: `middleware.ts` with differentiated rate limits
+- **API Protection**: 200 requests/min general, 1000/min auth endpoints, 20/min BOM preview
+- **Authentication**: NextAuth.js with secure session management
+- **Role-based access**: 6 user roles with hierarchical permissions
+
+### Data Management
+- **Seeding**: Comprehensive seeding with verification (284 parts, 318 assemblies, 138 pegboard kits)
+- **Migrations**: 9 database migrations tracking schema evolution
+- **Inventory**: Full inventory management with transactions and audit logging
+- **File Uploads**: Secure file upload system with metadata tracking
 
 ### Legacy Code Notes
 Several files contain legacy frontend logic preserved for reference:
@@ -208,4 +257,4 @@ Several files contain legacy frontend logic preserved for reference:
 - `bom-generator.js` - BOM generation
 - `index.html`, `styles.css` - Legacy UI
 
-<!-- Revision updated: Updated deployment and instructions on 2023-11-01 -->
+<!-- Revision updated: Major codebase update with pegboard kits, validation, and comprehensive features on 2025-01-06 -->
