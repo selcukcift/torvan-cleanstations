@@ -257,6 +257,16 @@ async function main() {
     // Continue with verification even if this fails
   }
 
+  console.log('\n🔧 Creating Size-Only Pegboard Kits...');
+  try {
+    const { createPegboardSizeKits } = require('./create-pegboard-size-kits.js');
+    await createPegboardSizeKits();
+    console.log('✅ Size-only pegboard kits created successfully.');
+  } catch (error) {
+    console.error('❌ Size-only pegboard kits creation failed:', error.message);
+    // Continue with verification even if this fails
+  }
+
   console.log('\n🔍 Verifying Pegboard Kits...');
   try {
     // Run verification inline since it's a simple check
@@ -268,10 +278,11 @@ async function main() {
       }
     });
     
-    if (pegboardKits.length >= 128) {
-      console.log(`✅ Pegboard verification passed: ${pegboardKits.length} pegboard kits found`);
+    // Updated expectation: 128 colored + 16 size-only + 2 generic = 146+
+    if (pegboardKits.length >= 146) {
+      console.log(`✅ Pegboard verification passed: ${pegboardKits.length} pegboard kits found (including 16 size-only kits)`);
     } else {
-      console.log(`⚠️  Pegboard verification: Only ${pegboardKits.length} pegboard kits found (expected 128+)`);
+      console.log(`⚠️  Pegboard verification: Only ${pegboardKits.length} pegboard kits found (expected 146+: 128 colored + 16 size-only + 2 generic)`);
     }
   } catch (error) {
     console.error('❌ Pegboard verification failed:', error.message);

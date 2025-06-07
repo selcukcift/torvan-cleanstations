@@ -1,16 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-// [Per Coding Prompt Chains v5 - Hybrid Backend]
-// Provide two distinct Axios clients for clarity
-
-// Plain Node.js backend (core data/auth)
-export const plainNodeApiClient = axios.create({
-  baseURL: 'http://localhost:3001/api',
-  timeout: 10000,
-  headers: { 'Content-Type': 'application/json' },
-})
-
-// Next.js API routes (order workflow, configurator, accessories, uploads)
+// Native Next.js API client - all functionality is now in Next.js
 export const nextJsApiClient = axios.create({
   baseURL: '/api',
   timeout: 10000,
@@ -34,10 +24,9 @@ const attachResponseInterceptor = (client: AxiosInstance) => {
     }
   )
 }
-attachResponseInterceptor(plainNodeApiClient)
 attachResponseInterceptor(nextJsApiClient)
 
-// Generic API helper functions (default to nextJsApiClient for new features)
+// Generic API helper functions (all using Next.js API routes)
 export const api = {
   get: <T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     nextJsApiClient.get(url, config),

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
-import { generateBOMForOrder } from '@/src/services/bomService'
+import { generateBOMForOrder } from '@/lib/bomService.native'
 
 const prisma = new PrismaClient()
 

@@ -32,7 +32,21 @@
       "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d torvan-db -c 'SELECT q.id, q.\"formName\", q.\"formType\", COUNT(c.id) as item_count FROM \"QcFormTemplate\" q LEFT JOIN \"ChecklistItem\" c ON c.\"templateId\" = q.id GROUP BY q.id, q.\"formName\", q.\"formType\" ORDER BY q.\"formType\", q.\"formName\";')",
       "Bash(PGPASSWORD=postgres psql:*)",
       "Bash(npx prisma db seed:*)",
-      "Bash(npx prisma db pull:*)"
+      "Bash(npx prisma db pull:*)",
+      "Bash(npm run dev:frontend:*)",
+      "Bash(kill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(yarn --version)",
+      "Bash(pnpm:*)",
+      "Bash(/home/selcuk/.nvm/versions/node/v22.16.0/bin/npm --version)",
+      "Bash(export:*)",
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(bash -c 'export PATH=\"/home/selcuk/.nvm/versions/node/v22.16.0/bin:$PATH\" && cd \"/media/selcuk/project files/Clean-stations\" && npm run dev')",
+      "Bash(sudo:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

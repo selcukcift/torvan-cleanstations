@@ -22,6 +22,7 @@ import {
   List
 } from "lucide-react"
 import { nextJsApiClient } from "@/lib/api"
+import { useSession } from "next-auth/react"
 
 interface BOMDebugHelperProps {
   orderConfig: any
@@ -82,9 +83,10 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
   const [viewMode, setViewMode] = useState<'categorized' | 'hierarchical'>('hierarchical')
   const [maxDepth, setMaxDepth] = useState(3)
   const [accessoryAnalysis, setAccessoryAnalysis] = useState<any>(null)
+  const { data: session, status } = useSession()
 
-  // Pegboard kit mapping function - maps sink length, type, and color to specific kit part number
-  const getPegboardKitId = (sinkLength: number, pegboardType: string, color: string) => {
+  // Pegboard kit mapping function - maps sink length, type, and optional color to specific kit part number
+  const getPegboardKitId = (sinkLength: number, pegboardType: string, color?: string) => {
     // Standard pegboard sizes with coverage ranges  
     const pegboardSizes = [
       { size: '3436', covers: [34, 47] },
@@ -104,12 +106,23 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
 
     // Map pegboard type to suffix
     const typeCode = pegboardType === 'PERFORATED' ? 'PERF' : 'SOLID'
-    const colorCode = color.toUpperCase()
     
-    return `T2-ADW-PB-${selectedSize.size}-${colorCode}-${typeCode}-KIT`
+    // If color is specified, use colored kit, otherwise use size-only kit
+    if (color && color.trim()) {
+      const colorCode = color.toUpperCase()
+      return `T2-ADW-PB-${selectedSize.size}-${colorCode}-${typeCode}-KIT`
+    } else {
+      return `T2-ADW-PB-${selectedSize.size}-${typeCode}-KIT`
+    }
   }
 
   const generateBOMPreview = useCallback(async () => {
+    // Don't proceed if session is not ready or user is not authenticated
+    if (status === 'loading' || !session?.user) {
+      console.log('BOMDebugHelper: Session not ready, skipping BOM generation')
+      return
+    }
+    
     if (!orderConfig || !orderConfig.sinkModelId) {
       setBomData(null)
       return
@@ -151,32 +164,46 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       if (orderConfig.pegboard) {
         configData.pegboard = orderConfig.pegboard
         if (orderConfig.pegboardTypeId) configData.pegboardTypeId = orderConfig.pegboardTypeId
+        if (orderConfig.pegboardColorId) configData.pegboardColorId = orderConfig.pegboardColorId
         
         // Extract pegboard type and color from IDs
         const pegboardType = orderConfig.pegboardTypeId || orderConfig.pegboardType
         let pegboardColor = orderConfig.pegboardColor
         
         // Extract color from pegboardColorId if needed (format: T-OA-PB-COLOR-BLUE -> BLUE)
-        if (!pegboardColor && orderConfig.pegboardColorId) {
+        if (!pegboardColor && orderConfig.pegboardColorId && orderConfig.pegboardColorId !== 'none') {
           const colorMatch = orderConfig.pegboardColorId.match(/T-OA-PB-COLOR-(.+)/)
           if (colorMatch) {
             pegboardColor = colorMatch[1] // Extract color name (e.g., "BLUE")
           }
         }
         
-        // Map to specific pegboard kit based on size, type, and color
-        if (orderConfig.length && pegboardType && pegboardColor) {
+        // Map to specific pegboard kit based on size, type, and optional color
+        if (orderConfig.length && pegboardType) {
           const specificKitId = getPegboardKitId(orderConfig.length, pegboardType, pegboardColor)
           configData.specificPegboardKitId = specificKitId
           
           console.log('🔧 Pegboard kit mapping:', {
             sinkLength: orderConfig.length,
             pegboardType: pegboardType,
-            pegboardColor: pegboardColor,
+            pegboardColor: pegboardColor || 'none',
+            hasColor: !!pegboardColor,
             pegboardColorId: orderConfig.pegboardColorId,
             mappedKitId: specificKitId
           })
+        } else {
+          console.log('🔧 Pegboard configuration incomplete:', {
+            pegboard: orderConfig.pegboard,
+            length: orderConfig.length,
+            pegboardType: pegboardType,
+            pegboardColor: pegboardColor,
+            pegboardColorId: orderConfig.pegboardColorId
+          })
         }
+        
+        // Always include pegboard configuration for BOM generation
+        configData.pegboardType = pegboardType
+        configData.pegboardColor = pegboardColor // Don't default color - let BOM service handle it
         // Pegboard size is now auto-calculated based on sink length
       }
       if (orderConfig.workflowDirection) configData.workflowDirection = orderConfig.workflowDirection
@@ -228,18 +255,24 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           else if (basin.basinSizePartNumber || basin.basinSize) {
             let sizePartNumber = basin.basinSizePartNumber
             
-            // Map configurator service assemblyId to actual assembly names
-            const assemblyIdMappings: Record<string, string> = {
-              '712.102': 'T2-ADW-BASIN20X20X8',
-              '712.103': 'T2-ADW-BASIN24X20X8',
-              '712.104': 'T2-ADW-BASIN24X20X10',
-              '712.105': 'T2-ADW-BASIN30X20X8',
-              '712.106': 'T2-ADW-BASIN30X20X10'
-            }
-            
-            // Map assembly ID to actual assembly name if needed
-            if (sizePartNumber && assemblyIdMappings[sizePartNumber]) {
-              sizePartNumber = assemblyIdMappings[sizePartNumber]
+            // The new configurator service now returns assembly IDs directly
+            // Check if we already have a valid assembly ID
+            if (sizePartNumber && sizePartNumber.startsWith('T2-ADW-BASIN')) {
+              // Already a valid assembly ID, use as-is
+            } else {
+              // Legacy mapping for backward compatibility (likely not needed anymore)
+              const assemblyIdMappings: Record<string, string> = {
+                '712.102': 'T2-ADW-BASIN20X20X8',
+                '712.103': 'T2-ADW-BASIN24X20X8',
+                '712.104': 'T2-ADW-BASIN24X20X10',
+                '712.105': 'T2-ADW-BASIN30X20X8',
+                '712.106': 'T2-ADW-BASIN30X20X10'
+              }
+              
+              // Map assembly ID to actual assembly name if needed
+              if (sizePartNumber && assemblyIdMappings[sizePartNumber]) {
+                sizePartNumber = assemblyIdMappings[sizePartNumber]
+              }
             }
             
             // Map UI basin size values to actual part numbers
@@ -347,6 +380,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
 
       console.log('Sending BOM preview data:', JSON.stringify(previewData, null, 2))
       
+      // Use the BOM preview endpoint which has the correct validation schema
       const axiosResponse = await nextJsApiClient.post('/orders/preview-bom', previewData)
       const response = axiosResponse.data // Extract the actual response data from axios
 
@@ -419,7 +453,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
     } finally {
       setLoading(false)
     }
-  }, [orderConfig])
+  }, [orderConfig, session, status])
 
   // Auto-refresh BOM when configuration changes
   useEffect(() => {
@@ -504,9 +538,9 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       'control-box': [],
       'accessories': [],
       'accessory-storage': [],
-      'accessory-lighting': [],
       'accessory-organization': [],
-      'accessory-dispensers': [],
+      'accessory-lighting': [],
+      'accessory-technology': [],
       'accessory-other': [],
       'service-parts': [],
       'other': []
@@ -658,27 +692,29 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
         ) {
           categories['accessory-storage'].push(item)
         } else if (
-          // Lighting (703.*)
+          // Organization & Workflow (703.*) - includes glove dispensers, bottle holders, workflow indicators
           partPrefix.startsWith('703.') ||
+          name.includes('brush') || name.includes('organizer') || name.includes('workflow') ||
+          name.includes('dispenser') || name.includes('glove') || name.includes('bottle') ||
+          name.includes('cover') || name.includes('tubing') ||
+          id.includes('brush') || id.includes('org') || id.includes('glove') || id.includes('dispenser')
+        ) {
+          categories['accessory-organization'].push(item)
+        } else if (
+          // Lighting & Magnification (704.*) - magnifying lights, task lights
+          partPrefix.startsWith('704.') ||
           name.includes('light') || name.includes('magnify') || name.includes('task') ||
           id.includes('light') || id.includes('mlight') || id.includes('tasklight')
         ) {
           categories['accessory-lighting'].push(item)
         } else if (
-          // Organization & Holders (704.*)
-          partPrefix.startsWith('704.') ||
-          name.includes('holder') || name.includes('organizer') || name.includes('mount') ||
-          name.includes('brush') || name.includes('instrument') ||
-          id.includes('brush') || id.includes('org') || id.includes('holder') || id.includes('mount')
-        ) {
-          categories['accessory-organization'].push(item)
-        } else if (
-          // Dispensers (705.*)
+          // Technology & Mounting (705.*) - monitor mounts, CPU holders, keyboard arms
           partPrefix.startsWith('705.') ||
-          name.includes('dispenser') || name.includes('glove') || name.includes('soap') ||
-          id.includes('glove') || id.includes('dispenser')
+          name.includes('monitor') || name.includes('mount') || name.includes('cpu') ||
+          name.includes('keyboard') || name.includes('tablet') || name.includes('laptop') ||
+          id.includes('mnt-') || id.includes('cpu') || id.includes('mma-')
         ) {
-          categories['accessory-dispensers'].push(item)
+          categories['accessory-technology'].push(item)
         } else {
           // Other accessories
           categories['accessory-other'].push(item)
@@ -719,9 +755,9 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       'control-box': '🎛️ Control Box',
       'accessories': '🔧 General Accessories',
       'accessory-storage': '📦 Storage & Organization',
-      'accessory-lighting': '💡 Lighting Accessories',
-      'accessory-organization': '🗂️ Organization & Holders',
-      'accessory-dispensers': '🧤 Dispensers',
+      'accessory-organization': '🗂️ Organization & Workflow',
+      'accessory-lighting': '💡 Lighting & Magnification',
+      'accessory-technology': '🖥️ Technology & Mounting',
       'accessory-other': '🔧 Other Accessories',
       'service-parts': '⚙️ Service Parts',
       'other': '📦 Other Items'
@@ -746,10 +782,10 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
     if (partPrefix >= '706.58' && partPrefix <= '706.60') return 'Faucet Type'
     if (partPrefix >= '706.61' && partPrefix <= '706.64') return 'Sprayer Type'
     if (partPrefix >= '719.176' && partPrefix <= '719.184') return 'Control Box Type'
-    if (partPrefix.startsWith('702.')) return 'Storage Accessory'
-    if (partPrefix.startsWith('703.')) return 'Lighting Accessory'
-    if (partPrefix.startsWith('704.')) return 'Organization Accessory'
-    if (partPrefix.startsWith('705.')) return 'Dispenser Accessory'
+    if (partPrefix.startsWith('702.')) return 'Storage & Organization'
+    if (partPrefix.startsWith('703.')) return 'Organization & Workflow'
+    if (partPrefix.startsWith('704.')) return 'Lighting & Magnification'
+    if (partPrefix.startsWith('705.')) return 'Technology & Mounting'
     if (partPrefix.startsWith('720.')) return 'General Accessory'
     
     return ''
@@ -946,11 +982,12 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       const isPegboardComponent = currentConfig.pegboard && (
         // Check specific pegboard kit ID
         itemId === currentConfig.specificPegboardKitId?.toLowerCase() ||
-        // Check calculated pegboard kit ID
-        (currentConfig.length && currentConfig.pegboardType && currentConfig.pegboardColor && 
+        // Check calculated pegboard kit ID (with or without color)
+        (currentConfig.length && currentConfig.pegboardType && 
          itemId === getPegboardKitId(currentConfig.length, currentConfig.pegboardType, currentConfig.pegboardColor).toLowerCase()) ||
         // Check pegboard mandatory components
         itemId === 't2-ohl-mdrd-kit' ||
+        // Legacy fallback (should be rarely used now)
         (currentConfig.pegboardType === 'PERFORATED' && itemId === 't2-adw-pb-perf-kit') ||
         (currentConfig.pegboardType === 'SOLID' && itemId === 't2-adw-pb-solid-kit') ||
         // Check pegboard color component
@@ -971,12 +1008,12 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           pegboardType: currentConfig.pegboardType,
           pegboardColor: currentConfig.pegboardColor,
           sinkLength: currentConfig.length,
-          calculatedKitId: currentConfig.length && currentConfig.pegboardType && currentConfig.pegboardColor ? 
+          calculatedKitId: currentConfig.length && currentConfig.pegboardType ? 
             getPegboardKitId(currentConfig.length, currentConfig.pegboardType, currentConfig.pegboardColor) : 'N/A',
           isPegboardComponent,
           matchReasons: {
             specificKit: itemId === currentConfig.specificPegboardKitId?.toLowerCase(),
-            calculatedKit: currentConfig.length && currentConfig.pegboardType && currentConfig.pegboardColor && 
+            calculatedKit: currentConfig.length && currentConfig.pegboardType && 
                           itemId === getPegboardKitId(currentConfig.length, currentConfig.pegboardType, currentConfig.pegboardColor).toLowerCase(),
             mandatoryOHL: itemId === 't2-ohl-mdrd-kit',
             perfKit: currentConfig.pegboardType === 'PERFORATED' && itemId === 't2-adw-pb-perf-kit',
@@ -1469,11 +1506,12 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
                         const isPegboardComponent = currentConfig.pegboard && (
                           // Check specific pegboard kit ID
                           itemId === currentConfig.specificPegboardKitId?.toLowerCase() ||
-                          // Check calculated pegboard kit ID
-                          (currentConfig.length && currentConfig.pegboardType && currentConfig.pegboardColor && 
+                          // Check calculated pegboard kit ID (with or without color)
+                          (currentConfig.length && currentConfig.pegboardType && 
                            itemId === getPegboardKitId(currentConfig.length, currentConfig.pegboardType, currentConfig.pegboardColor).toLowerCase()) ||
                           // Check pegboard mandatory components
                           itemId === 't2-ohl-mdrd-kit' ||
+                          // Legacy fallback (should be rarely used now)
                           (currentConfig.pegboardType === 'PERFORATED' && itemId === 't2-adw-pb-perf-kit') ||
                           (currentConfig.pegboardType === 'SOLID' && itemId === 't2-adw-pb-solid-kit') ||
                           // Check pegboard color component

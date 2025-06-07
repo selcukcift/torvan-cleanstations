@@ -1,9 +1,9 @@
-const { parseRequestBody } = require('../lib/requestUtils');
+const { parseJSONBody } = require('../lib/requestUtils');
 const { generateBOMForOrder } = require('../services/bomService');
 
 async function handleGenerateBom(req, res) {
     try {
-        const orderData = await parseRequestBody(req);
+        const orderData = await parseJSONBody(req);
         if (!orderData || !orderData.customer || !orderData.configurations || !orderData.buildNumbers) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Invalid order data provided.' }));

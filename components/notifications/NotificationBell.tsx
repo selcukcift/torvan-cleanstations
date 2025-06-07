@@ -36,14 +36,20 @@ export function NotificationBell() {
   // Fetch unread notifications on mount and set up auto-refresh
   useEffect(() => {
     if (session?.user) {
-      fetchNotifications(true)
+      // Add a small delay to prevent blocking dashboard loading
+      const timer = setTimeout(() => {
+        fetchNotifications(true)
+      }, 1000)
       
       // Auto-refresh every 30 seconds (Sprint 4.3 requirement)
       const interval = setInterval(() => {
         fetchNotifications(true)
       }, 30000)
       
-      return () => clearInterval(interval)
+      return () => {
+        clearTimeout(timer)
+        clearInterval(interval)
+      }
     }
   }, [session?.user])
 
@@ -61,7 +67,8 @@ export function NotificationBell() {
         params: {
           limit: unreadOnly ? 5 : 10,
           unreadOnly
-        }
+        },
+        timeout: 5000 // 5 second timeout to prevent hanging
       })
 
       if (response.data.success) {
@@ -79,7 +86,19 @@ export function NotificationBell() {
         setNotifications([])
         return
       }
+      
+      // Handle timeout or network errors silently for dashboard loading
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        console.log('Notification fetch timed out - continuing with empty state')
+        setUnreadCount(0)
+        setNotifications([])
+        return
+      }
+      
       console.error('Failed to fetch notifications:', error)
+      // Set fallback state to prevent hanging
+      setUnreadCount(0)
+      setNotifications([])
     } finally {
       setIsLoading(false)
     }

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-// [Per Coding Prompt Chains v5 - Hybrid Backend]
-// Use src/services/accessoriesService.js for all accessory data
-import * as accessoriesService from '@/src/services/accessoriesService'
+import accessoriesService from '@/lib/accessoriesService.native'
 import { getAuthUser } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {

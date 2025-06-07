@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 // [Per Coding Prompt Chains v5 - Hybrid Backend]
 // Use src/services/accessoriesService.js for all accessory data
-import * as accessoriesService from '@/src/services/accessoriesService'
+import accessoriesService from '@/lib/accessoriesService.native'
 import { getAuthUser } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
@@ -31,13 +31,21 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    const result = await accessoriesService.searchAccessories({
-      query,
-      categories,
-      types,
+    const accessories = await accessoriesService.searchAccessories(query, {
       limit,
-      offset
+      categoryCode: categories[0] // Use the first category if provided
     })
+    
+    const result = {
+      accessories,
+      pagination: { 
+        total: accessories.length, 
+        limit, 
+        offset, 
+        hasMore: accessories.length === limit 
+      },
+      filters: { query, categories, types }
+    }
     
     return NextResponse.json({ 
       success: true, 

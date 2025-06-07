@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateBOMForOrder } from '@/src/services/bomService'
+import { generateBOMForOrder } from '@/lib/bomService.native'
 import { getAuthUser } from '@/lib/auth'
 import { z } from 'zod'
 

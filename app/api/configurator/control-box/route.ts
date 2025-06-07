@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 // [Per Coding Prompt Chains v5 - Hybrid Backend]
 // Use src/services/configuratorService.js for all configuration data
-import * as configuratorService from '@/src/services/configuratorService'
+import configuratorService from '@/lib/configuratorService.native'
 import { getAuthUser } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {

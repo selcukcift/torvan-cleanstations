@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { z } from 'zod';
-import notificationService from '@/src/services/notificationService';
+import notificationService from '@/lib/notificationService.native';
 
 const prisma = new PrismaClient();
 

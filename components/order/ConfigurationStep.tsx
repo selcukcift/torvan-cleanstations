@@ -99,6 +99,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
   // Load initial data
   useEffect(() => {
     loadInitialData()
+    loadPegboardOptions()
   }, [])
 
   const loadInitialData = async () => {
@@ -523,8 +524,29 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                           <SelectValue placeholder="Select legs" />
                         </SelectTrigger>
                         <SelectContent>
-                          {legsOptions.map((leg) => (
-                            <SelectItem key={leg.assemblyId} value={leg.assemblyId}>
+                          {legsOptions.heightAdjustable && (
+                            <>
+                              <div className="px-2 py-1 text-sm font-semibold text-gray-600">Height Adjustable</div>
+                              {legsOptions.heightAdjustable.map((leg) => (
+                                <SelectItem key={leg.id} value={leg.id}>
+                                  {leg.name}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
+                          {legsOptions.fixedHeight && (
+                            <>
+                              <div className="px-2 py-1 text-sm font-semibold text-gray-600 mt-2">Fixed Height</div>
+                              {legsOptions.fixedHeight.map((leg) => (
+                                <SelectItem key={leg.id} value={leg.id}>
+                                  {leg.name}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
+                          {/* Fallback for old format */}
+                          {Array.isArray(legsOptions) && legsOptions.map((leg) => (
+                            <SelectItem key={leg.id || leg.assemblyId} value={leg.id || leg.assemblyId}>
                               {leg.displayName || leg.name}
                             </SelectItem>
                           ))}
@@ -544,7 +566,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                         </SelectTrigger>
                         <SelectContent>
                           {feetOptions.map((feet) => (
-                            <SelectItem key={feet.assemblyId} value={feet.assemblyId}>
+                            <SelectItem key={feet.id || feet.assemblyId} value={feet.id || feet.assemblyId}>
                               {feet.displayName || feet.name}
                             </SelectItem>
                           ))}

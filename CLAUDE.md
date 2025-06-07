@@ -29,18 +29,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a **hybrid Next.js + Node.js application** for Torvan Medical CleanStation workflow management with a unique dual-backend architecture:
 
 ### Backend Architecture
-1. **Plain Node.js Server** (`src/server.js` on port 3001)
-   - Handles legacy API routes and core business logic
-   - No Express.js - uses native Node.js HTTP server
-   - Custom routing system in `src/lib/router.js`
-   - Serves: configurator, BOM generation, accessories, parts/assemblies data
-   - Note: Many routes are deprecated in favor of Next.js API routes
+1. **Next.js API Routes** (`app/api/**` on port 3005)
+   - **Complete API Layer**: Parts, assemblies, categories, native BOM generation
+   - Handles authentication, orders, QC system, file uploads
+   - Uses Next.js 15 App Router with Prisma integration
+   - **Native BOM Generation**: `/api/bom/generate` with full TypeScript implementation
+   - All complex business logic ported to TypeScript with type safety
 
-2. **Next.js API Routes** (`app/api/**` on port 3005)
-   - Handles modern features: authentication, orders, QC system, file uploads
-   - Uses Next.js 15 App Router
-   - Integrated with Prisma for database operations
-   - Preferred for new feature development
+2. **Plain Node.js Server** (`src/server.js` on port 3001) - **LEGACY**
+   - **STATUS**: Can be deprecated - all functionality moved to Next.js
+   - Original BOM Rules Engine preserved in `lib/bomService.native.ts`
+   - No longer required for application functionality
+   - Kept for reference and migration verification
 
 ### Frontend
 - **Next.js 15** with App Router (`app/` directory)
@@ -53,7 +53,7 @@ This is a **hybrid Next.js + Node.js application** for Torvan Medical CleanStati
 ### Database
 - **PostgreSQL** with **Prisma ORM**
 - Schema: `prisma/schema.prisma` (9 migrations applied)
-- Current data: **284 parts**, **318 assemblies** (including 138 pegboard kits), **6 users**
+- Current data: **284 parts**, **334 assemblies** (including 154 pegboard kits), **6 users**
 - Main models: User, Order, Part, Assembly, QcFormTemplate, OrderQcResult, ServiceOrder
 - Enhanced features: WorkInstruction, Task, InventoryItem, SystemNotification, AuditLog
 
@@ -89,6 +89,30 @@ import { plainNodeApiClient } from '@/lib/api';
 import { nextJsApiClient } from '@/lib/api';
 ```
 
+## Complete Native Next.js Migration (January 2025)
+
+**Status**: Successfully migrated all legacy Node.js logic to native Next.js with TypeScript
+
+### Native API Implementation
+- **Parts API**: `app/api/parts/` with search, pagination, and detailed part lookup
+- **Assemblies API**: `app/api/assemblies/` with hierarchical component relationships  
+- **Categories API**: `app/api/categories/` with subcategory relationships
+- **BOM Generation**: `app/api/bom/generate` - **NATIVE TYPESCRIPT** implementation
+
+### Complete Business Logic Migration
+- **Master BOM Rules Engine**: Fully ported to `lib/bomService.native.ts` in TypeScript
+- **Complex Business Logic**: All pegboard kit mapping, control box auto-selection, hierarchical assembly relationships preserved
+- **BOMDebugHelper Integration**: Seamlessly works with native implementation
+- **Type Safety**: Complete TypeScript implementation with proper interfaces and error handling
+
+### Native Next.js Benefits
+- **No External Dependencies**: Eliminates Node.js backend requirement
+- **Authentication Integration**: Built-in NextAuth.js session validation
+- **Full TypeScript Support**: Complete type safety, IntelliSense, and compile-time error checking
+- **Error Handling**: Standardized error responses with proper HTTP status codes
+- **Performance**: Direct Prisma ORM with query optimization and no network overhead
+- **Maintainability**: Single codebase with consistent patterns and modern development practices
+
 ## Key Business Logic Locations
 
 ### Product Configuration
@@ -101,13 +125,13 @@ import { nextJsApiClient } from '@/lib/api';
 - **Components**: `components/order/` - Order wizard components
 - **API**: `app/api/orders/` - Order CRUD operations
 
-### BOM Generation
-- **Service**: `src/services/bomService.js` - Bill of Materials generation logic with sink length validation (min 48")
-- **API**: `app/api/orders/[orderId]/bom/` - BOM export functionality
-- **Preview API**: `app/api/orders/preview-bom/` - BOM preview before order submission
+### BOM Generation (Native TypeScript)
+- **Native Service**: `lib/bomService.native.ts` - Complete TypeScript implementation with all business rules
+- **API**: `app/api/bom/generate` - Native Next.js BOM generation with authentication
+- **Preview API**: `app/api/orders/preview-bom/` - Native BOM preview before order submission
 - **Components**: `components/order/BOMViewer.tsx` - Unified BOM display with quantity aggregation
-- **Debug Helper**: `components/debug/BOMDebugHelper.tsx` - Real-time BOM preview during configuration
-- **Legacy**: `bom-generator.js` - Original BOM logic
+- **Debug Helper**: `components/debug/BOMDebugHelper.tsx` - Real-time BOM preview using native API
+- **Legacy**: `src/services/bomService.js`, `bom-generator.js` - Original implementations (can be removed)
 
 ### Quality Control System
 - **Models**: QcFormTemplate, OrderQcResult in Prisma schema
@@ -204,13 +228,32 @@ The configurator service uses specific assembly IDs that must match the database
 
 If legs/feet don't appear in configurator, verify these assembly IDs exist in database.
 
-### Pegboard Kit System (138 Combinations)
-The system includes 138 pegboard kit combinations following the pattern:
+### Pegboard Kit System (154 Total Combinations)
+The system includes multiple pegboard kit types for different use cases:
+
+#### Size-Only Kits (16 combinations)
+- **Pattern**: `T2-ADW-PB-{size}-{type}-KIT` (no color specification)
+- **Usage**: Default kits when no color is selected
+- **Example**: `T2-ADW-PB-6036-PERF-KIT`, `T2-ADW-PB-4836-SOLID-KIT`
+- **Total**: 8 sizes × 2 types = 16 combinations
+
+#### Colored Kits (128 combinations)  
 - **Pattern**: `T2-ADW-PB-{size}-{color}-{type}-KIT`
+- **Usage**: When specific color is selected
+- **Example**: `T2-ADW-PB-6036-GREEN-PERF-KIT`, `T2-ADW-PB-4836-BLUE-SOLID-KIT`
 - **Sizes**: 8 options (3436, 4836, 6036, 7236, 8436, 9636, 10836, 12036)
 - **Colors**: 8 options (GREEN, BLACK, YELLOW, GREY, RED, BLUE, ORANGE, WHITE)
 - **Types**: 2 options (PERF, SOLID)
-- **Total**: 8 × 8 × 2 = 128 combinations + 10 existing accessories
+- **Total**: 8 × 8 × 2 = 128 combinations
+
+#### Legacy Generic Kits (2 combinations)
+- **T2-ADW-PB-PERF-KIT**, **T2-ADW-PB-SOLID-KIT** (fallback only)
+
+#### Dynamic Selection Logic
+- **No color selected**: Uses size-only kit based on sink length
+- **Color selected**: Uses colored kit with specific color and size
+- **Size auto-calculated**: Based on sink length coverage ranges
+- **Fallback**: Legacy generic kits if specific kits unavailable
 
 ### Sink Length Validation
 - **Minimum length**: 48 inches (enforced in both frontend and backend)
@@ -244,7 +287,7 @@ Node.js backend loads environment files in precedence order:
 - **Role-based access**: 6 user roles with hierarchical permissions
 
 ### Data Management
-- **Seeding**: Comprehensive seeding with verification (284 parts, 318 assemblies, 138 pegboard kits)
+- **Seeding**: Comprehensive seeding with verification (284 parts, 334 assemblies, 154 pegboard kits)
 - **Migrations**: 9 database migrations tracking schema evolution
 - **Inventory**: Full inventory management with transactions and audit logging
 - **File Uploads**: Secure file upload system with metadata tracking

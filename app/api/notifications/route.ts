@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
-import notificationService from '@/src/services/notificationService'
+import notificationService from '@/lib/notificationService.native'
 
 // GET /api/notifications - Fetch notifications for authenticated user
 export async function GET(request: NextRequest) {

@@ -2,57 +2,57 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { plainNodeApiClient } from "@/lib/api"
+import { signIn, useSession } from "next-auth/react"
 
 export default function DebugPage() {
   const [result, setResult] = useState("")
   const [error, setError] = useState("")
+  const { data: session, status } = useSession()
 
   const testLogin = async () => {
     try {
       setResult("")
       setError("")
       
-      console.log("Testing login via frontend API client...")
+      console.log("Testing NextAuth login...")
       
-      const response = await plainNodeApiClient.post('/auth/login', {
-        username: 'admin',
-        password: 'admin123'
+      const result = await signIn('credentials', {
+        email: 'admin@torvan.com',
+        password: 'password123',
+        redirect: false
       })
 
-      console.log("Login response:", response)
-      setResult(JSON.stringify(response.data, null, 2))
+      console.log("Login result:", result)
+      setResult(JSON.stringify(result, null, 2))
       
     } catch (err: any) {
       console.error("Login error:", err)
-      setError(`Status: ${err.response?.status}, Error: ${err.response?.data?.error || err.message}`)
+      setError(`Error: ${err.message}`)
     }
   }
 
-  const testDirect = async () => {
+  const testSession = async () => {
     try {
       setResult("")
       setError("")
       
-      console.log("Testing direct fetch...")
+      console.log("Testing current session...")
       
-      const response = await fetch('http://localhost:3004/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: 'admin',
-          password: 'admin123'
-        })
-      })
-
-      const data = await response.text()
-      console.log("Direct fetch response:", response.status, data)
-      setResult(`Status: ${response.status}, Data: ${data}`)
+      if (session) {
+        setResult(JSON.stringify({
+          status: "authenticated",
+          user: session.user,
+          expires: session.expires
+        }, null, 2))
+      } else {
+        setResult(JSON.stringify({
+          status: status,
+          message: "No active session"
+        }, null, 2))
+      }
       
     } catch (err: any) {
-      console.error("Direct fetch error:", err)
+      console.error("Session error:", err)
       setError(err.message)
     }
   }
@@ -63,10 +63,10 @@ export default function DebugPage() {
       
       <div className="space-y-4 mb-6">
         <Button onClick={testLogin} className="mr-4">
-          Test Login (Via API Client)
+          Test NextAuth Login
         </Button>
-        <Button onClick={testDirect} variant="outline">
-          Test Direct Fetch
+        <Button onClick={testSession} variant="outline">
+          Test Current Session
         </Button>
       </div>
 

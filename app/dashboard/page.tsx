@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Package, Clipboard, Settings, Wrench } from "lucide-react"
 
@@ -34,6 +34,7 @@ const roleDescriptions = {
 export default function DashboardPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
+  const [loadingTimeout, setLoadingTimeout] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -41,7 +42,23 @@ export default function DashboardPage() {
     }
   }, [status, router])
 
-  if (status === 'loading') {
+  // Add timeout protection for loading state
+  useEffect(() => {
+    console.log('Dashboard: session status:', status, 'session:', session)
+    
+    // Set timeout regardless of status to catch stuck loading states
+    const timeout = setTimeout(() => {
+      if (status === 'loading') {
+        console.warn('Dashboard loading timeout - redirecting to login')
+        setLoadingTimeout(true)
+        router.push('/login')
+      }
+    }, 10000) // 10 second timeout
+
+    return () => clearTimeout(timeout)
+  }, [status, router, session])
+
+  if (status === 'loading' && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
@@ -51,6 +68,9 @@ export default function DashboardPage() {
           <h1 className="text-xl font-semibold text-slate-900 mb-2">
             Loading Dashboard...
           </h1>
+          <p className="text-sm text-slate-600 mt-2">
+            If this takes more than 10 seconds, you'll be redirected to login
+          </p>
         </div>
       </div>
     )

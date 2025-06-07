@@ -8,18 +8,18 @@ datasource db {
 }
 
 model Part {
-  partId                 String               @id @unique @map("PartID")
+  partId                 String              @id @unique @map("PartID")
   name                   String
   manufacturerPartNumber String?
   type                   PartType
   status                 Status
   photoURL               String?
   technicalDrawingURL    String?
-  createdAt              DateTime             @default(now())
-  updatedAt              DateTime             @updatedAt
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
   assemblyComponents     AssemblyComponent[]
-  serviceOrderItems      ServiceOrderItem[]   @relation("PartServiceOrders")
   inventoryItems         InventoryItem[]
+  serviceOrderItems      ServiceOrderItem[]  @relation("PartServiceOrders")
 }
 
 model Assembly {
@@ -73,32 +73,32 @@ model Subcategory {
 }
 
 model User {
-  id                   String                  @id @default(cuid())
-  username             String                  @unique
-  email                String                  @unique
-  passwordHash         String
-  fullName             String
-  role                 UserRole
-  isActive             Boolean                 @default(true)
-  initials             String
-  lastLoginAt          DateTime?
-  loginAttempts        Int                     @default(0)
-  lockedUntil          DateTime?
-  assignedTaskIds      String[]                @default([])
-  createdAt            DateTime                @default(now())
-  updatedAt            DateTime                @updatedAt
-  notifications        Notification[]          @relation("UserNotifications")
-  systemNotifications  SystemNotification[]    @relation("UserSystemNotifications")
-  createdOrders        Order[]                 @relation("OrderCreatedBy")
-  historyLogs          OrderHistoryLog[]       @relation("UserHistoryLogs")
-  qcResults            OrderQcResult[]         @relation("UserQcResults")
-  serviceOrders        ServiceOrder[]          @relation("UserServiceOrders")
-  assignedTasks        Task[]                  @relation("TaskAssignee")
-  taskNotes            TaskNote[]              @relation("TaskNoteAuthor")
-  uploadedFiles        FileUpload[]            @relation("UserFileUploads")
-  auditLogs            AuditLog[]              @relation("UserAuditLogs")
+  id                    String                 @id @default(cuid())
+  username              String                 @unique
+  email                 String                 @unique
+  passwordHash          String
+  fullName              String
+  role                  UserRole
+  isActive              Boolean                @default(true)
+  initials              String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  lastLoginAt           DateTime?
+  lockedUntil           DateTime?
+  loginAttempts         Int                    @default(0)
+  assignedTaskIds       String[]               @default([])
+  auditLogs             AuditLog[]             @relation("UserAuditLogs")
+  uploadedFiles         FileUpload[]           @relation("UserFileUploads")
+  inventoryUpdates      InventoryItem[]        @relation("UserInventoryUpdates")
   inventoryTransactions InventoryTransaction[] @relation("UserInventoryTransactions")
-  inventoryUpdates     InventoryItem[]         @relation("UserInventoryUpdates")
+  notifications         Notification[]         @relation("UserNotifications")
+  createdOrders         Order[]                @relation("OrderCreatedBy")
+  historyLogs           OrderHistoryLog[]      @relation("UserHistoryLogs")
+  qcResults             OrderQcResult[]        @relation("UserQcResults")
+  serviceOrders         ServiceOrder[]         @relation("UserServiceOrders")
+  systemNotifications   SystemNotification[]   @relation("UserSystemNotifications")
+  assignedTasks         Task[]                 @relation("TaskAssignee")
+  taskNotes             TaskNote[]             @relation("TaskNoteAuthor")
 }
 
 model Order {
@@ -118,17 +118,17 @@ model Order {
   createdById           String
   associatedDocuments   AssociatedDocument[]
   basinConfigurations   BasinConfiguration[]
-  sinkConfigurations    SinkConfiguration[]
   generatedBoms         Bom[]                  @relation("OrderBoms")
   faucetConfigurations  FaucetConfiguration[]
+  inventoryTransactions InventoryTransaction[]
   notifications         Notification[]
   createdBy             User                   @relation("OrderCreatedBy", fields: [createdById], references: [id])
   historyLogs           OrderHistoryLog[]
   qcResults             OrderQcResult[]
   selectedAccessories   SelectedAccessory[]
+  sinkConfigurations    SinkConfiguration[]
   sprayerConfigurations SprayerConfiguration[]
   tasks                 Task[]
-  inventoryTransactions InventoryTransaction[]
 
   @@unique([poNumber, buildNumbers])
 }
@@ -139,11 +139,11 @@ model BasinConfiguration {
   basinTypeId         String
   basinSizePartNumber String?
   basinCount          Int      @default(1)
-  customWidth         Float?
-  customLength        Float?
-  customDepth         Float?
   addonIds            String[]
   orderId             String
+  customDepth         Float?
+  customLength        Float?
+  customWidth         Float?
   order               Order    @relation(fields: [orderId], references: [id])
 }
 
@@ -184,9 +184,9 @@ model SinkConfiguration {
   drawersAndCompartments    String[] @default([])
   controlBoxId              String?
   orderId                   String
-  order                     Order    @relation(fields: [orderId], references: [id])
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
+  order                     Order    @relation(fields: [orderId], references: [id])
 }
 
 model SelectedAccessory {
@@ -312,6 +312,230 @@ model OrderQcItemResult {
   qcFormTemplateItem   QcFormTemplateItem @relation(fields: [qcFormTemplateItemId], references: [id])
 }
 
+model ServiceOrder {
+  id               String             @id @default(cuid())
+  requestedById    String
+  requestTimestamp DateTime           @default(now())
+  status           ServiceOrderStatus @default(PENDING_APPROVAL)
+  notes            String?
+  procurementNotes String?
+  updatedAt        DateTime           @updatedAt
+  requestedBy      User               @relation("UserServiceOrders", fields: [requestedById], references: [id])
+  items            ServiceOrderItem[]
+}
+
+model ServiceOrderItem {
+  id                String       @id @default(cuid())
+  serviceOrderId    String
+  partId            String
+  quantityRequested Int
+  quantityApproved  Int?
+  notes             String?
+  part              Part         @relation("PartServiceOrders", fields: [partId], references: [partId])
+  serviceOrder      ServiceOrder @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
+}
+
+model WorkInstruction {
+  id               String                @id @default(cuid())
+  title            String
+  description      String?
+  assemblyId       String?
+  version          String                @default("1.0")
+  isActive         Boolean               @default(true)
+  estimatedMinutes Int?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  tasks            Task[]
+  steps            WorkInstructionStep[]
+}
+
+model WorkInstructionStep {
+  id                String          @id @default(cuid())
+  workInstructionId String
+  stepNumber        Int
+  title             String
+  description       String
+  estimatedMinutes  Int?
+  images            String[]
+  videos            String[]
+  checkpoints       String[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  requiredTools     TaskTool[]
+  workInstruction   WorkInstruction @relation(fields: [workInstructionId], references: [id], onDelete: Cascade)
+
+  @@unique([workInstructionId, stepNumber])
+  @@index([workInstructionId, stepNumber])
+}
+
+model Tool {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  category    String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  tasks       TaskTool[]
+}
+
+model Task {
+  id                    String                 @id @default(cuid())
+  orderId               String
+  workInstructionId     String?
+  title                 String
+  description           String?
+  status                TaskStatus             @default(PENDING)
+  priority              TaskPriority           @default(MEDIUM)
+  assignedToId          String?
+  estimatedMinutes      Int?
+  actualMinutes         Int?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  inventoryTransactions InventoryTransaction[]
+  assignedTo            User?                  @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  order                 Order                  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  workInstruction       WorkInstruction?       @relation(fields: [workInstructionId], references: [id])
+  dependents            TaskDependency[]       @relation("DependentTasks")
+  dependencies          TaskDependency[]       @relation("TaskDependencies")
+  notes                 TaskNote[]
+  tools                 TaskTool[]
+
+  @@index([orderId, status])
+  @@index([assignedToId, status])
+  @@index([status, priority])
+}
+
+model TaskDependency {
+  id          String   @id @default(cuid())
+  taskId      String
+  dependsOnId String
+  createdAt   DateTime @default(now())
+  dependsOn   Task     @relation("DependentTasks", fields: [dependsOnId], references: [id], onDelete: Cascade)
+  task        Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, dependsOnId])
+  @@index([taskId, dependsOnId])
+}
+
+model TaskTool {
+  id     String               @id @default(cuid())
+  taskId String?
+  stepId String?
+  toolId String
+  step   WorkInstructionStep? @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  task   Task?                @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tool   Tool                 @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, toolId])
+  @@unique([stepId, toolId])
+}
+
+model TaskNote {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+  author    User     @relation("TaskNoteAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+}
+
+model SystemNotification {
+  id        String               @id @default(cuid())
+  userId    String?
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean              @default(false)
+  priority  NotificationPriority @default(NORMAL)
+  expiresAt DateTime?
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  user      User?                @relation("UserSystemNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([type, createdAt])
+}
+
+model FileUpload {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  uploadedById String
+  isPublic     Boolean  @default(false)
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  uploadedBy   User     @relation("UserFileUploads", fields: [uploadedById], references: [id])
+
+  @@index([uploadedById, createdAt])
+}
+
+model InventoryItem {
+  id                String                 @id @default(cuid())
+  partId            String?
+  assemblyId        String?
+  location          String?
+  quantityOnHand    Int                    @default(0)
+  quantityReserved  Int                    @default(0)
+  quantityAvailable Int                    @default(0)
+  reorderPoint      Int?
+  maxStock          Int?
+  lastUpdated       DateTime               @default(now())
+  updatedById       String
+  part              Part?                  @relation(fields: [partId], references: [partId], onDelete: Cascade)
+  updatedBy         User                   @relation("UserInventoryUpdates", fields: [updatedById], references: [id])
+  transactions      InventoryTransaction[]
+
+  @@unique([partId, assemblyId, location])
+  @@index([partId, assemblyId])
+}
+
+model InventoryTransaction {
+  id              String                   @id @default(cuid())
+  inventoryItemId String
+  type            InventoryTransactionType
+  quantity        Int
+  reason          String?
+  orderId         String?
+  taskId          String?
+  performedById   String
+  createdAt       DateTime                 @default(now())
+  inventoryItem   InventoryItem            @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  order           Order?                   @relation(fields: [orderId], references: [id])
+  performedBy     User                     @relation("UserInventoryTransactions", fields: [performedById], references: [id])
+  task            Task?                    @relation(fields: [taskId], references: [id])
+
+  @@index([inventoryItemId, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  userAgent  String?
+  sessionId  String?
+  createdAt  DateTime @default(now())
+  user       User?    @relation("UserAuditLogs", fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+}
+
 enum PartType {
   COMPONENT
   MATERIAL
@@ -368,33 +592,6 @@ enum QcStatus {
   REQUIRES_REVIEW
 }
 
-model ServiceOrder {
-  id                    String              @id @default(cuid())
-  requestedById         String
-  requestTimestamp      DateTime            @default(now())
-  status                ServiceOrderStatus  @default(PENDING_APPROVAL)
-  notes                 String?
-  procurementNotes      String?
-  updatedAt             DateTime            @updatedAt
-  
-  // Relations
-  requestedBy           User                @relation("UserServiceOrders", fields: [requestedById], references: [id])
-  items                 ServiceOrderItem[]
-}
-
-model ServiceOrderItem {
-  id                    String        @id @default(cuid())
-  serviceOrderId        String
-  partId                String  
-  quantityRequested     Int
-  quantityApproved      Int?
-  notes                 String?
-  
-  // Relations
-  serviceOrder          ServiceOrder  @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
-  part                  Part          @relation("PartServiceOrders", fields: [partId], references: [partId])
-}
-
 enum ServiceOrderStatus {
   PENDING_APPROVAL
   APPROVED
@@ -402,211 +599,6 @@ enum ServiceOrderStatus {
   ORDERED
   RECEIVED
 }
-
-// New models for enhanced functionality
-
-model WorkInstruction {
-  id               String                 @id @default(cuid())
-  title            String
-  description      String?
-  assemblyId       String?
-  version          String                 @default("1.0")
-  isActive         Boolean                @default(true)
-  estimatedMinutes Int?
-  createdAt        DateTime               @default(now())
-  updatedAt        DateTime               @updatedAt
-  steps            WorkInstructionStep[]
-  tasks            Task[]
-}
-
-model WorkInstructionStep {
-  id                String          @id @default(cuid())
-  workInstructionId String
-  stepNumber        Int
-  title             String
-  description       String
-  estimatedMinutes  Int?
-  images            String[]
-  videos            String[]
-  checkpoints       String[]
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  workInstruction   WorkInstruction @relation(fields: [workInstructionId], references: [id], onDelete: Cascade)
-  requiredTools     TaskTool[]
-
-  @@unique([workInstructionId, stepNumber])
-  @@index([workInstructionId, stepNumber])
-}
-
-model Tool {
-  id          String     @id @default(cuid())
-  name        String
-  description String?
-  category    String
-  isActive    Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  tasks       TaskTool[]
-}
-
-model Task {
-  id                String            @id @default(cuid())
-  orderId           String
-  workInstructionId String?
-  title             String
-  description       String?
-  status            TaskStatus        @default(PENDING)
-  priority          TaskPriority      @default(MEDIUM)
-  assignedToId      String?
-  estimatedMinutes  Int?
-  actualMinutes     Int?
-  startedAt         DateTime?
-  completedAt       DateTime?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  order             Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  workInstruction   WorkInstruction?  @relation(fields: [workInstructionId], references: [id], onDelete: SetNull)
-  assignedTo        User?             @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  dependencies      TaskDependency[]  @relation("TaskDependencies")
-  dependents        TaskDependency[]  @relation("DependentTasks")
-  tools             TaskTool[]
-  notes             TaskNote[]
-  inventoryTransactions InventoryTransaction[]
-
-  @@index([orderId, status])
-  @@index([assignedToId, status])
-  @@index([status, priority])
-}
-
-model TaskDependency {
-  id          String   @id @default(cuid())
-  taskId      String
-  dependsOnId String
-  createdAt   DateTime @default(now())
-  task        Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
-  dependsOn   Task     @relation("DependentTasks", fields: [dependsOnId], references: [id], onDelete: Cascade)
-
-  @@unique([taskId, dependsOnId])
-  @@index([taskId, dependsOnId])
-}
-
-model TaskTool {
-  id     String                @id @default(cuid())
-  taskId String?
-  stepId String?
-  toolId String
-  task   Task?                 @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  step   WorkInstructionStep?  @relation(fields: [stepId], references: [id], onDelete: Cascade)
-  tool   Tool                  @relation(fields: [toolId], references: [id], onDelete: Cascade)
-
-  @@unique([taskId, toolId])
-  @@unique([stepId, toolId])
-}
-
-model TaskNote {
-  id        String   @id @default(cuid())
-  taskId    String
-  authorId  String
-  content   String
-  createdAt DateTime @default(now())
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  author    User     @relation("TaskNoteAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-
-  @@index([taskId, createdAt])
-}
-
-model SystemNotification {
-  id        String               @id @default(cuid())
-  userId    String?
-  type      NotificationType
-  title     String
-  message   String
-  data      Json?
-  isRead    Boolean              @default(false)
-  priority  NotificationPriority @default(NORMAL)
-  expiresAt DateTime?
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  user      User?                @relation("UserSystemNotifications", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead])
-  @@index([type, createdAt])
-}
-
-model FileUpload {
-  id           String   @id @default(cuid())
-  filename     String
-  originalName String
-  mimeType     String
-  size         Int
-  path         String
-  uploadedById String
-  isPublic     Boolean  @default(false)
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  uploadedBy   User     @relation("UserFileUploads", fields: [uploadedById], references: [id], onDelete: Restrict)
-
-  @@index([uploadedById, createdAt])
-}
-
-model InventoryItem {
-  id                 String                 @id @default(cuid())
-  partId             String?
-  assemblyId         String?
-  location           String?
-  quantityOnHand     Int                    @default(0)
-  quantityReserved   Int                    @default(0)
-  quantityAvailable  Int                    @default(0)
-  reorderPoint       Int?
-  maxStock           Int?
-  lastUpdated        DateTime               @default(now())
-  updatedById        String
-  part               Part?                  @relation(fields: [partId], references: [partId], onDelete: Cascade)
-  updatedBy          User                   @relation("UserInventoryUpdates", fields: [updatedById], references: [id], onDelete: Restrict)
-  transactions       InventoryTransaction[]
-
-  @@unique([partId, assemblyId, location])
-  @@index([partId, assemblyId])
-}
-
-model InventoryTransaction {
-  id              String                    @id @default(cuid())
-  inventoryItemId String
-  type            InventoryTransactionType
-  quantity        Int
-  reason          String?
-  orderId         String?
-  taskId          String?
-  performedById   String
-  createdAt       DateTime                  @default(now())
-  inventoryItem   InventoryItem             @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
-  order           Order?                    @relation(fields: [orderId], references: [id], onDelete: SetNull)
-  task            Task?                     @relation(fields: [taskId], references: [id], onDelete: SetNull)
-  performedBy     User                      @relation("UserInventoryTransactions", fields: [performedById], references: [id], onDelete: Restrict)
-
-  @@index([inventoryItemId, createdAt])
-}
-
-model AuditLog {
-  id         String   @id @default(cuid())
-  userId     String?
-  action     String
-  entityType String
-  entityId   String
-  oldValues  Json?
-  newValues  Json?
-  ipAddress  String?
-  userAgent  String?
-  sessionId  String?
-  createdAt  DateTime @default(now())
-  user       User?    @relation("UserAuditLogs", fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([entityType, entityId])
-  @@index([userId, createdAt])
-}
-
-// Additional enums for new functionality
 
 enum TaskStatus {
   PENDING

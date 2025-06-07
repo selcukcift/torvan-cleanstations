@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// This endpoint is a placeholder for Next.js API routes
-// The actual authentication is handled by the Plain Node.js backend on port 3001
-// This route could be used for logout or client-side auth state management in the future
+// This endpoint is handled by NextAuth.js
+// Redirect to the appropriate NextAuth endpoint
 
 export async function POST(_request: NextRequest) {
   return NextResponse.json(
     { 
-      error: 'Authentication is handled by the backend API on port 3001',
-      redirectTo: 'http://localhost:3001/api/auth/login'
+      message: 'Authentication is handled by NextAuth.js',
+      redirectTo: '/api/auth/signin'
     }, 
-    { status: 501 }
+    { status: 302 }
   );
 }
 
@@ -18,7 +17,12 @@ export async function GET(_request: NextRequest) {
   return NextResponse.json(
     { 
       message: 'Authentication status endpoint',
-      authBackend: 'http://localhost:3001/api/auth'
+      authProvider: 'NextAuth.js',
+      endpoints: {
+        signin: '/api/auth/signin',
+        signout: '/api/auth/signout',
+        session: '/api/auth/session'
+      }
     }, 
     { status: 200 }
   );
