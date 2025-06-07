@@ -15,6 +15,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,23 +39,39 @@ import {
   MoreHorizontal,
   ShoppingCart,
   Loader2,
-  TruckIcon
+  TruckIcon,
+  CheckCircle,
+  Send
 } from "lucide-react"
 import { format } from "date-fns"
+import { BOMViewer } from "@/components/order/BOMViewer"
 
 export function ProcurementSpecialistDashboard() {
   const router = useRouter()
   const { toast } = useToast()
   const [orders, setOrders] = useState<any[]>([])
+  const [serviceOrders, setServiceOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [serviceLoading, setServiceLoading] = useState(true)
+  const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [bomData, setBomData] = useState<any>(null)
+  const [bomLoading, setBomLoading] = useState(false)
+  const [showBomDialog, setShowBomDialog] = useState(false)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("orders")
   const [stats, setStats] = useState({
     newOrders: 0,
     awaitingParts: 0,
     urgentOrders: 0
   })
+  const [serviceStats, setServiceStats] = useState({
+    pendingRequests: 0,
+    urgentRequests: 0
+  })
 
   useEffect(() => {
     fetchOrders()
+    fetchServiceOrders()
   }, [])
 
   const fetchOrders = async () => {
@@ -56,9 +81,9 @@ export function ProcurementSpecialistDashboard() {
       const response = await nextJsApiClient.get("/orders?limit=50")
       
       if (response.data.success) {
-        // Filter for procurement-relevant statuses
+        // Filter for procurement-relevant statuses (Sprint 4.1 requirement)
         const procurementOrders = response.data.data.filter((order: any) => 
-          ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus)
+          ["OrderCreated", "PartsSent"].includes(order.orderStatus)
         )
         
         setOrders(procurementOrders)
@@ -84,10 +109,10 @@ export function ProcurementSpecialistDashboard() {
 
     const today = new Date()
     ordersList.forEach(order => {
-      if (order.orderStatus === "ORDER_CREATED") {
+      if (order.orderStatus === "OrderCreated") {
         stats.newOrders++
       }
-      if (order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL") {
+      if (order.orderStatus === "PartsSent") {
         stats.awaitingParts++
       }
       
@@ -102,30 +127,179 @@ export function ProcurementSpecialistDashboard() {
     setStats(stats)
   }
 
+  const fetchBOM = async (order: any) => {
+    setBomLoading(true)
+    try {
+      const response = await nextJsApiClient.post("/orders/preview-bom", {
+        sinkModel: order.configurations?.[order.buildNumbers[0]]?.sinkModelId || "MDRD_B2_ESINK",
+        quantity: order.buildNumbers?.length || 1,
+        configurations: order.configurations || {},
+        accessories: order.accessories || {}
+      })
+      
+      if (response.data.success) {
+        setBomData(response.data.data)
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to load BOM data",
+          variant: "destructive"
+        })
+      }
+    } catch (error: any) {
+      console.error("Error fetching BOM:", error)
+      toast({
+        title: "Error",
+        description: "Failed to load BOM data",
+        variant: "destructive"
+      })
+    } finally {
+      setBomLoading(false)
+    }
+  }
+
+  const handleViewBOM = async (order: any) => {
+    setSelectedOrder(order)
+    setShowBomDialog(true)
+    await fetchBOM(order)
+  }
+
   const navigateToOrder = (orderId: string) => {
     router.push(`/orders/${orderId}`)
   }
 
-  const handleUpdateStatus = async (orderId: string, newStatus: string) => {
+  const handleApproveBOMForProduction = async (orderId: string) => {
+    setActionLoading(orderId)
     try {
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
-        newStatus,
-        notes: "Parts procurement status updated"
+        newStatus: "PartsSent",
+        notes: "BOM approved for production by procurement specialist"
       })
       
       if (response.data.success) {
         toast({
-          title: "Success",
-          description: "Order status updated successfully"
+          title: "BOM Approved",
+          description: "BOM approved for production and parts procurement initiated"
+        })
+        setShowBomDialog(false)
+        fetchOrders() // Refresh the list
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to approve BOM",
+        variant: "destructive"
+      })
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleConfirmPartsArrival = async (orderId: string) => {
+    setActionLoading(orderId)
+    try {
+      const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
+        newStatus: "ReadyForPreQC",
+        notes: "Parts arrival confirmed by procurement specialist"
+      })
+      
+      if (response.data.success) {
+        toast({
+          title: "Parts Confirmed",
+          description: "Parts arrival confirmed - order ready for Pre-QC"
         })
         fetchOrders() // Refresh the list
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to update status",
+        description: error.response?.data?.message || "Failed to confirm parts arrival",
         variant: "destructive"
       })
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const fetchServiceOrders = async () => {
+    setServiceLoading(true)
+    try {
+      const response = await nextJsApiClient.get("/service-orders?limit=50")
+      
+      if (response.data.success) {
+        // Filter for pending service orders
+        const pendingServiceOrders = response.data.data.filter((serviceOrder: any) => 
+          serviceOrder.status === "PENDING"
+        )
+        
+        setServiceOrders(pendingServiceOrders)
+        calculateServiceStats(pendingServiceOrders)
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch service orders",
+        variant: "destructive"
+      })
+    } finally {
+      setServiceLoading(false)
+    }
+  }
+
+  const calculateServiceStats = (serviceOrdersList: any[]) => {
+    const stats = {
+      pendingRequests: serviceOrdersList.length,
+      urgentRequests: serviceOrdersList.filter(order => order.priority === "HIGH" || order.priority === "URGENT").length
+    }
+    setServiceStats(stats)
+  }
+
+  const handleApproveServiceOrder = async (serviceOrderId: string) => {
+    setActionLoading(serviceOrderId)
+    try {
+      const response = await nextJsApiClient.post(`/api/v1/service/orders/${serviceOrderId}/approve`)
+      
+      if (response.data.success) {
+        toast({
+          title: "Service Order Approved",
+          description: "Service order has been approved and fulfilled"
+        })
+        fetchServiceOrders() // Refresh the list
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to approve service order",
+        variant: "destructive"
+      })
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleRejectServiceOrder = async (serviceOrderId: string) => {
+    setActionLoading(serviceOrderId)
+    try {
+      const response = await nextJsApiClient.put(`/service-orders/${serviceOrderId}`, {
+        status: "REJECTED",
+        notes: "Rejected by procurement specialist"
+      })
+      
+      if (response.data.success) {
+        toast({
+          title: "Service Order Rejected",
+          description: "Service order has been rejected"
+        })
+        fetchServiceOrders() // Refresh the list
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error", 
+        description: error.response?.data?.message || "Failed to reject service order",
+        variant: "destructive"
+      })
+    } finally {
+      setActionLoading(null)
     }
   }
 
@@ -138,7 +312,7 @@ export function ProcurementSpecialistDashboard() {
       </div>
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-slate-600">
@@ -183,17 +357,55 @@ export function ProcurementSpecialistDashboard() {
             <p className="text-xs text-slate-500 mt-1">Due within 14 days</p>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              Service Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold">{serviceStats.pendingRequests}</span>
+              <Package className="w-8 h-8 text-green-500 opacity-20" />
+            </div>
+            <p className="text-xs text-slate-500 mt-1">Pending approval</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              Urgent Service
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold">{serviceStats.urgentRequests}</span>
+              <Send className="w-8 h-8 text-orange-500 opacity-20" />
+            </div>
+            <p className="text-xs text-slate-500 mt-1">High priority requests</p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Orders Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Orders Requiring Procurement</CardTitle>
-          <CardDescription>
-            Orders that need parts ordering or are awaiting parts arrival
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="orders">Production Orders</TabsTrigger>
+          <TabsTrigger value="service">Service Requests</TabsTrigger>
+        </TabsList>
+        
+        {/* Production Orders Tab */}
+        <TabsContent value="orders" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Orders Requiring Procurement</CardTitle>
+              <CardDescription>
+                Orders that need parts ordering or are awaiting parts arrival
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2 className="w-8 h-8 animate-spin" />
@@ -234,11 +446,11 @@ export function ProcurementSpecialistDashboard() {
                       </TableCell>
                       <TableCell>
                         <Badge className={
-                          order.orderStatus === "ORDER_CREATED" 
+                          order.orderStatus === "OrderCreated" 
                             ? "bg-blue-100 text-blue-700" 
                             : "bg-purple-100 text-purple-700"
                         }>
-                          {order.orderStatus === "ORDER_CREATED" ? "New Order" : "Parts Sent"}
+                          {order.orderStatus === "OrderCreated" ? "New Order" : "Parts Sent"}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -247,7 +459,7 @@ export function ProcurementSpecialistDashboard() {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <Button variant="link" size="sm" onClick={() => navigateToOrder(order.id)}>
+                        <Button variant="link" size="sm" onClick={() => handleViewBOM(order)}>
                           View BOM
                         </Button>
                       </TableCell>
@@ -263,24 +475,26 @@ export function ProcurementSpecialistDashboard() {
                               <Eye className="w-4 h-4 mr-2" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigateToOrder(order.id)}>
+                            <DropdownMenuItem onClick={() => handleViewBOM(order)}>
                               <FileText className="w-4 h-4 mr-2" />
-                              View Full BOM
+                              View BOM & Approve
                             </DropdownMenuItem>
-                            {order.orderStatus === "ORDER_CREATED" && (
+                            {order.orderStatus === "OrderCreated" && (
                               <DropdownMenuItem 
-                                onClick={() => handleUpdateStatus(order.id, "PARTS_SENT_WAITING_ARRIVAL")}
+                                onClick={() => handleApproveBOMForProduction(order.id)}
+                                disabled={actionLoading === order.id}
                               >
-                                <TruckIcon className="w-4 h-4 mr-2" />
-                                Mark Parts Sent
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Approve BOM for Production
                               </DropdownMenuItem>
                             )}
-                            {order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL" && (
+                            {order.orderStatus === "PartsSent" && (
                               <DropdownMenuItem 
-                                onClick={() => handleUpdateStatus(order.id, "READY_FOR_PRE_QC")}
+                                onClick={() => handleConfirmPartsArrival(order.id)}
+                                disabled={actionLoading === order.id}
                               >
                                 <Package className="w-4 h-4 mr-2" />
-                                Mark Parts Arrived
+                                Confirm Parts Arrival
                               </DropdownMenuItem>
                             )}
                           </DropdownMenuContent>
@@ -294,21 +508,185 @@ export function ProcurementSpecialistDashboard() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+        
+        {/* Service Requests Tab */}
+        <TabsContent value="service" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Service Part Requests</CardTitle>
+              <CardDescription>
+                Pending service orders requiring procurement approval
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {serviceLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                </div>
+              ) : serviceOrders.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600">No pending service requests</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Service Order ID</TableHead>
+                      <TableHead>Requested By</TableHead>
+                      <TableHead>Request Date</TableHead>
+                      <TableHead>Priority</TableHead>
+                      <TableHead>Items</TableHead>
+                      <TableHead>Estimated Cost</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {serviceOrders.map((serviceOrder) => (
+                      <TableRow key={serviceOrder.id}>
+                        <TableCell className="font-medium">{serviceOrder.id.slice(-8)}</TableCell>
+                        <TableCell>{serviceOrder.requestedBy?.fullName || "Unknown"}</TableCell>
+                        <TableCell>
+                          {format(new Date(serviceOrder.createdAt), "MMM dd, yyyy")}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={
+                            serviceOrder.priority === "URGENT" 
+                              ? "bg-red-100 text-red-700" 
+                              : serviceOrder.priority === "HIGH"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-blue-100 text-blue-700"
+                          }>
+                            {serviceOrder.priority || "MEDIUM"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {serviceOrder.serviceOrderItems?.length || 0} items
+                        </TableCell>
+                        <TableCell>
+                          ${serviceOrder.estimatedCost?.toFixed(2) || "TBD"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleApproveServiceOrder(serviceOrder.id)}
+                              disabled={actionLoading === serviceOrder.id}
+                            >
+                              {actionLoading === serviceOrder.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  Approve & Fulfill
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRejectServiceOrder(serviceOrder.id)}
+                              disabled={actionLoading === serviceOrder.id}
+                            >
+                              Reject
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-      {/* Future Enhancement Placeholder */}
-      <Card className="border-dashed">
-        <CardHeader>
-          <CardTitle className="text-lg">Service Order Requests</CardTitle>
-          <CardDescription>
-            Future feature for managing service part requests
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-500">
-            This section will display service order requests when implemented.
-          </p>
-        </CardContent>
-      </Card>
+      {/* BOM Approval Dialog */}
+      <Dialog open={showBomDialog} onOpenChange={setShowBomDialog}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              BOM Review & Approval - PO: {selectedOrder?.poNumber}
+            </DialogTitle>
+            <DialogDescription>
+              Review the Bill of Materials for this order and approve for production
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {selectedOrder && (
+              <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
+                <div>
+                  <p className="text-sm font-medium">Customer:</p>
+                  <p className="text-sm text-muted-foreground">{selectedOrder.customerName}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Want Date:</p>
+                  <p className="text-sm text-muted-foreground">
+                    {format(new Date(selectedOrder.wantDate), "MMM dd, yyyy")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Order Date:</p>
+                  <p className="text-sm text-muted-foreground">
+                    {format(new Date(selectedOrder.createdAt), "MMM dd, yyyy")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Build Quantity:</p>
+                  <p className="text-sm text-muted-foreground">{selectedOrder.buildNumbers?.length || 1}</p>
+                </div>
+              </div>
+            )}
+            
+            {bomLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin" />
+                <span className="ml-2">Loading BOM data...</span>
+              </div>
+            ) : bomData ? (
+              <BOMViewer bomData={bomData} />
+            ) : (
+              <div className="text-center py-8">
+                <AlertCircle className="w-12 h-12 text-orange-500 mx-auto mb-4" />
+                <p className="text-lg font-medium">No BOM data available</p>
+              </div>
+            )}
+            
+            {selectedOrder?.orderStatus === "OrderCreated" && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  Ready to approve this BOM for production?
+                </p>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setShowBomDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={() => handleApproveBOMForProduction(selectedOrder.id)}
+                    disabled={actionLoading === selectedOrder.id}
+                  >
+                    {actionLoading === selectedOrder.id ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Approving...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve BOM for Production
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -6,276 +6,266 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
+import { useToast } from "@/hooks/use-toast"
 import { 
   Play,
   Pause,
   CheckCircle,
   Clock,
   AlertCircle,
-  Filter,
-  Search,
-  Plus,
   RefreshCw,
-  Calendar,
-  User,
-  Wrench,
-  FileText,
-  BarChart3,
-  Settings,
   ChevronRight,
+  ChevronDown,
   Timer,
-  Users,
-  TrendingUp
+  Package,
+  ClipboardCheck,
+  Wrench,
+  FileText
 } from "lucide-react"
 import { nextJsApiClient } from "@/lib/api"
-import { TaskTimer } from "./TaskTimer"
 import { WorkInstructionViewer } from "./WorkInstructionViewer"
-import { TaskDependencyGraph } from "./TaskDependencyGraph"
 import { ToolRequirements } from "./ToolRequirements"
 
-interface Task {
+interface AssemblyTask {
   id: string
   title: string
   description?: string
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'BLOCKED' | 'CANCELLED'
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
-  estimatedMinutes?: number
-  actualMinutes?: number
-  startedAt?: string
-  completedAt?: string
-  createdAt: string
-  updatedAt: string
-  order: {
-    id: string
-    poNumber: string
-    customerName: string
-  }
-  assignedTo?: {
-    id: string
-    fullName: string
-    initials: string
-  }
+  instructions?: string[]
+  completed: boolean
+  required: boolean
+  order?: number
+  requiredTools?: string[]
+  requiredParts?: string[]
   workInstruction?: {
     id: string
     title: string
-    version: string
+    steps: string[]
   }
-  dependencies: Array<{
-    dependsOn: {
-      id: string
-      title: string
-      status: string
-    }
-  }>
-  dependents: Array<{
-    task: {
-      id: string
-      title: string
-      status: string
-    }
-  }>
-  tools: Array<{
-    tool: {
-      id: string
-      name: string
-      category: string
-    }
-  }>
-  notes: Array<{
-    id: string
-    content: string
-    createdAt: string
-    author: {
-      fullName: string
-      initials: string
-    }
-  }>
 }
 
-interface TaskFilters {
-  status?: string
-  priority?: string
-  assignedToId?: string
-  orderId?: string
-  search?: string
+interface PackagingItem {
+  id: string
+  section: string
+  item: string
+  completed: boolean
+  required: boolean
+  isBasinSpecific?: boolean
+  basinNumber?: number
 }
 
 interface TaskManagementProps {
-  orderId?: string
+  orderId: string
   userRole?: string
 }
 
 export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
   const { data: session } = useSession()
-  const [tasks, setTasks] = useState<Task[]>([])
+  const { toast } = useToast()
+  const [assemblyTasks, setAssemblyTasks] = useState<AssemblyTask[]>([])
+  const [packagingItems, setPackagingItems] = useState<PackagingItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [filters, setFilters] = useState<TaskFilters>({})
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
-  const [activeTab, setActiveTab] = useState("overview")
+  const [orderData, setOrderData] = useState<any>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [completionProgress, setCompletionProgress] = useState(0)
 
-  // Task statistics
-  const [taskStats, setTaskStats] = useState({
-    total: 0,
-    pending: 0,
-    inProgress: 0,
-    completed: 0,
-    blocked: 0,
-    overdue: 0
-  })
-
-  const fetchTasks = useCallback(async () => {
+  const fetchAssemblyData = useCallback(async () => {
     try {
-      setRefreshing(true)
-      const params = new URLSearchParams()
+      setLoading(true)
       
-      if (orderId) params.append('orderId', orderId)
-      if (filters.status) params.append('status', filters.status)
-      if (filters.priority) params.append('priority', filters.priority)
-      if (filters.assignedToId) params.append('assignedToId', filters.assignedToId)
-      if (filters.search) params.append('search', filters.search)
-      params.append('limit', '50')
-
-      const response = await nextJsApiClient.get(`/api/v1/assembly/tasks?${params.toString()}`)
-      
-      if (response.data.success) {
-        const tasksData = response.data.data
-        setTasks(tasksData)
+      // Fetch order details
+      const orderResponse = await nextJsApiClient.get(`/orders/${orderId}`)
+      if (orderResponse.data.success) {
+        setOrderData(orderResponse.data.data)
         
-        // Calculate statistics
-        const stats = {
-          total: tasksData.length,
-          pending: tasksData.filter((t: Task) => t.status === 'PENDING').length,
-          inProgress: tasksData.filter((t: Task) => t.status === 'IN_PROGRESS').length,
-          completed: tasksData.filter((t: Task) => t.status === 'COMPLETED').length,
-          blocked: tasksData.filter((t: Task) => t.status === 'BLOCKED').length,
-          overdue: tasksData.filter((t: Task) => {
-            if (!t.estimatedMinutes || !t.startedAt) return false
-            const startTime = new Date(t.startedAt).getTime()
-            const expectedEnd = startTime + (t.estimatedMinutes * 60 * 1000)
-            return Date.now() > expectedEnd && t.status === 'IN_PROGRESS'
-          }).length
-        }
-        setTaskStats(stats)
+        // Generate assembly tasks based on order configuration
+        const tasks = generateAssemblyTasks(orderResponse.data.data)
+        setAssemblyTasks(tasks)
+        
+        // Generate packaging checklist from CLP.T2.001.V01 Section 4
+        const packaging = generatePackagingChecklist(orderResponse.data.data)
+        setPackagingItems(packaging)
+        
+        calculateProgress(tasks, packaging)
       } else {
-        setError('Failed to fetch tasks')
+        setError('Failed to fetch order details')
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error)
-      setError('Error loading tasks')
+      console.error('Error fetching assembly data:', error)
+      setError('Error loading assembly data')
     } finally {
       setLoading(false)
-      setRefreshing(false)
     }
-  }, [orderId, filters])
+  }, [orderId])
 
   useEffect(() => {
-    fetchTasks()
-  }, [fetchTasks])
+    fetchAssemblyData()
+  }, [fetchAssemblyData])
 
-  const handleStatusUpdate = async (taskId: string, newStatus: string, notes?: string) => {
-    try {
-      const response = await nextJsApiClient.put(`/api/v1/assembly/tasks/${taskId}/status`, {
-        status: newStatus,
-        notes,
-        ...(newStatus === 'COMPLETED' && { actualMinutes: selectedTask?.actualMinutes })
+  const generateAssemblyTasks = (order: any): AssemblyTask[] => {
+    const tasks: AssemblyTask[] = []
+    
+    // Basic assembly tasks based on order configuration
+    tasks.push({
+      id: 'check-dimensions',
+      title: 'Check Final Sink Dimensions & BOM',
+      description: 'Verify dimensions of the entire sink, each basin, and any other dimension mentioned on the drawing',
+      completed: false,
+      required: true,
+      order: 1
+    })
+    
+    tasks.push({
+      id: 'attach-documents',
+      title: 'Attach Final Approved Drawing and Paperwork',
+      description: 'Ensure all documentation is properly attached and accessible',
+      completed: false,
+      required: true,
+      order: 2
+    })
+    
+    // Pegboard installation if applicable
+    if (order.configurations) {
+      tasks.push({
+        id: 'pegboard-installation',
+        title: 'Pegboard Installation',
+        description: 'Install pegboard and verify dimensions match drawing',
+        completed: false,
+        required: true,
+        order: 3
       })
-
-      if (response.data.success) {
-        await fetchTasks()
-        if (selectedTask?.id === taskId) {
-          setSelectedTask(response.data.data)
-        }
-      } else {
-        setError('Failed to update task status')
-      }
-    } catch (error) {
-      console.error('Error updating task status:', error)
-      setError('Error updating task')
     }
+    
+    // Sink faucet holes and mounting
+    tasks.push({
+      id: 'faucet-holes',
+      title: 'Verify Sink Faucet Holes and Mounting',
+      description: 'Check that location of sink faucet holes and mounting holes match drawing/customer order requirements',
+      completed: false,
+      required: true,
+      order: 4
+    })
+    
+    // Mobility components
+    tasks.push({
+      id: 'mobility-components',
+      title: 'Install Mobility Components',
+      description: 'Install lock & levelling castors or levelling feet as specified',
+      completed: false,
+      required: true,
+      order: 5,
+      requiredParts: ['T2-LEVELING-CASTOR-475', 'T2-SEISMIC-FEET']
+    })
+    
+    return tasks
   }
 
-  const handleTaskUpdate = async (taskId: string, updates: Partial<Task>) => {
+  const generatePackagingChecklist = (order: any): PackagingItem[] => {
+    // Section 4 items from CLP.T2.001.V01
+    return [
+      { id: 'anti-fatigue-mat', section: 'STANDARD ITEMS', item: 'Anti-Fatigue Mat', completed: false, required: true },
+      { id: 'sink-strainer', section: 'STANDARD ITEMS', item: 'Sink strainer per sink bowl (lasered with Torvan Medical logo)', completed: false, required: true },
+      { id: 'flex-hose', section: 'STANDARD ITEMS', item: 'Ø1.5 Flex Hose (4ft) per sink drain + 2x Hose Clamps', completed: false, required: true },
+      { id: 'temp-sensor', section: 'STANDARD ITEMS', item: '1x Temp. Sensor packed per E-Drain basin', completed: false, required: true, isBasinSpecific: true },
+      { id: 'drain-solenoid', section: 'STANDARD ITEMS', item: '1x Electronic Drain Solenoid per Basin (Wired, tested and labelled)', completed: false, required: true },
+      { id: 'drain-assembly', section: 'STANDARD ITEMS', item: '1x Drain assembly per basin', completed: false, required: true },
+      { id: 'dosing-shelf', section: 'STANDARD ITEMS', item: '1x shelf for dosing pump', completed: false, required: false },
+      { id: 'tubeset', section: 'STANDARD ITEMS', item: '1x Tubeset per dosing pump', completed: false, required: false },
+      { id: 'drain-gasket', section: 'STANDARD ITEMS', item: 'Drain gasket per basin', completed: false, required: true },
+      { id: 'install-manual-en', section: 'STANDARD ITEMS', item: 'Install & Operations Manual: IFU.T2.SinkInstUser', completed: false, required: true },
+      { id: 'install-manual-fr', section: 'STANDARD ITEMS', item: 'Install & Operations Manual French: IFU.T2.SinkInstUserFR', completed: false, required: false },
+      { id: 'esink-manual-fr', section: 'STANDARD ITEMS', item: 'E-Sink Automation Manual French: IFU.T2.ESinkInstUserFR', completed: false, required: false }
+    ]
+  }
+
+  const calculateProgress = (tasks: AssemblyTask[], packaging: PackagingItem[]) => {
+    const allItems = [...tasks, ...packaging]
+    const completedItems = allItems.filter(item => item.completed).length
+    const totalItems = allItems.length
+    const progress = totalItems > 0 ? (completedItems / totalItems) * 100 : 0
+    setCompletionProgress(progress)
+  }
+
+  const handleTaskToggle = (taskId: string, completed: boolean) => {
+    setAssemblyTasks(prev => prev.map(task => 
+      task.id === taskId ? { ...task, completed } : task
+    ))
+    
+    // Recalculate progress
+    const updatedTasks = assemblyTasks.map(task => 
+      task.id === taskId ? { ...task, completed } : task
+    )
+    calculateProgress(updatedTasks, packagingItems)
+  }
+
+  const handlePackagingToggle = (itemId: string, completed: boolean) => {
+    setPackagingItems(prev => prev.map(item => 
+      item.id === itemId ? { ...item, completed } : item
+    ))
+    
+    // Recalculate progress
+    const updatedPackaging = packagingItems.map(item => 
+      item.id === itemId ? { ...item, completed } : item
+    )
+    calculateProgress(assemblyTasks, updatedPackaging)
+  }
+
+  const handleCompleteAssembly = async () => {
+    if (completionProgress < 100) {
+      toast({
+        title: "Assembly Incomplete",
+        description: "Please complete all assembly tasks and packaging items before submitting for QC",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    setSubmitting(true)
     try {
-      const response = await nextJsApiClient.patch(`/api/v1/assembly/tasks/${taskId}`, updates)
-
+      const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
+        newStatus: "ReadyForFinalQC",
+        notes: "Assembly and packaging completed by assembler"
+      })
+      
       if (response.data.success) {
-        await fetchTasks()
-        if (selectedTask?.id === taskId) {
-          setSelectedTask(response.data.data)
-        }
-      } else {
-        setError('Failed to update task')
+        toast({
+          title: "Assembly Complete",
+          description: "Order has been submitted for Final QC"
+        })
       }
     } catch (error) {
-      console.error('Error updating task:', error)
-      setError('Error updating task')
+      console.error('Error completing assembly:', error)
+      toast({
+        title: "Error",
+        description: "Failed to complete assembly",
+        variant: "destructive"
+      })
+    } finally {
+      setSubmitting(false)
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING': return 'bg-gray-100 text-gray-800'
-      case 'IN_PROGRESS': return 'bg-blue-100 text-blue-800'
-      case 'COMPLETED': return 'bg-green-100 text-green-800'
-      case 'BLOCKED': return 'bg-red-100 text-red-800'
-      case 'CANCELLED': return 'bg-gray-100 text-gray-600'
-      default: return 'bg-gray-100 text-gray-800'
-    }
+  const canEdit = () => {
+    return userRole === 'ADMIN' || userRole === 'PRODUCTION_COORDINATOR' || userRole === 'ASSEMBLER'
   }
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'LOW': return 'bg-green-100 text-green-800'
-      case 'MEDIUM': return 'bg-yellow-100 text-yellow-800'
-      case 'HIGH': return 'bg-orange-100 text-orange-800'
-      case 'URGENT': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'PENDING': return <Clock className="w-4 h-4" />
-      case 'IN_PROGRESS': return <Play className="w-4 h-4" />
-      case 'COMPLETED': return <CheckCircle className="w-4 h-4" />
-      case 'BLOCKED': return <AlertCircle className="w-4 h-4" />
-      default: return <Clock className="w-4 h-4" />
-    }
-  }
-
-  const canEditTask = (task: Task) => {
-    if (userRole === 'ADMIN' || userRole === 'PRODUCTION_COORDINATOR') return true
-    if (userRole === 'ASSEMBLER' && task.assignedTo?.id === session?.user?.id) return true
-    return false
-  }
-
-  const canStartTask = (task: Task) => {
-    if (task.status !== 'PENDING') return false
-    return task.dependencies.every(dep => dep.dependsOn.status === 'COMPLETED')
-  }
-
-  if (loading && !refreshing) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="flex items-center space-x-2">
           <RefreshCw className="w-6 h-6 animate-spin" />
-          <span>Loading tasks...</span>
+          <span>Loading assembly workflow...</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="task-management">
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="w-4 h-4" />
@@ -284,402 +274,273 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
         </Alert>
       )}
 
-      {/* Header with statistics */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Task Management</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Guided Assembly Workflow</h2>
           <p className="text-muted-foreground">
-            Manage assembly tasks and track progress
+            Step-by-step assembly process for Order {orderData?.poNumber || orderId}
           </p>
         </div>
         <div className="flex items-center space-x-2">
+          <Badge variant="outline" className="px-3 py-1">
+            {Math.round(completionProgress)}% Complete
+          </Badge>
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchTasks}
-            disabled={refreshing}
+            onClick={fetchAssemblyData}
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
-          </Button>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            disabled={!['ADMIN', 'PRODUCTION_COORDINATOR'].includes(userRole || '')}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Task
           </Button>
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
-              <div>
-                <p className="text-sm font-medium">Total</p>
-                <p className="text-2xl font-bold">{taskStats.total}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-gray-600" />
-              <div>
-                <p className="text-sm font-medium">Pending</p>
-                <p className="text-2xl font-bold">{taskStats.pending}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Play className="w-4 h-4 text-blue-600" />
-              <div>
-                <p className="text-sm font-medium">In Progress</p>
-                <p className="text-2xl font-bold">{taskStats.inProgress}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="w-4 h-4 text-green-600" />
-              <div>
-                <p className="text-sm font-medium">Completed</p>
-                <p className="text-2xl font-bold">{taskStats.completed}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 text-red-600" />
-              <div>
-                <p className="text-sm font-medium">Blocked</p>
-                <p className="text-2xl font-bold">{taskStats.blocked}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="w-4 h-4 text-orange-600" />
-              <div>
-                <p className="text-sm font-medium">Overdue</p>
-                <p className="text-2xl font-bold">{taskStats.overdue}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
+      {/* Progress Overview */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Filters</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="w-5 h-5" />
+            Assembly Progress
+          </CardTitle>
+          <CardDescription>
+            Complete all assembly tasks and packaging items to submit for Final QC
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search tasks..."
-                value={filters.search || ''}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className="pl-10"
-              />
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span>Overall Progress</span>
+                <span data-testid="progress-text">{Math.round(completionProgress)}%</span>
+              </div>
+              <Progress value={completionProgress} className="h-2" data-testid="assembly-progress" />
             </div>
-
-            <Select value={filters.status || ''} onValueChange={(value) => setFilters({ ...filters, status: value || undefined })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
-                <SelectItem value="PENDING">Pending</SelectItem>
-                <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                <SelectItem value="COMPLETED">Completed</SelectItem>
-                <SelectItem value="BLOCKED">Blocked</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.priority || ''} onValueChange={(value) => setFilters({ ...filters, priority: value || undefined })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Priorities</SelectItem>
-                <SelectItem value="URGENT">Urgent</SelectItem>
-                <SelectItem value="HIGH">High</SelectItem>
-                <SelectItem value="MEDIUM">Medium</SelectItem>
-                <SelectItem value="LOW">Low</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button
-              variant="outline"
-              onClick={() => setFilters({})}
-              className="w-full"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Clear Filters
-            </Button>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium">Assembly Tasks:</span>
+                <span className="ml-2">
+                  {assemblyTasks.filter(t => t.completed).length} / {assemblyTasks.length}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium">Packaging Items:</span>
+                <span className="ml-2">
+                  {packagingItems.filter(p => p.completed).length} / {packagingItems.length}
+                </span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="kanban">Kanban Board</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
-          <TabsTrigger value="dependencies">Dependencies</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Task List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Tasks</CardTitle>
-                <CardDescription>
-                  {tasks.length} task{tasks.length !== 1 ? 's' : ''} found
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[600px]">
-                  <div className="space-y-3">
-                    {tasks.map((task) => (
-                      <Card
-                        key={task.id}
-                        className={`cursor-pointer transition-colors hover:bg-accent ${
-                          selectedTask?.id === task.id ? 'ring-2 ring-primary' : ''
-                        }`}
-                        onClick={() => setSelectedTask(task)}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                {getStatusIcon(task.status)}
-                                <h4 className="font-medium">{task.title}</h4>
-                                <Badge className={getStatusColor(task.status)}>
-                                  {task.status.replace('_', ' ')}
-                                </Badge>
-                                <Badge className={getPriorityColor(task.priority)}>
-                                  {task.priority}
-                                </Badge>
-                              </div>
-                              
-                              <p className="text-sm text-muted-foreground mb-2">
-                                {task.description}
-                              </p>
-                              
-                              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                                <div className="flex items-center space-x-1">
-                                  <Calendar className="w-3 h-3" />
-                                  <span>{task.order.poNumber}</span>
-                                </div>
-                                
-                                {task.assignedTo && (
-                                  <div className="flex items-center space-x-1">
-                                    <User className="w-3 h-3" />
-                                    <span>{task.assignedTo.fullName}</span>
-                                  </div>
-                                )}
-                                
-                                {task.estimatedMinutes && (
-                                  <div className="flex items-center space-x-1">
-                                    <Timer className="w-3 h-3" />
-                                    <span>{task.estimatedMinutes}m est.</span>
-                                  </div>
-                                )}
-
-                                {task.tools.length > 0 && (
-                                  <div className="flex items-center space-x-1">
-                                    <Wrench className="w-3 h-3" />
-                                    <span>{task.tools.length} tools</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            
-                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+      {/* Assembly Tasks */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wrench className="w-5 h-5" />
+            Assembly Tasks
+          </CardTitle>
+          <CardDescription>
+            Complete each assembly task in order
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {assemblyTasks.map((task, index) => (
+              <Collapsible key={task.id} data-testid="assembly-task">
+                <CollapsibleTrigger asChild data-testid="task-trigger">
+                  <Card className={`cursor-pointer transition-colors hover:bg-accent ${
+                    task.completed ? 'bg-green-50 border-green-200' : ''
+                  }`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox
+                            checked={task.completed}
+                            onCheckedChange={(checked) => 
+                              canEdit() && handleTaskToggle(task.id, checked as boolean)
+                            }
+                            disabled={!canEdit()}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div>
+                            <h4 className="font-medium">{task.title}</h4>
+                            <p className="text-sm text-muted-foreground">{task.description}</p>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-
-            {/* Task Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Task Details</CardTitle>
-                <CardDescription>
-                  {selectedTask ? `Details for "${selectedTask.title}"` : 'Select a task to view details'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {selectedTask ? (
-                  <div className="space-y-6">
-                    {/* Task Header */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold">{selectedTask.title}</h3>
-                        <p className="text-sm text-muted-foreground">{selectedTask.description}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={getStatusColor(selectedTask.status)}>
-                          {selectedTask.status.replace('_', ' ')}
-                        </Badge>
-                        <Badge className={getPriorityColor(selectedTask.priority)}>
-                          {selectedTask.priority}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    {canEditTask(selectedTask) && (
-                      <div className="flex flex-wrap gap-2">
-                        {selectedTask.status === 'PENDING' && canStartTask(selectedTask) && (
-                          <Button
-                            size="sm"
-                            onClick={() => handleStatusUpdate(selectedTask.id, 'IN_PROGRESS')}
-                          >
-                            <Play className="w-4 h-4 mr-2" />
-                            Start Task
-                          </Button>
-                        )}
-                        
-                        {selectedTask.status === 'IN_PROGRESS' && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleStatusUpdate(selectedTask.id, 'PENDING')}
-                            >
-                              <Pause className="w-4 h-4 mr-2" />
-                              Pause
-                            </Button>
-                            <Button
-                              size="sm"
-                              onClick={() => handleStatusUpdate(selectedTask.id, 'COMPLETED')}
-                            >
-                              <CheckCircle className="w-4 h-4 mr-2" />
-                              Complete
-                            </Button>
-                          </>
-                        )}
-
-                        {selectedTask.status === 'BLOCKED' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleStatusUpdate(selectedTask.id, 'PENDING')}
-                          >
-                            Unblock
-                          </Button>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Time Tracking */}
-                    {selectedTask.status === 'IN_PROGRESS' && (
-                      <TaskTimer
-                        task={selectedTask}
-                        onTimeUpdate={(minutes) => handleTaskUpdate(selectedTask.id, { actualMinutes: minutes })}
-                      />
-                    )}
-
-                    {/* Work Instructions */}
-                    {selectedTask.workInstruction && (
-                      <WorkInstructionViewer
-                        workInstructionId={selectedTask.workInstruction.id}
-                        currentTaskId={selectedTask.id}
-                      />
-                    )}
-
-                    {/* Tool Requirements */}
-                    {selectedTask.tools.length > 0 && (
-                      <ToolRequirements tools={selectedTask.tools} />
-                    )}
-
-                    {/* Dependencies */}
-                    {(selectedTask.dependencies.length > 0 || selectedTask.dependents.length > 0) && (
-                      <div>
-                        <h4 className="font-medium mb-2">Dependencies</h4>
-                        <TaskDependencyGraph
-                          taskId={selectedTask.id}
-                          dependencies={selectedTask.dependencies}
-                          dependents={selectedTask.dependents}
-                        />
-                      </div>
-                    )}
-
-                    {/* Notes */}
-                    {selectedTask.notes.length > 0 && (
-                      <div>
-                        <h4 className="font-medium mb-2">Notes</h4>
-                        <div className="space-y-2">
-                          {selectedTask.notes.slice(0, 3).map((note) => (
-                            <div key={note.id} className="text-sm bg-muted p-2 rounded">
-                              <p>{note.content}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {note.author.fullName} • {new Date(note.createdAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                          ))}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {task.completed && <CheckCircle className="w-4 h-4 text-green-600" />}
+                          <ChevronDown className="w-4 h-4" />
                         </div>
                       </div>
-                    )}
+                    </CardContent>
+                  </Card>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-2">
+                  <Card className="ml-6">
+                    <CardContent className="p-4">
+                      {task.instructions && (
+                        <div className="mb-4">
+                          <h5 className="font-medium mb-2">Instructions:</h5>
+                          <ul className="space-y-1 text-sm">
+                            {task.instructions.map((instruction, idx) => (
+                              <li key={idx} className="flex items-start space-x-2">
+                                <span className="text-muted-foreground">{idx + 1}.</span>
+                                <span>{instruction}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {task.requiredTools && task.requiredTools.length > 0 && (
+                        <div className="mb-4">
+                          <h5 className="font-medium mb-2">Required Tools:</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {task.requiredTools.map((tool, idx) => (
+                              <Badge key={idx} variant="outline">{tool}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {task.requiredParts && task.requiredParts.length > 0 && (
+                        <div>
+                          <h5 className="font-medium mb-2">Required Parts:</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {task.requiredParts.map((part, idx) => (
+                              <Badge key={idx} variant="secondary">{part}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Packaging Checklist - Section 4 from CLP.T2.001.V01 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="w-5 h-5" />
+            Packaging Checklist
+          </CardTitle>
+          <CardDescription>
+            Final packaging and verification items from CLP.T2.001.V01 Section 4
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {packagingItems.map((item) => (
+              <div key={item.id} className={`flex items-start space-x-3 p-3 rounded-lg border ${
+                item.completed ? 'bg-green-50 border-green-200' : 'bg-white'
+              }`} data-testid="packaging-item">
+                <Checkbox
+                  checked={item.completed}
+                  onCheckedChange={(checked) => 
+                    canEdit() && handlePackagingToggle(item.id, checked as boolean)
+                  }
+                  disabled={!canEdit()}
+                  className="mt-0.5"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{item.item}</p>
+                      <p className="text-sm text-muted-foreground">{item.section}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {item.required && (
+                        <Badge variant="destructive" className="text-xs">Required</Badge>
+                      )}
+                      {item.isBasinSpecific && (
+                        <Badge variant="outline" className="text-xs">Basin Specific</Badge>
+                      )}
+                      {item.completed && <CheckCircle className="w-4 h-4 text-green-600" />}
+                    </div>
                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Completion Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5" />
+            Complete Assembly
+          </CardTitle>
+          <CardDescription>
+            Once all tasks and packaging items are complete, submit for Final QC
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="p-4 bg-muted rounded-lg">
+              <h4 className="font-medium mb-2">Assembly Summary</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Assembly Tasks:</span>
+                  <span className={`ml-2 font-medium ${
+                    assemblyTasks.every(t => t.completed) ? 'text-green-600' : 'text-orange-600'
+                  }`}>
+                    {assemblyTasks.filter(t => t.completed).length} / {assemblyTasks.length}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Packaging Items:</span>
+                  <span className={`ml-2 font-medium ${
+                    packagingItems.filter(p => p.required).every(p => p.completed) ? 'text-green-600' : 'text-orange-600'
+                  }`}>
+                    {packagingItems.filter(p => p.completed && p.required).length} / {packagingItems.filter(p => p.required).length}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Ready to Submit for Final QC?</p>
+                <p className="text-sm text-muted-foreground">
+                  {completionProgress === 100 
+                    ? 'All required tasks and packaging items are complete'
+                    : `${Math.round(100 - completionProgress)}% remaining to complete`
+                  }
+                </p>
+              </div>
+              
+              <Button
+                onClick={handleCompleteAssembly}
+                disabled={completionProgress < 100 || submitting || !canEdit()}
+                className="min-w-[200px]"
+              >
+                {submitting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
                 ) : (
-                  <div className="flex items-center justify-center h-32 text-muted-foreground">
-                    <FileText className="w-8 h-8 mb-2" />
-                    <p>Select a task to view details</p>
-                  </div>
+                  <>
+                    <ClipboardCheck className="w-4 h-4 mr-2" />
+                    Complete Assembly & Send to QC
+                  </>
                 )}
-              </CardContent>
-            </Card>
+              </Button>
+            </div>
           </div>
-        </TabsContent>
-
-        <TabsContent value="kanban">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Kanban board view coming soon...</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="timeline">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Timeline view coming soon...</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="dependencies">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Dependencies view coming soon...</p>
-          </div>
-        </TabsContent>
-      </Tabs>
+        </CardContent>
+      </Card>
     </div>
   )
 }

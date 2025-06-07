@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { z } from 'zod';
+import notificationService from '@/src/services/notificationService';
 
 const prisma = new PrismaClient();
 
@@ -12,10 +13,17 @@ const QcResultSubmissionSchema = z.object({
   notes: z.string().optional(),
   itemResults: z.array(z.object({
     templateItemId: z.string(),
+    value: z.string().optional().nullable(), // Support both 'value' and 'resultValue'
     resultValue: z.string().optional().nullable(),
+    passed: z.boolean().optional().nullable(), // Support both 'passed' and 'isConformant'
     isConformant: z.boolean().optional().nullable(),
     notes: z.string().optional().nullable()
-  }))
+  })),
+  digitalSignature: z.object({
+    userId: z.string(),
+    timestamp: z.string(),
+    userName: z.string()
+  }).optional()
 });
 
 // GET /api/orders/[orderId]/qc - Get existing QC result for this order
@@ -149,19 +157,35 @@ export async function POST(
           data: validatedData.itemResults.map(item => ({
             orderQcResultId: result.id,
             qcFormTemplateItemId: item.templateItemId,
-            resultValue: item.resultValue,
-            isConformant: item.isConformant,
+            resultValue: item.value || item.resultValue, // Support both field names
+            isConformant: item.passed !== undefined ? item.passed : item.isConformant, // Support both field names
             notes: item.notes
           }))
         });
       }
 
-      // Update order status if QC is complete
+      // Update order status if QC is complete - different status based on QC phase
       if (validatedData.overallStatus === 'PASSED') {
+        let newStatus: string;
+        let action: string;
+        
+        // Determine next status based on current order status and QC template type
+        if (order.orderStatus === 'ReadyForPreQC' || template.formType === 'Pre-Production Check') {
+          newStatus = 'ReadyForProduction';
+          action = 'PRE_QC_COMPLETED';
+        } else if (order.orderStatus === 'ReadyForFinalQC' || template.formType === 'Final QC') {
+          newStatus = 'ReadyForShip';
+          action = 'FINAL_QC_COMPLETED';
+        } else {
+          // Default behavior for other QC types
+          newStatus = 'TESTING_COMPLETE';
+          action = 'QC_COMPLETED';
+        }
+
         await tx.order.update({
           where: { id: orderId },
           data: {
-            orderStatus: 'TESTING_COMPLETE'
+            orderStatus: newStatus
           }
         });
 
@@ -170,12 +194,56 @@ export async function POST(
           data: {
             orderId: orderId,
             userId: user.id,
-            action: 'QC_COMPLETED',
+            action: action,
             oldStatus: order.orderStatus,
-            newStatus: 'TESTING_COMPLETE',
-            notes: `QC completed with status: ${validatedData.overallStatus}`
+            newStatus: newStatus,
+            notes: `QC completed with status: ${validatedData.overallStatus}. Template: ${template.formType}`
           }
         });
+
+        // Create notifications for status change (async, non-blocking)
+        setImmediate(() => {
+          // Notify order creator
+          notificationService.createNotification({
+            userId: order.createdById,
+            message: `Order ${order.poNumber} QC completed - Status: ${newStatus.replace(/([A-Z])/g, ' $1').trim()}`,
+            type: 'QC_COMPLETED',
+            orderId: order.id
+          }).catch(error => {
+            console.error('Failed to create notification for order creator:', error)
+          })
+
+          // Notify relevant users based on the new status
+          const roleNotifications: Record<string, string[]> = {
+            'ReadyForProduction': ['ASSEMBLER', 'PRODUCTION_COORDINATOR'],
+            'ReadyForShip': ['PRODUCTION_COORDINATOR']
+          }
+
+          const rolesToNotify = roleNotifications[newStatus]
+          if (rolesToNotify) {
+            // Find users with the relevant roles
+            prisma.user.findMany({
+              where: {
+                role: { in: rolesToNotify },
+                isActive: true
+              },
+              select: { id: true }
+            }).then(users => {
+              const userIds = users.map(u => u.id)
+              if (userIds.length > 0) {
+                notificationService.createBulkNotifications(userIds, {
+                  message: `Order ${order.poNumber} QC completed - ${template.formType} passed`,
+                  type: 'QC_COMPLETED',
+                  orderId: order.id
+                }).catch(error => {
+                  console.error('Failed to create bulk notifications:', error)
+                })
+              }
+            }).catch(error => {
+              console.error('Failed to find users for QC notifications:', error)
+            })
+          }
+        })
       }
 
       // Return the complete result

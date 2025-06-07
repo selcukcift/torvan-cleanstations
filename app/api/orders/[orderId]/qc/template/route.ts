@@ -21,6 +21,7 @@ export async function GET(
 
     const { searchParams } = new URL(request.url);
     let productFamily = searchParams.get('productFamily');
+    const formType = searchParams.get('formType'); // Get the form type parameter
 
     // If productFamily not provided, try to determine from order
     if (!productFamily) {
@@ -41,29 +42,39 @@ export async function GET(
       productFamily = 'MDRD_T2_SINK';
     }
 
-    // Find active template for product family
+    // Build where clause for template search
+    const whereClause: any = {
+      isActive: true,
+      OR: [
+        { appliesToProductFamily: productFamily },
+        { appliesToProductFamily: null } // Generic template as fallback
+      ]
+    };
+
+    // Add form type filter if specified
+    if (formType) {
+      whereClause.formType = formType;
+    }
+
+    // Find active template for product family and form type
     const template = await prisma.qcFormTemplate.findFirst({
-      where: {
-        isActive: true,
-        OR: [
-          { appliesToProductFamily: productFamily },
-          { appliesToProductFamily: null } // Generic template as fallback
-        ]
-      },
+      where: whereClause,
       include: {
         items: { 
           orderBy: { order: 'asc' } 
         }
       },
-      orderBy: {
-        appliesToProductFamily: 'desc' // Prefer specific over generic
-      }
+      orderBy: [
+        { appliesToProductFamily: 'desc' }, // Prefer specific over generic
+        { createdAt: 'desc' } // Most recent first
+      ]
     });
 
     if (!template) {
       return NextResponse.json({ 
-        error: 'No active QC template found for this product family',
-        productFamily 
+        error: `No active QC template found for product family ${productFamily}${formType ? ` and form type "${formType}"` : ''}`,
+        productFamily,
+        formType 
       }, { status: 404 });
     }
 

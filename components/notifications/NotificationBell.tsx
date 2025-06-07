@@ -33,10 +33,17 @@ export function NotificationBell() {
   const { data: session } = useSession()
   const { toast } = useToast()
 
-  // Fetch unread notifications on mount
+  // Fetch unread notifications on mount and set up auto-refresh
   useEffect(() => {
     if (session?.user) {
       fetchNotifications(true)
+      
+      // Auto-refresh every 30 seconds (Sprint 4.3 requirement)
+      const interval = setInterval(() => {
+        fetchNotifications(true)
+      }, 30000)
+      
+      return () => clearInterval(interval)
     }
   }, [session?.user])
 

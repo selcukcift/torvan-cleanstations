@@ -58,7 +58,7 @@ export function AssemblerDashboard() {
       if (response.data.success) {
         // Filter for assembler-relevant statuses
         const assemblerOrders = response.data.data.filter((order: any) => 
-          ["READY_FOR_PRODUCTION", "TESTING_COMPLETE", "PACKAGING_COMPLETE"].includes(order.orderStatus)
+          ["ReadyForProduction", "TESTING_COMPLETE", "PACKAGING_COMPLETE"].includes(order.orderStatus)
         )
         
         setOrders(assemblerOrders)
@@ -83,7 +83,7 @@ export function AssemblerDashboard() {
     }
 
     ordersList.forEach(order => {
-      if (order.orderStatus === "READY_FOR_PRODUCTION") {
+      if (order.orderStatus === "ReadyForProduction") {
         stats.readyForProduction++
       } else if (order.orderStatus === "TESTING_COMPLETE") {
         stats.inProgress++
@@ -99,12 +99,38 @@ export function AssemblerDashboard() {
     router.push(`/orders/${orderId}`)
   }
 
+  const handleStartAssembly = async (orderId: string) => {
+    try {
+      // Navigate to order detail page and assign to current user
+      router.push(`/orders/${orderId}`)
+      
+      // Also update status to indicate assembly has been started
+      const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
+        newStatus: "TESTING_COMPLETE",
+        notes: "Assembly started by assembler"
+      })
+      
+      if (response.data.success) {
+        toast({
+          title: "Success",
+          description: "Assembly started - redirecting to order details"
+        })
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to start assembly",
+        variant: "destructive"
+      })
+    }
+  }
+
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     try {
       const statusMessages: Record<string, string> = {
         TESTING_COMPLETE: "Assembly started",
         PACKAGING_COMPLETE: "Testing completed, packaging done",
-        READY_FOR_FINAL_QC: "Assembly and packaging complete"
+        ReadyForFinalQC: "Assembly and packaging complete"
       }
 
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
@@ -227,19 +253,19 @@ export function AssemblerDashboard() {
                   const isUrgent = daysUntilDue <= 7
 
                   return (
-                    <TableRow key={order.id}>
+                    <TableRow key={order.id} data-testid="order-card" data-order-id={order.id}>
                       <TableCell className="font-medium">{order.poNumber}</TableCell>
                       <TableCell>{getSinkModelFromOrder(order)}</TableCell>
                       <TableCell>{format(dueDate, "MMM dd, yyyy")}</TableCell>
                       <TableCell>
                         <Badge className={
-                          order.orderStatus === "READY_FOR_PRODUCTION" 
+                          order.orderStatus === "ReadyForProduction" 
                             ? "bg-orange-100 text-orange-700"
                             : order.orderStatus === "TESTING_COMPLETE"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-green-100 text-green-700"
                         }>
-                          {order.orderStatus === "READY_FOR_PRODUCTION" ? "Ready to Start" :
+                          {order.orderStatus === "ReadyForProduction" ? "Ready to Start" :
                            order.orderStatus === "TESTING_COMPLETE" ? "In Progress" :
                            "Packaging Complete"}
                         </Badge>
@@ -266,9 +292,10 @@ export function AssemblerDashboard() {
                               <Eye className="w-4 h-4 mr-2" />
                               View Details
                             </DropdownMenuItem>
-                            {order.orderStatus === "READY_FOR_PRODUCTION" && (
+                            {order.orderStatus === "ReadyForProduction" && (
                               <DropdownMenuItem 
-                                onClick={() => handleUpdateStatus(order.id, "TESTING_COMPLETE")}
+                                onClick={() => handleStartAssembly(order.id)}
+                                data-testid="start-assembly-button"
                               >
                                 <Play className="w-4 h-4 mr-2" />
                                 Start Assembly
@@ -284,7 +311,7 @@ export function AssemblerDashboard() {
                             )}
                             {order.orderStatus === "PACKAGING_COMPLETE" && (
                               <DropdownMenuItem 
-                                onClick={() => handleUpdateStatus(order.id, "READY_FOR_FINAL_QC")}
+                                onClick={() => handleUpdateStatus(order.id, "ReadyForFinalQC")}
                               >
                                 <ClipboardCheck className="w-4 h-4 mr-2" />
                                 Submit for QC
