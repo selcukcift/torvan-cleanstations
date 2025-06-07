@@ -35,6 +35,32 @@ export function DetailedReviewSection({
   configurations, 
   accessories 
 }: DetailedReviewSectionProps) {
+  const extractColorFromId = (colorId: string) => {
+    if (!colorId) return 'None'
+    const colorMap: { [key: string]: string } = {
+      'T-OA-PB-COLOR-GREEN': 'Green',
+      'T-OA-PB-COLOR-BLUE': 'Blue', 
+      'T-OA-PB-COLOR-RED': 'Red',
+      'T-OA-PB-COLOR-BLACK': 'Black',
+      'T-OA-PB-COLOR-YELLOW': 'Yellow',
+      'T-OA-PB-COLOR-GREY': 'Grey',
+      'T-OA-PB-COLOR-ORANGE': 'Orange',
+      'T-OA-PB-COLOR-WHITE': 'White'
+    }
+    return colorMap[colorId] || colorId
+  }
+
+  const getDrawerDisplayName = (drawerId: string) => {
+    const drawerMap: { [key: string]: string } = {
+      'DRAWER_LEFT': 'Left Drawer',
+      'DRAWER_RIGHT': 'Right Drawer', 
+      'DRAWER_CENTER': 'Center Drawer',
+      'COMPARTMENT_LEFT': 'Left Compartment',
+      'COMPARTMENT_RIGHT': 'Right Compartment',
+      'COMPARTMENT_CENTER': 'Center Compartment'
+    }
+    return drawerMap[drawerId] || drawerId
+  }
   const getPlacementLabel = (placement: string) => {
     switch (placement) {
       case 'CENTER': return 'Center'
@@ -208,7 +234,7 @@ export function DetailedReviewSection({
           </div>
           <div>
             <p className="text-slate-600">Legs</p>
-            <p className="font-medium">{config.legTypeId || 'Not selected'}</p>
+            <p className="font-medium">{config.legsTypeId || 'Not selected'}</p>
           </div>
           <div>
             <p className="text-slate-600">Feet</p>
@@ -230,15 +256,20 @@ export function DetailedReviewSection({
           </h5>
           <div className="grid gap-2">
             {config.basins.map((basin: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded">
+              <div key={index} className="p-2 bg-slate-50 rounded space-y-2">
                 <div className="flex items-center gap-4">
                   <Badge variant="outline" className="text-xs">Basin {index + 1}</Badge>
                   <span className="text-sm">{basin.basinType || 'Not specified'}</span>
-                  <span className="text-xs text-slate-600">{basin.basinSize || 'No size'}</span>
+                  <span className="text-xs text-slate-600">{basin.basinSizePartNumber || 'No size'}</span>
                 </div>
-                {basin.addons && basin.addons.length > 0 && (
-                  <div className="flex gap-1">
-                    {basin.addons.map((addon: string) => (
+                {basin.customDimensions && (
+                  <div className="text-xs text-slate-600 ml-16">
+                    Custom: {basin.customDimensions.width}"W × {basin.customDimensions.length}"L × {basin.customDimensions.depth}"D
+                  </div>
+                )}
+                {basin.addonIds && basin.addonIds.length > 0 && (
+                  <div className="flex gap-1 ml-16">
+                    {basin.addonIds.map((addon: string) => (
                       <Badge key={addon} variant="secondary" className="text-xs">
                         {addon}
                       </Badge>
@@ -287,17 +318,36 @@ export function DetailedReviewSection({
         </div>
       )}
 
+      {/* Drawers & Compartments */}
+      {config.drawersAndCompartments && config.drawersAndCompartments.length > 0 && (
+        <div className="space-y-2">
+          <h5 className="font-medium text-slate-700 flex items-center gap-2">
+            <Package className="w-4 h-4" />
+            Drawers & Compartments ({config.drawersAndCompartments.length})
+          </h5>
+          <div className="grid gap-2">
+            {config.drawersAndCompartments.map((item: string, index: number) => (
+              <div key={index} className="flex items-center p-2 bg-slate-50 rounded text-sm">
+                <Badge variant="outline" className="text-xs mr-2">{index + 1}</Badge>
+                <span>{getDrawerDisplayName(item)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Pegboard */}
-      {config.hasPegboard && (
+      {config.pegboard && (
         <div className="space-y-2">
           <h5 className="font-medium text-slate-700 flex items-center gap-2">
             <Grid3x3 className="w-4 h-4" />
             Pegboard
           </h5>
           <div className="text-sm space-y-1">
-            <p><span className="text-slate-600">Type:</span> {config.pegboardType || 'Standard'}</p>
-            {config.pegboardColor && (
-              <p><span className="text-slate-600">Color:</span> {config.pegboardColor}</p>
+            <p><span className="text-slate-600">Type:</span> {config.pegboardTypeId || 'Standard'}</p>
+            <p><span className="text-slate-600">Size:</span> Auto-calculated based on {config.length}" length</p>
+            {config.pegboardColorId && (
+              <p><span className="text-slate-600">Color:</span> {extractColorFromId(config.pegboardColorId)}</p>
             )}
           </div>
         </div>

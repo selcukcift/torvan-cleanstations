@@ -25,10 +25,10 @@ export default function EditOrderPage() {
   const [error, setError] = useState<string | null>(null)
   
   const { 
-    setCustomerInfo, 
-    setSinkSelection, 
-    setConfiguration,
-    setAccessories,
+    updateCustomerInfo, 
+    updateSinkSelection, 
+    updateSinkConfiguration,
+    updateAccessories,
     resetForm 
   } = useOrderCreateStore()
 
@@ -70,7 +70,7 @@ export default function EditOrderPage() {
     resetForm()
     
     // Load customer information
-    setCustomerInfo({
+    updateCustomerInfo({
       poNumber: orderData.poNumber,
       customerName: orderData.customerName,
       projectName: orderData.projectName || '',
@@ -83,7 +83,7 @@ export default function EditOrderPage() {
     
     // Load sink selection
     const buildNumbers = orderData.sinkConfigurations.map((config: any) => config.buildNumber)
-    setSinkSelection({
+    updateSinkSelection({
       sinkFamily: orderData.sinkFamily,
       quantity: buildNumbers.length,
       buildNumbers: buildNumbers
@@ -93,20 +93,16 @@ export default function EditOrderPage() {
     orderData.sinkConfigurations.forEach((sinkConfig: any) => {
       const configuration: any = {
         sinkModelId: sinkConfig.sinkModelId,
-        width: sinkConfig.sinkWidth,
-        length: sinkConfig.sinkLength,
-        sinkWidth: sinkConfig.sinkWidth,
-        sinkLength: sinkConfig.sinkLength,
-        legTypeId: sinkConfig.legsTypeId,
+        width: sinkConfig.width,
+        length: sinkConfig.length,
+        legsTypeId: sinkConfig.legsTypeId,
         feetTypeId: sinkConfig.feetTypeId,
         workflowDirection: sinkConfig.workflowDirection,
-        workFlowDirection: sinkConfig.workflowDirection,
-        hasPegboard: sinkConfig.hasPegboard,
-        pegboard: sinkConfig.hasPegboard,
-        pegboardColor: sinkConfig.pegboardColor,
-        pegboardType: sinkConfig.pegboardType,
-        pegboardSizeOption: sinkConfig.pegboardSizeOption,
-        controlBoxId: sinkConfig.controlBoxId,
+        pegboard: sinkConfig.pegboard || false,
+        pegboardTypeId: sinkConfig.pegboardTypeId,
+        pegboardColorId: sinkConfig.pegboardColorId,
+        drawersAndCompartments: sinkConfig.drawersAndCompartments || [],
+        controlBoxId: sinkConfig.controlBoxId || null,
         basins: []
       }
       
@@ -114,13 +110,14 @@ export default function EditOrderPage() {
       const basins = orderData.basinConfigurations
         .filter((basin: any) => basin.buildNumber === sinkConfig.buildNumber)
         .map((basin: any) => ({
-          id: basin.id,
+          basinTypeId: basin.basinTypeId,
           basinType: basin.basinType,
+          basinSizePartNumber: basin.basinSizePartNumber,
           basinSize: basin.basinSizePartNumber,
           customWidth: basin.customWidth,
           customLength: basin.customLength,
           customDepth: basin.customDepth,
-          addons: basin.addonIds || []
+          addonIds: basin.addonIds || []
         }))
       configuration.basins = basins
       
@@ -144,12 +141,12 @@ export default function EditOrderPage() {
         configuration.sprayerLocation = sprayer.sprayerLocation
       }
       
-      setConfiguration(sinkConfig.buildNumber, configuration)
+      updateSinkConfiguration(sinkConfig.buildNumber, configuration)
     })
     
     // Load accessories
     orderData.selectedAccessories.forEach((accessory: any) => {
-      setAccessories(accessory.buildNumber, [{
+      updateAccessories(accessory.buildNumber, [{
         assemblyId: accessory.assemblyId,
         name: accessory.assembly?.name || accessory.assemblyId,
         quantity: accessory.quantity,

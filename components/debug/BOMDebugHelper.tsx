@@ -365,10 +365,10 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           customerName: "Debug Customer",
           salesPerson: "Debug User",
           wantDate: new Date().toISOString(),
-          language: customerInfo?.language || "EN"
+          language: (customerInfo?.language === 'EN' || customerInfo?.language === 'FR' || customerInfo?.language === 'ES') ? customerInfo.language : "EN"
         },
         sinkSelection: {
-          sinkModelId: orderConfig.sinkModelId,
+          sinkModelId: orderConfig.sinkModelId || "MDRD_B1_ESINK_60",
           quantity: 1,
           buildNumbers: ["DEBUG-001"]
         },
@@ -442,14 +442,24 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
         const errorMsg = response.error || response.message || response.errors || 'Failed to generate BOM preview'
         setError(Array.isArray(errorMsg) ? errorMsg.map(e => e.message || e).join(', ') : errorMsg)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('BOM preview error:', err)
+      console.error('Error response:', err.response?.data)
       console.error('Error details:', {
         name: err instanceof Error ? err.name : 'Unknown',
         message: err instanceof Error ? err.message : 'Unknown error',
         stack: err instanceof Error ? err.stack : undefined
       })
-      setError('Failed to generate BOM preview: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      
+      if (err.response?.data?.errors) {
+        // Validation errors
+        const validationDetails = err.response.data.errors.map((error: any) => 
+          `${error.path?.join('.') || 'root'}: ${error.message}`
+        ).join('\n')
+        setError(`Validation Error:\n${validationDetails}`)
+      } else {
+        setError('Failed to generate BOM preview: ' + (err.response?.data?.message || err.message || 'Unknown error'))
+      }
     } finally {
       setLoading(false)
     }

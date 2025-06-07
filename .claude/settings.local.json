@@ -46,7 +46,15 @@
       "Bash(sudo:*)",
       "Bash(npx prisma db push:*)",
       "Bash(npx prisma generate:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(git commit:*)",
+      "Bash(timeout 30s npm run dev)",
+      "Bash(timeout:*)",
+      "mcp__ide__executeCode",
+      "Bash(npx prisma studio:*)",
+      "Bash(PORT=3006 next dev -p 3006)",
+      "Bash(npx next dev:*)",
+      "Bash(diff:*)"
     ],
     "deny": []
   }

@@ -11,6 +11,13 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser()
     
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    
     const formData = await request.formData()
     const file = formData.get('file') as File
     const orderId = formData.get('orderId') as string

@@ -13,14 +13,22 @@ import { Upload, FileText } from "lucide-react"
 
 export function CustomerInfoStep() {
   const { customerInfo, updateCustomerInfo } = useOrderCreateStore()
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [uploadedPoFile, setUploadedPoFile] = useState<File | null>(null)
+  const [uploadedDrawingsFile, setUploadedDrawingsFile] = useState<File | null>(null)
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePoFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      setUploadedFile(file)
-      // Store file in customer info for later upload
+      setUploadedPoFile(file)
       updateCustomerInfo({ poDocument: file })
+    }
+  }
+
+  const handleDrawingsFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setUploadedDrawingsFile(file)
+      updateCustomerInfo({ sinkDrawings: file })
     }
   }
 
@@ -152,58 +160,114 @@ export function CustomerInfoStep() {
         </Card>
       </div>
 
-      {/* PO Document Upload */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Upload className="w-5 h-5" />
-            <span>PO Document Upload</span>
-          </CardTitle>
-          <CardDescription>
-            Upload the purchase order document for reference
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-            <input
-              type="file"
-              id="poDocument"
-              className="hidden"
-              accept=".pdf,.doc,.docx,.txt"
-              onChange={handleFileUpload}
-            />
-            <label
-              htmlFor="poDocument"
-              className="cursor-pointer flex flex-col items-center space-y-2"
-            >
-              <Upload className="w-8 h-8 text-gray-400" />
-              <div className="text-sm text-gray-600">
-                <span className="font-medium text-blue-600 hover:text-blue-500">
-                  Click to upload
-                </span>{" "}
-                or drag and drop
-              </div>
-              <div className="text-xs text-gray-400">
-                PDF, DOC, DOCX, TXT up to 10MB
-              </div>
-            </label>
-          </div>
-          
-          {uploadedFile && (
-            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium text-green-800">
-                  {uploadedFile.name}
-                </span>
-                <span className="text-xs text-green-600">
-                  ({(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
-                </span>
-              </div>
+      {/* Document Upload Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* PO Document Upload */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Upload className="w-5 h-5" />
+              <span>PO Document Upload</span>
+            </CardTitle>
+            <CardDescription>
+              Upload the purchase order document for reference
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <input
+                type="file"
+                id="poDocument"
+                className="hidden"
+                accept=".pdf,.doc,.docx,.txt"
+                onChange={handlePoFileUpload}
+              />
+              <label
+                htmlFor="poDocument"
+                className="cursor-pointer flex flex-col items-center space-y-2"
+              >
+                <Upload className="w-8 h-8 text-gray-400" />
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium text-blue-600 hover:text-blue-500">
+                    Click to upload
+                  </span>{" "}
+                  or drag and drop
+                </div>
+                <div className="text-xs text-gray-400">
+                  PDF, DOC, DOCX, TXT up to 10MB
+                </div>
+              </label>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            
+            {uploadedPoFile && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {uploadedPoFile.name}
+                  </span>
+                  <span className="text-xs text-green-600">
+                    ({(uploadedPoFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Sink Drawings Upload */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Upload className="w-5 h-5" />
+              <span>Sink Drawings Upload</span>
+            </CardTitle>
+            <CardDescription>
+              Upload technical drawings of the sink configuration
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <input
+                type="file"
+                id="sinkDrawings"
+                className="hidden"
+                accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png"
+                onChange={handleDrawingsFileUpload}
+              />
+              <label
+                htmlFor="sinkDrawings"
+                className="cursor-pointer flex flex-col items-center space-y-2"
+              >
+                <Upload className="w-8 h-8 text-gray-400" />
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium text-blue-600 hover:text-blue-500">
+                    Click to upload
+                  </span>{" "}
+                  or drag and drop
+                </div>
+                <div className="text-xs text-gray-400">
+                  PDF, DWG, DXF, JPG, PNG up to 10MB
+                </div>
+              </label>
+            </div>
+            
+            {uploadedDrawingsFile && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">
+                    {uploadedDrawingsFile.name}
+                  </span>
+                  <span className="text-xs text-green-600">
+                    ({(uploadedDrawingsFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
     </div>
   )

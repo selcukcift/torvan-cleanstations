@@ -40,19 +40,24 @@ import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 
 interface BOMItem {
-  id: string
-  partIdOrAssemblyId: string
+  assemblyId: string
   name: string
+  description?: string
   quantity: number
-  itemType: string
   category?: string
-  isCustom?: boolean
-  parentId?: string
-  children?: BOMItem[]
-  assemblyId?: string
+  subItems?: BOMItem[]
   partNumber?: string
+  id?: string
   level?: number
   indentLevel?: number
+  isChild?: boolean
+  isPart?: boolean
+  hasChildren?: boolean
+  children?: BOMItem[]
+  type?: string
+  isCustom?: boolean
+  parentId?: string
+  itemType?: string
   sourceContext?: string
 }
 
@@ -138,7 +143,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     return `T2-${mappedType}-${basinSize}`
   }
 
-  // Generate BOM preview when orderData is provided (similar to BOMDebugHelper)
+  // Generate BOM preview using the same logic as BOMDebugHelper
   const generateBOMPreview = useCallback(async (retryCount = 0) => {
     if (!orderData) return
 
@@ -146,31 +151,127 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     setError(null)
     
     try {
-      // Convert orderData to the format expected by the BOM preview API
-      const previewData = {
-        customerInfo: customerInfo || {
-          poNumber: "PREVIEW",
-          customerName: "Preview Customer", 
-          salesPerson: "Preview User",
-          wantDate: new Date().toISOString(),
-          language: "EN"
-        },
-        sinkSelection: {
-          sinkModelId: orderData.sinkModelId || "T2-36",
-          quantity: 1,
-          buildNumbers: ["PREVIEW-001"]
-        },
-        configurations: {
-          "PREVIEW-001": orderData
-        },
-        accessories: {}
+      // Use the EXACT same data structure as BOMDebugHelper for consistency
+      const configData: any = {
+        sinkModelId: orderData.sinkModelId
       }
 
-      const response = await nextJsApiClient.post('/orders/preview-bom', previewData)
+      // Add optional fields only if they exist (same as BOMDebugHelper)
+      if (orderData.width) configData.width = orderData.width
+      if (orderData.length) configData.length = orderData.length
+      if (orderData.legsTypeId) configData.legsTypeId = orderData.legsTypeId
+      if (orderData.feetTypeId) configData.feetTypeId = orderData.feetTypeId
+      if (orderData.pegboard) {
+        configData.pegboard = orderData.pegboard
+        if (orderData.pegboardTypeId) configData.pegboardTypeId = orderData.pegboardTypeId
+        if (orderData.pegboardColorId) configData.pegboardColorId = orderData.pegboardColorId
+        
+        // Extract pegboard type and color from IDs (same logic as BOMDebugHelper)
+        const pegboardType = orderData.pegboardTypeId || orderData.pegboardType
+        let pegboardColor = orderData.pegboardColor
+        
+        if (!pegboardColor && orderData.pegboardColorId && orderData.pegboardColorId !== 'none') {
+          const colorMatch = orderData.pegboardColorId.match(/T-OA-PB-COLOR-(.+)/)
+          if (colorMatch) {
+            pegboardColor = colorMatch[1]
+          }
+        }
+        
+        if (orderData.length && pegboardType) {
+          const specificKitId = getPegboardKitId(orderData.length, pegboardType, pegboardColor)
+          configData.specificPegboardKitId = specificKitId
+        }
+        
+        configData.pegboardType = pegboardType
+        configData.pegboardColor = pegboardColor
+      }
+      if (orderData.workflowDirection) configData.workflowDirection = orderData.workflowDirection
+
+      // Add drawers & compartments if configured (CRITICAL FIX)
+      if (orderData.drawersAndCompartments && orderData.drawersAndCompartments.length > 0) {
+        configData.drawersAndCompartments = orderData.drawersAndCompartments
+      }
+
+      // Add basins if configured (same processing as BOMDebugHelper)
+      if (orderData.basins && orderData.basins.length > 0) {
+        configData.basins = orderData.basins.map((basin: any) => {
+          const basinData: any = {}
+          
+          if (basin.basinType || basin.basinTypeId) {
+            const basinTypeValue = basin.basinType || basin.basinTypeId
+            let kitAssemblyId = basinTypeValue
+            
+            switch (basinTypeValue) {
+              case 'E_SINK':
+                kitAssemblyId = 'T2-BSN-ESK-KIT'
+                break
+              case 'E_SINK_DI':
+                kitAssemblyId = 'T2-BSN-ESK-DI-KIT'
+                break
+              case 'E_DRAIN':
+                kitAssemblyId = 'T2-BSN-EDR-KIT'
+                break
+            }
+            basinData.basinTypeId = kitAssemblyId
+          }
+          
+          if (basin.basinSizePartNumber || basin.basinSize) {
+            let sizePartNumber = basin.basinSizePartNumber || basin.basinSize
+            
+            if (sizePartNumber === 'CUSTOM') {
+              if (basin.customWidth && basin.customLength && basin.customDepth) {
+                const customDimensions = `${basin.customWidth}X${basin.customLength}X${basin.customDepth}`
+                sizePartNumber = `720.215.001`
+                basinData.customPartNumber = `T2-ADW-BASIN-${customDimensions}`
+                basinData.customDimensions = customDimensions
+              }
+            } else if (basin.basinSize && basin.basinSize !== 'CUSTOM') {
+              const normalizedDimensions = basin.basinSize.toUpperCase()
+              sizePartNumber = `720.215.001`
+              basinData.customPartNumber = `T2-ADW-BASIN-${normalizedDimensions}`
+              basinData.customDimensions = normalizedDimensions
+            }
+            
+            if (sizePartNumber) {
+              basinData.basinSizePartNumber = sizePartNumber
+            }
+          }
+          
+          if (basin.addonIds && basin.addonIds.length > 0) basinData.addonIds = basin.addonIds
+          return basinData
+        }).filter((basin: any) => basin.basinTypeId || basin.basinSizePartNumber || (basin.addonIds && basin.addonIds.length > 0))
+      }
+
+      // Add faucets if configured (same processing as BOMDebugHelper)
+      if (orderData.faucets && orderData.faucets.length > 0) {
+        configData.faucets = orderData.faucets.map((faucet: any) => ({
+          faucetTypeId: faucet.faucetTypeId,
+          quantity: 1
+        })).filter((faucet: any) => faucet.faucetTypeId)
+      }
+
+      // Add sprayers if configured (same processing as BOMDebugHelper)
+      if (orderData.sprayers && orderData.sprayers.length > 0) {
+        configData.sprayers = orderData.sprayers.map((sprayer: any) => ({
+          id: sprayer.id,
+          sprayerTypeId: sprayer.sprayerTypeId,
+          location: sprayer.location
+        })).filter((sprayer: any) => sprayer.sprayerTypeId)
+      }
+
+      if (orderData.controlBoxId) configData.controlBoxId = orderData.controlBoxId
+
+      // Use the BOM service directly (same as BOMDebugHelper)
+      const response = await nextJsApiClient.post('/bom/generate', {
+        orderId: 'preview',
+        buildNumber: 'preview-001',
+        orderConfig: configData
+      })
       
       if (response.data.success) {
-        const bomResult = response.data.data.bom || response.data.data
-        const items = bomResult.flattened || bomResult.hierarchical || []
+        const bomResult = response.data.data
+        // Use hierarchical data if available, otherwise flattened
+        const items = bomResult.hierarchical || bomResult.flattened || []
         setPreviewBomItems(items)
       } else {
         setError(response.data.error || 'Failed to generate BOM preview')
@@ -180,7 +281,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       
       // Handle rate limiting with exponential backoff
       if (err.response?.status === 429 && retryCount < 3) {
-        const delay = Math.pow(2, retryCount) * 1000 // 1s, 2s, 4s
+        const delay = Math.pow(2, retryCount) * 1000
         console.log(`Rate limited, retrying in ${delay}ms...`)
         setTimeout(() => {
           generateBOMPreview(retryCount + 1)
@@ -194,7 +295,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
           : 'Failed to generate BOM preview: ' + (err.message || 'Unknown error')
       )
     } finally {
-      if (retryCount === 0) { // Only set loading false on initial attempt
+      if (retryCount === 0) {
         setLoading(false)
       }
     }
@@ -222,7 +323,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     const quantityMap = new Map<string, EnhancedBOMItem>()
     
     const processItem = (item: BOMItem, level: number = 0) => {
-      const key = item.partIdOrAssemblyId || item.assemblyId || item.id
+      const key = item.assemblyId || item.partNumber || item.id
       
       if (quantityMap.has(key)) {
         const existing = quantityMap.get(key)!
@@ -240,8 +341,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         })
       }
 
-      if (item.children) {
-        item.children.forEach(child => processItem(child, level + 1))
+      // Handle both children and subItems (BOMDebugHelper uses both)
+      const childItems = item.children || item.subItems || []
+      if (childItems.length > 0) {
+        childItems.forEach(child => processItem(child, level + 1))
       }
     }
 
@@ -257,9 +360,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
       filtered = filtered.filter(item => 
-        item.name.toLowerCase().includes(searchLower) ||
-        (item.partIdOrAssemblyId?.toLowerCase().includes(searchLower)) ||
-        (item.assemblyId?.toLowerCase().includes(searchLower))
+        item.name?.toLowerCase().includes(searchLower) ||
+        (item.assemblyId?.toLowerCase().includes(searchLower)) ||
+        (item.partNumber?.toLowerCase().includes(searchLower)) ||
+        (item.description?.toLowerCase().includes(searchLower))
       )
     }
 
@@ -395,14 +499,19 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     return processedItems.length
   }
 
-  const renderBOMItem = (item: EnhancedBOMItem, level: number = 0) => {
-    const hasChildren = item.children && item.children.length > 0
-    const isExpanded = expandedItems.has(item.id)
-    const isAssembly = item.itemType === 'ASSEMBLY' || item.itemType === 'COMPLEX_ASSEMBLY' || hasChildren
+  const renderBOMItem = (item: EnhancedBOMItem, level: number = 0, index: number = 0) => {
+    const childItems = item.children || item.subItems || []
+    const hasChildren = childItems.length > 0
+    const itemId = item.id || item.assemblyId || item.partNumber
+    const isExpanded = expandedItems.has(itemId)
+    const isAssembly = item.type === 'ASSEMBLY' || item.type === 'COMPLEX_ASSEMBLY' || item.type === 'KIT' || hasChildren || !item.isPart
     const displayQuantity = item.aggregatedQuantity || item.quantity
+    
+    // Generate unique key using multiple identifiers to prevent duplicates
+    const uniqueKey = `${itemId}-${level}-${index}-${item.name?.replace(/[^a-zA-Z0-9]/g, '')}-${displayQuantity}`
 
     return (
-      <div key={`${item.id || item.assemblyId || item.partIdOrAssemblyId}-${level}`}>
+      <div key={uniqueKey}>
         <div 
           className={`flex items-center justify-between py-2 px-3 hover:bg-slate-50 rounded-md transition-colors ${
             level === 0 ? 'bg-gray-50 border-l-4 border-blue-500' : ''
@@ -412,7 +521,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
           <div className="flex items-center space-x-2 flex-1">
             {hasChildren && (
               <button
-                onClick={() => toggleItem(item.id)}
+                onClick={() => toggleItem(itemId)}
                 className="p-0.5 hover:bg-gray-200 rounded"
               >
                 {isExpanded ? (
@@ -452,7 +561,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 )}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                <span className="truncate">{item.partIdOrAssemblyId || item.assemblyId}</span>
+                <span className="truncate">{item.assemblyId || item.partNumber}</span>
                 {item.sourceInfo && item.sourceInfo.length > 0 && showDebugInfo && (
                   <Badge variant="outline" className="text-xs">
                     Sources: {item.sourceInfo.length}
@@ -465,11 +574,11 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
           <div className="flex items-center space-x-2 shrink-0">
             {hasChildren && (
               <Badge variant="secondary" className="text-xs">
-                {item.children!.length} items
+                {childItems.length} items
               </Badge>
             )}
             <Badge variant={isAssembly ? "default" : "secondary"} className="text-xs">
-              {item.itemType.replace(/_/g, ' ')}
+              {(item.type || item.category || 'UNKNOWN').replace(/_/g, ' ')}
             </Badge>
             <span className="font-medium text-sm min-w-[60px] text-right">
               Qty: {displayQuantity}
@@ -479,7 +588,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         
         {hasChildren && isExpanded && (
           <div className="ml-4 border-l-2 border-gray-200 pl-2">
-            {item.children!.map(child => renderBOMItem(child, level + 1))}
+            {childItems.map(child => renderBOMItem(child, level + 1))}
           </div>
         )}
       </div>
@@ -548,7 +657,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             <SelectContent>
               {categories.map(category => (
                 <SelectItem key={category} value={category}>
-                  {category === 'ALL' ? 'All Categories' : category.replace(/_/g, ' ')}
+                  {category === 'ALL' ? 'All Categories' : (category || '').replace(/_/g, ' ')}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -620,7 +729,8 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                       const searchLower = searchTerm.toLowerCase()
                       return (
                         item.name?.toLowerCase().includes(searchLower) ||
-                        (item.partIdOrAssemblyId?.toLowerCase().includes(searchLower))
+                        (item.assemblyId?.toLowerCase().includes(searchLower)) ||
+                        (item.partNumber?.toLowerCase().includes(searchLower))
                       )
                     })
                     .map(item => renderBOMItem(item))
@@ -663,7 +773,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                               expandedCategories.has(category) ? 'rotate-90' : ''
                             }`}
                           />
-                          <span className="font-medium">{category.replace(/_/g, ' ')}</span>
+                          <span className="font-medium">{(category || '').replace(/_/g, ' ')}</span>
                           <Badge variant="secondary" className="ml-2">
                             {items.length} items
                           </Badge>

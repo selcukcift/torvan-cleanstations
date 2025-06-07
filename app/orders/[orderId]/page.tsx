@@ -32,6 +32,7 @@ import { BOMViewer } from "@/components/order/BOMViewer"
 import { OrderSummaryCard } from "@/components/order/OrderSummaryCard"
 import { OrderTimeline } from "@/components/order/OrderTimeline"
 import { QCOrderIntegration } from "@/components/qc/QCOrderIntegration"
+import { generateOrderDescription, generateShortDescription } from "@/lib/descriptionGenerator"
 
 // Status badge color mapping
 const statusColors: Record<string, string> = {
@@ -291,6 +292,66 @@ export default function OrderDetailsPage() {
   const allowedStatuses = getAllowedStatuses()
   const canUpdateStatus = allowedStatuses.length > 0
 
+  // Convert order data to description generator format
+  const convertOrderForDescription = () => {
+    if (!order) return null
+    
+    const configurations: Record<string, any> = {}
+    
+    order.buildNumbers.forEach((buildNumber: string) => {
+      const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber)
+      const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
+      const faucetConfigs = order.faucetConfigurations?.filter((fc: any) => fc.buildNumber === buildNumber) || []
+      const sprayerConfigs = order.sprayerConfigurations?.filter((sc: any) => sc.buildNumber === buildNumber) || []
+      
+      if (sinkConfig) {
+        configurations[buildNumber] = {
+          sinkModelId: sinkConfig.sinkModelId,
+          width: sinkConfig.width,
+          length: sinkConfig.length,
+          legsTypeId: sinkConfig.legsTypeId,
+          feetTypeId: sinkConfig.feetTypeId,
+          pegboard: sinkConfig.pegboard || false,
+          pegboardTypeId: sinkConfig.pegboardTypeId,
+          pegboardColorId: sinkConfig.pegboardColorId,
+          workflowDirection: sinkConfig.workflowDirection,
+          basins: basinConfigs.map((bc: any) => ({
+            basinTypeId: bc.basinTypeId,
+            basinType: bc.basinTypeId,
+            basinSizePartNumber: bc.basinSizePartNumber,
+            customWidth: bc.customWidth,
+            customLength: bc.customLength,
+            customDepth: bc.customDepth,
+            addonIds: bc.addonIds || []
+          })),
+          faucets: faucetConfigs.map((fc: any) => ({
+            faucetTypeId: fc.faucetTypeId,
+            quantity: fc.faucetQuantity || 1,
+            placement: fc.faucetPlacement
+          })),
+          sprayers: sprayerConfigs.flatMap((sc: any) => 
+            sc.sprayerTypeIds?.map((typeId: string, index: number) => ({
+              sprayerTypeId: typeId,
+              location: sc.sprayerLocations?.[index] || 'Center',
+              quantity: 1
+            })) || []
+          ),
+          controlBoxId: sinkConfig.controlBoxId
+        }
+      }
+    })
+    
+    return {
+      sinkSelection: {
+        quantity: order.buildNumbers.length,
+        buildNumbers: order.buildNumbers
+      },
+      configurations
+    }
+  }
+
+  const orderForDescription = convertOrderForDescription()
+
   return (
     <div className="space-y-4">
       {/* Compact Header */}
@@ -407,6 +468,35 @@ export default function OrderDetailsPage() {
               </div>
             </div>
           </Card>
+
+          {/* Product Description */}
+          {orderForDescription && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Description</CardTitle>
+                <CardDescription>Detailed specification of the configured sink</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Short Description */}
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <h4 className="font-medium text-blue-900 mb-2">Summary</h4>
+                    <p className="text-blue-800">
+                      {generateShortDescription(orderForDescription)}
+                    </p>
+                  </div>
+                  
+                  {/* Full Description */}
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
+                    <p className="text-slate-700 leading-relaxed text-sm">
+                      {generateOrderDescription(orderForDescription)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Notes */}
           {order.notes && (

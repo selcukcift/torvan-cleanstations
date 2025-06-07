@@ -286,12 +286,25 @@ export function AccessoriesStep() {
 
         {sinkSelection.buildNumbers.map((buildNumber) => (
           <TabsContent key={buildNumber} value={buildNumber} className="mt-6">
-            {/* Accessories Grid/List */}
-            <div className={`grid gap-4 ${
-              viewMode === 'grid' 
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1'
-            }`}>
+            {/* Header with Build Number */}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-slate-900">
+                Select accessories for {buildNumber}
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">
+                Choose accessories and specify quantities for this build
+              </p>
+            </div>
+
+            {/* Main Content Area with Shopping Cart */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Accessories Section */}
+              <div className="lg:col-span-3">
+                <div className={`grid gap-4 ${
+                  viewMode === 'grid' 
+                    ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
+                    : 'grid-cols-1'
+                }`}>
               {filteredAccessories.map((accessory) => {
                 const quantity = getAccessoryQuantity(accessory.assemblyId, buildNumber)
                 const totalQuantity = getTotalAccessoryQuantity(accessory.assemblyId)
@@ -404,6 +417,92 @@ export function AccessoriesStep() {
                 </CardContent>
               </Card>
             )}
+          </div>
+
+          {/* Shopping Cart Section */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-6">
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <ShoppingCart className="w-5 h-5" />
+                    {buildNumber} Cart
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {(accessories[buildNumber] || []).length === 0 ? (
+                    <div className="text-center py-8">
+                      <Package className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        No accessories selected
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {(accessories[buildNumber] || []).map((accessory) => (
+                        <div key={accessory.assemblyId} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">
+                              {accessory.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {accessory.partNumber}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => {
+                                  const accessoryItem = allAccessories.find(a => a.assemblyId === accessory.assemblyId)
+                                  if (accessoryItem) {
+                                    updateAccessoryQuantity(accessoryItem, buildNumber, Math.max(0, accessory.quantity - 1))
+                                  }
+                                }}
+                              >
+                                <Minus className="w-3 h-3" />
+                              </Button>
+                              <span className="text-sm font-medium w-8 text-center">
+                                {accessory.quantity}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => {
+                                  const accessoryItem = allAccessories.find(a => a.assemblyId === accessory.assemblyId)
+                                  if (accessoryItem) {
+                                    updateAccessoryQuantity(accessoryItem, buildNumber, accessory.quantity + 1)
+                                  }
+                                }}
+                              >
+                                <Plus className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {(accessories[buildNumber] || []).length > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex items-center justify-between text-sm font-medium">
+                        <span>Total Items:</span>
+                        <Badge variant="outline">
+                          {(accessories[buildNumber] || []).reduce((sum, acc) => sum + acc.quantity, 0)}
+                        </Badge>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
           </TabsContent>
         ))}
       </Tabs>

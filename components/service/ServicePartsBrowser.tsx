@@ -17,7 +17,7 @@ import { nextJsApiClient } from '@/lib/api'
 import { useToast } from "@/hooks/use-toast"
 
 // Simple cart store (in a real app, use Zustand or Redux)
-let cartItems: any[] = []
+const cartItems: any[] = []
 
 export function ServicePartsBrowser() {
   const [parts, setParts] = useState<any[]>([])

@@ -37,16 +37,13 @@ export async function GET(request: NextRequest) {
       
       // Order statistics
       prisma.order.groupBy({
-        by: ['status'],
+        by: ['orderStatus'],
         _count: true
       }),
       
       // Parts statistics
       prisma.part.aggregate({
-        _count: true,
-        _sum: {
-          quantityInStock: true
-        }
+        _count: true
       }),
       
       // Assembly statistics
@@ -74,7 +71,7 @@ export async function GET(request: NextRequest) {
         include: {
           user: {
             select: {
-              name: true,
+              fullName: true,
               role: true
             }
           }
@@ -82,39 +79,42 @@ export async function GET(request: NextRequest) {
       })
     ])
 
-    // Calculate low stock parts
-    const lowStockParts = await prisma.part.count({
+    // Calculate low stock parts (using InventoryItem model)
+    const lowStockInventory = await prisma.inventoryItem.findMany({
       where: {
-        quantityInStock: {
-          lte: prisma.part.fields.minimumStockLevel
-        }
+        reorderPoint: { not: null }
+      },
+      select: {
+        quantityOnHand: true,
+        reorderPoint: true
       }
     })
+    
+    const lowStockParts = lowStockInventory.filter(item => 
+      item.quantityOnHand <= (item.reorderPoint || 0)
+    ).length
 
     // Calculate parts that are out of stock
-    const outOfStockParts = await prisma.part.count({
+    const outOfStockParts = await prisma.inventoryItem.count({
       where: {
-        quantityInStock: 0
+        quantityOnHand: 0
       }
     })
 
     // Get pending orders count
     const pendingOrders = await prisma.order.count({
       where: {
-        status: {
-          in: ['PENDING', 'IN_PRODUCTION']
+        orderStatus: {
+          in: ['ORDER_CREATED', 'READY_FOR_PRE_QC', 'READY_FOR_PRODUCTION']
         }
       }
     })
 
-    // Get overdue tasks
-    const overdueTasks = await prisma.task.count({
+    // Get active tasks (not completed)
+    const activeTasks = await prisma.task.count({
       where: {
         status: {
-          not: 'COMPLETED'
-        },
-        estimatedEndTime: {
-          lt: new Date()
+          in: ['IN_PROGRESS', 'PENDING', 'BLOCKED']
         }
       }
     })
@@ -136,8 +136,8 @@ export async function GET(request: NextRequest) {
       if (systemStatus !== 'critical') systemStatus = 'warning'
     }
     
-    if (overdueTasks > 0) {
-      alerts.push(`${overdueTasks} tasks are overdue`)
+    if (activeTasks > 10) {
+      alerts.push(`${activeTasks} tasks are active`)
       systemStatus = 'warning'
     }
     
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
     }, {} as Record<string, number>)
 
     const orderStatistics = orderStats.reduce((acc, stat) => {
-      acc[stat.status.toLowerCase()] = stat._count
+      acc[stat.orderStatus.toLowerCase()] = stat._count
       return acc
     }, {} as Record<string, number>)
 
@@ -180,7 +180,6 @@ export async function GET(request: NextRequest) {
         },
         parts: {
           total: partStats._count,
-          totalStock: partStats._sum.quantityInStock || 0,
           lowStock: lowStockParts,
           outOfStock: outOfStockParts
         },
@@ -189,7 +188,7 @@ export async function GET(request: NextRequest) {
         },
         tasks: {
           ...taskStatistics,
-          overdue: overdueTasks,
+          active: activeTasks,
           total: taskStats.reduce((sum, stat) => sum + stat._count, 0)
         }
       },
@@ -200,7 +199,7 @@ export async function GET(request: NextRequest) {
         entityId: activity.entityId,
         timestamp: activity.createdAt,
         user: activity.user ? {
-          name: activity.user.name,
+          name: activity.user.fullName,
           role: activity.user.role
         } : null,
         metadata: activity.metadata

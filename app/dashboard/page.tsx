@@ -46,6 +46,12 @@ export default function DashboardPage() {
   useEffect(() => {
     console.log('Dashboard: session status:', status, 'session:', session)
     
+    // More detailed logging
+    if (session) {
+      console.log('Session user:', session.user)
+      console.log('User role:', session.user?.role)
+    }
+    
     // Set timeout regardless of status to catch stuck loading states
     const timeout = setTimeout(() => {
       if (status === 'loading') {
@@ -86,6 +92,8 @@ export default function DashboardPage() {
 
   // Show role-specific dashboards
   const renderRoleDashboard = () => {
+    console.log('Rendering dashboard for role:', user.role)
+    
     switch (user.role) {
       case 'ADMIN':
         return <AdminDashboard />
@@ -126,7 +134,7 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            Welcome back, {user.fullName}!
+            Welcome back, {user.name}!
           </h2>
           <p className="text-slate-600">
             Ready to manage your CleanStation production workflow tasks.

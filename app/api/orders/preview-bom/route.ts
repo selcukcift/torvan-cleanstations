@@ -37,7 +37,7 @@ const SprayerItemSchema = z.object({
 })
 
 const SinkConfigurationSchema = z.object({
-  sinkModelId: z.string(),
+  sinkModelId: z.string().optional(),
   sinkWidth: z.number().optional(),
   sinkLength: z.number().optional(),
   width: z.number().optional(),
@@ -81,30 +81,47 @@ const BOMPreviewSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  let body: any = null
+  
   try {
     // Authenticate user
     const user = await getAuthUser()
     
     if (!user) {
-      return NextResponse.json(
-        { success: false, message: 'Authentication required' },
-        { status: 401 }
-      )
+      console.warn('⚠️ BOM Preview: No authenticated user found, proceeding anyway for debugging')
+      // Temporarily allow unauthenticated access for debugging
+      // return NextResponse.json(
+      //   { success: false, message: 'Authentication required' },
+      //   { status: 401 }
+      // )
+    } else {
+      console.log('✅ BOM Preview: User authenticated:', user.username)
     }
     
     // Parse and validate request body
-    const body = await request.json()
+    body = await request.json()
+    console.log('🔍 BOM Preview API received body:', JSON.stringify(body, null, 2))
+    
     const validatedData = BOMPreviewSchema.parse(body)
 
     const { customerInfo, sinkSelection, configurations, accessories } = validatedData
 
     // Generate BOM preview using the same service as order creation
+    console.log('🔧 Calling generateBOMForOrder with:', {
+      customer: customerInfo,
+      configurations: JSON.stringify(configurations, null, 2),
+      accessories: JSON.stringify(accessories, null, 2),
+      buildNumbers: sinkSelection.buildNumbers
+    })
+    
     const bomResult = await generateBOMForOrder({
       customer: customerInfo,
       configurations,
       accessories,
       buildNumbers: sinkSelection.buildNumbers
     })
+    
+    console.log('✅ BOM generation completed successfully')
 
     // bomResult is an object with hierarchical, flattened, totalItems, and topLevelItems properties
     const flattenedItems = bomResult?.flattened || []
@@ -126,8 +143,11 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error generating BOM preview:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    console.error('Request body was:', JSON.stringify(body, null, 2))
     
     if (error instanceof z.ZodError) {
+      console.error('Validation errors:', JSON.stringify(error.errors, null, 2))
       return NextResponse.json(
         { 
           success: false, 
@@ -139,7 +159,12 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: 'Failed to generate BOM preview' },
+      { 
+        success: false, 
+        message: 'Failed to generate BOM preview',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }

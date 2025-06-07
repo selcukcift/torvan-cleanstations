@@ -36,10 +36,10 @@ export function NotificationBell() {
   // Fetch unread notifications on mount and set up auto-refresh
   useEffect(() => {
     if (session?.user) {
-      // Add a small delay to prevent blocking dashboard loading
+      // Add a longer delay to prevent blocking dashboard loading
       const timer = setTimeout(() => {
         fetchNotifications(true)
-      }, 1000)
+      }, 3000)
       
       // Auto-refresh every 30 seconds (Sprint 4.3 requirement)
       const interval = setInterval(() => {

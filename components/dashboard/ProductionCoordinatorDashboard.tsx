@@ -43,7 +43,8 @@ import {
   Package,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  RefreshCw
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -106,7 +107,22 @@ export function ProductionCoordinatorDashboard() {
 
   useEffect(() => {
     fetchOrders()
-  }, [currentPage, statusFilter])
+  }, [currentPage, statusFilter, searchTerm])
+
+  // Auto-refresh when window regains focus (useful when returning from order creation)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchOrders()
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [])
+
+  // Also refresh when component mounts
+  useEffect(() => {
+    fetchOrders()
+  }, [])
 
   const fetchOrders = async () => {
     setLoading(true)
@@ -304,6 +320,20 @@ export function ProductionCoordinatorDashboard() {
                   ))}
                 </SelectContent>
               </Select>
+
+              {/* Refresh Button */}
+              <Button 
+                onClick={fetchOrders} 
+                size="sm" 
+                variant="outline"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
+              </Button>
             </div>
           </div>
         </CardHeader>

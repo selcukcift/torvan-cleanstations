@@ -538,6 +538,65 @@ export async function getControlBoxOptions(): Promise<any[]> {
   }
 }
 
+/**
+ * Determine appropriate control box based on basin configuration
+ */
+export async function getControlBox(basinConfigurations: any[]): Promise<any> {
+  if (!basinConfigurations || basinConfigurations.length === 0) {
+    return null
+  }
+  
+  let eDrainCount = 0
+  let eSinkCount = 0 // Includes both E_SINK and E_SINK_DI
+  
+  // Count basins by type
+  basinConfigurations.forEach(basin => {
+    if (basin.basinType === 'E_DRAIN' || basin.basinTypeId === 'E_DRAIN') {
+      eDrainCount++
+    } else if (
+      basin.basinType === 'E_SINK' || basin.basinTypeId === 'E_SINK' ||
+      basin.basinType === 'E_SINK_DI' || basin.basinTypeId === 'E_SINK_DI'
+    ) {
+      eSinkCount++
+    }
+  })
+  
+  // Control box mapping based on business rules
+  const controlBoxMappings: Record<string, { eDrain: number; eSink: number }> = {
+    'T2-CTRL-EDR1': { eDrain: 1, eSink: 0 },
+    'T2-CTRL-ESK1': { eDrain: 0, eSink: 1 },
+    'T2-CTRL-EDR1-ESK1': { eDrain: 1, eSink: 1 },
+    'T2-CTRL-EDR2': { eDrain: 2, eSink: 0 },
+    'T2-CTRL-ESK2': { eDrain: 0, eSink: 2 },
+    'T2-CTRL-EDR3': { eDrain: 3, eSink: 0 },
+    'T2-CTRL-ESK3': { eDrain: 0, eSink: 3 },
+    'T2-CTRL-EDR1-ESK2': { eDrain: 1, eSink: 2 },
+    'T2-CTRL-EDR2-ESK1': { eDrain: 2, eSink: 1 }
+  }
+  
+  // Find matching control box
+  for (const [controlBoxId, config] of Object.entries(controlBoxMappings)) {
+    if (config.eDrain === eDrainCount && config.eSink === eSinkCount) {
+      // Verify assembly exists in database
+      const controlBox = await prisma.assembly.findUnique({
+        where: { assemblyId: controlBoxId },
+        select: { assemblyId: true, name: true }
+      })
+      
+      if (controlBox) {
+        return {
+          ...controlBox,
+          basinConfiguration: { eDrainCount, eSinkCount },
+          mappingRule: `${eDrainCount} E-Drain + ${eSinkCount} E-Sink basins`
+        }
+      }
+    }
+  }
+  
+  console.warn(`No control box found for configuration: ${eDrainCount} E-Drain, ${eSinkCount} E-Sink basins`)
+  return null
+}
+
 const configuratorService = {
   getSinkFamilies,
   getSinkModels,
@@ -549,7 +608,8 @@ const configuratorService = {
   getBasinAddonOptions,
   getFaucetTypeOptions,
   getSprayerTypeOptions,
-  getControlBoxOptions
+  getControlBoxOptions,
+  getControlBox
 }
 
 export default configuratorService

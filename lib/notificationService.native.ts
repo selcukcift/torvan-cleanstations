@@ -90,7 +90,7 @@ class NotificationService {
     const { limit = 10, unreadOnly = false } = options
 
     try {
-      let whereClause: any = {
+      const whereClause: any = {
         recipientId: userId
       }
 

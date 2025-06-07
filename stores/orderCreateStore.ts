@@ -10,6 +10,7 @@ export interface CustomerInfo {
   language: 'EN' | 'FR' | 'ES'
   notes: string
   poDocument?: File
+  sinkDrawings?: File
 }
 
 export interface SinkSelection {
@@ -48,42 +49,41 @@ export interface SprayerConfiguration {
 }
 
 export interface SinkConfiguration {
+  // Basic sink configuration
   sinkModelId: string
-  sinkWidth?: number
-  sinkLength?: number
   width?: number
   length?: number
+  
+  // Structural components (use consistent ID suffix)
   legsTypeId?: string
-  legsType?: string
-  legsKitId?: string
   feetTypeId?: string
-  feetType?: string
+  
+  // Pegboard configuration (simplified)
   pegboard: boolean
-  hasPegboard?: boolean
-  pegboardType?: string
   pegboardTypeId?: string
-  pegboardColor?: string
   pegboardColorId?: string
-  hasDrawersAndCompartments?: boolean
+  
+  // Optional components
   drawersAndCompartments?: string[]
   workflowDirection?: 'LEFT_TO_RIGHT' | 'RIGHT_TO_LEFT'
+  
+  // Sub-configurations
   basins: BasinConfiguration[]
   faucets?: FaucetConfiguration[]
-  faucet?: FaucetConfiguration
-  faucetType?: string
-  faucetTypeId?: string
-  faucetQuantity?: number
-  faucetPlacement?: string
-  autoSelectedFaucet?: boolean
   sprayers?: SprayerConfiguration[]
-  sprayer?: SprayerConfiguration
-  hasSprayer?: boolean
-  sprayerType?: string
-  sprayerTypeId?: string
-  sprayerQuantity?: number
-  sprayerLocation?: string
-  sprayerLocations?: string[]
   controlBoxId?: string
+  
+  // Legacy fields - kept for backward compatibility but deprecated
+  /** @deprecated Use width instead */
+  sinkWidth?: number
+  /** @deprecated Use length instead */
+  sinkLength?: number
+  /** @deprecated Use pegboard instead */
+  hasPegboard?: boolean
+  /** @deprecated Use pegboardTypeId instead */
+  pegboardType?: string
+  /** @deprecated Use pegboardColorId instead */
+  pegboardColor?: string
 }
 
 export interface SelectedAccessory {
@@ -197,10 +197,16 @@ export const useOrderCreateStore = create<OrderCreateState>()(
             return !!(sinkFamily && quantity > 0 && hasValidBuildNumbers)
           
           case 3:
-            // Check if all sinks are configured
-            return state.sinkSelection.buildNumbers.every(buildNumber => 
-              state.configurations[buildNumber]?.sinkModelId
-            )
+            // Check if all sinks are properly configured with required fields
+            return state.sinkSelection.buildNumbers.every(buildNumber => {
+              const config = state.configurations[buildNumber]
+              return config?.sinkModelId && 
+                     config?.width && 
+                     config?.length && 
+                     config?.legsTypeId && 
+                     config?.feetTypeId &&
+                     config?.basins?.length > 0
+            })
           
           case 4:
             // Accessories are optional, so always valid

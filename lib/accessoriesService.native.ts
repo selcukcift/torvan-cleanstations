@@ -110,7 +110,7 @@ export async function getAllAccessories(options: {
   try {
     const { limit = 50, offset = 0, featured = false, search } = options
 
-    let whereClause: any = {
+    const whereClause: any = {
       categoryCode: '720', // ACCESSORY LIST category
       type: { in: ['KIT', 'SERVICE_PART', 'COMPLEX', 'SIMPLE'] }
     }
@@ -180,7 +180,7 @@ export async function searchAccessories(query: string, options: {
   try {
     const { limit = 20, categoryCode } = options
 
-    let whereClause: any = {
+    const whereClause: any = {
       categoryCode: categoryCode || '720', // Default to ACCESSORY LIST
       type: { in: ['KIT', 'SERVICE_PART', 'COMPLEX', 'SIMPLE'] },
       OR: [

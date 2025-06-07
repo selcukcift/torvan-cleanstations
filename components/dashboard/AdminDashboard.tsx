@@ -107,7 +107,22 @@ export function AdminDashboard() {
 
   useEffect(() => {
     fetchOrders()
-  }, [currentPage, statusFilter])
+  }, [currentPage, statusFilter, searchTerm, dateFilter])
+
+  // Auto-refresh when window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchOrders()
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [])
+
+  // Also refresh when component mounts
+  useEffect(() => {
+    fetchOrders()
+  }, [])
 
   const fetchOrders = async () => {
     setLoading(true)

@@ -11,7 +11,8 @@ import {
   AlertCircle,
   Info,
   ShowerHead,
-  Waves
+  Waves,
+  Trash2
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -144,6 +145,34 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
     }
   }, [currentConfig.basins])
 
+  // E-Sink DI Logic: Auto-add DI Gooseneck faucet when E_SINK_DI basin is selected
+  useEffect(() => {
+    const hasESinkDI = currentConfig.basins?.some((basin: any) => 
+      basin.basinTypeId === 'E_SINK_DI' || basin.basinType === 'E_SINK_DI'
+    )
+    
+    if (hasESinkDI) {
+      const currentFaucets = currentConfig.faucets || []
+      const hasDIGooseneck = currentFaucets.some((faucet: any) => 
+        faucet.faucetTypeId === 'T2-OA-DI-GOOSENECK-FAUCET-KIT'
+      )
+      
+      // If E_SINK_DI basin exists but no DI Gooseneck faucet, add one
+      if (!hasDIGooseneck) {
+        const diGooseneckFaucet = {
+          id: `faucet-di-${Date.now()}`,
+          faucetTypeId: 'T2-OA-DI-GOOSENECK-FAUCET-KIT',
+          placement: 'CENTER',
+          isMandatory: true // Mark as mandatory for UI indication
+        }
+        
+        updateConfig({ 
+          faucets: [...currentFaucets, diGooseneckFaucet]
+        })
+      }
+    }
+  }, [currentConfig.basins, faucetTypes])
+
   const loadBasinSizeOptions = async () => {
     try {
       const response = await nextJsApiClient.get('/configurator?queryType=basinSizes')
@@ -185,7 +214,21 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
 
   const getMaxFaucets = () => {
     const basinCount = getMaxBasins()
-    // According to business rules: 1-2 basins = max 2 faucets, 3 basins = max 3 faucets
+    
+    // Check if all basins are E-Drain
+    const allBasinsAreEDrain = currentConfig.basins?.every((basin: any) => 
+      basin.basinTypeId === 'E_DRAIN' || basin.basinType === 'E_DRAIN'
+    )
+    
+    // E-Drain only configurations have limited faucet placement options
+    if (allBasinsAreEDrain) {
+      // For E-Drain basins, limit to number of between-basin positions
+      // 2 basins = 1 faucet (between 1&2), 3 basins = 2 faucets (between 1&2, between 2&3)
+      return Math.max(1, basinCount - 1)
+    }
+    
+    // Standard business rules for mixed or non-E-Drain configurations
+    // 1-2 basins = max 2 faucets, 3 basins = max 3 faucets
     return basinCount <= 2 ? 2 : 3
   }
 
@@ -196,25 +239,71 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
     
     const options = []
     
-    // Always include CENTER as an option
-    options.push({ value: 'CENTER', label: 'Center' })
+    // Check basin types
+    const hasEDrainBasin = currentConfig.basins?.some((basin: any) => 
+      basin.basinTypeId === 'E_DRAIN' || basin.basinType === 'E_DRAIN'
+    )
+    
+    const allBasinsAreEDrain = currentConfig.basins?.every((basin: any) => 
+      basin.basinTypeId === 'E_DRAIN' || basin.basinType === 'E_DRAIN'
+    )
+    
+    // For pure E-Drain configurations, only allow between-basin placements
+    if (allBasinsAreEDrain && basinCount >= 2) {
+      // E-Drain basins can only have faucets between basins, not on individual basins
+      if (basinCount >= 2) {
+        const between12 = 'BETWEEN_1_2'
+        if (!occupiedPlacements.includes(between12)) {
+          options.push({ value: between12, label: 'Between Basin 1 & 2' })
+        }
+      }
+      
+      if (basinCount >= 3) {
+        const between23 = 'BETWEEN_2_3'
+        if (!occupiedPlacements.includes(between23)) {
+          options.push({ value: between23, label: 'Between Basin 2 & 3' })
+        }
+      }
+      
+      return options
+    }
+    
+    // For mixed configurations or non-E-Drain basins
+    // Only include CENTER if no E-Drain basins (E-Drain basins don't allow center faucets)
+    if (!hasEDrainBasin) {
+      options.push({ value: 'CENTER', label: 'Center' })
+    }
+    
+    // Add individual basin options only for non-E-Drain basins
+    if (!allBasinsAreEDrain) {
+      for (let i = 1; i <= basinCount; i++) {
+        const basin = currentConfig.basins?.[i - 1]
+        const isEDrain = basin?.basinTypeId === 'E_DRAIN' || basin?.basinType === 'E_DRAIN'
+        
+        // Only allow basin placement if it's not an E-Drain basin
+        if (!isEDrain) {
+          const basinValue = `BASIN_${i}`
+          if (!occupiedPlacements.includes(basinValue)) {
+            options.push({ value: basinValue, label: `Basin ${i}` })
+          }
+        }
+      }
+    }
     
     // Add between-basin options based on basin count
     if (basinCount >= 2) {
       const between12 = 'BETWEEN_1_2'
       if (!occupiedPlacements.includes(between12)) {
-        options.push({ value: between12, label: 'Between Basin 1-2' })
+        options.push({ value: between12, label: 'Between Basin 1 & 2' })
       }
     }
     
     if (basinCount >= 3) {
       const between23 = 'BETWEEN_2_3'
       if (!occupiedPlacements.includes(between23)) {
-        options.push({ value: between23, label: 'Between Basin 2-3' })
+        options.push({ value: between23, label: 'Between Basin 2 & 3' })
       }
     }
-    
-    // Note: LEFT and RIGHT options removed as requested
     
     return options
   }
@@ -613,39 +702,9 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                             </Select>
                           </div>
 
-                          {/* Pegboard Size Info */}
-                          <div className="space-y-2">
-                            <Label>Pegboard Size</Label>
-                            {!currentConfig.length ? (
-                              <p className="text-sm text-muted-foreground">
-                                Enter sink length to see auto-calculated pegboard size
-                              </p>
-                            ) : (
-                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                <p className="text-sm font-medium text-blue-800">
-                                  Auto-calculated size based on sink length ({currentConfig.length}")
-                                </p>
-                                <p className="text-xs text-blue-600 mt-1">
-                                  {(() => {
-                                    const length = currentConfig.length;
-                                    if (length >= 34 && length <= 47) return 'T2-ADW-PB-3436 (34"×36")';
-                                    if (length >= 48 && length <= 59) return 'T2-ADW-PB-4836 (48"×36")';
-                                    if (length >= 60 && length <= 71) return 'T2-ADW-PB-6036 (60"×36")';
-                                    if (length >= 72 && length <= 83) return 'T2-ADW-PB-7236 (72"×36")';
-                                    if (length >= 84 && length <= 95) return 'T2-ADW-PB-8436 (84"×36")';
-                                    if (length >= 96 && length <= 107) return 'T2-ADW-PB-9636 (96"×36")';
-                                    if (length >= 108 && length <= 119) return 'T2-ADW-PB-10836 (108"×36")';
-                                    if (length >= 120 && length <= 130) return 'T2-ADW-PB-12036 (120"×36")';
-                                    return 'Size will be determined during BOM generation';
-                                  })()}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-
                           {/* Colorsafe+ Options */}
                           <div className="space-y-2">
-                            <Label>Colorsafe+ Color (708.77)</Label>
+                            <Label>Colorsafe+ Color</Label>
                             <Select 
                               value={currentConfig.pegboardColorId || 'none'}
                               onValueChange={(value) => updateConfig({ pegboardColorId: value === 'none' ? '' : value })}
@@ -701,7 +760,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                             value=""
                             onValueChange={(value) => {
                               const current = currentConfig.drawersAndCompartments || []
-                              if (!current.includes(value)) {
+                              if (!current.includes(value) && value !== "") {
                                 updateConfig({ 
                                   drawersAndCompartments: [...current, value]
                                 })
@@ -712,39 +771,51 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                               <SelectValue placeholder="Select drawer or compartment to add" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="T2-OA-2D-152012-STACKED-KIT">
-                                2 Drawer Stacked Kit (15"×20"×12")
-                              </SelectItem>
-                              <SelectItem value="T2-OA-PO-SHLF-1212">
-                                Pull-Out Shelf (12"×12")
-                              </SelectItem>
+                              {/* Only show items that haven't been selected yet */}
+                              {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT") && (
+                                <SelectItem value="T2-OA-2D-152012-STACKED-KIT">
+                                  2 Drawer Stacked Kit (15"×20"×12")
+                                </SelectItem>
+                              )}
+                              {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212") && (
+                                <SelectItem value="T2-OA-PO-SHLF-1212">
+                                  Pull-Out Shelf (12"×12")
+                                </SelectItem>
+                              )}
                             </SelectContent>
                           </Select>
 
                           {/* Selected Items List */}
-                          {currentConfig.drawersAndCompartments && currentConfig.drawersAndCompartments.length > 0 && (
+                          {(currentConfig.drawersAndCompartments || []).length > 0 && (
                             <div className="space-y-2">
-                              <Label className="text-sm">Selected Items:</Label>
-                              {currentConfig.drawersAndCompartments.map((item, index) => (
-                                <div key={item} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
-                                  <span className="text-sm">
-                                    {item === 'T2-OA-2D-152012-STACKED-KIT' ? '2 Drawer Stacked Kit (15"×20"×12")' : 
-                                     item === 'T2-OA-PO-SHLF-1212' ? 'Pull-Out Shelf (12"×12")' : item}
-                                  </span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      const current = currentConfig.drawersAndCompartments || []
-                                      updateConfig({ 
-                                        drawersAndCompartments: current.filter(i => i !== item)
-                                      })
-                                    }}
-                                  >
-                                    ×
-                                  </Button>
-                                </div>
-                              ))}
+                              <Label className="text-sm text-slate-600">Selected Items</Label>
+                              <div className="space-y-2">
+                                {(currentConfig.drawersAndCompartments || []).map((item: string, index: number) => (
+                                  <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <span className="text-sm font-medium">
+                                      {item === "T2-OA-2D-152012-STACKED-KIT" 
+                                        ? "2 Drawer Stacked Kit (15\"×20\"×12\")"
+                                        : item === "T2-OA-PO-SHLF-1212"
+                                        ? "Pull-Out Shelf (12\"×12\")"
+                                        : item
+                                      }
+                                    </span>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                      onClick={() => {
+                                        const current = currentConfig.drawersAndCompartments || []
+                                        const updated = current.filter((_: string, i: number) => i !== index)
+                                        updateConfig({ drawersAndCompartments: updated })
+                                      }}
+                                    >
+                                      <Trash2 className="w-4 h-4 mr-1" />
+                                      Remove
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1090,13 +1161,15 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                               <h4 className="font-medium">Faucet {index + 1}</h4>
                               <Button
                                 size="sm"
-                                variant="ghost"
+                                variant="outline"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                                 onClick={() => {
                                   const updatedFaucets = currentConfig.faucets.filter((_: any, i: number) => i !== index)
                                   updateConfig({ faucets: updatedFaucets })
                                 }}
                               >
-                                <Minus className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Remove
                               </Button>
                             </div>
                             
@@ -1231,13 +1304,15 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                               <h4 className="font-medium">Sprayer {index + 1}</h4>
                               <Button
                                 size="sm"
-                                variant="ghost"
+                                variant="outline"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                                 onClick={() => {
                                   const updatedSprayers = currentConfig.sprayers.filter((_: any, i: number) => i !== index)
                                   updateConfig({ sprayers: updatedSprayers })
                                 }}
                               >
-                                <Minus className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Remove
                               </Button>
                             </div>
                             

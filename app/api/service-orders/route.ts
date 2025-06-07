@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit
 
     // Build filter based on user role
-    let where: any = {}
+    const where: any = {}
     
     if (user.role === 'SERVICE_DEPARTMENT') {
       // Service department can only see their own orders

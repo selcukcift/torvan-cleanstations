@@ -91,17 +91,28 @@ interface AccessoryItem {
  * Get assembly details with all components
  */
 async function getAssemblyDetails(assemblyId: string) {
-  return prisma.assembly.findUnique({
-    where: { assemblyId },
-    include: {
-      components: {
-        include: {
-          childPart: true,
-          childAssembly: true,
+  console.log(`🔍 getAssemblyDetails: Querying database for ${assemblyId}`)
+  try {
+    const result = await prisma.assembly.findUnique({
+      where: { assemblyId },
+      include: {
+        components: {
+          include: {
+            childPart: true,
+            childAssembly: true,
+          },
         },
       },
-    },
-  })
+    })
+    console.log(`🔍 getAssemblyDetails: Found ${assemblyId}:`, result ? 'YES' : 'NO')
+    if (result) {
+      console.log(`🔍 getAssemblyDetails: ${assemblyId} has ${result.components?.length || 0} components`)
+    }
+    return result
+  } catch (error) {
+    console.error(`❌ getAssemblyDetails: Database error for ${assemblyId}:`, error)
+    throw error
+  }
 }
 
 /**
@@ -300,12 +311,16 @@ async function addItemToBOMRecursive(
   bomList: BOMItem[],
   processedAssemblies = new Set<string>()
 ): Promise<void> {
+  console.log(`🔧 addItemToBOMRecursive: Processing ${assemblyId} (category: ${category})`)
+  
   const processKey = `${assemblyId}_${category}`
   if (processedAssemblies.has(processKey)) {
+    console.log(`⚠️ addItemToBOMRecursive: Skipping ${assemblyId} - already processed`)
     return
   }
   processedAssemblies.add(processKey)
 
+  console.log(`🔧 addItemToBOMRecursive: Getting assembly details for ${assemblyId}`)
   const assembly = await getAssemblyDetails(assemblyId)
   if (!assembly) {
     console.warn(`Assembly with ID ${assemblyId} not found in database.`)
@@ -654,8 +669,14 @@ function flattenBOMForDisplay(hierarchicalBom: BOMItem[]): BOMItem[] {
  * Main BOM generation function - native TypeScript implementation
  */
 export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResult> {
+  console.log('🔧 BOM Service: Starting BOM generation')
+  
   const bom: BOMItem[] = []
   const { customer, configurations, accessories: orderAccessories, buildNumbers } = orderData
+  
+  console.log('🔧 BOM Service: Customer language:', customer.language)
+  console.log('🔧 BOM Service: Build numbers:', buildNumbers)
+  console.log('🔧 BOM Service: Configurations count:', Object.keys(configurations).length)
 
   // 1. Add system items
   let manualKitId: string
@@ -669,13 +690,28 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     default:
       manualKitId = 'T2-STD-MANUAL-EN-KIT'
   }
+  
+  console.log('🔧 BOM Service: Adding manual kit:', manualKitId)
+  
   if (manualKitId) {
-    await addItemToBOMRecursive(manualKitId, 1, 'SYSTEM', bom, new Set())
+    try {
+      await addItemToBOMRecursive(manualKitId, 1, 'SYSTEM', bom, new Set())
+      console.log('✅ BOM Service: Manual kit added successfully')
+    } catch (error) {
+      console.error('❌ BOM Service: Error adding manual kit:', error)
+      throw error
+    }
   }
 
   for (const buildNumber of buildNumbers) {
+    console.log(`🔧 BOM Service: Processing build number: ${buildNumber}`)
     const config = configurations[buildNumber]
-    if (!config) continue
+    if (!config) {
+      console.warn(`⚠️ BOM Service: No configuration found for build number: ${buildNumber}`)
+      continue
+    }
+    
+    console.log('🔧 BOM Service: Config for build:', JSON.stringify(config, null, 2))
 
     const {
       sinkModelId,
@@ -747,47 +783,52 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       // MANDATORY: Overhead light kit (Document line 113)
       await addItemToBOMWithPartNumber('T2-OHL-MDRD-KIT', 1, 'PEGBOARD_MANDATORY', bom, new Set())
       
-      // Use specific pegboard kit if available (from BOM Debug Helper)
-      if (specificPegboardKitId) {
-        console.log(`Using specific pegboard kit from config: ${specificPegboardKitId}`)
-        await addItemToBOMWithPartNumber(specificPegboardKitId, 1, 'PEGBOARD_SPECIFIC_KIT', bom, new Set())
-      }
-      // Calculate specific kit based on configuration
-      else if (pegboardType && actualLength) {
-        // Use color if specified, otherwise use size-only kit
-        const specificKitId = getSpecificPegboardKitId(actualLength, pegboardType, pegboardColor)
-        if (specificKitId) {
-          const kitType = pegboardColor ? 'PEGBOARD_COLORED_KIT' : 'PEGBOARD_SIZE_KIT'
-          console.log(`Calculated specific pegboard kit: ${specificKitId} (length: ${actualLength}, type: ${pegboardType}${pegboardColor ? `, color: ${pegboardColor}` : ', no color specified'})`)
-          await addItemToBOMWithPartNumber(specificKitId, 1, kitType, bom, new Set())
-        } else {
-          console.warn('Failed to calculate specific pegboard kit, falling back to generic')
-          // Fallback to generic kits
-          if (pegboardTypeId === 'PERFORATED' || pegboardType === 'PERFORATED') {
-            await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
-          } else if (pegboardTypeId === 'SOLID' || pegboardType === 'SOLID') {
-            await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+      // Only add pegboard kits if pegboard type is actually selected
+      if (pegboardType || pegboardTypeId || specificPegboardKitId) {
+        // Use specific pegboard kit if available (from BOM Debug Helper)
+        if (specificPegboardKitId) {
+          console.log(`Using specific pegboard kit from config: ${specificPegboardKitId}`)
+          await addItemToBOMWithPartNumber(specificPegboardKitId, 1, 'PEGBOARD_SPECIFIC_KIT', bom, new Set())
+        }
+        // Calculate specific kit based on configuration
+        else if (pegboardType && actualLength) {
+          // Use color if specified, otherwise use size-only kit
+          const specificKitId = getSpecificPegboardKitId(actualLength, pegboardType, pegboardColor)
+          if (specificKitId) {
+            const kitType = pegboardColor ? 'PEGBOARD_COLORED_KIT' : 'PEGBOARD_SIZE_KIT'
+            console.log(`Calculated specific pegboard kit: ${specificKitId} (length: ${actualLength}, type: ${pegboardType}${pegboardColor ? `, color: ${pegboardColor}` : ', no color specified'})`)
+            await addItemToBOMWithPartNumber(specificKitId, 1, kitType, bom, new Set())
+          } else {
+            console.warn('Failed to calculate specific pegboard kit, falling back to generic')
+            // Fallback to generic kits
+            if (pegboardTypeId === 'PERFORATED' || pegboardType === 'PERFORATED') {
+              await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+            } else if (pegboardTypeId === 'SOLID' || pegboardType === 'SOLID') {
+              await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+            }
           }
         }
-      }
-      // Fallback to legacy logic for backward compatibility
-      else if (pegboardTypeId && actualLength) {
-        console.log('Using legacy pegboard logic with size-based kit fallback')
-        // Try to use size-based kit for legacy configurations (no color)
-        const legacyType = pegboardTypeId === 'PERFORATED' ? 'PERFORATED' : 'SOLID'
-        const specificKitId = getSpecificPegboardKitId(actualLength, legacyType) // No color parameter
-        if (specificKitId) {
-          console.log(`Legacy fallback using size-based kit: ${specificKitId} (length: ${actualLength}, type: ${legacyType}, no color)`)
-          await addItemToBOMWithPartNumber(specificKitId, 1, 'PEGBOARD_LEGACY_SIZE', bom, new Set())
-        } else {
-          // Final fallback to static kits
-          console.log('Final fallback to static pegboard kits')
-          if (pegboardTypeId === 'PERFORATED') {
-            await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
-          } else if (pegboardTypeId === 'SOLID') {
-            await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+        // Fallback to legacy logic for backward compatibility
+        else if (pegboardTypeId && actualLength) {
+          console.log('Using legacy pegboard logic with size-based kit fallback')
+          // Try to use size-based kit for legacy configurations (no color)
+          const legacyType = pegboardTypeId === 'PERFORATED' ? 'PERFORATED' : 'SOLID'
+          const specificKitId = getSpecificPegboardKitId(actualLength, legacyType) // No color parameter
+          if (specificKitId) {
+            console.log(`Legacy fallback using size-based kit: ${specificKitId} (length: ${actualLength}, type: ${legacyType}, no color)`)
+            await addItemToBOMWithPartNumber(specificKitId, 1, 'PEGBOARD_LEGACY_SIZE', bom, new Set())
+          } else {
+            // Final fallback to static kits
+            console.log('Final fallback to static pegboard kits')
+            if (pegboardTypeId === 'PERFORATED') {
+              await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+            } else if (pegboardTypeId === 'SOLID') {
+              await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+            }
           }
         }
+      } else {
+        console.log('Pegboard enabled but no type selected - only adding overhead light kit')
       }
       
       // Color component (if not included in specific kit)
@@ -796,37 +837,39 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
         await addItemToBOMWithPartNumber('T-OA-PB-COLOR', 1, 'PEGBOARD_COLOR', bom, new Set())
       }
       
-      // Pegboard size logic (legacy support)
-      if (pegboardSizePartNumber) {
-        if (pegboardSizePartNumber.startsWith('720.215.002 T2-ADW-PB-')) {
-          // Custom pegboard size
-          let partDetails = await prisma.part.findUnique({ where: { partId: pegboardSizePartNumber } })
-          if (!partDetails) {
-            partDetails = {
-              partId: pegboardSizePartNumber,
-              name: `Custom Pegboard Panel ${pegboardSizePartNumber.substring('720.215.002 T2-ADW-PB-'.length)}`,
-              type: 'CUSTOM_PART_AUTOGEN' as any
-            } as any
+      // Pegboard size logic (legacy support) - only if type is selected
+      if (pegboardType || pegboardTypeId || specificPegboardKitId) {
+        if (pegboardSizePartNumber) {
+          if (pegboardSizePartNumber.startsWith('720.215.002 T2-ADW-PB-')) {
+            // Custom pegboard size
+            let partDetails = await prisma.part.findUnique({ where: { partId: pegboardSizePartNumber } })
+            if (!partDetails) {
+              partDetails = {
+                partId: pegboardSizePartNumber,
+                name: `Custom Pegboard Panel ${pegboardSizePartNumber.substring('720.215.002 T2-ADW-PB-'.length)}`,
+                type: 'CUSTOM_PART_AUTOGEN' as any
+              } as any
+            }
+            bom.push({
+              id: partDetails!.partId,
+              partNumber: pegboardSizePartNumber,
+              name: partDetails!.name,
+              quantity: 1,
+              category: 'PEGBOARD_PANEL',
+              type: partDetails!.type,
+              components: [],
+              isCustom: true
+            } as any)
+          } else {
+            // Standard pegboard size assembly
+            await addItemToBOMWithPartNumber(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
           }
-          bom.push({
-            id: partDetails!.partId,
-            partNumber: pegboardSizePartNumber,
-            name: partDetails!.name,
-            quantity: 1,
-            category: 'PEGBOARD_PANEL',
-            type: partDetails!.type,
-            components: [],
-            isCustom: true
-          } as any)
-        } else {
-          // Standard pegboard size assembly
-          await addItemToBOMWithPartNumber(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
-        }
-      } else if (!specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
-        // Auto-select pegboard size based on sink length (legacy)
-        const pegboardSizeId = getPegboardSizeByLength(actualLength!)
-        if (pegboardSizeId) {
-          await addItemToBOMWithPartNumber(pegboardSizeId, 1, 'PEGBOARD_SIZE_AUTO', bom, new Set())
+        } else if (!specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
+          // Auto-select pegboard size based on sink length (legacy)
+          const pegboardSizeId = getPegboardSizeByLength(actualLength!)
+          if (pegboardSizeId) {
+            await addItemToBOMWithPartNumber(pegboardSizeId, 1, 'PEGBOARD_SIZE_AUTO', bom, new Set())
+          }
         }
       }
     }
