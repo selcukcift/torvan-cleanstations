@@ -15,7 +15,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   AlertDialog,
@@ -45,10 +44,7 @@ import {
   List,
   Loader2,
   ArrowUp,
-  ArrowDown,
-  Search,
-  Wrench,
-  Package
+  ArrowDown
 } from "lucide-react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"

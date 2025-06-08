@@ -654,9 +654,10 @@ function flattenBOMForDisplay(hierarchicalBom: BOMItem[]): BOMItem[] {
         indentLevel: parentLevel
       })
       
-      // Recursively add children (stored in 'components' property)
-      if (item.components && item.components.length > 0) {
-        flattenRecursive(item.components, parentLevel + 1)
+      // Recursively add children (handle both 'components' and 'children' properties)
+      const childItems = item.components || item.children || []
+      if (childItems.length > 0) {
+        flattenRecursive(childItems, parentLevel + 1)
       }
     }
   }

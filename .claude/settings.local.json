@@ -64,7 +64,8 @@
       "Bash(npm install:*)",
       "Bash(npx ts-node:*)",
       "Bash(./scripts/test-basin-fix.sh:*)",
-      "Bash(/home/selcuk/.npm-global/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 10 -B 5 '\"\"\"\"components\"\"\"\":\\s*\\[[^]]+\\]' resources/assemblies.json)"
+      "Bash(/home/selcuk/.npm-global/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 10 -B 5 '\"\"\"\"components\"\"\"\":\\s*\\[[^]]+\\]' resources/assemblies.json)",
+      "Bash(git grep:*)"
     ],
     "deny": []
   },

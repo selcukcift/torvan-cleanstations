@@ -18,9 +18,7 @@ import {
   Database, 
   Users, 
   Package, 
-  CheckCircle, 
   AlertCircle, 
-  XCircle,
   Settings,
   BarChart3,
   RefreshCw,
@@ -35,13 +33,13 @@ interface SystemHealth {
   responseTime: number
   timestamp: string
   statistics: {
-    users: any
-    orders: any
-    parts: any
-    assemblies: any
-    tasks: any
+    users: Record<string, unknown>
+    orders: Record<string, unknown>
+    parts: Record<string, unknown>
+    assemblies: Record<string, unknown>
+    tasks: Record<string, unknown>
   }
-  recentActivity: any[]
+  recentActivity: Record<string, unknown>[]
 }
 
 interface SystemStats {
@@ -84,7 +82,6 @@ export default function AdminSystemPage() {
   
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null)
   const [systemStats, setSystemStats] = useState<SystemStats | null>(null)
-  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -214,19 +211,6 @@ export default function AdminSystemPage() {
       setAuditLogs(mockLogs)
     } catch (err) {
       console.error('Error fetching audit logs:', err)
-    }
-  }
-
-  const getHealthStatusIcon = (status?: string) => {
-    switch (status) {
-      case 'healthy':
-        return <CheckCircle className="h-5 w-5 text-green-500" />
-      case 'warning':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />
-      case 'critical':
-        return <XCircle className="h-5 w-5 text-red-500" />
-      default:
-        return <AlertCircle className="h-5 w-5 text-gray-500" />
     }
   }
 
