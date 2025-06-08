@@ -670,13 +670,32 @@ function flattenBOMForDisplay(hierarchicalBom: BOMItem[]): BOMItem[] {
  */
 export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResult> {
   console.log('🔧 BOM Service: Starting BOM generation')
+  console.log('🔧 BOM Service: Input data:', JSON.stringify(orderData, null, 2))
   
-  const bom: BOMItem[] = []
-  const { customer, configurations, accessories: orderAccessories, buildNumbers } = orderData
-  
-  console.log('🔧 BOM Service: Customer language:', customer.language)
-  console.log('🔧 BOM Service: Build numbers:', buildNumbers)
-  console.log('🔧 BOM Service: Configurations count:', Object.keys(configurations).length)
+  try {
+    // Validate input data structure
+    if (!orderData) {
+      throw new Error('OrderData is null or undefined')
+    }
+    
+    if (!orderData.customer) {
+      throw new Error('Customer information is missing')
+    }
+    
+    if (!orderData.configurations) {
+      throw new Error('Configurations are missing')
+    }
+    
+    if (!orderData.buildNumbers || !Array.isArray(orderData.buildNumbers)) {
+      throw new Error('Build numbers are missing or invalid')
+    }
+    
+    const bom: BOMItem[] = []
+    const { customer, configurations, accessories: orderAccessories, buildNumbers } = orderData
+    
+    console.log('🔧 BOM Service: Customer language:', customer.language)
+    console.log('🔧 BOM Service: Build numbers:', buildNumbers)
+    console.log('🔧 BOM Service: Configurations count:', Object.keys(configurations).length)
 
   // 1. Add system items
   let manualKitId: string
@@ -884,10 +903,23 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
 
     // 7. Basin Assemblies
     if (basins && basins.length > 0) {
+      // First, count each basin type to aggregate quantities
+      const basinTypeCounts = new Map<string, number>()
+      
       for (const basin of basins) {
         if (basin.basinTypeId) {
-          await addItemToBOMRecursive(basin.basinTypeId, 1, 'BASIN_TYPE_KIT', bom, new Set())
+          const currentCount = basinTypeCounts.get(basin.basinTypeId) || 0
+          basinTypeCounts.set(basin.basinTypeId, currentCount + 1)
         }
+      }
+      
+      // Add each unique basin type with its total quantity
+      for (const [basinTypeId, quantity] of basinTypeCounts) {
+        await addItemToBOMRecursive(basinTypeId, quantity, 'BASIN_TYPE_KIT', bom, new Set())
+      }
+      
+      // Process basin sizes and addons (individual processing needed)
+      for (const basin of basins) {
         if (basin.basinSizePartNumber) {
           if (basin.basinSizePartNumber.startsWith('720.215.001 T2-ADW-BASIN-')) {
             let partDetails = await prisma.part.findUnique({ where: { partId: basin.basinSizePartNumber } })
@@ -999,5 +1031,17 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     flattened: flattenedBOM,     // Flattened with indentation for simple display
     totalItems: flattenedBOM.length,
     topLevelItems: bom.length
+  }
+  
+  } catch (error) {
+    console.error('❌ BOM Service: Error during BOM generation:', error)
+    console.error('❌ BOM Service: Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    
+    // Re-throw with more context
+    if (error instanceof Error) {
+      throw new Error(`BOM Generation Failed: ${error.message}`)
+    } else {
+      throw new Error(`BOM Generation Failed: Unknown error occurred`)
+    }
   }
 }

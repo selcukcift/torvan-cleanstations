@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { Save, Eye, Home } from "lucide-react"
+import { Save, Eye } from "lucide-react"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { AppHeader } from "@/components/ui/app-header"
 import { PageHeader, QuickActions } from "@/components/ui/page-header"
@@ -53,21 +53,12 @@ export default function CreateOrderPage() {
             { label: "Dashboard", href: "/dashboard" },
             { label: "Create New Order" }
           ]}
-          showBackButton
-          backUrl="/dashboard"
-          backLabel="Back to Dashboard"
           actions={
             <QuickActions>
               <Button variant="outline" size="sm" asChild>
                 <a href="/dashboard" className="flex items-center">
                   <Eye className="h-4 w-4 mr-2" />
                   View All Orders
-                </a>
-              </Button>
-              <Button variant="outline" size="sm" asChild>
-                <a href="/dashboard" className="flex items-center">
-                  <Home className="h-4 w-4 mr-2" />
-                  Dashboard
                 </a>
               </Button>
             </QuickActions>

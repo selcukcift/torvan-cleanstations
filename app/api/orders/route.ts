@@ -18,6 +18,7 @@ const CustomerInfoSchema = z.object({
 
 const BasinConfigurationSchema = z.object({
   basinTypeId: z.string().optional(),
+  basinType: z.string().optional(),  // Allow user-friendly basin type from UI
   basinSizePartNumber: z.string().optional(),
   addonIds: z.array(z.string()).optional()
 })
@@ -308,10 +309,38 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Transform basin type IDs from user-friendly to assembly IDs
+    const basinTypeMapping: Record<string, string> = {
+      'E_DRAIN': 'T2-BSN-EDR-KIT',
+      'E_SINK': 'T2-BSN-ESK-KIT', 
+      'E_SINK_DI': 'T2-BSN-ESK-DI-KIT'
+    }
+
+    const transformedConfigurations = Object.entries(configurations).reduce((acc, [buildNumber, config]) => {
+      const transformedConfig = { ...config }
+      
+      // Transform basin configurations
+      if (config.basins && config.basins.length > 0) {
+        transformedConfig.basins = config.basins.map(basin => {
+          const transformedBasin = { ...basin }
+          
+          // Map basinType to basinTypeId if needed
+          if (basin.basinType && !basin.basinTypeId) {
+            transformedBasin.basinTypeId = basinTypeMapping[basin.basinType] || basin.basinType
+          }
+          
+          return transformedBasin
+        })
+      }
+      
+      acc[buildNumber] = transformedConfig
+      return acc
+    }, {} as Record<string, any>)
+
     // Generate BOM using the service
     const bomResult = await generateBOMForOrder({
       customer: customerInfo,
-      configurations,
+      configurations: transformedConfigurations,
       accessories,
       buildNumbers: sinkSelection.buildNumbers
     })

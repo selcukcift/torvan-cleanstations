@@ -193,7 +193,17 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       const response = await nextJsApiClient.post('/orders/preview-bom', requestBody)
       
       if (response.data.success) {
-        setBomPreviewData(response.data.data)
+        console.log('ReviewStep BOM data received:', response.data)
+        
+        // Use the same data processing as BOMDebugHelper
+        const bomResult = response.data.data.bom || response.data.data
+        const processedData = {
+          ...response.data.data,
+          bom: bomResult,
+          totalItems: bomResult.totalItems || (bomResult.flattened || []).length
+        }
+        
+        setBomPreviewData(processedData)
       } else {
         setBomPreviewError(response.data.message || 'Failed to generate BOM preview')
       }
@@ -409,9 +419,9 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
               <div className="space-y-4">
                 {/* Full Description */}
                 <div className="p-4 bg-slate-50 rounded-lg">
-                  <h4 className="font-medium text-slate-900 mb-3">complete specification</h4>
-                  <p className="text-slate-700 leading-relaxed text-sm">
-                    {generateOrderDescription({ sinkSelection, configurations })}
+                  <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
+                  <p className="text-slate-700 leading-relaxed text-sm capitalize">
+                    {generateOrderDescription({ sinkSelection, configurations })?.toLowerCase()}
                   </p>
                 </div>
               </div>

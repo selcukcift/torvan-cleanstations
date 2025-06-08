@@ -215,7 +215,7 @@ export function SinkSelectionStep() {
             </div>
 
             {/* Build Numbers */}
-            {sinkSelection.quantity && sinkSelection.quantity > 0 && (
+            {sinkSelection.quantity > 0 && (
               <div className="space-y-4 pt-4 border-t">
                 <div>
                   <Label className="text-base font-medium">Build Numbers *</Label>

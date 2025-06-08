@@ -29,6 +29,12 @@ interface BOMDebugHelperProps {
   customerInfo?: any
   isVisible: boolean
   onToggleVisibility: () => void
+  // Optional complete order data to match ReviewStep quantities
+  completeOrderData?: {
+    sinkSelection?: any
+    configurations?: any
+    accessories?: any
+  }
 }
 
 interface BOMItem {
@@ -57,7 +63,7 @@ interface BOMData {
   topLevelItems?: number
 }
 
-export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleVisibility }: BOMDebugHelperProps) {
+export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleVisibility, completeOrderData }: BOMDebugHelperProps) {
   // Debug the incoming configuration
   useEffect(() => {
     if (orderConfig) {
@@ -156,9 +162,9 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
         sinkModelId: orderConfig.sinkModelId
       }
 
-      // Add optional fields only if they exist
-      if (orderConfig.width) configData.width = orderConfig.width
-      if (orderConfig.length) configData.length = orderConfig.length
+      // Add optional fields only if they exist and are valid numbers
+      if (orderConfig.width && typeof orderConfig.width === 'number') configData.width = orderConfig.width
+      if (orderConfig.length && typeof orderConfig.length === 'number') configData.length = orderConfig.length
       if (orderConfig.legsTypeId) configData.legsTypeId = orderConfig.legsTypeId
       if (orderConfig.feetTypeId) configData.feetTypeId = orderConfig.feetTypeId
       if (orderConfig.pegboard) {
@@ -318,14 +324,23 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
               }
             }
             
-            if (sizePartNumber) {
+            // Only add basinSizePartNumber if it's a valid string
+            if (sizePartNumber && typeof sizePartNumber === 'string' && sizePartNumber.trim() !== '') {
               basinData.basinSizePartNumber = sizePartNumber
             }
           }
           
           if (basin.addonIds && basin.addonIds.length > 0) basinData.addonIds = basin.addonIds
           return basinData
-        }).filter((basin: any) => basin.basinTypeId || basin.basinSizePartNumber || (basin.addonIds && basin.addonIds.length > 0))
+        }).filter((basin: any) => {
+          // Only include basins that have valid required fields
+          const hasValidBasinType = basin.basinTypeId && typeof basin.basinTypeId === 'string' && basin.basinTypeId.trim() !== ''
+          const hasValidSizePartNumber = basin.basinSizePartNumber && typeof basin.basinSizePartNumber === 'string' && basin.basinSizePartNumber.trim() !== ''
+          const hasValidAddons = basin.addonIds && basin.addonIds.length > 0
+          
+          // Basin must have either a valid type OR a valid size part number OR valid addons
+          return hasValidBasinType || hasValidSizePartNumber || hasValidAddons
+        })
       }
 
       // Add faucets if configured
@@ -359,16 +374,57 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
 
       console.log('BOMDebugHelper: configData being sent to BOM generation:', configData)
 
-      const previewData = {
-        customerInfo: {
+      // Additional validation for complete order data mode
+      if (completeOrderData) {
+        // Validate that critical configuration data is complete
+        const hasValidDimensions = (typeof configData.width === 'number' && typeof configData.length === 'number')
+        const hasValidBasins = configData.basins && configData.basins.length > 0
+        
+        console.log('BOMDebugHelper validation check:', {
+          hasValidDimensions,
+          hasValidBasins,
+          configData: configData,
+          completeOrderData: !!completeOrderData
+        })
+        
+        if (!hasValidDimensions || !hasValidBasins) {
+          console.warn('BOMDebugHelper: Incomplete configuration data detected, falling back to debug mode')
+          // Don't use complete order data if current configuration is incomplete
+          completeOrderData = null
+        }
+      }
+
+      // Use complete order data if available to match ReviewStep exactly
+      const previewData = completeOrderData ? {
+        customerInfo: completeOrderData.customerInfo || customerInfo || {
           poNumber: "DEBUG-PREVIEW",
+          customerName: "Debug Customer", 
+          salesPerson: "Debug User",
+          wantDate: new Date().toISOString(),
+          language: "EN"
+        },
+        sinkSelection: completeOrderData.sinkSelection || {
+          sinkModelId: orderConfig.sinkModelId || "MDRD_B1_ESINK_60",
+          sinkFamily: "MDRD",
+          quantity: 1,
+          buildNumbers: ["DEBUG-001"]
+        },
+        configurations: completeOrderData.configurations || {
+          "DEBUG-001": configData
+        },
+        accessories: completeOrderData.accessories || debugAccessories
+      } : {
+        // Fallback to single configuration debug mode
+        customerInfo: customerInfo || {
+          poNumber: "DEBUG-PREVIEW", 
           customerName: "Debug Customer",
           salesPerson: "Debug User",
           wantDate: new Date().toISOString(),
-          language: (customerInfo?.language === 'EN' || customerInfo?.language === 'FR' || customerInfo?.language === 'ES') ? customerInfo.language : "EN"
+          language: "EN"
         },
         sinkSelection: {
           sinkModelId: orderConfig.sinkModelId || "MDRD_B1_ESINK_60",
+          sinkFamily: "MDRD",
           quantity: 1,
           buildNumbers: ["DEBUG-001"]
         },
@@ -379,6 +435,15 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
       }
 
       console.log('Sending BOM preview data:', JSON.stringify(previewData, null, 2))
+      
+      // Log the exact request being sent
+      console.log('BOMDebugHelper request details:', {
+        endpoint: '/orders/preview-bom',
+        method: 'POST',
+        dataKeys: Object.keys(previewData),
+        configurationKeys: Object.keys(previewData.configurations || {}),
+        firstConfiguration: Object.keys(previewData.configurations || {})[0] ? previewData.configurations[Object.keys(previewData.configurations)[0]] : null
+      })
       
       // Use the BOM preview endpoint which has the correct validation schema
       const axiosResponse = await nextJsApiClient.post('/orders/preview-bom', previewData)
@@ -445,10 +510,15 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
     } catch (err: any) {
       console.error('BOM preview error:', err)
       console.error('Error response:', err.response?.data)
+      console.error('Error status:', err.response?.status)
+      console.error('Error headers:', err.response?.headers)
+      console.error('Request config:', err.config)
       console.error('Error details:', {
         name: err instanceof Error ? err.name : 'Unknown',
         message: err instanceof Error ? err.message : 'Unknown error',
-        stack: err instanceof Error ? err.stack : undefined
+        stack: err instanceof Error ? err.stack : undefined,
+        isAxiosError: err.isAxiosError,
+        code: err.code
       })
       
       if (err.response?.data?.errors) {
@@ -1194,7 +1264,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
   const currentConfig = orderConfig || {}
 
   return (
-    <Card className="fixed top-4 right-4 w-[450px] max-h-[90vh] z-50 shadow-xl border-2">
+    <Card className="fixed top-4 right-4 w-[675px] max-h-[90vh] z-50 shadow-xl border-2">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

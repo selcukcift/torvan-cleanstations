@@ -270,6 +270,50 @@ export function AccessoriesStep() {
         </CardContent>
       </Card>
 
+      {/* Category Cards View */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <Card 
+          className={`cursor-pointer transition-all duration-200 ${
+            selectedCategory === 'all' 
+              ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-200' 
+              : 'hover:shadow-md hover:border-blue-200'
+          }`}
+          onClick={() => setSelectedCategory('all')}
+        >
+          <CardContent className="p-4 text-center">
+            <Package className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+            <h3 className="font-medium text-sm mb-1">All Categories</h3>
+            <Badge variant="secondary" className="text-xs">
+              {allAccessories.length} items
+            </Badge>
+          </CardContent>
+        </Card>
+        
+        {categories
+          .filter(cat => cat.id !== 'all')
+          .map(category => (
+            <Card 
+              key={category.id}
+              className={`cursor-pointer transition-all duration-200 ${
+                selectedCategory === category.id 
+                  ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-200' 
+                  : 'hover:shadow-md hover:border-blue-200'
+              }`}
+              onClick={() => setSelectedCategory(category.id)}
+            >
+              <CardContent className="p-4 text-center">
+                <div className="text-blue-600 mb-2">
+                  {getCategoryIcon(category.id)}
+                </div>
+                <h3 className="font-medium text-sm mb-1">{category.name}</h3>
+                <Badge variant="secondary" className="text-xs">
+                  {category.count} items
+                </Badge>
+              </CardContent>
+            </Card>
+          ))}
+      </div>
+
       {/* Build Number Tabs */}
       <Tabs defaultValue={sinkSelection.buildNumbers[0]} className="w-full">
         <TabsList className="grid w-full grid-cols-auto">
@@ -507,49 +551,6 @@ export function AccessoriesStep() {
         ))}
       </Tabs>
 
-      {/* Summary */}
-      {Object.values(accessories).flat().length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5" />
-              Accessories Summary
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {categories
-                .filter(cat => cat.id !== 'all')
-                .map(category => {
-                  const categoryAccessories = Object.values(accessories).flat().filter(acc => acc.category === category.id)
-                  if (categoryAccessories.length === 0) return null
-
-                  return (
-                    <div key={category.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        {getCategoryIcon(category.id)}
-                        <span className="font-medium">{category.name}</span>
-                      </div>
-                      <Badge variant="outline">
-                        {categoryAccessories.reduce((sum, acc) => sum + acc.quantity, 0)} items
-                      </Badge>
-                    </div>
-                  )
-                })
-              }
-            </div>
-            
-            <Separator className="my-4" />
-            
-            <div className="flex items-center justify-between text-lg font-semibold">
-              <span>Total Accessories</span>
-              <Badge className="text-base px-3 py-1">
-                {Object.values(accessories).flat().reduce((sum, acc) => sum + acc.quantity, 0)} items
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   )
 }

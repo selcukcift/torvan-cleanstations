@@ -41,7 +41,7 @@ const SECTIONS = [
 ]
 
 export default function ConfigurationStep({ buildNumbers, onComplete }: ConfigurationStepProps) {
-  const { configurations, updateSinkConfiguration, customerInfo } = useOrderCreateStore()
+  const { configurations, updateSinkConfiguration, customerInfo, sinkSelection, accessories } = useOrderCreateStore()
   const [currentBuildIndex, setCurrentBuildIndex] = useState(0)
   const [activeSection, setActiveSection] = useState('sink-body')
   
@@ -509,7 +509,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                             const basins = Array.from({ length: selectedModel.basinCount }, (_, i) => ({
                               id: `basin-${Date.now()}-${i}`,
                               basinType: '',
-                              basinSizePartNumber: null,
+                              basinSizePartNumber: '',
                               addonIds: []
                             }))
                             updateConfig({ 
@@ -1403,6 +1403,12 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
         customerInfo={customerInfo}
         isVisible={showBOMDebug}
         onToggleVisibility={() => setShowBOMDebug(!showBOMDebug)}
+        completeOrderData={{
+          customerInfo,
+          sinkSelection,
+          configurations,
+          accessories
+        }}
       />
     </div>
   )

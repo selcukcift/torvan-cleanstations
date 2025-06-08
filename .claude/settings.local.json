@@ -54,8 +54,19 @@
       "Bash(npx prisma studio:*)",
       "Bash(PORT=3006 next dev -p 3006)",
       "Bash(npx next dev:*)",
-      "Bash(diff:*)"
+      "Bash(diff:*)",
+      "Bash(systemctl status:*)",
+      "Bash(cat:*)",
+      "Bash(pg_lsclusters:*)",
+      "Bash(bash:*)",
+      "Bash(dos2unix:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm install:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(./scripts/test-basin-fix.sh:*)",
+      "Bash(/home/selcuk/.npm-global/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 10 -B 5 '\"\"\"\"components\"\"\"\":\\s*\\[[^]]+\\]' resources/assemblies.json)"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": false
 }

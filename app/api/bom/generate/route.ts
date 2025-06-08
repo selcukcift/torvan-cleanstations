@@ -10,6 +10,8 @@ import { generateBOMForOrder } from '@/lib/bomService.native'
  * complex business logic for pegboard mapping, control box selection, etc.
  */
 export async function POST(request: NextRequest) {
+  let body: any = null
+  
   try {
     // Authenticate user
     const user = await getAuthUser()
@@ -22,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Parse request body
-    const body = await request.json()
+    body = await request.json()
     
     // Validate required fields
     if (!body.customer || !body.configurations || !body.buildNumbers) {
@@ -50,13 +52,20 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error in native BOM generation:', error)
+    console.error('❌ Native BOM Generation API Error:', error)
+    console.error('❌ Error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      requestBody: body
+    })
     
     return NextResponse.json(
       { 
         success: false, 
         message: 'Failed to generate BOM',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     )
