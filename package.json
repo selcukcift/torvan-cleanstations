@@ -4,7 +4,8 @@
   "description": "Torvan Medical CleanStation Configurator and Workflow App",
   "main": "src/server.js",
   "scripts": {
-    "dev": "next dev -p 3005",
+    "dev": "npm run env:auto && next dev -p 3005",
+    "dev:manual": "next dev -p 3005",
     "dev:frontend": "next dev -p 3005",
     "dev:backend": "node src/server.js",
     "dev:frontend-only": "next dev -p 3005",
@@ -27,7 +28,12 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "node scripts/seed.js",
     "prisma:seed:all": "node scripts/seed-all.js",
-    "db:reset": "prisma migrate reset --force && npm run prisma:seed:all"
+    "db:reset": "prisma migrate reset --force && npm run prisma:seed:all",
+    "env:work": "cp .env.work .env.local && echo 'Switched to WORK environment (PostgreSQL at 172.16.16.61)'",
+    "env:home": "cp .env.home .env.local && echo 'Switched to HOME environment (PostgreSQL at localhost)'",
+    "env:status": "echo 'Current DATABASE_URL:' && grep DATABASE_URL .env.local",
+    "env:auto": "node scripts/auto-env-detect.js",
+    "test:db": "node test-db-connection.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
