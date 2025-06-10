@@ -52,12 +52,8 @@ export function DetailedReviewSection({
 
   const getDrawerDisplayName = (drawerId: string) => {
     const drawerMap: { [key: string]: string } = {
-      'DRAWER_LEFT': 'Left Drawer',
-      'DRAWER_RIGHT': 'Right Drawer', 
-      'DRAWER_CENTER': 'Center Drawer',
-      'COMPARTMENT_LEFT': 'Left Compartment',
-      'COMPARTMENT_RIGHT': 'Right Compartment',
-      'COMPARTMENT_CENTER': 'Center Compartment'
+      'DRAWER': 'Drawer',
+      'COMPARTMENT': 'Compartment'
     }
     return drawerMap[drawerId] || drawerId
   }

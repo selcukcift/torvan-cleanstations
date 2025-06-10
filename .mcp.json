@@ -4,6 +4,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "env": {}
@@ -12,6 +13,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-postgres",
         "postgresql://localhost/torvan_db"
       ],
@@ -21,6 +23,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-filesystem",
         "/mnt/f/Clean-stations"
       ],
@@ -30,6 +33,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-memory"
       ],
       "env": {}
@@ -38,6 +42,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-brave-search"
       ],
       "env": {
@@ -48,6 +53,7 @@
       "type": "stdio",
       "command": "npx",
       "args": [
+        "-y",
         "@modelcontextprotocol/server-puppeteer"
       ],
       "env": {}

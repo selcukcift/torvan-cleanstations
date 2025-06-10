@@ -54,7 +54,13 @@
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db pull)",
       "Bash(git push:*)",
       "Bash(find:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(pkill:*)",
+      "Bash(npx @modelcontextprotocol/server-brave-search:*)",
+      "Bash(BRAVE_API_KEY=\"BSAe7FiTb62lN_g3Qctb-L97QJIqkDF\" npx @modelcontextprotocol/server-brave-search --help)",
+      "Bash(BRAVE_API_KEY=\"BSAe7FiTb62lN_g3Qctb-L97QJIqkDF\" npx -y @modelcontextprotocol/server-brave-search)",
+      "Bash(curl:*)"
     ],
     "deny": []
   },

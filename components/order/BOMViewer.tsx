@@ -7,29 +7,17 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Input } from "@/components/ui/input"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select"
 import { 
   Download, 
   FileText, 
-  Package, 
   ChevronRight,
   ChevronDown,
   Loader2,
   Info,
-  Search,
-  Filter,
   FolderOpen,
   Folder,
   FileIcon,
   Layers,
-  List,
   Eye,
   EyeOff,
   RefreshCw,
@@ -79,13 +67,8 @@ interface BOMViewerProps {
 
 export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo, onExport, showDebugInfo = false }: BOMViewerProps) {
   const { toast } = useToast()
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterCategory, setFilterCategory] = useState("ALL")
   const [exporting, setExporting] = useState<'csv' | 'pdf' | null>(null)
-  const [viewMode, setViewMode] = useState<'tree' | 'category' | 'flat'>('tree')
-  const [showCustomOnly, setShowCustomOnly] = useState(false)
   
   // For preview mode (when orderData is provided)
   const [previewBomItems, setPreviewBomItems] = useState<BOMItem[]>([])
@@ -354,8 +337,11 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         console.log(`🔍 Auto-expanding ${itemsToExpand.size} hierarchical assemblies`)
         setExpandedItems(prev => new Set([...prev, ...itemsToExpand]))
       }
+      
+      // Run debug function to understand BOM structure
+      debugBOMStructure()
     }
-  }, [bomItems, previewBomItems])
+  }, [bomItems, previewBomItems, showDebugInfo])
 
   // Determine which items to use - either provided bomItems or generated previewBomItems
   const actualBomItems = bomItems || previewBomItems
@@ -396,57 +382,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     return Array.from(quantityMap.values())
   }, [actualBomItems])
 
-  // Enhanced filtering and grouping
-  const { filteredItems, groupedItems, categories } = useMemo(() => {
-    let filtered = processedItems
 
-    // Apply search filter
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase()
-      filtered = filtered.filter(item => 
-        item.name?.toLowerCase().includes(searchLower) ||
-        (item.assemblyId?.toLowerCase().includes(searchLower)) ||
-        (item.partNumber?.toLowerCase().includes(searchLower)) ||
-        (item.description?.toLowerCase().includes(searchLower))
-      )
-    }
-
-    // Apply custom items filter
-    if (showCustomOnly) {
-      filtered = filtered.filter(item => item.isCustom)
-    }
-
-    // Group by category
-    const grouped = filtered.reduce((acc: Record<string, EnhancedBOMItem[]>, item) => {
-      const category = item.category || 'MISCELLANEOUS'
-      if (!acc[category]) acc[category] = []
-      acc[category].push(item)
-      return acc
-    }, {})
-
-    // Apply category filter
-    const finalGrouped = filterCategory !== 'ALL' 
-      ? { [filterCategory]: grouped[filterCategory] || [] }
-      : grouped
-
-    const cats = ['ALL', ...Object.keys(grouped)]
-
-    return {
-      filteredItems: filtered,
-      groupedItems: finalGrouped,
-      categories: cats
-    }
-  }, [processedItems, searchTerm, filterCategory, showCustomOnly])
-
-  const toggleCategory = (category: string) => {
-    const newExpanded = new Set(expandedCategories)
-    if (newExpanded.has(category)) {
-      newExpanded.delete(category)
-    } else {
-      newExpanded.add(category)
-    }
-    setExpandedCategories(newExpanded)
-  }
 
   const toggleItem = (itemId: string) => {
     const newExpanded = new Set(expandedItems)
@@ -473,12 +409,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       collectIds(actualBomItems)
     }
     setExpandedItems(allItemIds)
-    setExpandedCategories(new Set(Object.keys(groupedItems)))
   }
 
   const collapseAll = () => {
     setExpandedItems(new Set())
-    setExpandedCategories(new Set())
   }
 
   const handleExport = async (format: 'csv' | 'pdf') => {
@@ -490,7 +424,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     try {
       setExporting(format)
       const response = await nextJsApiClient.get(
-        `/orders/${orderId}/bom/export?format=${format}`,
+        `/orders/${orderId}/bom-export?format=${format}`,
         { 
           responseType: 'blob',
           timeout: 30000
@@ -536,11 +470,110 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
   }
 
   const getTotalQuantity = () => {
-    return processedItems.reduce((sum, item) => sum + (item.aggregatedQuantity || item.quantity), 0)
+    // Calculate total quantity from aggregated unique items
+    // This accounts for items that appear multiple times in the hierarchy
+    return processedItems.reduce((sum, item) => {
+      return sum + (item.aggregatedQuantity || item.quantity || 0)
+    }, 0)
   }
 
   const getUniqueItems = () => {
+    // Count unique items (distinct parts/assemblies) from the processed items
+    // This represents the number of different items in the BOM after aggregation
     return processedItems.length
+  }
+
+  // Alternative counting methods for better accuracy
+  const getLeafItemsCount = () => {
+    // Count only leaf items (parts without children) from the hierarchical structure
+    const countLeafItems = (items: BOMItem[]): number => {
+      if (!items || items.length === 0) return 0
+      
+      return items.reduce((count, item) => {
+        const childItems = item.children || item.subItems || []
+        
+        if (childItems.length === 0) {
+          // This is a leaf item (actual part)
+          return count + 1
+        } else {
+          // This is an assembly, count its leaf children
+          return count + countLeafItems(childItems)
+        }
+      }, 0)
+    }
+    
+    return countLeafItems(actualBomItems || [])
+  }
+
+  const getLeafItemsQuantity = () => {
+    // Sum quantities of only leaf items (parts without children)
+    const sumLeafQuantities = (items: BOMItem[]): number => {
+      if (!items || items.length === 0) return 0
+      
+      return items.reduce((sum, item) => {
+        const childItems = item.children || item.subItems || []
+        
+        if (childItems.length === 0) {
+          // This is a leaf item (actual part)
+          return sum + (item.quantity || 0)
+        } else {
+          // This is an assembly, sum its leaf children quantities
+          return sum + sumLeafQuantities(childItems)
+        }
+      }, 0)
+    }
+    
+    return sumLeafQuantities(actualBomItems || [])
+  }
+
+  // Debug function to understand BOM structure
+  const debugBOMStructure = () => {
+    if (showDebugInfo) {
+      console.log('🔍 BOM Debug Information:')
+      console.log('Raw BOM Items:', actualBomItems)
+      console.log('Processed Items Count:', processedItems.length)
+      console.log('Processed Items:', processedItems)
+      
+      // Count items in hierarchical structure
+      const countHierarchicalItems = (items: BOMItem[]): { count: number, totalQty: number } => {
+        if (!items || items.length === 0) return { count: 0, totalQty: 0 }
+        
+        let count = 0
+        let totalQty = 0
+        
+        items.forEach(item => {
+          count += 1
+          totalQty += item.quantity || 0
+          
+          const childItems = item.children || item.subItems || []
+          if (childItems.length > 0) {
+            const childStats = countHierarchicalItems(childItems)
+            count += childStats.count
+            totalQty += childStats.totalQty
+          }
+        })
+        
+        return { count, totalQty }
+      }
+      
+      const hierarchicalStats = countHierarchicalItems(actualBomItems || [])
+      console.log('Hierarchical Stats (All Items):', hierarchicalStats)
+      
+      // Aggregated stats
+      const aggregatedQty = processedItems.reduce((sum, item) => sum + (item.aggregatedQuantity || item.quantity || 0), 0)
+      console.log('Aggregated Stats:', { uniqueItems: processedItems.length, totalQty: aggregatedQty })
+      
+      // Leaf items stats
+      const leafCount = getLeafItemsCount()
+      const leafQty = getLeafItemsQuantity()
+      console.log('Leaf Items Stats (Parts Only):', { count: leafCount, totalQty: leafQty })
+      
+      // Summary
+      console.log('📊 Summary of Different Counting Methods:')
+      console.log(`- All Items (Including Assemblies): ${hierarchicalStats.count} items, ${hierarchicalStats.totalQty} total quantity`)
+      console.log(`- Unique Items (After Aggregation): ${processedItems.length} items, ${aggregatedQty} total quantity`)
+      console.log(`- Leaf Items (Parts Only): ${leafCount} items, ${leafQty} total quantity`)
+    }
   }
 
   const renderBOMItem = (item: EnhancedBOMItem, level: number = 0, index: number = 0) => {
@@ -684,7 +717,12 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             {orderData ? 'BOM Preview' : 'Bill of Materials'}
           </h3>
           <p className="text-sm text-gray-600">
-            {poNumber ? `PO: ${poNumber}` : 'Preview Mode'} • {getUniqueItems()} unique items • {getTotalQuantity()} total quantity
+            {poNumber ? `PO: ${poNumber}` : 'Preview Mode'} • Hierarchical Bill of Materials
+            {showDebugInfo && (
+              <span className="ml-2 text-xs text-blue-600">
+                • {getLeafItemsCount()} parts only • {getLeafItemsQuantity()} parts quantity
+              </span>
+            )}
           </p>
         </div>
         <div className="flex gap-2">
@@ -698,9 +736,23 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             {exporting === 'csv' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Download className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
             )}
             Export CSV
+          </Button>
+          <Button
+            onClick={() => handleExport('pdf')}
+            variant="outline"
+            size="sm"
+            disabled={exporting === 'pdf'}
+            className="flex items-center gap-2"
+          >
+            {exporting === 'pdf' ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <FileText className="w-4 h-4" />
+            )}
+            Export PDF
           </Button>
           {showDebugInfo && (
             <Button
@@ -716,66 +768,16 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         </div>
       </div>
 
-      {/* Compact Controls */}
-      <div className="flex flex-col sm:flex-row gap-3 p-3 bg-gray-50 rounded-lg">
-        <div className="flex-1">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search parts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-9"
-            />
-          </div>
-        </div>
-        <div className="sm:w-40">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>
-                  {category === 'ALL' ? 'All Categories' : (category || '').replace(/_/g, ' ')}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={viewMode === 'tree' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('tree')}
-          >
-            <Layers className="w-4 h-4" />
+      {/* Controls */}
+      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={expandAll}>
+            Expand All
           </Button>
-          <Button
-            variant={viewMode === 'category' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('category')}
-          >
-            <Package className="w-4 h-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'flat' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('flat')}
-          >
-            <List className="w-4 h-4" />
+          <Button variant="outline" size="sm" onClick={collapseAll}>
+            Collapse All
           </Button>
         </div>
-        {viewMode === 'tree' && (
-          <div className="flex gap-1">
-            <Button variant="outline" size="sm" onClick={expandAll}>
-              Expand
-            </Button>
-            <Button variant="outline" size="sm" onClick={collapseAll}>
-              Collapse
-            </Button>
-          </div>
-        )}
       </div>
 
       {/* BOM Items Display */}
@@ -792,8 +794,8 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
-            ) : viewMode === 'tree' ? (
-              // Tree View
+            ) : (
+              // Hierarchical Tree View
               <div className="space-y-1">
                 {(!actualBomItems || actualBomItems.length === 0) ? (
                   <Alert>
@@ -813,86 +815,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                         </AlertDescription>
                       </Alert>
                     )}
-                    {actualBomItems
-                      .filter(item => {
-                        if (!searchTerm) return true
-                        const searchLower = searchTerm.toLowerCase()
-                        // Deep search through all levels
-                        const searchInItem = (i: any): boolean => {
-                          const matches = i.name?.toLowerCase().includes(searchLower) ||
-                            (i.assemblyId?.toLowerCase().includes(searchLower)) ||
-                            (i.partNumber?.toLowerCase().includes(searchLower)) ||
-                            (i.id?.toLowerCase().includes(searchLower))
-                          
-                          if (matches) return true
-                          
-                          // Search in children
-                          const childItems = i.children || i.subItems || i.components || []
-                          return childItems.some((child: any) => searchInItem(child))
-                        }
-                        
-                        return searchInItem(item)
-                      })
-                      .map((item, idx) => renderBOMItem(item, 0, idx))}
+                    {actualBomItems.map((item, idx) => renderBOMItem(item, 0, idx))}
                   </>
                 )}
               </div>
-            ) : viewMode === 'flat' ? (
-              // Flat View - Processed items with aggregation
-              <div className="space-y-1">
-                {filteredItems.length === 0 ? (
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription>
-                      No items found matching your criteria.
-                    </AlertDescription>
-                  </Alert>
-                ) : (
-                  filteredItems.map(item => renderBOMItem(item, 0))
-                )}
-              </div>
-            ) : (
-              // Category View
-              Object.keys(groupedItems).length === 0 ? (
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    No items found matching your search criteria.
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <div className="space-y-3">
-                  {Object.entries(groupedItems).map(([category, items]) => (
-                    <div key={category} className="border rounded-lg overflow-hidden">
-                      <button
-                        onClick={() => toggleCategory(category)}
-                        className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors bg-gray-50"
-                      >
-                        <div className="flex items-center gap-2">
-                          <ChevronRight 
-                            className={`w-4 h-4 transition-transform ${
-                              expandedCategories.has(category) ? 'rotate-90' : ''
-                            }`}
-                          />
-                          <span className="font-medium">{(category || '').replace(/_/g, ' ')}</span>
-                          <Badge variant="secondary" className="ml-2">
-                            {items.length} items
-                          </Badge>
-                        </div>
-                        <span className="text-sm text-slate-600">
-                          Total Qty: {items.reduce((sum, item) => sum + (item.aggregatedQuantity || item.quantity), 0)}
-                        </span>
-                      </button>
-                      
-                      {expandedCategories.has(category) && (
-                        <div className="p-2 space-y-1">
-                          {items.map(item => renderBOMItem(item, 0))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )
             )}
           </ScrollArea>
         </CardContent>
