@@ -16,11 +16,17 @@ model Part {
   status                 Status
   photoURL               String?
   technicalDrawingURL    String?
+  manufacturerName       String?
+  revision               String              @default("1")
+  unitOfMeasure          String?
+  customAttributes       Json?
   createdAt              DateTime            @default(now())
   updatedAt              DateTime            @updatedAt
   assemblyComponents     AssemblyComponent[]
   inventoryItems         InventoryItem[]
   serviceOrderItems      ServiceOrderItem[]  @relation("PartServiceOrders")
+  taskRequiredParts      TaskRequiredPart[] // Relation for parts required in instantiated tasks
+  templateStepParts      TaskTemplateStepPart[] // Relation for parts in task template steps
 }
 
 model Assembly {
@@ -32,6 +38,9 @@ model Assembly {
   workInstructionId String?
   qrData            String?
   kitComponentsJson String?
+  isOrderable       Boolean             @default(false)
+  revision          String              @default("1")
+  customAttributes  Json?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   childOfAssemblies AssemblyComponent[] @relation("ChildComponents")
@@ -100,12 +109,13 @@ model User {
   systemNotifications   SystemNotification[]   @relation("UserSystemNotifications")
   assignedTasks         Task[]                 @relation("TaskAssignee")
   taskNotes             TaskNote[]             @relation("TaskNoteAuthor")
+  orderTestResults      OrderTestResult[] // User who performed tests
 }
 
 model Order {
   id                    String                 @id @default(cuid())
   poNumber              String                 @unique
-  buildNumbers          String[]
+  buildNumbers          String[] // Denormalized list, actual uniqueness per config item
   customerName          String
   projectName           String?
   salesPerson           String
@@ -130,8 +140,7 @@ model Order {
   sinkConfigurations    SinkConfiguration[]
   sprayerConfigurations SprayerConfiguration[]
   tasks                 Task[]
-
-  @@unique([poNumber, buildNumbers])
+  orderTestResults      OrderTestResult[]
 }
 
 model BasinConfiguration {
@@ -146,6 +155,8 @@ model BasinConfiguration {
   customLength        Float?
   customWidth         Float?
   order               Order    @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, buildNumber])
 }
 
 model FaucetConfiguration {
@@ -156,6 +167,8 @@ model FaucetConfiguration {
   faucetPlacement String?
   orderId         String
   order           Order   @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, buildNumber])
 }
 
 model SprayerConfiguration {
@@ -167,6 +180,8 @@ model SprayerConfiguration {
   sprayerLocations String[]
   orderId          String
   order            Order    @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, buildNumber])
 }
 
 model SinkConfiguration {
@@ -188,6 +203,8 @@ model SinkConfiguration {
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
   order                     Order    @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, buildNumber])
 }
 
 model SelectedAccessory {
@@ -197,6 +214,8 @@ model SelectedAccessory {
   quantity    Int    @default(1)
   orderId     String
   order       Order  @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, buildNumber])
 }
 
 model AssociatedDocument {
@@ -273,17 +292,25 @@ model QcFormTemplate {
 }
 
 model QcFormTemplateItem {
-  id            String              @id @default(cuid())
-  templateId    String
-  section       String
-  checklistItem String
-  itemType      QcItemType
-  options       Json?
-  expectedValue String?
-  order         Int
-  isRequired    Boolean             @default(true)
-  itemResults   OrderQcItemResult[]
-  template      QcFormTemplate      @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  id                     String              @id @default(cuid())
+  templateId             String
+  section                String
+  checklistItem          String
+  itemType               QcItemType
+  options                Json?
+  expectedValue          String?
+  order                  Int // Renamed from 'order' to 'itemOrder' to avoid confusion if Prisma has issues
+  isRequired             Boolean             @default(true)
+  itemResults            OrderQcItemResult[]
+  template               QcFormTemplate      @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  repeatPer              String?
+  applicabilityCondition String?
+  relatedPartNumber      String?
+  relatedAssemblyId      String?
+  defaultValue           String?
+  notesPrompt            String?
+  tasks                  Task[] // Tasks that may reference this QC item
+  templateSteps          TaskTemplateStep[] // Task template steps that may reference this QC item
 }
 
 model OrderQcResult {
@@ -293,6 +320,7 @@ model OrderQcResult {
   qcPerformedById  String
   qcTimestamp      DateTime            @default(now())
   overallStatus    QcStatus            @default(PENDING)
+  externalJobId    String?
   notes            String?
   itemResults      OrderQcItemResult[]
   order            Order               @relation(fields: [orderId], references: [id])
@@ -303,14 +331,18 @@ model OrderQcResult {
 }
 
 model OrderQcItemResult {
-  id                   String             @id @default(cuid())
-  orderQcResultId      String
-  qcFormTemplateItemId String
-  resultValue          String?
-  isConformant         Boolean?
-  notes                String?
-  orderQcResult        OrderQcResult      @relation(fields: [orderQcResultId], references: [id], onDelete: Cascade)
-  qcFormTemplateItem   QcFormTemplateItem @relation(fields: [qcFormTemplateItemId], references: [id])
+  id                      String             @id @default(cuid())
+  orderQcResultId         String
+  qcFormTemplateItemId    String
+  resultValue             String?
+  isConformant            Boolean?
+  notes                   String?
+  orderQcResult           OrderQcResult      @relation(fields: [orderQcResultId], references: [id], onDelete: Cascade)
+  qcFormTemplateItem      QcFormTemplateItem @relation(fields: [qcFormTemplateItemId], references: [id])
+  isNotApplicable         Boolean            @default(false)
+  repetitionInstanceKey   String?
+  attachedDocumentId      String?
+  attachedDocument        FileUpload?        @relation("QcResultDocument", fields: [attachedDocumentId], references: [id])
 }
 
 model ServiceOrder {
@@ -337,17 +369,18 @@ model ServiceOrderItem {
 }
 
 model WorkInstruction {
-  id               String                @id @default(cuid())
-  title            String
-  description      String?
-  assemblyId       String?
-  version          String                @default("1.0")
-  isActive         Boolean               @default(true)
-  estimatedMinutes Int?
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  tasks            Task[]
-  steps            WorkInstructionStep[]
+  id                  String                @id @default(cuid())
+  title               String
+  description         String?
+  assemblyId          String? // Could link to an Assembly this WI is primarily for
+  version             String                @default("1.0")
+  isActive            Boolean               @default(true)
+  estimatedMinutes    Int?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  tasks               Task[] // Tasks that use this WorkInstruction
+  templateSteps       TaskTemplateStep[] // TaskTemplateSteps that use this WorkInstruction
+  steps               WorkInstructionStep[]
 }
 
 model WorkInstructionStep {
@@ -370,14 +403,15 @@ model WorkInstructionStep {
 }
 
 model Tool {
-  id          String     @id @default(cuid())
-  name        String
-  description String?
-  category    String
-  isActive    Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  tasks       TaskTool[]
+  id            String     @id @default(cuid())
+  name          String
+  description   String?
+  category      String
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  taskTools     TaskTool[] // Explicit join table for Tasks
+  templateStepTools TaskTemplateStepTool[] // Explicit join table for TaskTemplateSteps
 }
 
 model Task {
@@ -402,11 +436,30 @@ model Task {
   dependents            TaskDependency[]       @relation("DependentTasks")
   dependencies          TaskDependency[]       @relation("TaskDependencies")
   notes                 TaskNote[]
-  tools                 TaskTool[]
+  tools                 TaskTool[]             // Relation to TaskTool join table
+  buildNumber           String?
+  taskTemplateStepId    String?
+  taskTemplateStep      TaskTemplateStep?      @relation(fields: [taskTemplateStepId], references: [id], onDelete: SetNull)
+  qcFormTemplateItemId  String?
+  qcFormTemplateItem    QcFormTemplateItem?    @relation(fields: [qcFormTemplateItemId], references: [id])
+  requiredParts         TaskRequiredPart[]
 
   @@index([orderId, status])
   @@index([assignedToId, status])
   @@index([status, priority])
+}
+
+model TaskRequiredPart {
+  id           String  @id @default(cuid())
+  taskId       String
+  task         Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  partId       String
+  part         Part    @relation(fields: [partId], references: [partId])
+  quantity     Int     @default(1)
+  notes        String?
+  isConsumed   Boolean @default(false)
+
+  @@unique([taskId, partId])
 }
 
 model TaskDependency {
@@ -423,15 +476,15 @@ model TaskDependency {
 
 model TaskTool {
   id     String               @id @default(cuid())
-  taskId String?
-  stepId String?
-  toolId String
-  step   WorkInstructionStep? @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  taskId String? // Made optional if a tool can be linked to a step directly
   task   Task?                @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  tool   Tool                 @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  stepId String?
+  step   WorkInstructionStep? @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  toolId String
+  tool   Tool                 @relation(fields: [toolId], references: [id])
 
-  @@unique([taskId, toolId])
-  @@unique([stepId, toolId])
+  @@unique([taskId, toolId], name: "unique_task_tool")
+  @@unique([stepId, toolId], name: "unique_step_tool")
 }
 
 model TaskNote {
@@ -465,18 +518,20 @@ model SystemNotification {
 }
 
 model FileUpload {
-  id           String   @id @default(cuid())
-  filename     String
-  originalName String
-  mimeType     String
-  size         Int
-  path         String
-  uploadedById String
-  isPublic     Boolean  @default(false)
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  uploadedBy   User     @relation("UserFileUploads", fields: [uploadedById], references: [id])
+  id                String                 @id @default(cuid())
+  filename          String
+  originalName      String
+  mimeType          String
+  size              Int
+  path              String
+  uploadedById      String
+  isPublic          Boolean                @default(false)
+  metadata          Json?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  uploadedBy        User                   @relation("UserFileUploads", fields: [uploadedById], references: [id])
+  qcItemResults     OrderQcItemResult[]    @relation("QcResultDocument")
+  testStepResults   OrderTestStepResult[]  @relation("TestStepResultDocument")
 
   @@index([uploadedById, createdAt])
 }
@@ -491,14 +546,19 @@ model InventoryItem {
   quantityAvailable Int                    @default(0)
   reorderPoint      Int?
   maxStock          Int?
-  lastUpdated       DateTime               @default(now())
+  lastUpdated       DateTime               @default(now()) @updatedAt // Ensure this updates
   updatedById       String
   part              Part?                  @relation(fields: [partId], references: [partId], onDelete: Cascade)
   updatedBy         User                   @relation("UserInventoryUpdates", fields: [updatedById], references: [id])
   transactions      InventoryTransaction[]
+  serialNumber      String?
+  batchOrLotNumber  String?
+  expirationDate    DateTime?
+  inventoryStatus   InventoryStatus        @default(AVAILABLE)
 
   @@unique([partId, assemblyId, location])
   @@index([partId, assemblyId])
+  @@index([serialNumber])
 }
 
 model InventoryTransaction {
@@ -537,6 +597,147 @@ model AuditLog {
   @@index([userId, createdAt])
 }
 
+// Task Template Models
+model TaskTemplate {
+  id                     String    @id @default(cuid())
+  name                   String    @unique
+  description            String?
+  appliesToAssemblyType  AssemblyType?
+  appliesToProductFamily String?
+  version                String    @default("1.0")
+  isActive               Boolean   @default(true)
+  steps                  TaskTemplateStep[]
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+}
+
+model TaskTemplateStep {
+  id                   String                 @id @default(cuid())
+  taskTemplateId       String
+  taskTemplate         TaskTemplate           @relation(fields: [taskTemplateId], references: [id], onDelete: Cascade)
+  stepNumber           Int
+  title                String
+  description          String?
+  estimatedMinutes     Int?
+  workInstructionId    String?
+  workInstruction      WorkInstruction?       @relation(fields: [workInstructionId], references: [id])
+  qcFormTemplateItemId String?
+  qcFormTemplateItem   QcFormTemplateItem?    @relation(fields: [qcFormTemplateItemId], references: [id])
+  requiredTools        TaskTemplateStepTool[]
+  requiredParts        TaskTemplateStepPart[]
+  instantiatedTasks    Task[] // Relation to Task.taskTemplateStepId
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  @@unique([taskTemplateId, stepNumber])
+  @@index([taskTemplateId, stepNumber])
+}
+
+model TaskTemplateStepTool {
+  id                 String           @id @default(cuid())
+  taskTemplateStepId String
+  taskTemplateStep   TaskTemplateStep @relation(fields: [taskTemplateStepId], references: [id], onDelete: Cascade)
+  toolId             String
+  tool               Tool             @relation(fields: [toolId], references: [id])
+  notes              String?
+
+  @@unique([taskTemplateStepId, toolId])
+}
+
+model TaskTemplateStepPart {
+  id                 String           @id @default(cuid())
+  taskTemplateStepId String
+  taskTemplateStep   TaskTemplateStep @relation(fields: [taskTemplateStepId], references: [id], onDelete: Cascade)
+  partId             String
+  part               Part             @relation(fields: [partId], references: [partId])
+  quantity           Int              @default(1)
+  notes              String?
+
+  @@unique([taskTemplateStepId, partId])
+}
+
+// EOL Testing Models
+model TestProcedureTemplate {
+  id                       String    @id @default(cuid())
+  name                     String    @unique
+  description              String?
+  version                  String    @default("1.0")
+  productFamily            String?
+  isActive                 Boolean   @default(true)
+  estimatedDurationMinutes Int?
+  steps                    TestProcedureStepTemplate[]
+  orderTestResults         OrderTestResult[]
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+}
+
+model TestProcedureStepTemplate {
+  id                               String    @id @default(cuid())
+  testProcedureTemplateId          String
+  testProcedureTemplate            TestProcedureTemplate @relation(fields: [testProcedureTemplateId], references: [id], onDelete: Cascade)
+  stepNumber                       Int
+  title                            String
+  instruction                      String    @db.Text
+  expectedOutcome                  String?   @db.Text
+  inputDataType                    TestStepInputType
+  numericUnit                      String?
+  numericLowerLimit                Float?
+  numericUpperLimit                Float?
+  options                          Json?
+  isRequired                       Boolean   @default(true)
+  repeatPerInstance                String?
+  linkedCalibrationEquipmentTypeId String?
+  orderTestStepResults             OrderTestStepResult[]
+  createdAt                        DateTime  @default(now())
+  updatedAt                        DateTime  @updatedAt
+
+  @@unique([testProcedureTemplateId, stepNumber])
+  @@index([testProcedureTemplateId, stepNumber])
+}
+
+model OrderTestResult {
+  id                      String    @id @default(cuid())
+  orderId                 String
+  order                   Order     @relation(fields: [orderId], references: [id])
+  buildNumber             String
+  testProcedureTemplateId String
+  testProcedureTemplate   TestProcedureTemplate @relation(fields: [testProcedureTemplateId], references: [id])
+  testedById              String
+  testedBy                User      @relation(fields: [testedById], references: [id])
+  overallStatus           TestStatus @default(PENDING)
+  startedAt               DateTime?
+  completedAt             DateTime?
+  notes                   String?   @db.Text
+  stepResults             OrderTestStepResult[]
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@unique([orderId, buildNumber, testProcedureTemplateId])
+  @@index([orderId, buildNumber])
+}
+
+model OrderTestStepResult {
+  id                          String                    @id @default(cuid())
+  orderTestResultId           String
+  orderTestResult             OrderTestResult           @relation(fields: [orderTestResultId], references: [id], onDelete: Cascade)
+  testProcedureStepTemplateId String
+  testProcedureStepTemplate   TestProcedureStepTemplate @relation(fields: [testProcedureStepTemplateId], references: [id])
+  instanceKey                 String?
+  stringValue                 String?
+  numericValue                Float?
+  passFailValue               Boolean?
+  fileUploadId                String?
+  fileUpload                  FileUpload?               @relation("TestStepResultDocument", fields: [fileUploadId], references: [id])
+  isConformant                Boolean?
+  notes                       String?                   @db.Text
+  recordedAt                  DateTime                  @default(now())
+  calibrationData             String?
+
+  @@index([orderTestResultId])
+}
+
+
+// ENUMS
 enum PartType {
   COMPONENT
   MATERIAL
@@ -640,4 +841,29 @@ enum InventoryTransactionType {
   ADJUSTMENT
   RESERVED
   RELEASED
+}
+
+enum InventoryStatus {
+  AVAILABLE
+  NON_CONFORMING
+  IN_TRANSIT
+  RESERVED
+  DEFECTIVE
+}
+
+enum TestStepInputType {
+  TEXT
+  NUMERIC
+  PASS_FAIL
+  SINGLE_SELECT
+  MULTI_SELECT
+  SCAN_SN
+  FILE_UPLOAD
+}
+
+enum TestStatus {
+  PENDING
+  IN_PROGRESS
+  PASSED
+  FAILED
 }
