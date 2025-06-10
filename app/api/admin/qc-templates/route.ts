@@ -1,27 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
+import { QcTemplateCreateSchema } from '@/lib/qcValidationSchemas';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
-
-// Validation schema for creating/updating QC templates
-const QcTemplateCreateSchema = z.object({
-  name: z.string().min(1),
-  version: z.string().default("1.0"),
-  description: z.string().optional(),
-  appliesToProductFamily: z.string().optional().nullable(),
-  isActive: z.boolean().default(true),
-  items: z.array(z.object({
-    section: z.string(),
-    checklistItem: z.string(),
-    itemType: z.enum(['PASS_FAIL', 'TEXT_INPUT', 'NUMERIC_INPUT', 'SINGLE_SELECT', 'MULTI_SELECT', 'DATE_INPUT', 'CHECKBOX']),
-    options: z.array(z.string()).optional().nullable(),
-    expectedValue: z.string().optional().nullable(),
-    order: z.number(),
-    isRequired: z.boolean().default(true)
-  }))
-});
 
 // GET /api/admin/qc-templates - List all QC templates
 export async function GET(request: NextRequest) {
@@ -56,7 +39,23 @@ export async function GET(request: NextRequest) {
       where,
       include: {
         items: {
-          orderBy: { order: 'asc' }
+          orderBy: { order: 'asc' },
+          select: {
+            id: true,
+            section: true,
+            checklistItem: true,
+            itemType: true,
+            options: true,
+            expectedValue: true,
+            order: true,
+            isRequired: true,
+            repeatPer: true,
+            applicabilityCondition: true,
+            relatedPartNumber: true,
+            relatedAssemblyId: true,
+            defaultValue: true,
+            notesPrompt: true
+          }
         },
         _count: {
           select: { orderQcResults: true }
@@ -68,12 +67,13 @@ export async function GET(request: NextRequest) {
       ]
     });
 
-    // Group templates by name and product family to show version history
+    // Group templates by formName and product family to show version history
     const templateGroups = templates.reduce((groups, template) => {
-      const key = `${template.name}|${template.appliesToProductFamily || 'generic'}`;
+      const key = `${template.formName}|${template.appliesToProductFamily || 'generic'}`;
       if (!groups[key]) {
         groups[key] = {
-          name: template.name,
+          formName: template.formName,
+          formType: template.formType,
           productFamily: template.appliesToProductFamily,
           activeVersion: null,
           versions: []
@@ -136,7 +136,8 @@ export async function POST(request: NextRequest) {
 
     const template = await prisma.qcFormTemplate.create({
       data: {
-        name: validatedData.name,
+        formName: validatedData.formName,
+        formType: validatedData.formType,
         version: validatedData.version,
         description: validatedData.description,
         appliesToProductFamily: validatedData.appliesToProductFamily,
@@ -149,13 +150,35 @@ export async function POST(request: NextRequest) {
             options: item.options || undefined,
             expectedValue: item.expectedValue,
             order: item.order,
-            isRequired: item.isRequired
+            isRequired: item.isRequired,
+            repeatPer: item.repeatPer,
+            applicabilityCondition: item.applicabilityCondition,
+            relatedPartNumber: item.relatedPartNumber,
+            relatedAssemblyId: item.relatedAssemblyId,
+            defaultValue: item.defaultValue,
+            notesPrompt: item.notesPrompt
           }))
         }
       },
       include: { 
         items: {
-          orderBy: { order: 'asc' }
+          orderBy: { order: 'asc' },
+          select: {
+            id: true,
+            section: true,
+            checklistItem: true,
+            itemType: true,
+            options: true,
+            expectedValue: true,
+            order: true,
+            isRequired: true,
+            repeatPer: true,
+            applicabilityCondition: true,
+            relatedPartNumber: true,
+            relatedAssemblyId: true,
+            defaultValue: true,
+            notesPrompt: true
+          }
         }
       }
     });

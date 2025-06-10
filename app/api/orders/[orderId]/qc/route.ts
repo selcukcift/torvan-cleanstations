@@ -2,29 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { z } from 'zod';
+import { QcResultSubmissionSchema } from '@/lib/qcValidationSchemas';
 import notificationService from '@/lib/notificationService.native';
 
 const prisma = new PrismaClient();
-
-// Validation schema for QC result submission
-const QcResultSubmissionSchema = z.object({
-  templateId: z.string(),
-  overallStatus: z.enum(['PENDING', 'IN_PROGRESS', 'PASSED', 'FAILED', 'REQUIRES_REVIEW']),
-  notes: z.string().optional(),
-  itemResults: z.array(z.object({
-    templateItemId: z.string(),
-    value: z.string().optional().nullable(), // Support both 'value' and 'resultValue'
-    resultValue: z.string().optional().nullable(),
-    passed: z.boolean().optional().nullable(), // Support both 'passed' and 'isConformant'
-    isConformant: z.boolean().optional().nullable(),
-    notes: z.string().optional().nullable()
-  })),
-  digitalSignature: z.object({
-    userId: z.string(),
-    timestamp: z.string(),
-    userName: z.string()
-  }).optional()
-});
 
 // GET /api/orders/[orderId]/qc - Get existing QC result for this order
 export async function GET(
@@ -53,13 +34,38 @@ export async function GET(
         qcFormTemplate: {
           include: { 
             items: { 
-              orderBy: { order: 'asc' } 
+              orderBy: { order: 'asc' },
+              select: {
+                id: true,
+                section: true,
+                checklistItem: true,
+                itemType: true,
+                options: true,
+                expectedValue: true,
+                order: true,
+                isRequired: true,
+                repeatPer: true,
+                applicabilityCondition: true,
+                relatedPartNumber: true,
+                relatedAssemblyId: true,
+                defaultValue: true,
+                notesPrompt: true
+              }
             } 
           }
         },
         itemResults: {
           include: {
-            qcFormTemplateItem: true
+            qcFormTemplateItem: true,
+            attachedDocument: {
+              select: {
+                id: true,
+                filename: true,
+                originalName: true,
+                size: true,
+                mimeType: true
+              }
+            }
           }
         },
         qcPerformedBy: {
@@ -134,6 +140,7 @@ export async function POST(
         update: {
           overallStatus: validatedData.overallStatus,
           notes: validatedData.notes,
+          externalJobId: validatedData.externalJobId,
           qcTimestamp: new Date(),
           qcPerformedById: user.id
         },
@@ -142,7 +149,8 @@ export async function POST(
           qcFormTemplateId: validatedData.templateId,
           qcPerformedById: user.id,
           overallStatus: validatedData.overallStatus,
-          notes: validatedData.notes
+          notes: validatedData.notes,
+          externalJobId: validatedData.externalJobId
         }
       });
 
@@ -157,9 +165,12 @@ export async function POST(
           data: validatedData.itemResults.map(item => ({
             orderQcResultId: result.id,
             qcFormTemplateItemId: item.templateItemId,
-            resultValue: item.value || item.resultValue, // Support both field names
-            isConformant: item.passed !== undefined ? item.passed : item.isConformant, // Support both field names
-            notes: item.notes
+            resultValue: item.resultValue,
+            isConformant: item.isConformant,
+            notes: item.notes,
+            isNotApplicable: item.isNotApplicable || false,
+            repetitionInstanceKey: item.repetitionInstanceKey,
+            attachedDocumentId: item.attachedDocumentId
           }))
         });
       }

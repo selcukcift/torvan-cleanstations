@@ -30,12 +30,19 @@ export const QcTemplateItemSchema = z.object({
   expectedValue: z.string().optional().nullable(),
   order: z.number().int().positive(),
   isRequired: z.boolean().default(true),
+  repeatPer: z.string().optional().nullable(),
+  applicabilityCondition: z.string().optional().nullable(),
+  relatedPartNumber: z.string().optional().nullable(),
+  relatedAssemblyId: z.string().optional().nullable(),
+  defaultValue: z.string().optional().nullable(),
+  notesPrompt: z.string().optional().nullable(),
   _action: z.enum(['create', 'update', 'delete']).optional()
 });
 
 // Schema for creating a QC template
 export const QcTemplateCreateSchema = z.object({
-  name: z.string().min(1, 'Template name is required'),
+  formName: z.string().min(1, 'Form name is required'),
+  formType: z.enum(['Pre-Production Check', 'Production Check', 'Final QC', 'End-of-Line Testing']),
   version: z.string().default('1.0'),
   description: z.string().optional().nullable(),
   appliesToProductFamily: z.string().optional().nullable(),
@@ -45,7 +52,8 @@ export const QcTemplateCreateSchema = z.object({
 
 // Schema for updating a QC template
 export const QcTemplateUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
+  formName: z.string().min(1).optional(),
+  formType: z.enum(['Pre-Production Check', 'Production Check', 'Final QC', 'End-of-Line Testing']).optional(),
   version: z.string().optional(),
   description: z.string().optional().nullable(),
   appliesToProductFamily: z.string().optional().nullable(),
@@ -58,7 +66,10 @@ export const QcItemResultSchema = z.object({
   templateItemId: z.string(),
   resultValue: z.string().optional().nullable(),
   isConformant: z.boolean().optional().nullable(),
-  notes: z.string().optional().nullable()
+  notes: z.string().optional().nullable(),
+  isNotApplicable: z.boolean().default(false),
+  repetitionInstanceKey: z.string().optional().nullable(),
+  attachedDocumentId: z.string().optional().nullable()
 });
 
 // Schema for submitting QC results
@@ -66,6 +77,7 @@ export const QcResultSubmissionSchema = z.object({
   templateId: z.string(),
   overallStatus: QcStatusEnum,
   notes: z.string().optional().nullable(),
+  externalJobId: z.string().optional().nullable(),
   itemResults: z.array(QcItemResultSchema)
 });
 
