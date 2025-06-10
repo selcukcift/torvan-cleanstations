@@ -13,17 +13,37 @@ const TIMEOUT_MS = 3000;
 
 async function checkWorkPostgreSQL() {
   return new Promise((resolve) => {
-    const cmd = `timeout ${TIMEOUT_MS / 1000} bash -c "echo > /dev/tcp/${WORK_POSTGRES_IP}/${WORK_POSTGRES_PORT}"`;
+    // Try multiple methods to check connectivity
+    const net = require('net');
     
-    exec(cmd, (error) => {
-      if (error) {
+    const socket = new net.Socket();
+    let connected = false;
+    
+    socket.setTimeout(TIMEOUT_MS);
+    
+    socket.on('connect', () => {
+      connected = true;
+      socket.destroy();
+      console.log(`🏢 Work PostgreSQL (${WORK_POSTGRES_IP}:${WORK_POSTGRES_PORT}) reachable - detected WORK environment`);
+      resolve(true);
+    });
+    
+    socket.on('timeout', () => {
+      socket.destroy();
+      if (!connected) {
         console.log(`🏠 Work PostgreSQL (${WORK_POSTGRES_IP}:${WORK_POSTGRES_PORT}) not reachable - assuming HOME environment`);
         resolve(false);
-      } else {
-        console.log(`🏢 Work PostgreSQL (${WORK_POSTGRES_IP}:${WORK_POSTGRES_PORT}) reachable - detected WORK environment`);
-        resolve(true);
       }
     });
+    
+    socket.on('error', () => {
+      if (!connected) {
+        console.log(`🏠 Work PostgreSQL (${WORK_POSTGRES_IP}:${WORK_POSTGRES_PORT}) not reachable - assuming HOME environment`);
+        resolve(false);
+      }
+    });
+    
+    socket.connect(WORK_POSTGRES_PORT, WORK_POSTGRES_IP);
   });
 }
 

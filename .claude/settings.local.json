@@ -47,7 +47,11 @@
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma migrate dev --name \"adopt_full_system_design_schema\")",
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db push)",
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db push --accept-data-loss)",
-      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" psql -c \"SELECT \\\"orderId\\\", \\\"buildNumber\\\", COUNT(*) FROM \\\"SinkConfiguration\\\" GROUP BY \\\"orderId\\\", \\\"buildNumber\\\" HAVING COUNT(*) > 1 LIMIT 5;\")"
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" psql -c \"SELECT \\\"orderId\\\", \\\"buildNumber\\\", COUNT(*) FROM \\\"SinkConfiguration\\\" GROUP BY \\\"orderId\\\", \\\"buildNumber\\\" HAVING COUNT(*) > 1 LIMIT 5;\")",
+      "Bash(sudo chown:*)",
+      "Bash(readlink:*)",
+      "Bash(cp:*)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db pull)"
     ],
     "deny": []
   },

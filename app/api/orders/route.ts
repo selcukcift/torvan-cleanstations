@@ -11,8 +11,16 @@ const CustomerInfoSchema = z.object({
   customerName: z.string().min(1, 'Customer Name is required'),
   projectName: z.string().optional(),
   salesPerson: z.string().min(1, 'Sales Person is required'),
-  wantDate: z.string().transform((str) => new Date(str)),
-  language: z.enum(['EN', 'FR', 'ES']),
+  wantDate: z.union([
+    z.string().transform((str) => new Date(str)),
+    z.date()
+  ]),
+  language: z.string().transform((lang) => {
+    if (lang === 'English' || lang === 'EN') return 'EN'
+    if (lang === 'French' || lang === 'FR') return 'FR'
+    if (lang === 'Spanish' || lang === 'ES') return 'ES'
+    return 'EN' // default
+  }),
   notes: z.string().optional()
 })
 
@@ -158,8 +166,7 @@ export async function POST(request: NextRequest) {
         salesPerson: customerInfo.salesPerson,
         wantDate: customerInfo.wantDate,
         notes: customerInfo.notes || null,
-        language: customerInfo.language === 'English' ? 'EN' : 
-                 customerInfo.language === 'French' ? 'FR' : 'ES',
+        language: customerInfo.language,
         createdById: user.id
       }
     })

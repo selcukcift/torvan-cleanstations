@@ -190,7 +190,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
         accessories
       }
 
-      const response = await nextJsApiClient.post('/orders/preview-bom', requestBody)
+      const response = await nextJsApiClient.post('orders/preview-bom', requestBody)
       
       if (response.data.success) {
         console.log('ReviewStep BOM data received:', response.data)
@@ -223,7 +223,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
     setSubmitSuccess(null)
 
     try {
-      const endpoint = isEditMode ? `/orders/${orderId}` : '/orders'
+      const endpoint = isEditMode ? `orders/${orderId}` : 'orders'
       const method = isEditMode ? 'put' : 'post'
       
       const requestBody = {
