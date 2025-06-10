@@ -803,12 +803,16 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       // MANDATORY: Overhead light kit (Document line 113)
       await addItemToBOMRecursive('T2-OHL-MDRD-KIT', 1, 'PEGBOARD_MANDATORY', bom, new Set())
       
+      // Track whether we've added a specific pegboard kit to prevent duplicates
+      let hasAddedSpecificPegboardKit = false
+      
       // Only add pegboard kits if pegboard type is actually selected
       if (pegboardType || pegboardTypeId || specificPegboardKitId) {
         // Use specific pegboard kit if available (from BOM Debug Helper)
         if (specificPegboardKitId) {
           console.log(`Using specific pegboard kit from config: ${specificPegboardKitId}`)
           await addItemToBOMRecursive(specificPegboardKitId, 1, 'PEGBOARD_SPECIFIC_KIT', bom, new Set())
+          hasAddedSpecificPegboardKit = true
         }
         // Calculate specific kit based on configuration
         else if (pegboardType && actualLength) {
@@ -818,13 +822,16 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
             const kitType = pegboardColor ? 'PEGBOARD_COLORED_KIT' : 'PEGBOARD_SIZE_KIT'
             console.log(`Calculated specific pegboard kit: ${specificKitId} (length: ${actualLength}, type: ${pegboardType}${pegboardColor ? `, color: ${pegboardColor}` : ', no color specified'})`)
             await addItemToBOMRecursive(specificKitId, 1, kitType, bom, new Set())
+            hasAddedSpecificPegboardKit = true
           } else {
             console.warn('Failed to calculate specific pegboard kit, falling back to generic')
             // Fallback to generic kits
             if (pegboardTypeId === 'PERFORATED' || pegboardType === 'PERFORATED') {
               await addItemToBOMRecursive('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+              hasAddedSpecificPegboardKit = true
             } else if (pegboardTypeId === 'SOLID' || pegboardType === 'SOLID') {
               await addItemToBOMRecursive('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+              hasAddedSpecificPegboardKit = true
             }
           }
         }
@@ -837,13 +844,16 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
           if (specificKitId) {
             console.log(`Legacy fallback using size-based kit: ${specificKitId} (length: ${actualLength}, type: ${legacyType}, no color)`)
             await addItemToBOMRecursive(specificKitId, 1, 'PEGBOARD_LEGACY_SIZE', bom, new Set())
+            hasAddedSpecificPegboardKit = true
           } else {
             // Final fallback to static kits
             console.log('Final fallback to static pegboard kits')
             if (pegboardTypeId === 'PERFORATED') {
               await addItemToBOMRecursive('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+              hasAddedSpecificPegboardKit = true
             } else if (pegboardTypeId === 'SOLID') {
               await addItemToBOMRecursive('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+              hasAddedSpecificPegboardKit = true
             }
           }
         }
@@ -852,13 +862,13 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       }
       
       // Color component (if not included in specific kit)
-      if (pegboardColor && !specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
+      if (pegboardColor && !hasAddedSpecificPegboardKit && !(pegboardType && pegboardColor && actualLength)) {
         // Add separate color component for legacy configurations
         await addItemToBOMRecursive('T-OA-PB-COLOR', 1, 'PEGBOARD_COLOR', bom, new Set())
       }
       
       // Pegboard size logic (legacy support) - only when no specific kit is used
-      if ((pegboardType || pegboardTypeId) && !specificPegboardKitId) {
+      if ((pegboardType || pegboardTypeId) && !hasAddedSpecificPegboardKit) {
         if (pegboardSizePartNumber) {
           if (pegboardSizePartNumber.startsWith('720.215.002 T2-ADW-PB-')) {
             // Custom pegboard size
@@ -884,7 +894,7 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
             // Standard pegboard size assembly
             await addItemToBOMRecursive(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
           }
-        } else if (!specificPegboardKitId && !(pegboardType && actualLength)) {
+        } else if (!(pegboardType && actualLength)) {
           // Auto-select pegboard size based on sink length (legacy - only when no specific kit is used)
           const pegboardSizeId = getPegboardSizeByLength(actualLength!)
           if (pegboardSizeId) {

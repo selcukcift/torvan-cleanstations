@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,33 +9,61 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { DatePicker } from "@/components/ui/date-picker"
-import { Upload, FileText } from "lucide-react"
+import { Upload, FileText, X } from "lucide-react"
 
 export function CustomerInfoStep() {
   const { customerInfo, updateCustomerInfo } = useOrderCreateStore()
-  const [uploadedPoFile, setUploadedPoFile] = useState<File | null>(null)
-  const [uploadedDrawingsFile, setUploadedDrawingsFile] = useState<File | null>(null)
+  const [uploadedPoFiles, setUploadedPoFiles] = useState<File[]>([])
+  const [uploadedDrawingsFiles, setUploadedDrawingsFiles] = useState<File[]>([])
+
+  // Sync local state with store data on mount
+  useEffect(() => {
+    if (customerInfo.poDocuments) {
+      setUploadedPoFiles(customerInfo.poDocuments)
+    }
+    if (customerInfo.sinkDrawings) {
+      setUploadedDrawingsFiles(customerInfo.sinkDrawings)
+    }
+  }, [customerInfo.poDocuments, customerInfo.sinkDrawings])
 
   const handlePoFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setUploadedPoFile(file)
-      updateCustomerInfo({ poDocument: file })
+    const files = Array.from(event.target.files || [])
+    if (files.length > 0) {
+      const newFiles = [...uploadedPoFiles, ...files]
+      setUploadedPoFiles(newFiles)
+      updateCustomerInfo({ poDocuments: newFiles })
     }
+    // Reset input to allow same file upload again
+    event.target.value = ''
   }
 
   const handleDrawingsFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setUploadedDrawingsFile(file)
-      updateCustomerInfo({ sinkDrawings: file })
+    const files = Array.from(event.target.files || [])
+    if (files.length > 0) {
+      const newFiles = [...uploadedDrawingsFiles, ...files]
+      setUploadedDrawingsFiles(newFiles)
+      updateCustomerInfo({ sinkDrawings: newFiles })
     }
+    // Reset input to allow same file upload again
+    event.target.value = ''
   }
 
   const handleDateChange = (date: Date | undefined) => {
     if (date) {
       updateCustomerInfo({ wantDate: date })
     }
+  }
+
+  const removePoFile = (index: number) => {
+    const newFiles = uploadedPoFiles.filter((_, i) => i !== index)
+    setUploadedPoFiles(newFiles)
+    updateCustomerInfo({ poDocuments: newFiles })
+  }
+
+  const removeDrawingFile = (index: number) => {
+    const newFiles = uploadedDrawingsFiles.filter((_, i) => i !== index)
+    setUploadedDrawingsFiles(newFiles)
+    updateCustomerInfo({ sinkDrawings: newFiles })
   }
 
   return (
@@ -180,6 +208,7 @@ export function CustomerInfoStep() {
                 id="poDocument"
                 className="hidden"
                 accept=".pdf,.doc,.docx,.txt"
+                multiple
                 onChange={handlePoFileUpload}
               />
               <label
@@ -194,21 +223,36 @@ export function CustomerInfoStep() {
                   or drag and drop
                 </div>
                 <div className="text-xs text-gray-400">
-                  PDF, DOC, DOCX, TXT up to 10MB
+                  PDF, DOC, DOCX, TXT up to 10MB each (multiple files allowed)
                 </div>
               </label>
             </div>
             
-            {uploadedPoFile && (
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    {uploadedPoFile.name}
-                  </span>
-                  <span className="text-xs text-green-600">
-                    ({(uploadedPoFile.size / 1024 / 1024).toFixed(2)} MB)
-                  </span>
+            {uploadedPoFiles.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <h5 className="text-sm font-medium text-gray-700">Uploaded PO Documents ({uploadedPoFiles.length})</h5>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {uploadedPoFiles.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center space-x-2 flex-1 min-w-0">
+                        <FileText className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <span className="text-sm font-medium text-green-800 truncate">
+                          {file.name}
+                        </span>
+                        <span className="text-xs text-green-600 flex-shrink-0">
+                          ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removePoFile(index)}
+                        className="ml-2 p-1 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                        title="Remove file"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -233,6 +277,7 @@ export function CustomerInfoStep() {
                 id="sinkDrawings"
                 className="hidden"
                 accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png"
+                multiple
                 onChange={handleDrawingsFileUpload}
               />
               <label
@@ -247,21 +292,36 @@ export function CustomerInfoStep() {
                   or drag and drop
                 </div>
                 <div className="text-xs text-gray-400">
-                  PDF, DWG, DXF, JPG, PNG up to 10MB
+                  PDF, DWG, DXF, JPG, PNG up to 10MB each (multiple files allowed)
                 </div>
               </label>
             </div>
             
-            {uploadedDrawingsFile && (
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    {uploadedDrawingsFile.name}
-                  </span>
-                  <span className="text-xs text-green-600">
-                    ({(uploadedDrawingsFile.size / 1024 / 1024).toFixed(2)} MB)
-                  </span>
+            {uploadedDrawingsFiles.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <h5 className="text-sm font-medium text-gray-700">Uploaded Sink Drawings ({uploadedDrawingsFiles.length})</h5>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {uploadedDrawingsFiles.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center space-x-2 flex-1 min-w-0">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        <span className="text-sm font-medium text-blue-800 truncate">
+                          {file.name}
+                        </span>
+                        <span className="text-xs text-blue-600 flex-shrink-0">
+                          ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeDrawingFile(index)}
+                        className="ml-2 p-1 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0"
+                        title="Remove file"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

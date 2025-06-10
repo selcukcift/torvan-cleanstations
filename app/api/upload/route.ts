@@ -38,7 +38,16 @@ export async function POST(request: NextRequest) {
       'image/gif',
       'text/plain',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      // CAD file types for sink drawings
+      'application/octet-stream', // DWG and DXF files often come as this
+      'application/acad',
+      'application/x-acad',
+      'application/autocad_dwg',
+      'application/dwg',
+      'application/dxf',
+      'image/vnd.dwg',
+      'image/vnd.dxf'
     ]
 
     if (!allowedTypes.includes(file.type)) {

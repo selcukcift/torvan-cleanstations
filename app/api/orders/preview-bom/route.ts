@@ -132,35 +132,85 @@ export async function POST(request: NextRequest) {
       return acc
     }, {} as Record<string, any>)
 
-    // Generate BOM preview using the same service as order creation
+    // Generate BOM preview - separate BOMs for each build if multiple builds
     console.log('🔧 BOM Preview: Generating BOM for order with transformed configurations')
     
-    const bomResult = await generateBOMForOrder({
-      customer: customerInfo,
-      configurations: transformedConfigurations,
-      accessories,
-      buildNumbers: sinkSelection.buildNumbers
-    })
-    
-    console.log('✅ BOM generation completed successfully')
+    if (sinkSelection.buildNumbers.length === 1) {
+      // Single build - use existing logic
+      const bomResult = await generateBOMForOrder({
+        customer: customerInfo,
+        configurations: transformedConfigurations,
+        accessories,
+        buildNumbers: sinkSelection.buildNumbers
+      })
+      
+      console.log('✅ Single BOM generation completed successfully')
 
-    // bomResult is an object with hierarchical, flattened, totalItems, and topLevelItems properties
-    const flattenedItems = bomResult?.flattened || []
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        bom: bomResult,
-        buildNumbers: sinkSelection.buildNumbers,
-        totalItems: bomResult?.totalItems || 0,
-        summary: {
-          systemComponents: flattenedItems.filter(item => item.category === 'SYSTEM')?.length || 0,
-          structuralComponents: flattenedItems.filter(item => ['SINK_BODY', 'LEGS', 'FEET'].includes(item.category))?.length || 0,
-          basinComponents: flattenedItems.filter(item => item.category?.includes('BASIN'))?.length || 0,
-          accessoryComponents: flattenedItems.filter(item => item.category === 'ACCESSORY')?.length || 0
+      const flattenedItems = bomResult?.flattened || []
+      
+      return NextResponse.json({
+        success: true,
+        data: {
+          bom: bomResult,
+          buildNumbers: sinkSelection.buildNumbers,
+          totalItems: bomResult?.totalItems || 0,
+          summary: {
+            systemComponents: flattenedItems.filter(item => item.category === 'SYSTEM')?.length || 0,
+            structuralComponents: flattenedItems.filter(item => ['SINK_BODY', 'LEGS', 'FEET'].includes(item.category))?.length || 0,
+            basinComponents: flattenedItems.filter(item => item.category?.includes('BASIN'))?.length || 0,
+            accessoryComponents: flattenedItems.filter(item => item.category === 'ACCESSORY')?.length || 0
+          }
         }
+      })
+    } else {
+      // Multiple builds - generate separate BOMs for each build
+      const buildBOMs: Record<string, any> = {}
+      const combinedSummary = {
+        systemComponents: 0,
+        structuralComponents: 0,
+        basinComponents: 0,
+        accessoryComponents: 0
       }
-    })
+      let totalItems = 0
+
+      for (const buildNumber of sinkSelection.buildNumbers) {
+        console.log(`🔧 BOM Preview: Generating BOM for build ${buildNumber}`)
+        
+        // Create single-build configuration
+        const singleBuildConfig = { [buildNumber]: transformedConfigurations[buildNumber] }
+        const singleBuildAccessories = { [buildNumber]: accessories[buildNumber] || [] }
+        
+        const buildBOM = await generateBOMForOrder({
+          customer: customerInfo,
+          configurations: singleBuildConfig,
+          accessories: singleBuildAccessories,
+          buildNumbers: [buildNumber]
+        })
+        
+        buildBOMs[buildNumber] = buildBOM
+        
+        // Accumulate totals
+        const flattenedItems = buildBOM?.flattened || []
+        totalItems += buildBOM?.totalItems || 0
+        combinedSummary.systemComponents += flattenedItems.filter(item => item.category === 'SYSTEM')?.length || 0
+        combinedSummary.structuralComponents += flattenedItems.filter(item => ['SINK_BODY', 'LEGS', 'FEET'].includes(item.category))?.length || 0
+        combinedSummary.basinComponents += flattenedItems.filter(item => item.category?.includes('BASIN'))?.length || 0
+        combinedSummary.accessoryComponents += flattenedItems.filter(item => item.category === 'ACCESSORY')?.length || 0
+      }
+      
+      console.log('✅ Multi-build BOM generation completed successfully')
+      
+      return NextResponse.json({
+        success: true,
+        data: {
+          buildBOMs,
+          buildNumbers: sinkSelection.buildNumbers,
+          totalItems,
+          summary: combinedSummary,
+          isMultiBuild: true
+        }
+      })
+    }
 
   } catch (error) {
     console.error('Error generating BOM preview:', error)

@@ -238,31 +238,83 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       if (response.data.success) {
         const createdOrderId = response.data.orderId || orderId
         
-        // Handle file upload if there's a PO document
-        if (customerInfo.poDocument && customerInfo.poDocument instanceof File) {
-          try {
-            console.log('Uploading PO document:', customerInfo.poDocument.name)
-            const formData = new FormData()
-            formData.append('file', customerInfo.poDocument)
-            formData.append('orderId', createdOrderId)
-            formData.append('docType', 'PO_DOCUMENT')
+        // Handle file uploads if there are documents
+        const uploadPromises = []
+        
+        // Upload PO documents
+        if (customerInfo.poDocuments && customerInfo.poDocuments.length > 0) {
+          customerInfo.poDocuments.forEach((document, index) => {
+            if (document instanceof File) {
+              const uploadPODocument = async () => {
+                try {
+                  console.log(`Uploading PO document ${index + 1}:`, document.name)
+                  const formData = new FormData()
+                  formData.append('file', document)
+                  formData.append('orderId', createdOrderId)
+                  formData.append('docType', 'PO_DOCUMENT')
 
-            const uploadResponse = await nextJsApiClient.post('/upload', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
+                  const uploadResponse = await nextJsApiClient.post('/upload', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  })
+                  
+                  if (uploadResponse.data.success) {
+                    console.log(`PO document ${index + 1} uploaded successfully:`, uploadResponse.data.fileName)
+                  } else {
+                    console.warn(`PO document ${index + 1} upload failed:`, uploadResponse.data.message)
+                  }
+                } catch (fileUploadError: any) {
+                  console.error(`PO document ${index + 1} upload error:`, fileUploadError)
+                  console.error(`PO document ${index + 1} upload error response:`, fileUploadError.response?.data)
+                }
               }
-            })
-            
-            if (uploadResponse.data.success) {
-              console.log('File uploaded successfully:', uploadResponse.data.fileName)
-            } else {
-              console.warn('File upload failed:', uploadResponse.data.message)
+              uploadPromises.push(uploadPODocument())
             }
-          } catch (fileUploadError: any) {
-            console.error('File upload error:', fileUploadError)
-            console.error('File upload error response:', fileUploadError.response?.data)
-            // Don't fail the order creation if file upload fails
-            // But show a warning to the user in future iterations
+          })
+        }
+        
+        // Upload sink drawings
+        if (customerInfo.sinkDrawings && customerInfo.sinkDrawings.length > 0) {
+          customerInfo.sinkDrawings.forEach((drawing, index) => {
+            if (drawing instanceof File) {
+              const uploadSinkDrawing = async () => {
+                try {
+                  console.log(`Uploading sink drawing ${index + 1}:`, drawing.name)
+                  const formData = new FormData()
+                  formData.append('file', drawing)
+                  formData.append('orderId', createdOrderId)
+                  formData.append('docType', 'SINK_DRAWING')
+
+                  const uploadResponse = await nextJsApiClient.post('/upload', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                  })
+                  
+                  if (uploadResponse.data.success) {
+                    console.log(`Sink drawing ${index + 1} uploaded successfully:`, uploadResponse.data.fileName)
+                  } else {
+                    console.warn(`Sink drawing ${index + 1} upload failed:`, uploadResponse.data.message)
+                  }
+                } catch (fileUploadError: any) {
+                  console.error(`Sink drawing ${index + 1} upload error:`, fileUploadError)
+                  console.error(`Sink drawing ${index + 1} upload error response:`, fileUploadError.response?.data)
+                }
+              }
+              uploadPromises.push(uploadSinkDrawing())
+            }
+          })
+        }
+        
+        // Execute all uploads in parallel
+        if (uploadPromises.length > 0) {
+          try {
+            await Promise.allSettled(uploadPromises)
+            console.log('All file uploads completed')
+          } catch (error) {
+            console.error('Error during file uploads:', error)
+            // Don't fail the order creation if file uploads fail
           }
         }
         
@@ -357,16 +409,34 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                     <span className="font-medium">{customerInfo.poNumber}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">Build Numbers</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {sinkSelection.buildNumbers.map((bn: string) => (
-                        <Badge key={bn} variant="outline" className="text-xs">{bn}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Sink Model</span>
-                    <span className="font-medium">{generateSinkModel({ sinkSelection, configurations })}</span>
+                    <span className="text-slate-500 block">{sinkSelection.buildNumbers.length === 1 ? 'Build & Model' : 'Sink Models'}</span>
+                    {sinkSelection.buildNumbers.length === 1 ? (
+                      <div className="text-sm">
+                        <span className="font-medium">{sinkSelection.buildNumbers[0]}: {generateSinkModel({ sinkSelection, configurations })}</span>
+                      </div>
+                    ) : (
+                      <div className="space-y-1 mt-1">
+                        {sinkSelection.buildNumbers.map((buildNumber: string) => {
+                          const config = configurations[buildNumber]
+                          if (!config) return null
+                          
+                          // Generate sink model for this specific build using the same logic
+                          const basinCount = config.basins?.length || 1
+                          const length = config.length || 48
+                          const width = config.width || 30
+                          const lengthStr = length.toString().padStart(2, '0')
+                          const widthStr = width.toString().padStart(2, '0')
+                          const dimensions = lengthStr + widthStr
+                          const buildSinkModel = `T2-${basinCount}B-${dimensions}HA`
+                          
+                          return (
+                            <div key={buildNumber} className="text-xs">
+                              <span className="font-medium">{buildNumber}: {buildSinkModel}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -398,10 +468,16 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                     <span className="text-slate-500 block">Accessories</span>
                     <span className="font-medium">{totalAccessoriesCount} item{totalAccessoriesCount !== 1 ? 's' : ''}</span>
                   </div>
-                  {customerInfo.poDocument && (
+                  {customerInfo.poDocuments && customerInfo.poDocuments.length > 0 && (
                     <div>
-                      <span className="text-slate-500 block">PO Document</span>
-                      <span className="font-medium">{customerInfo.poDocument.name}</span>
+                      <span className="text-slate-500 block">PO Documents</span>
+                      <span className="font-medium">{customerInfo.poDocuments.length} file{customerInfo.poDocuments.length !== 1 ? 's' : ''}</span>
+                    </div>
+                  )}
+                  {customerInfo.sinkDrawings && customerInfo.sinkDrawings.length > 0 && (
+                    <div>
+                      <span className="text-slate-500 block">Sink Drawings</span>
+                      <span className="font-medium">{customerInfo.sinkDrawings.length} file{customerInfo.sinkDrawings.length !== 1 ? 's' : ''}</span>
                     </div>
                   )}
                 </div>
@@ -409,42 +485,145 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
             </div>
           </Card>
 
-          {/* Product Description */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Description</CardTitle>
-              <CardDescription>Detailed specification of your configured sink</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Full Description */}
-                <div className="p-4 bg-slate-50 rounded-lg">
-                  <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
-                  <p className="text-slate-700 leading-relaxed text-sm capitalize">
-                    {generateOrderDescription({ sinkSelection, configurations })?.toLowerCase()}
-                  </p>
+          {/* Build-Specific Summaries */}
+          {sinkSelection.buildNumbers.length === 1 ? (
+            /* Single Build - Show unified description */
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Description</CardTitle>
+                <CardDescription>Detailed specification of your configured sink</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-slate-50 rounded-lg">
+                    <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
+                    <p className="text-slate-700 leading-relaxed text-sm capitalize">
+                      {generateOrderDescription({ sinkSelection, configurations })?.toLowerCase()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ) : (
+            /* Multiple Builds - Show per-build summaries */
+            <Card>
+              <CardHeader>
+                <CardTitle>Build Summaries</CardTitle>
+                <CardDescription>Specifications for each sink configuration in this order</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {sinkSelection.buildNumbers.map((buildNumber: string) => {
+                    const config = configurations[buildNumber]
+                    const buildAccessories = accessories[buildNumber] || []
+                    
+                    if (!config) return null
+                    
+                    return (
+                      <div key={buildNumber} className="p-4 border border-slate-200 rounded-lg">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-medium text-slate-900">{buildNumber}</h4>
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700">{buildNumber}</Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="text-slate-500 block">Sink Model</span>
+                            <span className="font-medium">{getPartDescription(config.sinkModelId) || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Dimensions</span>
+                            <span className="font-medium">{config.width}" × {config.length}"</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Legs/Feet</span>
+                            <span className="font-medium">{getPartDescription(config.legsTypeId || '') || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Pegboard</span>
+                            <span className="font-medium">
+                              {config.pegboard ? 
+                                `${getPartDescription(config.pegboardTypeId || '')} - ${extractColorFromId(config.pegboardColorId || '')}` : 
+                                'No'
+                              }
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Basins</span>
+                            <span className="font-medium">{config.basins?.length || 0} basin{(config.basins?.length || 0) !== 1 ? 's' : ''}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block">Accessories</span>
+                            <span className="font-medium">{buildAccessories.length} item{buildAccessories.length !== 1 ? 's' : ''}</span>
+                          </div>
+                        </div>
+                        
+                        {(config.basins && config.basins.length > 0) && (
+                          <div className="mt-3 pt-3 border-t border-slate-100">
+                            <span className="text-slate-500 text-xs block mb-2">Basin Configuration:</span>
+                            <div className="flex flex-wrap gap-2">
+                              {config.basins.map((basin: any, idx: number) => (
+                                <Badge key={idx} variant="secondary" className="text-xs">
+                                  {getPartDescription(basin.basinType)} ({getPartDescription(basin.basinSizePartNumber)})
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Documents */}
-          {customerInfo.poDocument && (
+          {((customerInfo.poDocuments && customerInfo.poDocuments.length > 0) || (customerInfo.sinkDrawings && customerInfo.sinkDrawings.length > 0)) && (
             <Card>
               <CardHeader>
                 <CardTitle>Attached Documents</CardTitle>
                 <CardDescription>Documents that will be uploaded with this order</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                  <FileText className="w-8 h-8 text-slate-500" />
-                  <div>
-                    <p className="font-medium">{customerInfo.poDocument.name}</p>
-                    <p className="text-sm text-slate-500">
-                      {(customerInfo.poDocument.size / 1024 / 1024).toFixed(2)} MB • {customerInfo.poDocument.type}
-                    </p>
+              <CardContent className="space-y-4">
+                {customerInfo.poDocuments && customerInfo.poDocuments.length > 0 && (
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-slate-700 border-b pb-1">PO Documents ({customerInfo.poDocuments.length})</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {customerInfo.poDocuments.map((document, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
+                          <FileText className="w-6 h-6 text-slate-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{document.name}</p>
+                            <p className="text-xs text-slate-500">
+                              {(document.size / 1024 / 1024).toFixed(2)} MB • {document.type}
+                            </p>
+                            <Badge variant="outline" className="text-xs mt-1">PO Document</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+                {customerInfo.sinkDrawings && customerInfo.sinkDrawings.length > 0 && (
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-slate-700 border-b pb-1">Sink Drawings ({customerInfo.sinkDrawings.length})</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {customerInfo.sinkDrawings.map((drawing, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                          <FileText className="w-6 h-6 text-blue-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{drawing.name}</p>
+                            <p className="text-xs text-slate-500">
+                              {(drawing.size / 1024 / 1024).toFixed(2)} MB • {drawing.type}
+                            </p>
+                            <Badge variant="outline" className="text-xs mt-1 bg-blue-100 text-blue-700">Sink Drawing</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
@@ -735,7 +914,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                 </Button>
               </CardContent>
             </Card>
-          ) : bomPreviewData?.bom ? (
+          ) : (bomPreviewData?.bom || bomPreviewData?.buildBOMs) ? (
             <>
               {/* BOM Statistics */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -765,18 +944,60 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                 </Card>
               </div>
 
-              {/* Enhanced BOM Viewer */}
-              <BOMViewer
-                bomItems={bomPreviewData.bom?.hierarchical || bomPreviewData.bom?.flattened || []}
-                orderData={{
-                  customerInfo,
-                  sinkSelection,
-                  configurations,
-                  accessories
-                }}
-                customerInfo={customerInfo}
-                showDebugInfo={false}
-              />
+              {/* BOM Display - Single vs Multi-Build */}
+              {bomPreviewData.isMultiBuild && bomPreviewData.buildBOMs ? (
+                /* Multi-Build Display */
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium">Bill of Materials by Build</h3>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                      {Object.keys(bomPreviewData.buildBOMs).length} Build{Object.keys(bomPreviewData.buildBOMs).length !== 1 ? 's' : ''}
+                    </Badge>
+                  </div>
+                  
+                  {Object.entries(bomPreviewData.buildBOMs).map(([buildNumber, buildBOM]: [string, any]) => (
+                    <Card key={buildNumber} className="overflow-hidden">
+                      <CardHeader className="bg-slate-50 border-b">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2">
+                            <Badge variant="outline" className="bg-blue-100 text-blue-700">{buildNumber}</Badge>
+                            <span className="text-base">Bill of Materials</span>
+                          </CardTitle>
+                          <div className="text-sm text-slate-600">
+                            <span className="font-medium">{buildBOM?.totalItems || 0}</span> items
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <BOMViewer
+                          bomItems={buildBOM?.hierarchical || buildBOM?.flattened || []}
+                          orderData={{
+                            customerInfo,
+                            sinkSelection: { ...sinkSelection, buildNumbers: [buildNumber] },
+                            configurations: { [buildNumber]: configurations[buildNumber] },
+                            accessories: { [buildNumber]: accessories[buildNumber] || [] }
+                          }}
+                          customerInfo={customerInfo}
+                          showDebugInfo={false}
+                        />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                /* Single Build Display */
+                <BOMViewer
+                  bomItems={bomPreviewData.bom?.hierarchical || bomPreviewData.bom?.flattened || []}
+                  orderData={{
+                    customerInfo,
+                    sinkSelection,
+                    configurations,
+                    accessories
+                  }}
+                  customerInfo={customerInfo}
+                  showDebugInfo={false}
+                />
+              )}
             </>
           ) : (
             <Card>

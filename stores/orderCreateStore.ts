@@ -9,8 +9,8 @@ export interface CustomerInfo {
   wantDate: Date | null
   language: 'EN' | 'FR' | 'ES'
   notes: string
-  poDocument?: File
-  sinkDrawings?: File
+  poDocuments?: File[]
+  sinkDrawings?: File[]
 }
 
 export interface SinkSelection {

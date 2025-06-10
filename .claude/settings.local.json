@@ -51,7 +51,10 @@
       "Bash(sudo chown:*)",
       "Bash(readlink:*)",
       "Bash(cp:*)",
-      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db pull)"
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" npx prisma db pull)",
+      "Bash(git push:*)",
+      "Bash(find:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   },
