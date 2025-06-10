@@ -269,10 +269,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
     }
     
     // For mixed configurations or non-E-Drain basins
-    // Only include CENTER if no E-Drain basins (E-Drain basins don't allow center faucets)
-    if (!hasEDrainBasin) {
-      options.push({ value: 'CENTER', label: 'Center' })
-    }
+    // Remove the CENTER option entirely - faucets should be placed on specific basins or between them
     
     // Add individual basin options only for non-E-Drain basins
     if (!allBasinsAreEDrain) {

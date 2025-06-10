@@ -368,7 +368,7 @@ async function addItemToBOMRecursive(
       if (childAssembly) {
         await addItemToBOMRecursive(
           childAssembly.assemblyId,
-          componentLink.quantity,
+          componentLink.quantity * quantity,
           'SUB_ASSEMBLY',
           bomItem.components!,
           new Set(processedAssemblies)
@@ -385,7 +385,7 @@ async function addItemToBOMRecursive(
           const subAssemblyBomItem: BOMItem = {
             id: subAssembly.assemblyId,
             name: subAssembly.name,
-            quantity: componentLink.quantity,
+            quantity: componentLink.quantity * quantity,
             type: subAssembly.type,
             category: 'SUB_ASSEMBLY',
             components: [],
@@ -405,7 +405,7 @@ async function addItemToBOMRecursive(
               if (deeperSubAssembly) {
                 await addItemToBOMRecursive(
                   subPart.partId,
-                  subComponentLink.quantity,
+                  subComponentLink.quantity * quantity,
                   'SUB_COMPONENT_ASSEMBLY',
                   subAssemblyBomItem.components!,
                   new Set(processedAssemblies)
@@ -414,7 +414,7 @@ async function addItemToBOMRecursive(
                 subAssemblyBomItem.components!.push({
                   id: subPart.partId,
                   name: subPart.name,
-                  quantity: subComponentLink.quantity,
+                  quantity: subComponentLink.quantity * quantity,
                   type: subPart.type,
                   category: 'PART',
                   components: [],
@@ -428,7 +428,7 @@ async function addItemToBOMRecursive(
           bomItem.components!.push({
             id: part.partId,
             name: part.name,
-            quantity: componentLink.quantity,
+            quantity: componentLink.quantity * quantity,
             type: part.type,
             category: 'PART',
             components: [],
@@ -857,8 +857,8 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
         await addItemToBOMRecursive('T-OA-PB-COLOR', 1, 'PEGBOARD_COLOR', bom, new Set())
       }
       
-      // Pegboard size logic (legacy support) - only if type is selected
-      if (pegboardType || pegboardTypeId || specificPegboardKitId) {
+      // Pegboard size logic (legacy support) - only when no specific kit is used
+      if ((pegboardType || pegboardTypeId) && !specificPegboardKitId) {
         if (pegboardSizePartNumber) {
           if (pegboardSizePartNumber.startsWith('720.215.002 T2-ADW-PB-')) {
             // Custom pegboard size
@@ -884,10 +884,11 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
             // Standard pegboard size assembly
             await addItemToBOMRecursive(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
           }
-        } else if (!specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
-          // Auto-select pegboard size based on sink length (legacy)
+        } else if (!specificPegboardKitId && !(pegboardType && actualLength)) {
+          // Auto-select pegboard size based on sink length (legacy - only when no specific kit is used)
           const pegboardSizeId = getPegboardSizeByLength(actualLength!)
           if (pegboardSizeId) {
+            console.log(`Legacy pegboard size fallback: ${pegboardSizeId}`)
             await addItemToBOMRecursive(pegboardSizeId, 1, 'PEGBOARD_SIZE_AUTO', bom, new Set())
           }
         }

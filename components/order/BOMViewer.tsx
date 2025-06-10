@@ -315,7 +315,8 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
   // Auto-expand hierarchical assemblies when BOM is loaded
   useEffect(() => {
-    if (actualBomItems && actualBomItems.length > 0) {
+    const itemsToUse = bomItems || previewBomItems
+    if (itemsToUse && itemsToUse.length > 0) {
       const itemsToExpand = new Set<string>()
       
       // Find all assemblies with sub-components to auto-expand
@@ -347,14 +348,14 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         })
       }
       
-      findExpandableItems(actualBomItems)
+      findExpandableItems(itemsToUse)
       
       if (itemsToExpand.size > 0) {
         console.log(`🔍 Auto-expanding ${itemsToExpand.size} hierarchical assemblies`)
         setExpandedItems(prev => new Set([...prev, ...itemsToExpand]))
       }
     }
-  }, [actualBomItems])
+  }, [bomItems, previewBomItems])
 
   // Determine which items to use - either provided bomItems or generated previewBomItems
   const actualBomItems = bomItems || previewBomItems

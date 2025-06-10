@@ -29,7 +29,9 @@
       "Bash(python3:*)",
       "Bash(npm run lint)",
       "Bash(npm run dev:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(ls:*)"
     ],
     "deny": []
   },
