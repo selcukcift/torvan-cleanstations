@@ -767,7 +767,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
 
               {/* Enhanced BOM Viewer */}
               <BOMViewer
-                bomItems={bomPreviewData.bom?.flattened || []}
+                bomItems={bomPreviewData.bom?.hierarchical || bomPreviewData.bom?.flattened || []}
                 orderData={{
                   customerInfo,
                   sinkSelection,

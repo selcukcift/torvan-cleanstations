@@ -778,7 +778,7 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       
       if (sinkBodyAssemblyId) {
         console.log(`Selected sink body assembly: ${sinkBodyAssemblyId} for length: ${actualLength}`)
-        await addItemToBOMWithPartNumber(sinkBodyAssemblyId, 1, 'SINK_BODY', bom, new Set())
+        await addItemToBOMRecursive(sinkBodyAssemblyId, 1, 'SINK_BODY', bom, new Set())
       } else {
         console.warn(`No sink body assembly found for length: ${actualLength} - length must be between 48" and 120"`)
         throw new Error(`No sink body assembly available for length: ${actualLength}". Supported range: 48"-120"`)
@@ -790,25 +790,25 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     // 3. Legs Kit (handle both legTypeId and legsTypeId)
     const actualLegTypeId = legTypeId || legsTypeId
     if (actualLegTypeId) {
-      await addItemToBOMWithPartNumber(actualLegTypeId, 1, 'LEGS', bom, new Set())
+      await addItemToBOMRecursive(actualLegTypeId, 1, 'LEGS', bom, new Set())
     }
 
     // 4. Feet Type
     if (feetTypeId) {
-      await addItemToBOMWithPartNumber(feetTypeId, 1, 'FEET', bom, new Set())
+      await addItemToBOMRecursive(feetTypeId, 1, 'FEET', bom, new Set())
     }
     
     // 5. Pegboard (Updated with specific kit logic)
     if (pegboard) {
       // MANDATORY: Overhead light kit (Document line 113)
-      await addItemToBOMWithPartNumber('T2-OHL-MDRD-KIT', 1, 'PEGBOARD_MANDATORY', bom, new Set())
+      await addItemToBOMRecursive('T2-OHL-MDRD-KIT', 1, 'PEGBOARD_MANDATORY', bom, new Set())
       
       // Only add pegboard kits if pegboard type is actually selected
       if (pegboardType || pegboardTypeId || specificPegboardKitId) {
         // Use specific pegboard kit if available (from BOM Debug Helper)
         if (specificPegboardKitId) {
           console.log(`Using specific pegboard kit from config: ${specificPegboardKitId}`)
-          await addItemToBOMWithPartNumber(specificPegboardKitId, 1, 'PEGBOARD_SPECIFIC_KIT', bom, new Set())
+          await addItemToBOMRecursive(specificPegboardKitId, 1, 'PEGBOARD_SPECIFIC_KIT', bom, new Set())
         }
         // Calculate specific kit based on configuration
         else if (pegboardType && actualLength) {
@@ -817,14 +817,14 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
           if (specificKitId) {
             const kitType = pegboardColor ? 'PEGBOARD_COLORED_KIT' : 'PEGBOARD_SIZE_KIT'
             console.log(`Calculated specific pegboard kit: ${specificKitId} (length: ${actualLength}, type: ${pegboardType}${pegboardColor ? `, color: ${pegboardColor}` : ', no color specified'})`)
-            await addItemToBOMWithPartNumber(specificKitId, 1, kitType, bom, new Set())
+            await addItemToBOMRecursive(specificKitId, 1, kitType, bom, new Set())
           } else {
             console.warn('Failed to calculate specific pegboard kit, falling back to generic')
             // Fallback to generic kits
             if (pegboardTypeId === 'PERFORATED' || pegboardType === 'PERFORATED') {
-              await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+              await addItemToBOMRecursive('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
             } else if (pegboardTypeId === 'SOLID' || pegboardType === 'SOLID') {
-              await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
+              await addItemToBOMRecursive('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_GENERIC', bom, new Set())
             }
           }
         }
@@ -836,14 +836,14 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
           const specificKitId = getSpecificPegboardKitId(actualLength, legacyType) // No color parameter
           if (specificKitId) {
             console.log(`Legacy fallback using size-based kit: ${specificKitId} (length: ${actualLength}, type: ${legacyType}, no color)`)
-            await addItemToBOMWithPartNumber(specificKitId, 1, 'PEGBOARD_LEGACY_SIZE', bom, new Set())
+            await addItemToBOMRecursive(specificKitId, 1, 'PEGBOARD_LEGACY_SIZE', bom, new Set())
           } else {
             // Final fallback to static kits
             console.log('Final fallback to static pegboard kits')
             if (pegboardTypeId === 'PERFORATED') {
-              await addItemToBOMWithPartNumber('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+              await addItemToBOMRecursive('T2-ADW-PB-PERF-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
             } else if (pegboardTypeId === 'SOLID') {
-              await addItemToBOMWithPartNumber('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
+              await addItemToBOMRecursive('T2-ADW-PB-SOLID-KIT', 1, 'PEGBOARD_LEGACY_STATIC', bom, new Set())
             }
           }
         }
@@ -854,7 +854,7 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       // Color component (if not included in specific kit)
       if (pegboardColor && !specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
         // Add separate color component for legacy configurations
-        await addItemToBOMWithPartNumber('T-OA-PB-COLOR', 1, 'PEGBOARD_COLOR', bom, new Set())
+        await addItemToBOMRecursive('T-OA-PB-COLOR', 1, 'PEGBOARD_COLOR', bom, new Set())
       }
       
       // Pegboard size logic (legacy support) - only if type is selected
@@ -882,13 +882,13 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
             } as any)
           } else {
             // Standard pegboard size assembly
-            await addItemToBOMWithPartNumber(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
+            await addItemToBOMRecursive(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
           }
         } else if (!specificPegboardKitId && !(pegboardType && pegboardColor && actualLength)) {
           // Auto-select pegboard size based on sink length (legacy)
           const pegboardSizeId = getPegboardSizeByLength(actualLength!)
           if (pegboardSizeId) {
-            await addItemToBOMWithPartNumber(pegboardSizeId, 1, 'PEGBOARD_SIZE_AUTO', bom, new Set())
+            await addItemToBOMRecursive(pegboardSizeId, 1, 'PEGBOARD_SIZE_AUTO', bom, new Set())
           }
         }
       }
@@ -898,7 +898,7 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     if (drawersAndCompartments && drawersAndCompartments.length > 0) {
       console.log(`Adding ${drawersAndCompartments.length} drawer/compartment items for build ${buildNumber}:`, drawersAndCompartments)
       for (const drawerCompartmentId of drawersAndCompartments) {
-        await addItemToBOMWithPartNumber(drawerCompartmentId, 1, 'DRAWER_COMPARTMENT', bom, new Set())
+        await addItemToBOMRecursive(drawerCompartmentId, 1, 'DRAWER_COMPARTMENT', bom, new Set())
       }
     }
 
@@ -967,7 +967,7 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
         if (controlBoxesWithDynamicComponents.includes(autoControlBoxId)) {
           await addControlBoxWithDynamicComponents(autoControlBoxId, 1, 'CONTROL_BOX', bom, new Set())
         } else {
-          await addItemToBOMWithPartNumber(autoControlBoxId, 1, 'CONTROL_BOX', bom, new Set())
+          await addItemToBOMRecursive(autoControlBoxId, 1, 'CONTROL_BOX', bom, new Set())
         }
       }
     }
@@ -976,19 +976,19 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     // Auto-select faucets for E-Sink DI basins
     const autoSelectedFaucets = getAutoSelectedFaucets(basins || [])
     for (const autoFaucet of autoSelectedFaucets) {
-      await addItemToBOMWithPartNumber(autoFaucet.faucetTypeId, autoFaucet.quantity, 'FAUCET_AUTO', bom, new Set())
+      await addItemToBOMRecursive(autoFaucet.faucetTypeId, autoFaucet.quantity, 'FAUCET_AUTO', bom, new Set())
     }
     
     // User-selected faucets
     if (faucets && faucets.length > 0) {
       for (const faucet of faucets) {
         if (faucet.faucetTypeId) {
-          await addItemToBOMWithPartNumber(faucet.faucetTypeId, 1, 'FAUCET_KIT', bom, new Set())
+          await addItemToBOMRecursive(faucet.faucetTypeId, 1, 'FAUCET_KIT', bom, new Set())
         }
       }
     } else if (faucetTypeId) {
       // Legacy single faucet format
-      await addItemToBOMWithPartNumber(faucetTypeId, faucetQuantity || 1, 'FAUCET_KIT', bom, new Set())
+      await addItemToBOMRecursive(faucetTypeId, faucetQuantity || 1, 'FAUCET_KIT', bom, new Set())
     }
 
     // 10. Sprayers (handle both single and array format)
@@ -1046,3 +1046,4 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
     }
   }
 }
+

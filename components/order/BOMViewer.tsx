@@ -313,6 +313,49 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     }
   }, [orderData, bomItems, generateBOMPreview])
 
+  // Auto-expand hierarchical assemblies when BOM is loaded
+  useEffect(() => {
+    if (actualBomItems && actualBomItems.length > 0) {
+      const itemsToExpand = new Set<string>()
+      
+      // Find all assemblies with sub-components to auto-expand
+      const findExpandableItems = (items: BOMItem[], depth: number = 0) => {
+        items.forEach(item => {
+          const itemId = item.id || item.assemblyId || item.partNumber
+          const childItems = item.children || item.subItems || item.components || []
+          
+          // Auto-expand:
+          // 1. All top-level assemblies (depth 0)
+          // 2. Key assembly types (sink bodies, basin kits, etc.)
+          // 3. Any assembly with sub-components
+          if (itemId && (
+            depth === 0 || // Top level
+            itemId.includes('T2-BODY-') || // Sink bodies
+            itemId.includes('T2-BSN-') || // Basin kits
+            itemId.includes('T2-VALVE-') || // Valve assemblies
+            itemId.includes('T2-DRAIN-') || // Drain assemblies
+            itemId.includes('-KIT') || // Kit assemblies
+            (childItems.length > 0 && depth < 2) // Any assembly with children (up to 2 levels deep)
+          )) {
+            itemsToExpand.add(itemId)
+          }
+          
+          // Recursively check children
+          if (childItems.length > 0) {
+            findExpandableItems(childItems, depth + 1)
+          }
+        })
+      }
+      
+      findExpandableItems(actualBomItems)
+      
+      if (itemsToExpand.size > 0) {
+        console.log(`🔍 Auto-expanding ${itemsToExpand.size} hierarchical assemblies`)
+        setExpandedItems(prev => new Set([...prev, ...itemsToExpand]))
+      }
+    }
+  }, [actualBomItems])
+
   // Determine which items to use - either provided bomItems or generated previewBomItems
   const actualBomItems = bomItems || previewBomItems
 
@@ -500,29 +543,59 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
   }
 
   const renderBOMItem = (item: EnhancedBOMItem, level: number = 0, index: number = 0) => {
-    const childItems = item.children || item.subItems || []
+    const childItems = item.children || item.subItems || item.components || []
     const hasChildren = childItems.length > 0
-    const itemId = item.id || item.assemblyId || item.partNumber
+    const itemId = item.id || item.assemblyId || item.partNumber || `${item.name}-${index}`
     const isExpanded = expandedItems.has(itemId)
-    const isAssembly = item.type === 'ASSEMBLY' || item.type === 'COMPLEX_ASSEMBLY' || item.type === 'KIT' || hasChildren || !item.isPart
+    
+    // Enhanced type detection based on hierarchical expander data
+    const isAssembly = item.isAssembly || item.type === 'ASSEMBLY' || item.type === 'COMPLEX' || 
+                      item.type === 'KIT' || item.type === 'SUB_ASSEMBLY' || item.type === 'SIMPLE' ||
+                      hasChildren
+    const isPart = item.isPart || item.type === 'PART' || item.type === 'COMPONENT' || 
+                  item.category === 'PART' || (!hasChildren && !isAssembly)
     const displayQuantity = item.aggregatedQuantity || item.quantity
     
     // Generate unique key using multiple identifiers to prevent duplicates
     const uniqueKey = `${itemId}-${level}-${index}-${item.name?.replace(/[^a-zA-Z0-9]/g, '')}-${displayQuantity}`
 
+    // Determine the visual styling based on item type and level
+    const getItemStyle = () => {
+      if (level === 0) return 'bg-blue-50 border-l-4 border-blue-600 font-semibold'
+      if (item.isAggregated) return 'bg-amber-50 border-l-4 border-amber-500'
+      if (isAssembly && !isPart) return 'bg-gray-50 border-l-4 border-gray-400'
+      return ''
+    }
+
+    // Determine icon color based on type
+    const getIconColor = () => {
+      if (level === 0) return 'text-blue-600'
+      if (item.type === 'KIT') return 'text-purple-600'
+      if (item.type === 'SUB_ASSEMBLY') return 'text-indigo-600'
+      if (isAssembly) return 'text-blue-500'
+      return 'text-gray-400'
+    }
+
+    // Get type badge color
+    const getTypeBadgeVariant = () => {
+      if (item.type === 'COMPLEX') return "default"
+      if (item.type === 'KIT') return "secondary"
+      if (item.type === 'SIMPLE') return "outline"
+      if (isPart) return "secondary"
+      return "default"
+    }
+
     return (
       <div key={uniqueKey}>
         <div 
-          className={`flex items-center justify-between py-2 px-3 hover:bg-slate-50 rounded-md transition-colors ${
-            level === 0 ? 'bg-gray-50 border-l-4 border-blue-500' : ''
-          } ${item.isAggregated ? 'bg-amber-50 border-l-4 border-amber-500' : ''}`}
-          style={{ marginLeft: `${level * 16}px` }}
+          className={`flex items-center justify-between py-2 px-3 hover:bg-slate-50 rounded-md transition-all duration-200 ${getItemStyle()}`}
+          style={{ marginLeft: `${level * 20}px` }}
         >
           <div className="flex items-center space-x-2 flex-1">
             {hasChildren && (
               <button
                 onClick={() => toggleItem(itemId)}
-                className="p-0.5 hover:bg-gray-200 rounded"
+                className="p-0.5 hover:bg-gray-200 rounded transition-colors"
               >
                 {isExpanded ? (
                   <ChevronDown className="w-4 h-4 text-gray-600" />
@@ -536,9 +609,9 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             {/* Icon based on item type */}
             {isAssembly ? (
               isExpanded ? (
-                <FolderOpen className="w-4 h-4 text-blue-500" />
+                <FolderOpen className={`w-4 h-4 ${getIconColor()}`} />
               ) : (
-                <Folder className="w-4 h-4 text-blue-500" />
+                <Folder className={`w-4 h-4 ${getIconColor()}`} />
               )
             ) : (
               <FileIcon className="w-4 h-4 text-gray-400" />
@@ -546,9 +619,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`${level === 0 ? "font-semibold text-blue-700" : "text-sm"} ${
-                  hasChildren ? "text-blue-700" : "text-gray-700"
-                } truncate`}>
+                <span className={`${level === 0 ? "font-semibold text-gray-900" : level === 1 ? "font-medium text-gray-800" : "text-sm text-gray-700"} truncate`}>
                   {item.name}
                 </span>
                 {item.isCustom && (
@@ -556,12 +627,17 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 )}
                 {item.isAggregated && (
                   <Badge variant="secondary" className="text-xs shrink-0">
-                    {displayQuantity}pcs
+                    Aggregated: {displayQuantity}
                   </Badge>
                 )}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                <span className="truncate">{item.assemblyId || item.partNumber}</span>
+                <span className="font-mono truncate">{itemId}</span>
+                {item.description && (
+                  <span className="text-gray-400 truncate max-w-[300px]" title={item.description}>
+                    • {item.description}
+                  </span>
+                )}
                 {item.sourceInfo && item.sourceInfo.length > 0 && showDebugInfo && (
                   <Badge variant="outline" className="text-xs">
                     Sources: {item.sourceInfo.length}
@@ -573,22 +649,25 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
           
           <div className="flex items-center space-x-2 shrink-0">
             {hasChildren && (
-              <Badge variant="secondary" className="text-xs">
-                {childItems.length} items
+              <Badge variant="outline" className="text-xs">
+                <Layers className="w-3 h-3 mr-1" />
+                {childItems.length} {childItems.length === 1 ? 'component' : 'components'}
               </Badge>
             )}
-            <Badge variant={isAssembly ? "default" : "secondary"} className="text-xs">
+            <Badge variant={getTypeBadgeVariant()} className="text-xs">
               {(item.type || item.category || 'UNKNOWN').replace(/_/g, ' ')}
             </Badge>
-            <span className="font-medium text-sm min-w-[60px] text-right">
+            <span className="font-medium text-sm min-w-[80px] text-right bg-gray-100 px-2 py-1 rounded">
               Qty: {displayQuantity}
             </span>
           </div>
         </div>
         
         {hasChildren && isExpanded && (
-          <div className="ml-4 border-l-2 border-gray-200 pl-2">
-            {childItems.map(child => renderBOMItem(child, level + 1))}
+          <div className="ml-4 mt-1">
+            <div className="border-l-2 border-gray-300 pl-2">
+              {childItems.map((child, childIndex) => renderBOMItem(child, level + 1, childIndex))}
+            </div>
           </div>
         )}
       </div>
@@ -723,17 +802,38 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                     </AlertDescription>
                   </Alert>
                 ) : (
-                  actualBomItems
-                    .filter(item => {
-                      if (!searchTerm) return true
-                      const searchLower = searchTerm.toLowerCase()
-                      return (
-                        item.name?.toLowerCase().includes(searchLower) ||
-                        (item.assemblyId?.toLowerCase().includes(searchLower)) ||
-                        (item.partNumber?.toLowerCase().includes(searchLower))
-                      )
-                    })
-                    .map(item => renderBOMItem(item))
+                  <>
+                    {showDebugInfo && (
+                      <Alert className="mb-4">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          <div>Hierarchical view showing all component levels.</div>
+                          <div>Click on folders to expand/collapse component details.</div>
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    {actualBomItems
+                      .filter(item => {
+                        if (!searchTerm) return true
+                        const searchLower = searchTerm.toLowerCase()
+                        // Deep search through all levels
+                        const searchInItem = (i: any): boolean => {
+                          const matches = i.name?.toLowerCase().includes(searchLower) ||
+                            (i.assemblyId?.toLowerCase().includes(searchLower)) ||
+                            (i.partNumber?.toLowerCase().includes(searchLower)) ||
+                            (i.id?.toLowerCase().includes(searchLower))
+                          
+                          if (matches) return true
+                          
+                          // Search in children
+                          const childItems = i.children || i.subItems || i.components || []
+                          return childItems.some((child: any) => searchInItem(child))
+                        }
+                        
+                        return searchInItem(item)
+                      })
+                      .map((item, idx) => renderBOMItem(item, 0, idx))}
+                  </>
                 )}
               </div>
             ) : viewMode === 'flat' ? (

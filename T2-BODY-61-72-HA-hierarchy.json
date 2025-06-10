@@ -1,0 +1,44 @@
+{
+  "assemblyId": "T2-BODY-61-72-HA",
+  "name": "DOUBLE BOWL HEIGHT ADJUSTABLE MDRD SINK (COVERS 60\" UP TO 120\")",
+  "type": "COMPLEX",
+  "categoryCode": "721",
+  "subcategoryCode": "721.709",
+  "components": [
+    {
+      "type": "part",
+      "partId": "T2-ADW-61-72-FRAME",
+      "name": "SINK FRAME (COVERS 61\" UP TO 72\")",
+      "quantity": 1,
+      "notes": null
+    },
+    {
+      "type": "part",
+      "partId": "T2-ADW-LINAKFRAME-8",
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 8IN BASIN ALLOWED OVER LIFTERS)",
+      "quantity": 1,
+      "notes": null
+    },
+    {
+      "type": "part",
+      "partId": "T2-ADW-CROSSRAIL",
+      "name": "MOUNTING TUBE FRAME (CUSTOM LENGTH AS SPECIFIED ON DRAWING)",
+      "quantity": 1,
+      "notes": null
+    },
+    {
+      "type": "part",
+      "partId": "T2-ADW-CASTERPLATE-PAIR",
+      "name": "MOUNTING PLATE FOR CASTERS AND LINAK LEGS, SET OF 2 PLATES (1 LEFT AND 1 RIGHT)",
+      "quantity": 1,
+      "notes": null
+    },
+    {
+      "type": "part",
+      "partId": "T2-PWRBAR-KIT",
+      "name": "9 PORT POWER BAR WITH MOUNTING BRACKET",
+      "quantity": 1,
+      "notes": null
+    }
+  ]
+}

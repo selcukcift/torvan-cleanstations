@@ -1264,7 +1264,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
   const currentConfig = orderConfig || {}
 
   return (
-    <Card className="fixed top-4 right-4 w-[675px] max-h-[90vh] z-50 shadow-xl border-2">
+    <Card className="fixed inset-4 w-auto h-auto max-w-none max-h-none z-50 shadow-xl border-2">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -1371,7 +1371,7 @@ export function BOMDebugHelper({ orderConfig, customerInfo, isVisible, onToggleV
           </div>
         )}
         
-        <ScrollArea className="h-[65vh]">
+        <ScrollArea className="h-[calc(100vh-12rem)]">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-md mb-3">
               <p className="text-sm text-red-600">{error}</p>
