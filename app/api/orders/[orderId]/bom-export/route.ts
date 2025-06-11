@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@prisma/client';
 import { getAuthUser } from '@/lib/auth';
 import { generateBOMForOrder } from '@/lib/bomService.native';
+
+const prisma = new PrismaClient();
 
 export async function GET(
   request: NextRequest,
@@ -17,8 +19,8 @@ export async function GET(
       );
     }
 
-    const orderId = parseInt(params.orderId);
-    if (isNaN(orderId)) {
+    const { orderId } = await params;
+    if (!orderId) {
       return NextResponse.json(
         { error: 'Invalid order ID' },
         { status: 400 }

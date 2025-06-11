@@ -171,20 +171,30 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Create basin configurations
+    // Create basin configurations - ONE per build number
     const basinConfigs = []
     for (const [buildNumber, config] of Object.entries(configurations)) {
       if (config.basins && config.basins.length > 0) {
-        for (const basin of config.basins) {
-          basinConfigs.push({
-            buildNumber,
-            orderId: order.id,
-            basinTypeId: basin.basinTypeId || '',
-            basinSizePartNumber: basin.basinSizePartNumber,
-            basinCount: basin.addonIds?.length || 1,
-            addonIds: basin.addonIds || []
-          })
-        }
+        // For multiple basins, we need to aggregate the data
+        // Since the schema only supports one basin configuration per build,
+        // we'll use the first basin's data and store basin count
+        const firstBasin = config.basins[0]
+        const totalBasinCount = config.basins.length
+        
+        // Collect all addon IDs from all basins
+        const allAddonIds = config.basins.flatMap(basin => basin.addonIds || [])
+        
+        basinConfigs.push({
+          buildNumber,
+          orderId: order.id,
+          basinTypeId: firstBasin.basinTypeId || '',
+          basinSizePartNumber: firstBasin.basinSizePartNumber || '',
+          basinCount: totalBasinCount,
+          addonIds: allAddonIds,
+          customDepth: firstBasin.customDepth || null,
+          customLength: firstBasin.customLength || null,
+          customWidth: firstBasin.customWidth || null
+        })
       }
     }
 
@@ -434,6 +444,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const status = searchParams.get('status')
     const poNumber = searchParams.get('poNumber')
+    const customerName = searchParams.get('customerName')
+    const buildNumber = searchParams.get('buildNumber')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
+    const dateType = searchParams.get('dateType') || 'createdAt' // createdAt or wantDate
 
     let where: any = {}
 
@@ -447,6 +462,29 @@ export async function GET(request: NextRequest) {
         where.poNumber = {
           contains: poNumber,
           mode: 'insensitive'
+        }
+      }
+      if (customerName) {
+        where.customerName = {
+          contains: customerName,
+          mode: 'insensitive'
+        }
+      }
+      if (buildNumber) {
+        where.buildNumbers = {
+          has: buildNumber
+        }
+      }
+      if (dateFrom || dateTo) {
+        where[dateType] = {}
+        if (dateFrom) {
+          where[dateType].gte = new Date(dateFrom)
+        }
+        if (dateTo) {
+          // Add 23:59:59 to include the entire end date
+          const endDate = new Date(dateTo)
+          endDate.setHours(23, 59, 59, 999)
+          where[dateType].lte = endDate
         }
       }
     } else if (user.role === 'ASSEMBLER') {
@@ -482,6 +520,32 @@ export async function GET(request: NextRequest) {
         where.poNumber = {
           contains: poNumber,
           mode: 'insensitive'
+        }
+      }
+    }
+
+    // Apply common search filters for all non-admin, non-production coordinator roles
+    if (user.role !== 'ADMIN' && user.role !== 'PRODUCTION_COORDINATOR') {
+      if (customerName) {
+        where.customerName = {
+          contains: customerName,
+          mode: 'insensitive'
+        }
+      }
+      if (buildNumber) {
+        where.buildNumbers = {
+          has: buildNumber
+        }
+      }
+      if (dateFrom || dateTo) {
+        where[dateType] = {}
+        if (dateFrom) {
+          where[dateType].gte = new Date(dateFrom)
+        }
+        if (dateTo) {
+          const endDate = new Date(dateTo)
+          endDate.setHours(23, 59, 59, 999)
+          where[dateType].lte = endDate
         }
       }
     }

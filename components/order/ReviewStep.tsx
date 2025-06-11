@@ -229,6 +229,9 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
         accessories
       }
 
+      // Log the request body to help debug
+      console.log('Order submission request body:', JSON.stringify(requestBody, null, 2))
+
       const response = await nextJsApiClient[method](endpoint, requestBody)
 
       if (response.data.success) {
@@ -333,7 +336,18 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       }
     } catch (error: any) {
       console.error('Order submission error:', error)
-      setSubmitError(error.response?.data?.message || 'An unexpected error occurred')
+      console.error('Error response:', error.response?.data)
+      
+      // Extract detailed error information
+      if (error.response?.data?.errors) {
+        console.error('Validation errors:', error.response.data.errors)
+        const errorMessages = error.response.data.errors.map((err: any) => 
+          `${err.path?.join('.')}: ${err.message}`
+        ).join(', ')
+        setSubmitError(`Validation failed: ${errorMessages}`)
+      } else {
+        setSubmitError(error.response?.data?.message || 'An unexpected error occurred')
+      }
     } finally {
       setIsSubmitting(false)
     }

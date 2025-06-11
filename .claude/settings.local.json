@@ -60,7 +60,10 @@
       "Bash(npx @modelcontextprotocol/server-brave-search:*)",
       "Bash(BRAVE_API_KEY=\"BSAe7FiTb62lN_g3Qctb-L97QJIqkDF\" npx @modelcontextprotocol/server-brave-search --help)",
       "Bash(BRAVE_API_KEY=\"BSAe7FiTb62lN_g3Qctb-L97QJIqkDF\" npx -y @modelcontextprotocol/server-brave-search)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma:*)"
     ],
     "deny": []
   },

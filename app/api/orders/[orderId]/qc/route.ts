@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { z } from 'zod';
 import { QcResultSubmissionSchema } from '@/lib/qcValidationSchemas';
-import notificationService from '@/lib/notificationService.native';
+import { notificationTriggerService } from '@/lib/notificationTriggerService';
 
 const prisma = new PrismaClient();
 
@@ -212,48 +212,32 @@ export async function POST(
           }
         });
 
-        // Create notifications for status change (async, non-blocking)
+        // Trigger notifications for QC completion and status change (async, non-blocking)
         setImmediate(() => {
-          // Notify order creator
-          notificationService.createNotification({
-            userId: order.createdById,
-            message: `Order ${order.poNumber} QC completed - Status: ${newStatus.replace(/([A-Z])/g, ' $1').trim()}`,
-            type: 'QC_COMPLETED',
-            orderId: order.id
-          }).catch(error => {
-            console.error('Failed to create notification for order creator:', error)
+          // Trigger order status change notifications
+          notificationTriggerService.triggerOrderStatusChange(
+            orderId, 
+            order.orderStatus, 
+            newStatus, 
+            user.id
+          ).catch(error => {
+            console.error('Failed to trigger order status change notifications:', error)
           })
 
-          // Notify relevant users based on the new status
-          const roleNotifications: Record<string, string[]> = {
-            'ReadyForProduction': ['ASSEMBLER', 'PRODUCTION_COORDINATOR'],
-            'ReadyForShip': ['PRODUCTION_COORDINATOR']
-          }
-
-          const rolesToNotify = roleNotifications[newStatus]
-          if (rolesToNotify) {
-            // Find users with the relevant roles
-            prisma.user.findMany({
-              where: {
-                role: { in: rolesToNotify },
-                isActive: true
-              },
-              select: { id: true }
-            }).then(users => {
-              const userIds = users.map(u => u.id)
-              if (userIds.length > 0) {
-                notificationService.createBulkNotifications(userIds, {
-                  message: `Order ${order.poNumber} QC completed - ${template.formType} passed`,
-                  type: 'QC_COMPLETED',
-                  orderId: order.id
-                }).catch(error => {
-                  console.error('Failed to create bulk notifications:', error)
-                })
-              }
-            }).catch(error => {
-              console.error('Failed to find users for QC notifications:', error)
-            })
-          }
+          // Trigger assembly milestone notification for QC completion
+          notificationTriggerService.sendNotificationToRoles(
+            ['PRODUCTION_COORDINATOR', 'ADMIN'],
+            'ASSEMBLY_MILESTONE',
+            {
+              orderId,
+              poNumber: order.poNumber,
+              customerName: order.customerName,
+              buildNumber: order.buildNumbers[0],
+              milestone: `${template.formType} Completed - ${validatedData.overallStatus}`
+            }
+          ).catch(error => {
+            console.error('Failed to trigger QC milestone notification:', error)
+          })
         })
       }
 

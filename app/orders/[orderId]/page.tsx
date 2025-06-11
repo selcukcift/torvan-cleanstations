@@ -25,13 +25,17 @@ import {
   Package,
   Download,
   Loader2,
-  Edit
+  Edit,
+  Eye,
+  Printer
 } from "lucide-react"
 import { format } from "date-fns"
 import { BOMViewer } from "@/components/order/BOMViewer"
 import { OrderSummaryCard } from "@/components/order/OrderSummaryCard"
 import { OrderTimeline } from "@/components/order/OrderTimeline"
 import { QCOrderIntegration } from "@/components/qc/QCOrderIntegration"
+import { DocumentPreview } from "@/components/ui/document-preview"
+import { OrderComments } from "@/components/order/OrderComments"
 import { generateOrderDescription, generateShortDescription } from "@/lib/descriptionGenerator"
 
 // Status badge color mapping
@@ -167,6 +171,8 @@ export default function OrderDetailsPage() {
   const [newStatus, setNewStatus] = useState("")
   const [statusNotes, setStatusNotes] = useState("")
   const [bomGenerating, setBomGenerating] = useState(false)
+  const [previewDocument, setPreviewDocument] = useState<any>(null)
+  const [previewModalOpen, setPreviewModalOpen] = useState(false)
 
   useEffect(() => {
     fetchOrderDetails()
@@ -407,6 +413,28 @@ export default function OrderDetailsPage() {
 
   const orderForDescription = convertOrderForDescription()
 
+  // Handle document preview
+  const handleDocumentPreview = (doc: any) => {
+    setPreviewDocument({
+      id: doc.id,
+      filename: doc.docName,
+      originalName: doc.docName,
+      mimeType: doc.mimeType || 'application/octet-stream',
+      size: doc.fileSize || 0,
+      uploadedAt: doc.timestamp,
+      uploadedBy: doc.uploadedBy || 'Unknown',
+      category: doc.docType
+    })
+    setPreviewModalOpen(true)
+  }
+
+  // Handle document download
+  const handleDocumentDownload = (doc: any) => {
+    // Use the legacy upload system URL pattern
+    const downloadUrl = doc.docURL || `/uploads/documents/${doc.docName}`
+    window.open(downloadUrl, '_blank')
+  }
+
   return (
     <div className="space-y-4">
       {/* Compact Header */}
@@ -425,18 +453,29 @@ export default function OrderDetailsPage() {
             <p className="text-sm text-slate-600">PO: {order.poNumber}</p>
           </div>
         </div>
-        <Badge className={statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"}>
-          {statusDisplayNames[order.orderStatus] || order.orderStatus}
-        </Badge>
+        <div className="flex items-center space-x-2">
+          <Badge className={statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"}>
+            {statusDisplayNames[order.orderStatus] || order.orderStatus}
+          </Badge>
+          <Button 
+            onClick={() => router.push(`/orders/${params.orderId}/print`)}
+            variant="outline"
+            size="sm"
+          >
+            <Printer className="w-4 h-4 mr-2" />
+            Print
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="bom">Bill of Materials</TabsTrigger>
           <TabsTrigger value="qc">Quality Control</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="comments">Comments</TabsTrigger>
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
 
@@ -1204,7 +1243,7 @@ export default function OrderDetailsPage() {
                 <Card key={doc.id}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
+                      <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
                           <FileText className="w-4 h-4 text-slate-500" />
                           <p className="font-medium">{doc.docName}</p>
@@ -1213,10 +1252,28 @@ export default function OrderDetailsPage() {
                           Uploaded on {format(new Date(doc.timestamp), "MMM dd, yyyy")}
                         </p>
                         <Badge variant="outline">{doc.docType}</Badge>
+                        {doc.fileSize && (
+                          <p className="text-xs text-slate-400">
+                            {(doc.fileSize / 1024).toFixed(1)} KB
+                          </p>
+                        )}
                       </div>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleDocumentPreview(doc)}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleDocumentDownload(doc)}
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -1232,6 +1289,11 @@ export default function OrderDetailsPage() {
           )}
         </TabsContent>
 
+        {/* Comments Tab */}
+        <TabsContent value="comments">
+          <OrderComments orderId={order.id} />
+        </TabsContent>
+
         {/* History Tab */}
         <TabsContent value="history">
           <OrderTimeline
@@ -1240,6 +1302,19 @@ export default function OrderDetailsPage() {
           />
         </TabsContent>
       </Tabs>
+
+      {/* Document Preview Modal */}
+      <DocumentPreview
+        file={previewDocument}
+        open={previewModalOpen}
+        onOpenChange={setPreviewModalOpen}
+        downloadUrl={previewDocument?.id ? `/uploads/documents/${previewDocument.filename}` : undefined}
+        onDownload={() => {
+          if (previewDocument) {
+            handleDocumentDownload(previewDocument)
+          }
+        }}
+      />
     </div>
   )
 }
