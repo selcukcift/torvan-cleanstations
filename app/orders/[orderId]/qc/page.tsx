@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { QCFormInterface } from "@/components/qc/QCFormInterface"
+import { QCFormWithDocuments } from "@/components/qc/QCFormWithDocuments"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, AlertCircle, Info } from "lucide-react"
 
@@ -141,7 +142,7 @@ export default function QCInspectionPage() {
       )}
 
       {isValidQCStatus && qcTemplate && (
-        <QCFormInterface
+        <QCFormWithDocuments
           orderId={params.orderId as string}
           orderData={{
             poNumber: orderData.poNumber,
@@ -151,7 +152,17 @@ export default function QCInspectionPage() {
             status: orderData.status
           }}
           template={qcTemplate}
-          session={session}
+          onSubmit={async (formData) => {
+            // Handle QC form submission
+            try {
+              const response = await nextJsApiClient.post(`/orders/${params.orderId}/qc`, formData)
+              if (response.data.success) {
+                window.location.href = `/orders/${params.orderId}`
+              }
+            } catch (error) {
+              console.error('QC submission error:', error)
+            }
+          }}
         />
       )}
 

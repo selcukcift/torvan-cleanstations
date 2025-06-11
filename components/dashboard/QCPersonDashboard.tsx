@@ -21,6 +21,7 @@ import { format } from "date-fns"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { QCAnalyticsDashboard } from "@/components/qc/QCAnalyticsDashboard"
 
 interface QCTask {
   id: string
@@ -215,7 +216,7 @@ export function QCPersonDashboard() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="pending">
                 Pending ({filterTasksByStatus('pending').length})
               </TabsTrigger>
@@ -224,6 +225,9 @@ export function QCPersonDashboard() {
               </TabsTrigger>
               <TabsTrigger value="completed">
                 Completed ({filterTasksByStatus('completed').length})
+              </TabsTrigger>
+              <TabsTrigger value="analytics">
+                Analytics
               </TabsTrigger>
             </TabsList>
 
@@ -398,6 +402,10 @@ export function QCPersonDashboard() {
                   )}
                 </div>
               </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="mt-4">
+              <QCAnalyticsDashboard />
             </TabsContent>
           </Tabs>
         </CardContent>

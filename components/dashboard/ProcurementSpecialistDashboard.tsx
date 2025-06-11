@@ -45,6 +45,18 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import { BOMViewer } from "@/components/order/BOMViewer"
+import { BOMViewerWithOutsourcing } from "@/components/order/BOMViewerWithOutsourcing"
+import { OutsourcingDialog } from "@/components/procurement/OutsourcingDialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ExternalLink, Download, Filter, RefreshCw } from "lucide-react"
 
 export function ProcurementSpecialistDashboard() {
   const router = useRouter()
@@ -68,10 +80,23 @@ export function ProcurementSpecialistDashboard() {
     pendingRequests: 0,
     urgentRequests: 0
   })
+  
+  // Outsourcing state
+  const [outsourcedParts, setOutsourcedParts] = useState<any[]>([])
+  const [outsourcingStats, setOutsourcingStats] = useState<any>(null)
+  const [outsourcingLoading, setOutsourcingLoading] = useState(false)
+  const [selectedOutsourcedParts, setSelectedOutsourcedParts] = useState<Set<string>>(new Set())
+  const [outsourcingFilter, setOutsourcingFilter] = useState({
+    status: "all",
+    supplier: "all"
+  })
+  const [showOutsourcingDialog, setShowOutsourcingDialog] = useState(false)
+  const [editingOutsourcedPart, setEditingOutsourcedPart] = useState<any>(null)
 
   useEffect(() => {
     fetchOrders()
     fetchServiceOrders()
+    fetchOutsourcedParts()
   }, [])
 
   const fetchOrders = async () => {
@@ -303,6 +328,94 @@ export function ProcurementSpecialistDashboard() {
     }
   }
 
+  const fetchOutsourcedParts = async () => {
+    setOutsourcingLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (outsourcingFilter.status !== "all") {
+        params.append("status", outsourcingFilter.status)
+      }
+      if (outsourcingFilter.supplier !== "all") {
+        params.append("supplier", outsourcingFilter.supplier)
+      }
+      
+      const response = await nextJsApiClient.get(`/procurement/outsourced-parts?${params.toString()}`)
+      
+      if (response.data.success) {
+        setOutsourcedParts(response.data.data)
+        setOutsourcingStats(response.data.stats)
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch outsourced parts",
+        variant: "destructive"
+      })
+    } finally {
+      setOutsourcingLoading(false)
+    }
+  }
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (selectedOutsourcedParts.size === 0) {
+      toast({
+        title: "No parts selected",
+        description: "Please select parts to update",
+        variant: "destructive"
+      })
+      return
+    }
+
+    try {
+      const response = await nextJsApiClient.post("/procurement/outsourced-parts", {
+        ids: Array.from(selectedOutsourcedParts),
+        status: status
+      })
+      
+      if (response.data.success) {
+        toast({
+          title: "Success",
+          description: response.data.message
+        })
+        setSelectedOutsourcedParts(new Set())
+        fetchOutsourcedParts()
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to update parts",
+        variant: "destructive"
+      })
+    }
+  }
+
+  const handleExportOutsourcedParts = async () => {
+    try {
+      const response = await nextJsApiClient.put("/procurement/outsourced-parts?format=csv", null, {
+        responseType: 'blob'
+      })
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `outsourced-parts-${new Date().toISOString().split('T')[0]}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      
+      toast({
+        title: "Export Successful",
+        description: "Outsourced parts list exported as CSV"
+      })
+    } catch (error: any) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export outsourced parts",
+        variant: "destructive"
+      })
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -391,9 +504,10 @@ export function ProcurementSpecialistDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="orders">Production Orders</TabsTrigger>
           <TabsTrigger value="service">Service Requests</TabsTrigger>
+          <TabsTrigger value="outsourcing">Outsourcing Management</TabsTrigger>
         </TabsList>
         
         {/* Production Orders Tab */}
@@ -601,6 +715,234 @@ export function ProcurementSpecialistDashboard() {
             </CardContent>
           </Card>
         </TabsContent>
+        
+        {/* Outsourcing Management Tab */}
+        <TabsContent value="outsourcing" className="space-y-6">
+          {/* Outsourcing Statistics */}
+          {outsourcingStats && (
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.total}</span>
+                    <Package className="w-8 h-8 text-blue-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Total Outsourced</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.pending}</span>
+                    <Clock className="w-8 h-8 text-yellow-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Pending</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.sent}</span>
+                    <Send className="w-8 h-8 text-blue-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Sent</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.inProgress}</span>
+                    <TruckIcon className="w-8 h-8 text-purple-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">In Progress</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.received}</span>
+                    <CheckCircle className="w-8 h-8 text-green-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Received</p>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{outsourcingStats.overdueCount}</span>
+                    <AlertCircle className="w-8 h-8 text-red-500 opacity-20" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Overdue</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+          
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Outsourced Parts Management</CardTitle>
+                  <CardDescription>
+                    Track and manage parts sent to external suppliers
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => fetchOutsourcedParts()}>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Refresh
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleExportOutsourcedParts}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Export CSV
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Filters */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  <span className="text-sm font-medium">Filters:</span>
+                </div>
+                <Select
+                  value={outsourcingFilter.status}
+                  onValueChange={(value) => {
+                    setOutsourcingFilter(prev => ({ ...prev, status: value }))
+                    setTimeout(fetchOutsourcedParts, 100)
+                  }}
+                >
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="PENDING">Pending</SelectItem>
+                    <SelectItem value="SENT">Sent</SelectItem>
+                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                    <SelectItem value="RECEIVED">Received</SelectItem>
+                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {selectedOutsourcedParts.size > 0 && (
+                  <div className="flex items-center gap-2 ml-auto">
+                    <span className="text-sm text-muted-foreground">
+                      {selectedOutsourcedParts.size} selected
+                    </span>
+                    <Button size="sm" onClick={() => handleBulkStatusUpdate("SENT")}>
+                      Mark as Sent
+                    </Button>
+                    <Button size="sm" onClick={() => handleBulkStatusUpdate("RECEIVED")}>
+                      Mark as Received
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              {outsourcingLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                </div>
+              ) : outsourcedParts.length === 0 ? (
+                <div className="text-center py-12">
+                  <ExternalLink className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600">No outsourced parts found</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={selectedOutsourcedParts.size === outsourcedParts.length}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedOutsourcedParts(new Set(outsourcedParts.map(p => p.id)))
+                            } else {
+                              setSelectedOutsourcedParts(new Set())
+                            }
+                          }}
+                        />
+                      </TableHead>
+                      <TableHead>Part</TableHead>
+                      <TableHead>PO Number</TableHead>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Supplier</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Expected Return</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {outsourcedParts.map((part) => (
+                      <TableRow key={part.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedOutsourcedParts.has(part.id)}
+                            onCheckedChange={(checked) => {
+                              const newSelection = new Set(selectedOutsourcedParts)
+                              if (checked) {
+                                newSelection.add(part.id)
+                              } else {
+                                newSelection.delete(part.id)
+                              }
+                              setSelectedOutsourcedParts(newSelection)
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <span className="font-medium">{part.partNumber}</span>
+                            <p className="text-sm text-muted-foreground">{part.partName}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>{part.order?.poNumber}</TableCell>
+                        <TableCell>{part.order?.customerName}</TableCell>
+                        <TableCell>{part.supplier || "Not specified"}</TableCell>
+                        <TableCell>
+                          <Badge className={
+                            part.status === "PENDING" ? "bg-yellow-100 text-yellow-700" :
+                            part.status === "SENT" ? "bg-blue-100 text-blue-700" :
+                            part.status === "IN_PROGRESS" ? "bg-purple-100 text-purple-700" :
+                            part.status === "RECEIVED" ? "bg-green-100 text-green-700" :
+                            "bg-red-100 text-red-700"
+                          }>
+                            {part.status.replace("_", " ")}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {part.expectedReturnDate 
+                            ? format(new Date(part.expectedReturnDate), "MMM dd, yyyy")
+                            : "Not set"
+                          }
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingOutsourcedPart(part)
+                              setShowOutsourcingDialog(true)
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* BOM Approval Dialog */}
@@ -648,7 +990,12 @@ export function ProcurementSpecialistDashboard() {
                 <span className="ml-2">Loading BOM data...</span>
               </div>
             ) : bomData ? (
-              <BOMViewer bomData={bomData} />
+              <BOMViewerWithOutsourcing 
+                orderId={selectedOrder.id}
+                poNumber={selectedOrder.poNumber}
+                bomData={bomData}
+                allowOutsourcing={true}
+              />
             ) : (
               <div className="text-center py-8">
                 <AlertCircle className="w-12 h-12 text-orange-500 mx-auto mb-4" />
@@ -687,6 +1034,37 @@ export function ProcurementSpecialistDashboard() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Outsourcing Dialog */}
+      <OutsourcingDialog
+        open={showOutsourcingDialog}
+        onOpenChange={setShowOutsourcingDialog}
+        part={editingOutsourcedPart}
+        mode="edit"
+        onSave={async (data) => {
+          try {
+            const response = await nextJsApiClient.put(
+              `/orders/${editingOutsourcedPart?.order?.id}/outsourced-parts?id=${data.id}`,
+              data
+            )
+            if (response.data.success) {
+              toast({
+                title: "Success",
+                description: "Outsourcing details updated",
+              })
+              setShowOutsourcingDialog(false)
+              fetchOutsourcedParts()
+            }
+          } catch (error: any) {
+            toast({
+              title: "Error",
+              description: error.response?.data?.error || "Failed to update outsourcing details",
+              variant: "destructive",
+            })
+          }
+        }}
+        loading={false}
+      />
     </div>
   )
 }
