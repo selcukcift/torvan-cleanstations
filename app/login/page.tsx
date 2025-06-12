@@ -15,8 +15,8 @@ import { useToast } from "@/hooks/use-toast"
 import { signIn, getSession } from "next-auth/react"
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required").min(3, "Username must be at least 3 characters"),
-  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>

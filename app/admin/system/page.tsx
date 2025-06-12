@@ -23,7 +23,8 @@ import {
   BarChart3,
   RefreshCw,
   Shield,
-  Clock
+  Clock,
+  CheckCircle
 } from 'lucide-react'
 import { nextJsApiClient } from '@/lib/api'
 
@@ -73,7 +74,7 @@ interface AuditLogEntry {
   userId: string
   userName: string
   timestamp: string
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 }
 
 export default function AdminSystemPage() {
@@ -104,7 +105,7 @@ export default function AdminSystemPage() {
       const interval = setInterval(fetchSystemHealth, 30000)
       return () => clearInterval(interval)
     }
-  }, [session])
+  }, [session]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchSystemData = async () => {
     try {
@@ -116,7 +117,7 @@ export default function AdminSystemPage() {
         fetchSystemStats(),
         fetchAuditLogs()
       ])
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching system data:', err)
       setError(err.message || 'Failed to fetch system data')
     } finally {

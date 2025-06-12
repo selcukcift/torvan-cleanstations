@@ -39,7 +39,12 @@ export async function GET(request: NextRequest) {
     const isResolved = searchParams.get('isResolved')
 
     // Build filter conditions
-    const whereConditions: any = {}
+    const whereConditions: {
+      isInternal?: boolean;
+      priority?: string;
+      category?: string;
+      isResolved?: boolean;
+    } = {}
 
     // Filter by internal status based on user role and request
     if (!includeInternal || !['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'].includes(user.role)) {

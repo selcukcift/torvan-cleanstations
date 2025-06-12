@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { deadlineChecker } from '@/lib/deadlineChecker'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const user = await getAuthUser()
     

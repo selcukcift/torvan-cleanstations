@@ -107,7 +107,23 @@ export async function POST(
     }
 
     const body = await request.json();
-    const validatedData = QcResultSubmissionSchema.parse(body);
+    
+    // Enhanced validation for our new format
+    const enhancedSubmissionSchema = z.object({
+      templateId: z.string(),
+      overallStatus: z.enum(['PASSED', 'FAILED']),
+      inspectorNotes: z.string().optional(),
+      digitalSignature: z.string().optional(),
+      itemResults: z.array(z.object({
+        qcFormTemplateItemId: z.string(),
+        resultValue: z.string().optional(),
+        isConformant: z.boolean().optional(),
+        notes: z.string().optional(),
+        isNotApplicable: z.boolean().optional()
+      }))
+    });
+    
+    const validatedData = enhancedSubmissionSchema.parse(body);
 
     // Verify order exists
     const order = await prisma.order.findUnique({
@@ -139,8 +155,7 @@ export async function POST(
         },
         update: {
           overallStatus: validatedData.overallStatus,
-          notes: validatedData.notes,
-          externalJobId: validatedData.externalJobId,
+          notes: validatedData.inspectorNotes,
           qcTimestamp: new Date(),
           qcPerformedById: user.id
         },
@@ -149,8 +164,7 @@ export async function POST(
           qcFormTemplateId: validatedData.templateId,
           qcPerformedById: user.id,
           overallStatus: validatedData.overallStatus,
-          notes: validatedData.notes,
-          externalJobId: validatedData.externalJobId
+          notes: validatedData.inspectorNotes
         }
       });
 
@@ -164,13 +178,11 @@ export async function POST(
         await tx.orderQcItemResult.createMany({
           data: validatedData.itemResults.map(item => ({
             orderQcResultId: result.id,
-            qcFormTemplateItemId: item.templateItemId,
-            resultValue: item.resultValue,
+            qcFormTemplateItemId: item.qcFormTemplateItemId,
+            resultValue: item.resultValue || '',
             isConformant: item.isConformant,
             notes: item.notes,
-            isNotApplicable: item.isNotApplicable || false,
-            repetitionInstanceKey: item.repetitionInstanceKey,
-            attachedDocumentId: item.attachedDocumentId
+            isNotApplicable: item.isNotApplicable || false
           }))
         });
       }
@@ -180,13 +192,19 @@ export async function POST(
         let newStatus: string;
         let action: string;
         
-        // Determine next status based on current order status and QC template type
-        if (order.orderStatus === 'ReadyForPreQC' || template.formType === 'Pre-Production Check') {
-          newStatus = 'ReadyForProduction';
+        // Determine next status based on current order status and QC template name
+        if (order.orderStatus === 'READY_FOR_PRE_QC' || template.name === 'Pre-Production Check') {
+          newStatus = 'READY_FOR_PRODUCTION';
           action = 'PRE_QC_COMPLETED';
-        } else if (order.orderStatus === 'ReadyForFinalQC' || template.formType === 'Final QC') {
-          newStatus = 'ReadyForShip';
+        } else if (order.orderStatus === 'READY_FOR_FINAL_QC' || template.name === 'Final Quality Check') {
+          newStatus = 'READY_FOR_SHIP';
           action = 'FINAL_QC_COMPLETED';
+        } else if (template.name === 'Production Check' || template.name === 'Basin Production Check') {
+          newStatus = 'TESTING_COMPLETE';
+          action = 'PRODUCTION_QC_COMPLETED';
+        } else if (template.name === 'End-of-Line Testing') {
+          newStatus = 'READY_FOR_FINAL_QC';
+          action = 'EOL_TESTING_COMPLETED';
         } else {
           // Default behavior for other QC types
           newStatus = 'TESTING_COMPLETE';
@@ -208,7 +226,7 @@ export async function POST(
             action: action,
             oldStatus: order.orderStatus,
             newStatus: newStatus,
-            notes: `QC completed with status: ${validatedData.overallStatus}. Template: ${template.formType}`
+            notes: `QC completed with status: ${validatedData.overallStatus}. Template: ${template.name}. Digital Signature: ${validatedData.digitalSignature || 'System Generated'}`
           }
         });
 
@@ -233,7 +251,7 @@ export async function POST(
               poNumber: order.poNumber,
               customerName: order.customerName,
               buildNumber: order.buildNumbers[0],
-              milestone: `${template.formType} Completed - ${validatedData.overallStatus}`
+              milestone: `${template.name} Completed - ${validatedData.overallStatus}`
             }
           ).catch(error => {
             console.error('Failed to trigger QC milestone notification:', error)
@@ -265,7 +283,11 @@ export async function POST(
       });
     });
 
-    return NextResponse.json({ qcResult }, { status: 201 });
+    return NextResponse.json({ 
+      success: true, 
+      message: `QC inspection completed successfully with result: ${validatedData.overallStatus}`,
+      qcResult 
+    }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid data', details: error.errors }, { status: 400 });

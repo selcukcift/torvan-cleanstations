@@ -11,7 +11,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    const whereClause: any = {}
+    const whereClause: {
+      OR?: Array<{ assemblyId?: { contains: string; mode: 'insensitive' }; name?: { contains: string; mode: 'insensitive' } }>;
+      type?: string;
+      categoryCode?: string;
+    } = {}
     
     if (search) {
       whereClause.OR = [

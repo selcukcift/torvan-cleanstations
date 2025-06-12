@@ -13,7 +13,7 @@ const prisma = new PrismaClient()
  * GET /api/notifications/preferences
  * Get user's notification preferences
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await getAuthUser()
     

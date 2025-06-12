@@ -37,16 +37,16 @@ const TaskTemplateCreateSchema = z.object({
   steps: z.array(TaskTemplateStepSchema).min(1, 'At least one step is required')
 });
 
-// Validation schema for updating TaskTemplate
-const TaskTemplateUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional().nullable(),
-  appliesToAssemblyType: z.enum(['SINK', 'INSTROSINK', 'ENDOSCOPE']).optional().nullable(),
-  appliesToProductFamily: z.string().optional().nullable(),
-  version: z.string().optional(),
-  isActive: z.boolean().optional(),
-  steps: z.array(TaskTemplateStepSchema).optional()
-});
+// Validation schema for updating TaskTemplate (currently unused but kept for future use)
+// const TaskTemplateUpdateSchema = z.object({
+//   name: z.string().min(1).optional(),
+//   description: z.string().optional().nullable(),
+//   appliesToAssemblyType: z.enum(['SINK', 'INSTROSINK', 'ENDOSCOPE']).optional().nullable(),
+//   appliesToProductFamily: z.string().optional().nullable(),
+//   version: z.string().optional(),
+//   isActive: z.boolean().optional(),
+//   steps: z.array(TaskTemplateStepSchema).optional()
+// });
 
 // GET /api/admin/task-templates - List all task templates
 export async function GET(request: NextRequest) {
@@ -70,7 +70,11 @@ export async function GET(request: NextRequest) {
     const productFamily = searchParams.get('productFamily');
 
     // Build where clause
-    const where: any = {};
+    const where: {
+      isActive?: boolean;
+      appliesToAssemblyType?: string;
+      appliesToProductFamily?: string;
+    } = {};
     if (!includeInactive) {
       where.isActive = true;
     }
@@ -154,7 +158,10 @@ export async function GET(request: NextRequest) {
       groups[template.name].versions.push(template);
       
       return groups;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, {
+      activeVersion: typeof templates[0] | null;
+      versions: typeof templates;
+    }>);
 
     return NextResponse.json({ 
       templates,

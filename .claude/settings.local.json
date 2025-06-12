@@ -65,7 +65,8 @@
       "Bash(npx prisma generate:*)",
       "Bash(npx prisma:*)",
       "Bash(timeout 5 npx prisma db pull:*)",
-      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" timeout 10 npx prisma db pull --print 2 >& 1)"
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" timeout 10 npx prisma db pull --print 2 >& 1)",
+      "Bash(true)"
     ],
     "deny": []
   },

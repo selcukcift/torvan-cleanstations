@@ -7,6 +7,7 @@ import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { QCFormInterface } from "@/components/qc/QCFormInterface"
 import { QCFormWithDocuments } from "@/components/qc/QCFormWithDocuments"
+import { QCFormInterfaceEnhanced } from "@/components/qc/QCFormInterfaceEnhanced"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, AlertCircle, Info } from "lucide-react"
 
@@ -142,14 +143,15 @@ export default function QCInspectionPage() {
       )}
 
       {isValidQCStatus && qcTemplate && (
-        <QCFormWithDocuments
+        <QCFormInterfaceEnhanced
           orderId={params.orderId as string}
           orderData={{
             poNumber: orderData.poNumber,
             customerName: orderData.customerName,
             productFamily: orderData.productFamily || "T2 Sink",
             buildNumbers: orderData.buildNumbers,
-            status: orderData.status
+            status: orderData.status,
+            configurations: orderData.configurations
           }}
           template={qcTemplate}
           onSubmit={async (formData) => {
@@ -157,10 +159,19 @@ export default function QCInspectionPage() {
             try {
               const response = await nextJsApiClient.post(`/orders/${params.orderId}/qc`, formData)
               if (response.data.success) {
+                toast({
+                  title: "QC Inspection Complete",
+                  description: `QC inspection submitted successfully with result: ${formData.overallStatus}`
+                })
                 window.location.href = `/orders/${params.orderId}`
               }
-            } catch (error) {
+            } catch (error: any) {
               console.error('QC submission error:', error)
+              toast({
+                title: "Submission Failed",
+                description: error.response?.data?.message || "Failed to submit QC inspection",
+                variant: "destructive"
+              })
             }
           }}
         />

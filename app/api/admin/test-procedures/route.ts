@@ -34,16 +34,16 @@ const TestProcedureCreateSchema = z.object({
   steps: z.array(TestProcedureStepSchema).min(1, 'At least one step is required')
 });
 
-// Validation schema for updating TestProcedureTemplate
-const TestProcedureUpdateSchema = z.object({
+// Validation schema for updating TestProcedureTemplate (currently unused but kept for future use)
+// const TestProcedureUpdateSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional().nullable(),
   version: z.string().optional(),
   productFamily: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
   estimatedDurationMinutes: z.number().int().positive().optional().nullable(),
-  steps: z.array(TestProcedureStepSchema).optional()
-});
+//   steps: z.array(TestProcedureStepSchema).optional()
+// });
 
 // GET /api/admin/test-procedures - List all test procedure templates
 export async function GET(request: NextRequest) {

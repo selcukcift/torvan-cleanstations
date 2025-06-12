@@ -210,6 +210,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
+      success: true,
       summary: {
         totalQcResults,
         passedCount,
@@ -217,17 +218,17 @@ export async function GET(request: NextRequest) {
         requiresReviewCount,
         inProgressCount,
         passRate,
-        periodDays: days
-      },
-      recentResults,
-      templateUsage: templateUsage.map(t => ({
-        id: t.id,
-        name: t.name,
-        version: t.version,
-        usageCount: t._count.orderQcResults
-      })),
-      inspectorStats: inspectorStatsSummary,
-      dailyTrend
+        periodDays: days,
+        recentResults,
+        templateUsage: templateUsage.map(t => ({
+          id: t.id,
+          name: t.name,
+          version: t.version,
+          usageCount: t._count.orderQcResults
+        })),
+        inspectorStats: inspectorStatsSummary,
+        dailyTrend
+      }
     });
   } catch (error) {
     console.error('Error fetching QC summary:', error);

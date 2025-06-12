@@ -51,9 +51,20 @@ export async function GET(
       ]
     };
 
-    // Add form type filter if specified
+    // Enhanced form type matching for our comprehensive templates
     if (formType) {
-      whereClause.formType = formType;
+      // Map form types to template names
+      const templateNameMap: { [key: string]: string } = {
+        'Pre-Production Check': 'Pre-Production Check',
+        'Final QC': 'Final Quality Check',
+        'Production Check': 'Production Check',
+        'Basin Production Check': 'Basin Production Check',
+        'Packaging Verification': 'Packaging Verification',
+        'End-of-Line Testing': 'End-of-Line Testing'
+      };
+      
+      const templateName = templateNameMap[formType] || formType;
+      whereClause.name = templateName;
     }
 
     // Find active template for product family and form type

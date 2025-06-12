@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // This endpoint is handled by NextAuth.js
 // Redirect to the appropriate NextAuth endpoint
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   return NextResponse.json(
     { 
       message: 'Authentication is handled by NextAuth.js',
@@ -13,7 +13,7 @@ export async function POST(_request: NextRequest) {
   );
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   return NextResponse.json(
     { 
       message: 'Authentication status endpoint',

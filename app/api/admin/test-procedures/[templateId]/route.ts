@@ -131,7 +131,7 @@ export async function PUT(
 
     const template = await prisma.$transaction(async (tx) => {
       // Update the test procedure template
-      const updatedTemplate = await tx.testProcedureTemplate.update({
+      await tx.testProcedureTemplate.update({
         where: { id: templateId },
         data: {
           name: validatedData.name,

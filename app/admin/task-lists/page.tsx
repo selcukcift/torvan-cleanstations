@@ -125,17 +125,11 @@ export default function TaskListsPage() {
   const [workInstructions, setWorkInstructions] = useState<WorkInstruction[]>([])
   const [tools, setTools] = useState<Tool[]>([])
   const [parts, setParts] = useState<Part[]>([])
-  
-  // Search states
-  const [toolSearch, setToolSearch] = useState('')
-  const [partSearch, setPartSearch] = useState('')
-  const [filteredTools, setFilteredTools] = useState<Tool[]>([])
-  const [filteredParts, setFilteredParts] = useState<Part[]>([])
 
   useEffect(() => {
     fetchTaskLists()
     fetchReferenceData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setFilteredTools(
@@ -162,7 +156,7 @@ export default function TaskListsPage() {
       if (response.data.success) {
         setTaskLists(response.data.taskLists)
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching task lists:', error)
       toast({
         title: "Error",
@@ -259,7 +253,7 @@ export default function TaskListsPage() {
       setShowTaskListDialog(false)
       setEditingTaskList(null)
       await fetchTaskLists()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving task list:', error)
       toast({
         title: "Error",
@@ -281,7 +275,7 @@ export default function TaskListsPage() {
         })
         await fetchTaskLists()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting task list:', error)
       toast({
         title: "Error",
@@ -464,7 +458,7 @@ export default function TaskListsPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Task List</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete "{taskList.name}"? This action cannot be undone.
+                              Are you sure you want to delete &ldquo;{taskList.name}&rdquo;? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

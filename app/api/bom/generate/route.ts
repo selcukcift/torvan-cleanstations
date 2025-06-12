@@ -10,7 +10,7 @@ import { generateBOMForOrder } from '@/lib/bomService.native'
  * complex business logic for pegboard mapping, control box selection, etc.
  */
 export async function POST(request: NextRequest) {
-  let body: any = null
+  let body: unknown = null
   
   try {
     // Authenticate user

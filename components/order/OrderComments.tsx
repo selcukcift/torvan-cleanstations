@@ -118,8 +118,8 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
   
   // Filters
   const [showInternal, setShowInternal] = useState(false)
-  const [categoryFilter, setCategoryFilter] = useState<string>("")
-  const [resolvedFilter, setResolvedFilter] = useState<string>("")
+  const [categoryFilter, setCategoryFilter] = useState<string>("all")
+  const [resolvedFilter, setResolvedFilter] = useState<string>("all")
   
   // New comment form
   const [newComment, setNewComment] = useState({
@@ -150,15 +150,15 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
       setLoading(true)
       const params = new URLSearchParams({
         includeInternal: showInternal.toString(),
-        ...(categoryFilter && { category: categoryFilter }),
-        ...(resolvedFilter && { isResolved: resolvedFilter })
+        ...(categoryFilter && categoryFilter !== 'all' && { category: categoryFilter }),
+        ...(resolvedFilter && resolvedFilter !== 'all' && { isResolved: resolvedFilter })
       })
 
       const response = await nextJsApiClient.get(`/orders/${orderId}/comments?${params}`)
       if (response.data.success) {
         setComments(response.data.data.comments)
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to load comments",
@@ -190,7 +190,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
         setShowAddComment(false)
         fetchComments()
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to add comment",
@@ -219,7 +219,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
         setEditingComment(null)
         fetchComments()
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to update comment",
@@ -241,7 +241,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
         })
         fetchComments()
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to delete comment",
@@ -266,7 +266,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
         })
         fetchComments()
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to update comment status",
@@ -323,7 +323,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {categoryOptions.map(cat => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
@@ -335,7 +335,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               <SelectItem value="false">Open</SelectItem>
               <SelectItem value="true">Resolved</SelectItem>
             </SelectContent>

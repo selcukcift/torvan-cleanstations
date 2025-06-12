@@ -27,7 +27,10 @@ export async function GET(request: NextRequest) {
     const productFamily = searchParams.get('productFamily');
 
     // Build where clause
-    const where: any = {};
+    const where: {
+      isActive?: boolean;
+      appliesToProductFamily?: string;
+    } = {};
     if (!includeInactive) {
       where.isActive = true;
     }
@@ -86,11 +89,14 @@ export async function GET(request: NextRequest) {
       groups[key].versions.push(template);
       
       return groups;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, {
+      activeVersion: typeof templates[0] | null;
+      versions: typeof templates;
+    }>);
 
     // Sort versions within each group
-    Object.values(templateGroups).forEach((group: any) => {
-      group.versions.sort((a: any, b: any) => {
+    Object.values(templateGroups).forEach((group) => {
+      group.versions.sort((a, b) => {
         const aVersionParts = a.version.split('.').map((p: string) => parseInt(p) || 0);
         const bVersionParts = b.version.split('.').map((p: string) => parseInt(p) || 0);
         

@@ -55,9 +55,7 @@ import {
   Plus, 
   Edit, 
   Trash2, 
-  Save, 
-  Shield, 
-  Clock,
+  Save,
   CheckCircle,
   XCircle,
   Loader2,
@@ -136,9 +134,9 @@ export default function AdminUsersPage() {
       } else {
         setError(response.data.message || 'Failed to fetch users')
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching users:', err)
-      setError(err.response?.data?.message || 'Failed to fetch users')
+      setError((err as any).response?.data?.message || 'Failed to fetch users')
     } finally {
       setLoading(false)
     }
@@ -270,7 +268,7 @@ export default function AdminUsersPage() {
       setNewPassword('')
       setConfirmPassword('')
       await fetchUsers()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving user:', error)
       toast({
         title: "Error",
@@ -293,7 +291,7 @@ export default function AdminUsersPage() {
         })
         await fetchUsers()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating user status:', error)
       toast({
         title: "Error",
@@ -323,7 +321,7 @@ export default function AdminUsersPage() {
         })
         await fetchUsers()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting user:', error)
       toast({
         title: "Error",
@@ -491,7 +489,7 @@ export default function AdminUsersPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete User</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete user "{user.fullName}"? This action cannot be undone.
+                              Are you sure you want to delete user &ldquo;{user.fullName}&rdquo;? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

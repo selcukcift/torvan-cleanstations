@@ -180,7 +180,7 @@ export async function PUT(
 
     const template = await prisma.$transaction(async (tx) => {
       // Update the task template
-      const updatedTemplate = await tx.taskTemplate.update({
+      await tx.taskTemplate.update({
         where: { id: templateId },
         data: {
           name: validatedData.name,

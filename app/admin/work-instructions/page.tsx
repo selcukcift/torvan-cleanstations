@@ -12,8 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog"
 import {
   AlertDialog,
@@ -41,7 +40,6 @@ import {
   Save,
   X,
   FileText,
-  List,
   Loader2,
   ArrowUp,
   ArrowDown
@@ -75,7 +73,7 @@ export default function WorkInstructionsPage() {
 
   useEffect(() => {
     fetchInstructions()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchInstructions = async () => {
     try {
@@ -85,7 +83,7 @@ export default function WorkInstructionsPage() {
       if (response.data.success) {
         setInstructions(response.data.instructions)
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching work instructions:', error)
       toast({
         title: "Error",
@@ -159,7 +157,7 @@ export default function WorkInstructionsPage() {
       setShowDialog(false)
       setEditingInstruction(null)
       await fetchInstructions()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving work instruction:', error)
       toast({
         title: "Error",
@@ -181,7 +179,7 @@ export default function WorkInstructionsPage() {
         })
         await fetchInstructions()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting work instruction:', error)
       toast({
         title: "Error",
@@ -330,7 +328,7 @@ export default function WorkInstructionsPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Work Instruction</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete "{instruction.title}"? This action cannot be undone.
+                              Are you sure you want to delete &ldquo;{instruction.title}&rdquo;? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

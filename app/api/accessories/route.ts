@@ -47,7 +47,19 @@ export async function GET(request: NextRequest) {
       categoryFilter, 
       limit, 
       offset 
-    }) as { accessories: any[], pagination: any }
+    }) as { accessories: Array<{
+      id: string;
+      name: string;
+      category: string;
+      description?: string;
+      price?: number;
+      imageUrl?: string;
+    }>, pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    } }
     
     return NextResponse.json({ 
       success: true, 

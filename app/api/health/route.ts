@@ -11,7 +11,7 @@ interface HealthCheck {
   status: 'healthy' | 'unhealthy' | 'degraded'
   responseTime?: number
   error?: string
-  details?: any
+  details?: Record<string, unknown>
 }
 
 async function checkDatabase(): Promise<HealthCheck> {
@@ -121,7 +121,7 @@ async function checkEnvironmentConfig(): Promise<HealthCheck> {
     ]
     
     const missingVars: string[] = []
-    const envConfig: Record<string, any> = {}
+    const envConfig: Record<string, string | undefined> = {}
     
     for (const envVar of requiredEnvVars) {
       if (!process.env[envVar]) {
@@ -163,7 +163,7 @@ async function checkEnvironmentConfig(): Promise<HealthCheck> {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const startTime = Date.now()
   
   try {
