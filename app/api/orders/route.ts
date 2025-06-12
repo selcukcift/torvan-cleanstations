@@ -48,14 +48,14 @@ const SprayerItemSchema = z.object({
 })
 
 const SinkConfigurationSchema = z.object({
-  sinkModelId: z.string(),
+  sinkModelId: z.string().min(1, 'Sink model is required'),
   sinkWidth: z.number().optional(),
-  sinkLength: z.number().optional(),
-  width: z.number().optional(),
-  length: z.number().optional(),
-  legsTypeId: z.string().optional(),
+  sinkLength: z.number().min(48, 'Sink length must be at least 48 inches').optional(),
+  width: z.number().min(1, 'Width is required when specified').optional(),
+  length: z.number().min(48, 'Length must be at least 48 inches when specified').optional(),
+  legsTypeId: z.string().min(1, 'Legs type is required').optional(),
   legTypeId: z.string().optional(),
-  feetTypeId: z.string().optional(),
+  feetTypeId: z.string().min(1, 'Feet type is required').optional(),
   pegboard: z.boolean().optional(),
   pegboardTypeId: z.string().optional(),
   pegboardType: z.string().optional(),
@@ -65,12 +65,21 @@ const SinkConfigurationSchema = z.object({
   specificPegboardKitId: z.string().optional(),
   drawersAndCompartments: z.array(z.string()).optional(),
   workflowDirection: z.enum(['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT']).optional(),
-  basins: z.array(BasinConfigurationSchema).default([]),
+  basins: z.array(BasinConfigurationSchema).min(1, 'At least one basin configuration is required'),
   faucet: FaucetConfigurationSchema.optional(),
   faucets: z.array(FaucetConfigurationSchema).optional(),
   sprayer: SprayerConfigurationSchema.optional(),
   sprayers: z.array(SprayerItemSchema).optional(),
   controlBoxId: z.string().nullable().optional()
+}).refine((data) => {
+  // Ensure at least one dimension is provided
+  if (!data.width && !data.length && !data.sinkWidth && !data.sinkLength) {
+    return false;
+  }
+  return true;
+}, {
+  message: "At least one dimension (width, length, sinkWidth, or sinkLength) must be provided",
+  path: ["dimensions"]
 })
 
 const SelectedAccessorySchema = z.object({
@@ -89,6 +98,21 @@ const OrderCreateSchema = z.object({
   sinkSelection: SinkSelectionSchema,
   configurations: z.record(z.string(), SinkConfigurationSchema),
   accessories: z.record(z.string(), z.array(SelectedAccessorySchema))
+}).refine((data) => {
+  // Ensure all build numbers have configurations
+  const configurationKeys = Object.keys(data.configurations);
+  const missingConfigurations = data.sinkSelection.buildNumbers.filter(
+    buildNumber => !configurationKeys.includes(buildNumber)
+  );
+  
+  if (missingConfigurations.length > 0) {
+    return false;
+  }
+  
+  return true;
+}, {
+  message: "All build numbers must have corresponding sink configurations",
+  path: ["configurations"]
 })
 
 // Use the centralized auth utility

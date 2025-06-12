@@ -36,12 +36,12 @@ const TestProcedureCreateSchema = z.object({
 
 // Validation schema for updating TestProcedureTemplate (currently unused but kept for future use)
 // const TestProcedureUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional().nullable(),
-  version: z.string().optional(),
-  productFamily: z.string().optional().nullable(),
-  isActive: z.boolean().optional(),
-  estimatedDurationMinutes: z.number().int().positive().optional().nullable(),
+//   name: z.string().min(1).optional(),
+//   description: z.string().optional().nullable(),
+//   version: z.string().optional(),
+//   productFamily: z.string().optional().nullable(),
+//   isActive: z.boolean().optional(),
+//   estimatedDurationMinutes: z.number().int().positive().optional().nullable(),
 //   steps: z.array(TestProcedureStepSchema).optional()
 // });
 

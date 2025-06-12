@@ -9,8 +9,10 @@ const prisma = new PrismaClient();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
+  const { orderId } = await params;
+  
   try {
     // Check authentication
     const user = await getAuthUser();
@@ -20,8 +22,9 @@ export async function GET(
         { status: 401 }
       );
     }
-
-    const { orderId } = await params;
+    
+    console.log('BOM Export - Order ID:', orderId);
+    
     if (!orderId) {
       return NextResponse.json(
         { error: 'Invalid order ID' },

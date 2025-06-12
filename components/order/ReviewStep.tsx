@@ -211,8 +211,66 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
     }
   }
 
+  const validateOrderData = () => {
+    const errors: string[] = [];
+
+    // Check if all build numbers have configurations
+    const missingConfigurations = sinkSelection.buildNumbers.filter(
+      buildNumber => !configurations[buildNumber]
+    );
+    if (missingConfigurations.length > 0) {
+      errors.push(`Missing configurations for build numbers: ${missingConfigurations.join(', ')}`);
+    }
+
+    // Validate each configuration
+    Object.entries(configurations).forEach(([buildNumber, config]) => {
+      if (!config) {
+        errors.push(`Configuration for build ${buildNumber} is empty`);
+        return;
+      }
+
+      // Check required fields
+      if (!config.sinkModelId) {
+        errors.push(`Build ${buildNumber}: Sink model is required`);
+      }
+
+      // Check dimensions
+      if (!config.width && !config.length && !config.sinkWidth && !config.sinkLength) {
+        errors.push(`Build ${buildNumber}: At least one dimension must be provided`);
+      }
+
+      // Check length minimum
+      const length = config.length || config.sinkLength;
+      if (length && length < 48) {
+        errors.push(`Build ${buildNumber}: Sink length must be at least 48 inches`);
+      }
+
+      // Check basin configurations
+      if (!config.basins || config.basins.length === 0) {
+        errors.push(`Build ${buildNumber}: At least one basin configuration is required`);
+      }
+
+      // Check legs and feet
+      if (!config.legsTypeId) {
+        errors.push(`Build ${buildNumber}: Legs type is required`);
+      }
+      if (!config.feetTypeId) {
+        errors.push(`Build ${buildNumber}: Feet type is required`);
+      }
+    });
+
+    return errors;
+  };
+
   const handleSubmitOrder = async () => {
     if (isSubmitting) return
+
+    // Validate order data before submission
+    const validationErrors = validateOrderData();
+    if (validationErrors.length > 0) {
+      setSubmitError(`Please fix the following issues before submitting:\n• ${validationErrors.join('\n• ')}`);
+      return;
+    }
 
     setIsSubmitting(true)
     setSubmitError(null)
