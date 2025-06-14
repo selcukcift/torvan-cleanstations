@@ -54,11 +54,11 @@ const partDescriptions: Record<string, string> = {
   'MDRD_B3_ESINK_84': 'Triple Basin E-Sink (84")',
   
   // Legs
-  'T2-DL27-KIT': 'Fixed Height 27" Stainless Steel Legs',
-  'T2-DL14-KIT': 'Fixed Height 14" Stainless Steel Legs',
-  'T2-LC1-KIT': 'Height Adjustable Stainless Steel Legs (27-35")',
-  'T2-DL27-FH-KIT': 'Fixed Height 27" Legs with Front Handle',
-  'T2-DL14-FH-KIT': 'Fixed Height 14" Legs with Front Handle',
+  'T2-DL27-KIT': 'Height Adjustable Column Kit (DL27)',
+  'T2-DL14-KIT': 'Height Adjustable Column Kit (DL14)',
+  'T2-LC1-KIT': 'Height Adjustable Triple Column Kit (LC1)',
+  'T2-DL27-FH-KIT': 'Fixed Height Column Kit (DL27)',
+  'T2-DL14-FH-KIT': 'Fixed Height Column Kit (DL14)',
   
   // Feet
   'T2-LEVELING-CASTOR-475': 'Leveling Casters with Brake (4x)',

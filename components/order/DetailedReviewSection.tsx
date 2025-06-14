@@ -69,6 +69,17 @@ export function DetailedReviewSection({
     }
   }
 
+  const getLegDescription = (legId: string) => {
+    const legDescriptions: { [key: string]: string } = {
+      'T2-DL27-KIT': 'Height Adjustable Column Kit (DL27)',
+      'T2-DL14-KIT': 'Height Adjustable Column Kit (DL14)',
+      'T2-LC1-KIT': 'Height Adjustable Triple Column Kit (LC1)',
+      'T2-DL27-FH-KIT': 'Fixed Height Column Kit (DL27)',
+      'T2-DL14-FH-KIT': 'Fixed Height Column Kit (DL14)',
+    }
+    return legDescriptions[legId] || legId
+  }
+
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['customer', 'sinks'])
   )
@@ -230,7 +241,7 @@ export function DetailedReviewSection({
           </div>
           <div>
             <p className="text-slate-600">Legs</p>
-            <p className="font-medium">{config.legsTypeId || 'Not selected'}</p>
+            <p className="font-medium">{config.legsTypeId ? getLegDescription(config.legsTypeId) : 'Not selected'}</p>
           </div>
           <div>
             <p className="text-slate-600">Feet</p>
