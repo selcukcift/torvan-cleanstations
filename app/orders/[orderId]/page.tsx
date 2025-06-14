@@ -93,6 +93,9 @@ const partDescriptions: Record<string, string> = {
   'T2-CB-PREMIUM': 'Premium Control Box - Touch Screen',
   
   // Pegboard Types
+  'PERF': 'Perforated Pegboard',
+  'SOLID': 'Solid Pegboard',
+  'PERFORATED': 'Perforated Pegboard',
   'STANDARD': 'Standard Pegboard - Basic Configuration',
   'PREMIUM': 'Premium Pegboard - Enhanced Organization',
   'CUSTOM': 'Custom Pegboard - Tailored Layout',
@@ -107,11 +110,12 @@ const partDescriptions: Record<string, string> = {
   'E_SINK_DI': 'E-Sink Basin with Deionized Water',
   'E_DRAIN': 'E-Drain Basin for Drainage',
   
-  // Basin Sizes
-  '1824': 'Basin 18" x 24" x 8"',
-  '2430': 'Basin 24" x 30" x 10"',
-  '3036': 'Basin 30" x 36" x 12"',
-  '3642': 'Basin 36" x 42" x 14"',
+  // Basin Sizes - Exact mappings from ReviewStep
+  'T2-ADW-BASIN20X20X8': 'Basin 20" x 20" x 8"',
+  'T2-ADW-BASIN24X20X8': 'Basin 24" x 20" x 8"',
+  'T2-ADW-BASIN24X20X10': 'Basin 24" x 20" x 10"',
+  'T2-ADW-BASIN30X20X8': 'Basin 30" x 20" x 8"',
+  'T2-ADW-BASIN30X20X10': 'Basin 30" x 20" x 10"',
   
   // Faucet Types
   'T2-FAUCET-STANDARD': 'Standard Single Handle Faucet',
@@ -132,9 +136,87 @@ const partDescriptions: Record<string, string> = {
   'T2-OA-AIRGUN-ROSETTE-KIT': 'Air Gun Kit & Rosette',
   
   // Add-ons
-  'T2-OA-MS-1026': 'P-Trap Assembly with Overflow',
   'T2-ADDON-DRAIN': 'Additional Drain Assembly',
-  'T2-ADDON-SOAP': 'Soap Dispenser Assembly'
+  'T2-ADDON-SOAP': 'Soap Dispenser Assembly',
+  
+  // REAL CleanStation Accessory Assembly IDs and Descriptions
+  
+  // Manuals
+  'T2-STD-MANUAL-EN-KIT': 'Standard Sink Manual and Preinstall Site Prep in English',
+  'T2-STD-MANUAL-FR-KIT': 'Standard Sink Manual and Preinstall Site Prep in French',
+  'T2-STD-MANUAL-SP-KIT': 'Standard Sink Manual and Preinstall Site Prep in Spanish',
+  
+  // Baskets, Bins & Shelves
+  'T-OA-BINRAIL-24-KIT': 'Bin Rail, 24" Kit',
+  'T-OA-BINRAIL-36-KIT': 'Bin Rail, 36" Kit',
+  'T-OA-BINRAIL-48-KIT': 'Bin Rail, 48" Kit',
+  'T-OA-PFW1236FM-KIT': 'Wire Basket Kit, Slot Bracket Held, Chrome, 36"W x 12"D with Brackets',
+  'T-OA-PFW1218FM-KIT': 'Wire Basket Kit, Slot Bracket Held, Chrome, 18"W x 12"D with Brackets',
+  'T-OA-PFW1818FM-KIT': 'Wire Basket Kit, Slot Bracket Held, Chrome, 18"W x 18"D with Brackets',
+  'T-OA-SSSHELF-1812': 'Stainless Steel Slot Shelf, 18"W x 12"D',
+  'T-OA-SSSHELF-1812-BOLT-ON-KIT': 'Stainless Steel Shelf, 18"W x 12"D Bolt On (for Solid Pegboard)',
+  'T-OA-SSSHELF-3612': 'Stainless Steel Slot Shelf, 36"W x 12"D',
+  'T-OA-SSSHELF-3612-BOLT-ON-KIT': 'Stainless Steel Slot Shelf, 36"W x 12"D Bolt On (for Solid Pegboard)',
+  'T-OA-B110505': 'Blue, 10-7/8" x 5-1/2" x 5" Hanging and Stacking Bin',
+  'T-OA-B110807': 'Blue, 10-7/8" x 8-1/8" x 7" Hanging and Stacking Bin',
+  'T-OA-B111105': 'Blue, 10-7/8" x 11" x 5" Hanging and Stacking Bin',
+  'B210-BLUE': 'Blue Plastic Bin, 5.75"x4.125"x3"',
+  'T2-OA-LT-SSSHELF-LRG': 'Stainless Steel Leak Tester Pegboard Shelf, 10"x20", for Large Scope',
+  'T2-OA-LT-SSSHELF-SML': 'Stainless Steel Leak Tester Pegboard Shelf, 6"x10", for Small Scope',
+  'T-OA-SSSHELF-LGHT-1812-KIT': 'Stainless Steel Slot Shelf with Underlight, 18"W x 12"D Kit',
+  'T-OA-SSSHELF-LGHT-3612-KIT': 'Stainless Steel Slot Shelf with Underlight, 36"W x 12"D Kit',
+  
+  // Holders, Plates & Hangers
+  'T-OA-1BRUSH-ORG-PB-KIT': 'Single Brush Holder, Stay-Put Pegboard Mount',
+  'T-OA-6BRUSH-ORG-PB-KIT': '6 Brush Organizer, Stay-Put Pegboard Mount',
+  'T-OA-WRK-FLW-PB': 'Pegboard Mount Workflow Indicator (Set of 3)',
+  'T-OA-PPRACK-2066': 'Stainless Steel Peel Pouch Rack, 20.5 x 6 x 6',
+  'T-OA-PB-SS-1L-SHLF': 'One Litre Double Bottle Holder, Stainless Steel',
+  'T-OA-PB-SS-2G-SHLF': 'One Gallon Double Detergent Holder, Stainless Steel',
+  'T-OA-PB-SS-1GLOVE': 'Single Glove Dispenser, Stainless Steel, 6"W x 11"H',
+  'T-OA-PB-SS-2GLOVE': 'Double Glove Dispenser, Stainless Steel, 10"W x 11"H',
+  'T-OA-PB-SS-3GLOVE': 'Triple Glove Dispenser, Stainless Steel, 10"W x 17"H',
+  'T2-OA-SC-2020-SS': 'Sink Staging Cover for 20x20 Basin, Stainless Steel',
+  'T2-OA-SC-2420-SS': 'Sink Staging Cover for 24x20 Basin, Stainless Steel',
+  'T2-OA-SC-3020-SS': 'Sink Staging Cover for 30x20 Basin, Stainless Steel',
+  
+  // Lighting Add-ons
+  'T-OA-MLIGHT-PB-KIT': 'Magnifying Light, 5" Lens, Pegboard Mount Kit',
+  'T-OA-DIM-MLIGHT-PB-KIT': 'Dimmable Magnifying Light, 5" Lens, Pegboard Mount Kit',
+  'T-OA-TASKLIGHT-PB': 'Gooseneck 27" LED Task Light, 10deg Focusing Beam, IP65 Head, 24VDC, PB Mount',
+  'T-OA-TASKLIGHT-PB-MAG-KIT': 'Gooseneck LED Task Light with Magnifier, Focusing Beam, PB Mount Kit',
+  
+  // Electronic & Digital Add-ons
+  'T-OA-MNT-ARM': 'Wall Monitor Pivot, Single Monitor Mount',
+  'T-OA-MNT-ARM-1EXT': 'Wall Monitor Arm, 1 Extension, Single Monitor Mount',
+  'T-OA-MNT-ARM-2EXT': 'Wall Monitor Arm, 2 Extension, Single Monitor Mount',
+  'T-OA-KB-MOUSE-ARM': 'Wall Keyboard Arm, Keyboard Mount with Slide-Out Mouse Tray',
+  'T-OA-2H-CPUSM': 'CPU Holder, Vertical, Small',
+  'T-OA-2H-CPULG': 'CPU Holder, Vertical, Large',
+  'T-OA-2H-CPUUV': 'CPU Holder, Tethered, Universal',
+  'T-OA-MMA-PB': 'Monitor Mount Arm, Single, PB Mount',
+  'T-OA-MMA-DUAL': 'Monitor Mount Adapter, Dual Monitor',
+  'T-OA-MMA-LTAB': 'Monitor Mount Adapter, Tablet, Locking',
+  'T-OA-MMA-LAP': 'Monitor Mount Adapter, Laptop Tray',
+  'T-OA-MNT-SINGLE-COMBO-PB': 'Combo Arm, Keyboard & Monitor Mount for Pegboard (Black)',
+  
+  // Faucet, Outlet, Drain, Sprayer Kits
+  'T2-OA-STD-FAUCET-WB-KIT': '10" Wrist Blade, Swing Spout, Wall Mounted Faucet Kit',
+  'T2-OA-PRE-RINSE-FAUCET-KIT': 'Pre-Rinse Overhead Spray Unit Kit',
+  'T2-OA-DI-GOOSENECK-FAUCET-KIT': 'Gooseneck Treated Water Faucet Kit, PVC',
+  'T2-OA-WATERGUN-TURRET-KIT': 'Water Gun Kit & Turret, Treated Water Compatible',
+  'T2-OA-WATERGUN-ROSETTE-KIT': 'Water Gun Kit & Rosette, Treated Water Compatible',
+  'T2-OA-AIRGUN-TURRET-KIT': 'Air Gun Kit & Turret',
+  'T2-OA-AIRGUN-ROSETTE-KIT': 'Air Gun Kit & Rosette',
+  'T2-OA-MS-1026': 'ST24 P-Trap Disinfection Drain Unit',
+  'T2-OA-SINK-STRAINER': 'Sink Strainer with Torvan Logo',
+  'T2-OA-BASIN-LIGHT-EDR-KIT': 'Basin Light 27W White LED with Push Button',
+  'T2-OA-BASIN-LIGHT-ESK-KIT': 'Basin Light 27W White LED (Only Compatible with ESink)',
+  'T2-EYEWASH-FAUCET-MNT': 'Eyewash Faucet Attachment S19-200B',
+  
+  // Drawers & Compartments
+  'T2-OA-2D-152012-STACKED-KIT': '15 x 20 x 12 Tall Stacked Two-Drawer Housing with Interior Liner Kit',
+  'T2-OA-PO-SHLF-1212': '12"x12" Pull Out Shelf (Only Compatible with HA Shelf)'
 }
 
 const getPartDescription = (partId: string): string => {
@@ -160,17 +242,26 @@ const extractColorFromId = (colorId: string) => {
 const getDrawerDisplayName = (drawerId: string) => {
   const drawerMap: { [key: string]: string } = {
     'DRAWER': 'Drawer',
-    'COMPARTMENT': 'Compartment'
+    'COMPARTMENT': 'Compartment',
+    'T2-OA-2D-152012-STACKED-KIT': 'Stacked Two-Drawer Storage Module with Liner - 15"W x 20"D x 12"H',
+    'T2-OA-2D-152012-STACKED': 'Two-Drawer Housing Base Unit - 15"W x 20"D x 12"H',
+    'T2-OA-PO-SHLF-1212': 'Pull-Out Storage Shelf - 12"W x 12"D (Height-Adjustable Compatible)',
+    'T2-OA-UHMW-LINER': 'Drawer Interior Liner - UHMW Polyethylene 1/4" Thick'
   }
-  return drawerMap[drawerId] || drawerId
+  return drawerMap[drawerId] || getPartDescription(drawerId)
 }
 
 // Helper function to format basin type description
 const getBasinTypeDescription = (basinTypeId: string) => {
   const basinTypeMap: { [key: string]: string } = {
+    // User-friendly IDs (from UI)
     'E_DRAIN': 'E-Drain Basin Kit with Overflow Protection',
     'E_SINK': 'E-Sink Basin Kit with Automated Dosing',
-    'E_SINK_DI': 'E-Sink Kit for DI Water (No Bottom Fill)'
+    'E_SINK_DI': 'E-Sink Kit for DI Water (No Bottom Fill)',
+    // Assembly IDs (from database)
+    'T2-BSN-EDR-KIT': 'E-Drain Basin Kit with Overflow Protection',
+    'T2-BSN-ESK-KIT': 'E-Sink Basin Kit with Automated Dosing',
+    'T2-BSN-ESK-DI-KIT': 'E-Sink Kit for DI Water (No Bottom Fill)'
   }
   return basinTypeMap[basinTypeId] || getPartDescription(basinTypeId)
 }
@@ -193,6 +284,94 @@ const getPegboardTypeDescription = (pegboardTypeId: string) => {
 // Helper function to format pegboard size
 const getPegboardSizeDescription = (length: string | number) => {
   return `${length}" x 36" H`
+}
+
+// Helper function to format workflow direction (fix underscores and caps)
+const formatWorkflowDirection = (direction: string) => {
+  if (!direction) return 'N/A'
+  return direction
+    .split('_')
+    .map((word, index) => {
+      if (word.toLowerCase() === 'to') return 'to'
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    })
+    .join(' ')
+}
+
+// Helper function to format placement (fix underscores and caps)
+const formatPlacement = (placement: string) => {
+  if (!placement) return 'N/A'
+  
+  // Handle special patterns like BETWEEN_1_2
+  if (placement.includes('BETWEEN_') && placement.match(/\d+_\d+/)) {
+    const match = placement.match(/BETWEEN_(\d+)_(\d+)/)
+    if (match) {
+      return `Between Basins ${match[1]} & ${match[2]}`
+    }
+  }
+  
+  // Handle CENTER case
+  if (placement.toUpperCase() === 'CENTER') {
+    return 'Center'
+  }
+  
+  // General underscore and caps formatting
+  return placement
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+// Helper function to format location (fix underscores and caps)
+const formatLocation = (location: string) => {
+  if (!location) return 'N/A'
+  
+  // Handle special patterns like BETWEEN_1_2
+  if (location.includes('BETWEEN_') && location.match(/\d+_\d+/)) {
+    const match = location.match(/BETWEEN_(\d+)_(\d+)/)
+    if (match) {
+      return `Between Basins ${match[1]} & ${match[2]}`
+    }
+  }
+  
+  // Handle directional patterns like LEFT_TO_RIGHT
+  if (location.includes('_TO_')) {
+    return location
+      .split('_')
+      .map((word, index) => {
+        if (word.toLowerCase() === 'to') return 'to'
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      })
+      .join(' ')
+  }
+  
+  // Handle simple directional terms
+  if (location.toUpperCase() === 'LEFT_SIDE') return 'Left Side'
+  if (location.toUpperCase() === 'RIGHT_SIDE') return 'Right Side'
+  
+  // General underscore and caps formatting
+  return location
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+// Generate model name using the same logic as overview
+// Updated to handle the order details data structure
+const generateDisplayModel = (sinkConfig: any, basinConfigs?: any[]) => {
+  if (!sinkConfig) return 'N/A'
+  
+  // In order details, basins are passed separately
+  // In review step, they're nested in config.basins
+  const basinCount = basinConfigs?.length || sinkConfig.basins?.length || 1
+  const length = sinkConfig.length || 48
+  const width = sinkConfig.width || 30
+  
+  const lengthStr = length.toString().padStart(2, '0')
+  const widthStr = width.toString().padStart(2, '0')
+  const dimensions = lengthStr + widthStr
+  
+  return `T2-${basinCount}B-${dimensions}HA`
 }
 
 export default function OrderDetailsPage() {
@@ -725,7 +904,7 @@ export default function OrderDetailsPage() {
                             <span className="text-slate-500 block">Pegboard</span>
                             <span className="font-medium">
                               {sinkConfig.pegboard ? 
-                                `${getPartDescription(sinkConfig.pegboardTypeId || '')} - ${sinkConfig.pegboardColorId || 'Default'}` : 
+                                `${getPartDescription(sinkConfig.pegboardTypeId || '')} - ${extractColorFromId(sinkConfig.pegboardColorId || '')}` : 
                                 'No'
                               }
                             </span>
@@ -844,7 +1023,7 @@ export default function OrderDetailsPage() {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Model:</span>
-                          <span className="font-medium">{generateDisplayModel(sinkConfig)}</span>
+                          <span className="font-medium">{generateDisplayModel(sinkConfig, basinConfigs)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-500">Width:</span>
@@ -910,10 +1089,10 @@ export default function OrderDetailsPage() {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Drawers & Compartments</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {sinkConfig.drawersAndCompartments.map((item: string, idx: number) => (
-                          <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">{idx + 1}</Badge>
-                              <span className="text-sm font-medium">{getDrawerDisplayName(item)}</span>
+                          <div key={idx} className="p-3 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg border border-indigo-200 hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-300 font-medium">{idx + 1}</Badge>
+                              <span className="text-sm font-semibold text-slate-800">{getDrawerDisplayName(item)}</span>
                             </div>
                           </div>
                         ))}
@@ -927,45 +1106,41 @@ export default function OrderDetailsPage() {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Basin Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {basinConfigs.map((basin: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Basin {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getBasinTypeDescription(basin.basinTypeId)}</span>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-3">
+                              <div className="border-b border-slate-300 pb-2">
+                                <h5 className="font-semibold text-slate-800 text-base">Basin {idx + 1}</h5>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Size:</span>
-                                <span className="font-medium">{getBasinSizeDescription(basin.basinSizePartNumber)}</span>
-                              </div>
-                              {basin.customWidth && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Custom Width:</span>
-                                  <span className="font-medium">{basin.customWidth}"</span>
-                                </div>
-                              )}
-                              {basin.customLength && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Custom Length:</span>
-                                  <span className="font-medium">{basin.customLength}"</span>
-                                </div>
-                              )}
-                              {basin.customDepth && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Custom Depth:</span>
-                                  <span className="font-medium">{basin.customDepth}"</span>
-                                </div>
-                              )}
-                              {basin.addonIds?.length > 0 && (
+                              <div className="space-y-2">
                                 <div>
-                                  <span className="text-slate-500 block">Add-ons:</span>
-                                  <div className="flex flex-wrap gap-1 mt-1">
-                                    {basin.addonIds.map((addon: string, addonIdx: number) => (
-                                      <Badge key={addonIdx} variant="secondary" className="text-xs">{addon}</Badge>
-                                    ))}
-                                  </div>
+                                  <span className="text-sm text-slate-600 block mb-1">Type:</span>
+                                  <span className="font-medium text-slate-800">{getBasinTypeDescription(basin.basinTypeId)}</span>
                                 </div>
-                              )}
+                                <div>
+                                  <span className="text-sm text-slate-600 block mb-1">Size:</span>
+                                  <span className="font-medium text-slate-800">{getBasinSizeDescription(basin.basinSizePartNumber)}</span>
+                                </div>
+                                {(basin.customWidth || basin.customLength || basin.customDepth) && (
+                                  <div className="p-2 bg-amber-50 rounded border border-amber-200">
+                                    <span className="text-xs font-medium text-amber-800">Custom Dimensions:</span>
+                                    <div className="text-sm text-amber-700 mt-1">
+                                      {basin.customWidth && `${basin.customWidth}"W`}
+                                      {basin.customLength && ` × ${basin.customLength}"L`}
+                                      {basin.customDepth && ` × ${basin.customDepth}"D`}
+                                    </div>
+                                  </div>
+                                )}
+                                {basin.addonIds?.length > 0 && (
+                                  <div>
+                                    <span className="text-sm text-slate-600 block mb-2">Add-ons:</span>
+                                    <div className="flex flex-wrap gap-1">
+                                      {basin.addonIds.map((addon: string, addonIdx: number) => (
+                                        <Badge key={addonIdx} variant="secondary" className="text-xs bg-slate-200 text-slate-700">{addon}</Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -979,23 +1154,24 @@ export default function OrderDetailsPage() {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Faucet Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {faucetConfigs.map((faucet: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-blue-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Faucet {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getPartDescription(faucet.faucetTypeId)}</span>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
+                              <div className="text-base font-semibold text-slate-800 mb-2">
+                                {getPartDescription(faucet.faucetTypeId)}
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Quantity:</span>
-                                <span className="font-medium">{faucet.faucetQuantity}</span>
-                              </div>
-                              {faucet.faucetPlacement && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Placement:</span>
-                                  <span className="font-medium">{formatPlacement(faucet.faucetPlacement)}</span>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-slate-600">Quantity:</span>
+                                  <Badge variant="secondary" className="bg-blue-200 text-blue-800 font-medium">
+                                    {faucet.faucetQuantity}
+                                  </Badge>
                                 </div>
-                              )}
+                                {faucet.faucetPlacement && (
+                                  <Badge variant="outline" className="text-xs text-slate-600">
+                                    {formatPlacement(faucet.faucetPlacement)}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -1009,30 +1185,31 @@ export default function OrderDetailsPage() {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Sprayer Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {sprayerConfigs.map((sprayer: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-green-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Sprayer {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Has Sprayer:</span>
-                                <span className="font-medium">{sprayer.hasSpray ? 'Yes' : 'No'}</span>
-                              </div>
-                              {sprayer.hasSpray && (
+                          <div key={idx} className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
+                              {sprayer.sprayerTypeIds?.length > 0 ? (
                                 <>
-                                  <div className="flex justify-between">
-                                    <span className="text-slate-500">Quantity:</span>
-                                    <span className="font-medium">{sprayer.sprayerQuantity}</span>
+                                  <div className="text-base font-semibold text-slate-800 mb-2">
+                                    {sprayer.sprayerTypeIds.map((type: string, typeIdx: number) => getPartDescription(type)).join(', ')}
                                   </div>
-                                  {sprayer.sprayerTypeIds?.length > 0 && (
-                                    <div>
-                                      <span className="text-slate-500 block">Types:</span>
-                                      <div className="flex flex-wrap gap-1 mt-1">
-                                        {sprayer.sprayerTypeIds.map((type: string, typeIdx: number) => (
-                                          <Badge key={typeIdx} variant="secondary" className="text-xs">{getPartDescription(type)}</Badge>
-                                        ))}
-                                      </div>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm text-slate-600">Quantity:</span>
+                                      <Badge variant="secondary" className="bg-green-200 text-green-800 font-medium">
+                                        {sprayer.sprayerQuantity || 1}
+                                      </Badge>
                                     </div>
-                                  )}
+                                    {sprayer.sprayerLocation && (
+                                      <Badge variant="outline" className="text-xs text-slate-600">
+                                        {formatLocation(sprayer.sprayerLocation)}
+                                      </Badge>
+                                    )}
+                                  </div>
                                 </>
+                              ) : (
+                                <div className="text-base font-semibold text-slate-600">
+                                  No sprayer configured
+                                </div>
                               )}
                             </div>
                           </div>
@@ -1049,11 +1226,9 @@ export default function OrderDetailsPage() {
                         {accessories.map((accessory: any, idx: number) => (
                           <div key={idx} className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:shadow-md transition-shadow">
                             <div className="space-y-2">
-                              {accessory.name && (
-                                <div className="text-base font-semibold text-slate-800 mb-2">
-                                  {accessory.name}
-                                </div>
-                              )}
+                              <div className="text-base font-semibold text-slate-800 mb-2">
+                                {getPartDescription(accessory.assemblyId)}
+                              </div>
                               <div className="flex items-center gap-2">
                                 <span className="text-sm text-slate-600">Quantity:</span>
                                 <Badge variant="secondary" className="bg-purple-200 text-purple-800 font-medium">

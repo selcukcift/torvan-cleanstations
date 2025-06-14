@@ -195,6 +195,13 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Transform basin type IDs from user-friendly to assembly IDs
+    const basinTypeMapping: Record<string, string> = {
+      'E_DRAIN': 'T2-BSN-EDR-KIT',
+      'E_SINK': 'T2-BSN-ESK-KIT', 
+      'E_SINK_DI': 'T2-BSN-ESK-DI-KIT'
+    }
+
     // Create basin configurations - ONE per build number
     const basinConfigs = []
     for (const [buildNumber, config] of Object.entries(configurations)) {
@@ -205,13 +212,21 @@ export async function POST(request: NextRequest) {
         const firstBasin = config.basins[0]
         const totalBasinCount = config.basins.length
         
+        // Transform basin type ID if needed
+        let basinTypeId = firstBasin.basinTypeId || ''
+        if (firstBasin.basinType && !basinTypeId) {
+          basinTypeId = basinTypeMapping[firstBasin.basinType] || firstBasin.basinType
+        } else if (basinTypeId && basinTypeMapping[basinTypeId]) {
+          basinTypeId = basinTypeMapping[basinTypeId]
+        }
+        
         // Collect all addon IDs from all basins
         const allAddonIds = config.basins.flatMap(basin => basin.addonIds || [])
         
         basinConfigs.push({
           buildNumber,
           orderId: order.id,
-          basinTypeId: firstBasin.basinTypeId || '',
+          basinTypeId: basinTypeId,
           basinSizePartNumber: firstBasin.basinSizePartNumber || '',
           basinCount: totalBasinCount,
           addonIds: allAddonIds,
@@ -348,13 +363,6 @@ export async function POST(request: NextRequest) {
       await prisma.sinkConfiguration.createMany({
         data: sinkConfigs
       })
-    }
-
-    // Transform basin type IDs from user-friendly to assembly IDs
-    const basinTypeMapping: Record<string, string> = {
-      'E_DRAIN': 'T2-BSN-EDR-KIT',
-      'E_SINK': 'T2-BSN-ESK-KIT', 
-      'E_SINK_DI': 'T2-BSN-ESK-DI-KIT'
     }
 
     const transformedConfigurations = Object.entries(configurations).reduce((acc, [buildNumber, config]) => {
