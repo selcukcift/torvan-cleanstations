@@ -90,11 +90,18 @@ const partDescriptions: Record<string, string> = {
   'T2-FAUCET-DUAL': 'Dual Handle Hot/Cold Faucet',
   'T2-FAUCET-SENSOR': 'Sensor Activated Touchless Faucet',
   'T2-FAUCET-KNEE': 'Knee Operated Hands-Free Faucet',
+  'T2-OA-STD-FAUCET-WB-KIT': '10" Wrist Blade, Swing Spout, Wall Mounted Faucet Kit',
+  'T2-OA-PRE-RINSE-FAUCET-KIT': 'Pre-Rinse Overhead Spray Unit Kit',
+  'T2-OA-DI-GOOSENECK-FAUCET-KIT': 'Gooseneck Treated Water Faucet Kit, PVC',
   
   // Sprayer Types
   'T2-SPRAYER-HANDHELD': 'Handheld Flexible Sprayer',
   'T2-SPRAYER-FIXED': 'Fixed Position Sprayer',
   'T2-SPRAYER-RETRACTABLE': 'Retractable Pull-Out Sprayer',
+  'T2-OA-WATERGUN-TURRET-KIT': 'Water Gun Kit & Turret, Treated Water Compatible',
+  'T2-OA-WATERGUN-ROSETTE-KIT': 'Water Gun Kit & Rosette, Treated Water Compatible',
+  'T2-OA-AIRGUN-TURRET-KIT': 'Air Gun Kit & Turret',
+  'T2-OA-AIRGUN-ROSETTE-KIT': 'Air Gun Kit & Rosette',
 }
 
 const getPartDescription = (partId: string): string => {
@@ -124,6 +131,122 @@ const getDrawerDisplayName = (drawerId: string) => {
   }
   return drawerMap[drawerId] || drawerId
 }
+
+// Helper function to format basin type description
+const getBasinTypeDescription = (basinTypeId: string) => {
+  const basinTypeMap: { [key: string]: string } = {
+    'E_DRAIN': 'E-Drain Basin Kit with Overflow Protection',
+    'E_SINK': 'E-Sink Basin Kit with Automated Dosing',
+    'E_SINK_DI': 'E-Sink Kit for DI Water (No Bottom Fill)'
+  }
+  return basinTypeMap[basinTypeId] || getPartDescription(basinTypeId)
+}
+
+// Helper function to format basin size (remove "Basin" wording)
+const getBasinSizeDescription = (basinSizePartNumber: string) => {
+  const description = getPartDescription(basinSizePartNumber)
+  return description.replace(/^Basin\s+/, '')
+}
+
+// Helper function to format pegboard type (proper case)
+const getPegboardTypeDescription = (pegboardTypeId: string) => {
+  const description = getPartDescription(pegboardTypeId)
+  if (description.toLowerCase().includes('perforated')) {
+    return description.replace(/perforated/gi, 'Perforated')
+  }
+  return description
+}
+
+// Helper function to format pegboard size
+const getPegboardSizeDescription = (length: string | number) => {
+  return `${length}" x 36" H`
+}
+
+// Helper function to format workflow direction (fix underscores and caps)
+const formatWorkflowDirection = (direction: string) => {
+  if (!direction) return 'N/A'
+  return direction
+    .split('_')
+    .map((word, index) => {
+      if (word.toLowerCase() === 'to') return 'to'
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    })
+    .join(' ')
+}
+
+// Helper function to format placement (fix underscores and caps)
+const formatPlacement = (placement: string) => {
+  if (!placement) return 'N/A'
+  
+  // Handle special patterns like BETWEEN_1_2
+  if (placement.includes('BETWEEN_') && placement.match(/\d+_\d+/)) {
+    const match = placement.match(/BETWEEN_(\d+)_(\d+)/)
+    if (match) {
+      return `Between Basins ${match[1]} & ${match[2]}`
+    }
+  }
+  
+  // Handle CENTER case
+  if (placement.toUpperCase() === 'CENTER') {
+    return 'Center'
+  }
+  
+  // General underscore and caps formatting
+  return placement
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+// Helper function to format location (fix underscores and caps)
+const formatLocation = (location: string) => {
+  if (!location) return 'N/A'
+  
+  // Handle special patterns like BETWEEN_1_2
+  if (location.includes('BETWEEN_') && location.match(/\d+_\d+/)) {
+    const match = location.match(/BETWEEN_(\d+)_(\d+)/)
+    if (match) {
+      return `Between Basins ${match[1]} & ${match[2]}`
+    }
+  }
+  
+  // Handle directional patterns like LEFT_TO_RIGHT
+  if (location.includes('_TO_')) {
+    return location
+      .split('_')
+      .map((word, index) => {
+        if (word.toLowerCase() === 'to') return 'to'
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      })
+      .join(' ')
+  }
+  
+  // Handle simple directional terms
+  if (location.toUpperCase() === 'LEFT_SIDE') return 'Left Side'
+  if (location.toUpperCase() === 'RIGHT_SIDE') return 'Right Side'
+  
+  // General underscore and caps formatting
+  return location
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
+// Generate model name using the same logic as overview
+const generateDisplayModel = (config: any) => {
+  if (!config) return 'N/A'
+  
+  const basinCount = config.basins?.length || 1
+  const length = config.length || 48
+  const width = config.width || 30
+  
+  const lengthStr = length.toString().padStart(2, '0')
+  const widthStr = width.toString().padStart(2, '0')
+  const dimensions = lengthStr + widthStr
+  
+  return `T2-${basinCount}B-${dimensions}HA`
+}
+
 
 export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
   const { 
@@ -727,13 +850,13 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Sink Configuration */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Details</h4>
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Body</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Model:</span>
-                          <span className="font-medium">{getPartDescription(config.sinkModelId) || 'N/A'}</span>
+                          <span className="font-medium">{generateDisplayModel(config)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-500">Width:</span>
@@ -745,14 +868,8 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-500">Workflow Direction:</span>
-                          <span className="font-medium">{config.workflowDirection?.replace('_', ' to ') || 'N/A'}</span>
+                          <span className="font-medium">{formatWorkflowDirection(config.workflowDirection || '')}</span>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Support Structure</h4>
-                      <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Legs:</span>
                           <span className="font-medium">{getPartDescription(config.legsTypeId || '') || 'N/A'}</span>
@@ -760,24 +877,6 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                         <div className="flex justify-between">
                           <span className="text-slate-500">Feet:</span>
                           <span className="font-medium">{getPartDescription(config.feetTypeId || '') || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Control Box:</span>
-                          <div className="text-right">
-                            <span className="font-medium">
-                              {config.controlBoxId ? 
-                                getPartDescription(config.controlBoxId) : 
-                                autoControlBoxes[buildNumber] ? 
-                                  `${autoControlBoxes[buildNumber].name} (Auto)` : 
-                                  'Determining...'
-                              }
-                            </span>
-                            {autoControlBoxes[buildNumber] && (
-                              <div className="text-xs text-slate-500 mt-1">
-                                {autoControlBoxes[buildNumber].mappingRule}
-                              </div>
-                            )}
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -793,22 +892,26 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                           <>
                             <div className="flex justify-between">
                               <span className="text-slate-500">Pegboard Type:</span>
-                              <span className="font-medium">{getPartDescription(config.pegboardTypeId || '') || 'N/A'}</span>
+                              <span className="font-medium">{getPegboardTypeDescription(config.pegboardTypeId || '') || 'N/A'}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500">Pegboard Color:</span>
-                              <span className="font-medium">{extractColorFromId(config.pegboardColorId || '') || 'N/A'}</span>
-                            </div>
+                            {config.pegboardColorId && extractColorFromId(config.pegboardColorId) !== 'N/A' && extractColorFromId(config.pegboardColorId) !== 'None' && (
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Pegboard Color:</span>
+                                <span className="font-medium">{extractColorFromId(config.pegboardColorId)}</span>
+                              </div>
+                            )}
                             <div className="flex justify-between">
                               <span className="text-slate-500">Size:</span>
-                              <span className="font-medium">Auto-calculated for {config.length}" length</span>
+                              <span className="font-medium">{getPegboardSizeDescription(config.length || 'N/A')}</span>
                             </div>
                           </>
                         )}
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Drawers & Compartments:</span>
-                          <span className="font-medium">{config.drawersAndCompartments?.length || 0} items</span>
-                        </div>
+                        {config.drawersAndCompartments && config.drawersAndCompartments.length > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-500">Drawers & Compartments:</span>
+                            <span className="font-medium">{config.drawersAndCompartments.length} items</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -819,10 +922,10 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Drawers & Compartments</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {config.drawersAndCompartments.map((item: string, idx: number) => (
-                          <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">{idx + 1}</Badge>
-                              <span className="text-sm font-medium">{getDrawerDisplayName(item)}</span>
+                          <div key={idx} className="p-3 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg border border-indigo-200 hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-300 font-medium">{idx + 1}</Badge>
+                              <span className="text-sm font-semibold text-slate-800">{getDrawerDisplayName(item)}</span>
                             </div>
                           </div>
                         ))}
@@ -836,32 +939,39 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Basin Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {config.basins.map((basin: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-slate-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Basin {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getPartDescription(basin.basinType)}</span>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-3">
+                              <div className="border-b border-slate-300 pb-2">
+                                <h5 className="font-semibold text-slate-800 text-base">Basin {idx + 1}</h5>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Size:</span>
-                                <span className="font-medium">{getPartDescription(basin.basinSizePartNumber)}</span>
-                              </div>
-                              {basin.customDimensions && (
-                                <div className="text-xs text-slate-600 mt-2">
-                                  Custom: {basin.customDimensions.width}"W × {basin.customDimensions.length}"L × {basin.customDimensions.depth}"D
+                              <div className="space-y-2">
+                                <div>
+                                  <span className="text-sm text-slate-600 block mb-1">Type:</span>
+                                  <span className="font-medium text-slate-800">{getBasinTypeDescription(basin.basinType)}</span>
                                 </div>
-                              )}
-                              {basin.addonIds?.length > 0 && (
-                                <div className="mt-2">
-                                  <span className="text-slate-500 block">Add-ons:</span>
-                                  <div className="flex flex-wrap gap-1 mt-1">
-                                    {basin.addonIds.map((addon: string, addonIdx: number) => (
-                                      <Badge key={addonIdx} variant="secondary" className="text-xs">{addon}</Badge>
-                                    ))}
+                                <div>
+                                  <span className="text-sm text-slate-600 block mb-1">Size:</span>
+                                  <span className="font-medium text-slate-800">{getBasinSizeDescription(basin.basinSizePartNumber)}</span>
+                                </div>
+                                {basin.customDimensions && (
+                                  <div className="p-2 bg-amber-50 rounded border border-amber-200">
+                                    <span className="text-xs font-medium text-amber-800">Custom Dimensions:</span>
+                                    <div className="text-sm text-amber-700 mt-1">
+                                      {basin.customDimensions.width}"W × {basin.customDimensions.length}"L × {basin.customDimensions.depth}"D
+                                    </div>
                                   </div>
-                                </div>
-                              )}
+                                )}
+                                {basin.addonIds?.length > 0 && (
+                                  <div>
+                                    <span className="text-sm text-slate-600 block mb-2">Add-ons:</span>
+                                    <div className="flex flex-wrap gap-1">
+                                      {basin.addonIds.map((addon: string, addonIdx: number) => (
+                                        <Badge key={addonIdx} variant="secondary" className="text-xs bg-slate-200 text-slate-700">{addon}</Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -875,23 +985,24 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Faucet Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {config.faucets.map((faucet: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-blue-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Faucet {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getPartDescription(faucet.faucetTypeId)}</span>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
+                              <div className="text-base font-semibold text-slate-800 mb-2">
+                                {getPartDescription(faucet.faucetTypeId)}
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Quantity:</span>
-                                <span className="font-medium">{faucet.quantity || 1}</span>
-                              </div>
-                              {faucet.placement && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Placement:</span>
-                                  <span className="font-medium">{faucet.placement}</span>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-slate-600">Quantity:</span>
+                                  <Badge variant="secondary" className="bg-blue-200 text-blue-800 font-medium">
+                                    {faucet.quantity || 1}
+                                  </Badge>
                                 </div>
-                              )}
+                                {faucet.placement && (
+                                  <Badge variant="outline" className="text-xs text-slate-600">
+                                    {formatPlacement(faucet.placement)}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -905,23 +1016,24 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Sprayer Configurations</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {config.sprayers.map((sprayer: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-green-50 rounded-lg">
-                            <h5 className="font-medium mb-2">Sprayer {idx + 1}</h5>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getPartDescription(sprayer.sprayerTypeId)}</span>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
+                              <div className="text-base font-semibold text-slate-800 mb-2">
+                                {getPartDescription(sprayer.sprayerTypeId)}
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Quantity:</span>
-                                <span className="font-medium">{sprayer.quantity || 1}</span>
-                              </div>
-                              {sprayer.location && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Location:</span>
-                                  <span className="font-medium">{sprayer.location}</span>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-slate-600">Quantity:</span>
+                                  <Badge variant="secondary" className="bg-green-200 text-green-800 font-medium">
+                                    {sprayer.quantity || 1}
+                                  </Badge>
                                 </div>
-                              )}
+                                {sprayer.location && (
+                                  <Badge variant="outline" className="text-xs text-slate-600">
+                                    {formatLocation(sprayer.location)}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -935,22 +1047,19 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Selected Accessories</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {buildAccessories.map((accessory: SelectedAccessory, idx: number) => (
-                          <div key={idx} className="p-3 bg-purple-50 rounded-lg">
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Assembly ID:</span>
-                                <span className="font-medium">{accessory.assemblyId}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Quantity:</span>
-                                <span className="font-medium">{accessory.quantity}</span>
-                              </div>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
                               {accessory.name && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Name:</span>
-                                  <span className="font-medium">{accessory.name}</span>
+                                <div className="text-base font-semibold text-slate-800 mb-2">
+                                  {accessory.name}
                                 </div>
                               )}
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-slate-600">Quantity:</span>
+                                <Badge variant="secondary" className="bg-purple-200 text-purple-800 font-medium">
+                                  {accessory.quantity}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -984,33 +1093,6 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
             </Card>
           ) : (bomPreviewData?.bom || bomPreviewData?.buildBOMs) ? (
             <>
-              {/* BOM Statistics */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Total Items</span>
-                    <span className="text-2xl font-bold text-blue-600">{bomPreviewData.totalItems || 0}</span>
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">System Components</span>
-                    <span className="text-2xl font-bold text-green-600">{bomPreviewData.summary?.systemComponents || 0}</span>
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Structural</span>
-                    <span className="text-2xl font-bold text-purple-600">{bomPreviewData.summary?.structuralComponents || 0}</span>
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Accessories</span>
-                    <span className="text-2xl font-bold text-orange-600">{bomPreviewData.summary?.accessoryComponents || 0}</span>
-                  </div>
-                </Card>
-              </div>
 
               {/* BOM Display - Single vs Multi-Build */}
               {bomPreviewData.isMultiBuild && bomPreviewData.buildBOMs ? (

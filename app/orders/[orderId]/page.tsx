@@ -118,11 +118,18 @@ const partDescriptions: Record<string, string> = {
   'T2-FAUCET-DUAL': 'Dual Handle Hot/Cold Faucet',
   'T2-FAUCET-SENSOR': 'Sensor Activated Touchless Faucet',
   'T2-FAUCET-KNEE': 'Knee Operated Hands-Free Faucet',
+  'T2-OA-STD-FAUCET-WB-KIT': '10" Wrist Blade, Swing Spout, Wall Mounted Faucet Kit',
+  'T2-OA-PRE-RINSE-FAUCET-KIT': 'Pre-Rinse Overhead Spray Unit Kit',
+  'T2-OA-DI-GOOSENECK-FAUCET-KIT': 'Gooseneck Treated Water Faucet Kit, PVC',
   
   // Sprayer Types
   'T2-SPRAYER-HANDHELD': 'Handheld Flexible Sprayer',
   'T2-SPRAYER-FIXED': 'Fixed Position Sprayer',
   'T2-SPRAYER-RETRACTABLE': 'Retractable Pull-Out Sprayer',
+  'T2-OA-WATERGUN-TURRET-KIT': 'Water Gun Kit & Turret, Treated Water Compatible',
+  'T2-OA-WATERGUN-ROSETTE-KIT': 'Water Gun Kit & Rosette, Treated Water Compatible',
+  'T2-OA-AIRGUN-TURRET-KIT': 'Air Gun Kit & Turret',
+  'T2-OA-AIRGUN-ROSETTE-KIT': 'Air Gun Kit & Rosette',
   
   // Add-ons
   'T2-OA-MS-1026': 'P-Trap Assembly with Overflow',
@@ -156,6 +163,36 @@ const getDrawerDisplayName = (drawerId: string) => {
     'COMPARTMENT': 'Compartment'
   }
   return drawerMap[drawerId] || drawerId
+}
+
+// Helper function to format basin type description
+const getBasinTypeDescription = (basinTypeId: string) => {
+  const basinTypeMap: { [key: string]: string } = {
+    'E_DRAIN': 'E-Drain Basin Kit with Overflow Protection',
+    'E_SINK': 'E-Sink Basin Kit with Automated Dosing',
+    'E_SINK_DI': 'E-Sink Kit for DI Water (No Bottom Fill)'
+  }
+  return basinTypeMap[basinTypeId] || getPartDescription(basinTypeId)
+}
+
+// Helper function to format basin size (remove "Basin" wording)
+const getBasinSizeDescription = (basinSizePartNumber: string) => {
+  const description = getPartDescription(basinSizePartNumber)
+  return description.replace(/^Basin\s+/, '')
+}
+
+// Helper function to format pegboard type (proper case)
+const getPegboardTypeDescription = (pegboardTypeId: string) => {
+  const description = getPartDescription(pegboardTypeId)
+  if (description.toLowerCase().includes('perforated')) {
+    return description.replace(/perforated/gi, 'Perforated')
+  }
+  return description
+}
+
+// Helper function to format pegboard size
+const getPegboardSizeDescription = (length: string | number) => {
+  return `${length}" x 36" H`
 }
 
 export default function OrderDetailsPage() {
@@ -803,11 +840,11 @@ export default function OrderDetailsPage() {
                   {/* Sink Configuration */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Details</h4>
+                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Body</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Model:</span>
-                          <span className="font-medium">{getPartDescription(sinkConfig.sinkModelId) || 'N/A'}</span>
+                          <span className="font-medium">{generateDisplayModel(sinkConfig)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-500">Width:</span>
@@ -819,14 +856,8 @@ export default function OrderDetailsPage() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-500">Workflow Direction:</span>
-                          <span className="font-medium">{sinkConfig.workflowDirection?.replace('_', ' to ') || 'N/A'}</span>
+                          <span className="font-medium">{formatWorkflowDirection(sinkConfig.workflowDirection || '')}</span>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Support Structure</h4>
-                      <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-500">Legs:</span>
                           <span className="font-medium">{getPartDescription(sinkConfig.legsTypeId) || 'N/A'}</span>
@@ -834,10 +865,6 @@ export default function OrderDetailsPage() {
                         <div className="flex justify-between">
                           <span className="text-slate-500">Feet:</span>
                           <span className="font-medium">{getPartDescription(sinkConfig.feetTypeId) || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Control Box:</span>
-                          <span className="font-medium">{getPartDescription(sinkConfig.controlBoxId) || 'None'}</span>
                         </div>
                       </div>
                     </div>
@@ -853,22 +880,26 @@ export default function OrderDetailsPage() {
                           <>
                             <div className="flex justify-between">
                               <span className="text-slate-500">Pegboard Type:</span>
-                              <span className="font-medium">{getPartDescription(sinkConfig.pegboardTypeId) || 'N/A'}</span>
+                              <span className="font-medium">{getPegboardTypeDescription(sinkConfig.pegboardTypeId) || 'N/A'}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500">Pegboard Color:</span>
-                              <span className="font-medium">{extractColorFromId(sinkConfig.pegboardColorId) || 'N/A'}</span>
-                            </div>
+                            {sinkConfig.pegboardColorId && extractColorFromId(sinkConfig.pegboardColorId) !== 'N/A' && (
+                              <div className="flex justify-between">
+                                <span className="text-slate-500">Pegboard Color:</span>
+                                <span className="font-medium">{extractColorFromId(sinkConfig.pegboardColorId)}</span>
+                              </div>
+                            )}
                             <div className="flex justify-between">
                               <span className="text-slate-500">Size:</span>
-                              <span className="font-medium">Auto-calculated for {sinkConfig.length || 'N/A'}" length</span>
+                              <span className="font-medium">{getPegboardSizeDescription(sinkConfig.length || 'N/A')}</span>
                             </div>
                           </>
                         )}
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Drawers & Compartments:</span>
-                          <span className="font-medium">{sinkConfig.drawersAndCompartments?.length || 0} items</span>
-                        </div>
+                        {sinkConfig.drawersAndCompartments && sinkConfig.drawersAndCompartments.length > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-500">Drawers & Compartments:</span>
+                            <span className="font-medium">{sinkConfig.drawersAndCompartments.length} items</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -901,11 +932,11 @@ export default function OrderDetailsPage() {
                             <div className="space-y-1 text-sm">
                               <div className="flex justify-between">
                                 <span className="text-slate-500">Type:</span>
-                                <span className="font-medium">{getPartDescription(basin.basinTypeId)}</span>
+                                <span className="font-medium">{getBasinTypeDescription(basin.basinTypeId)}</span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-slate-500">Size:</span>
-                                <span className="font-medium">{getPartDescription(basin.basinSizePartNumber)}</span>
+                                <span className="font-medium">{getBasinSizeDescription(basin.basinSizePartNumber)}</span>
                               </div>
                               {basin.customWidth && (
                                 <div className="flex justify-between">
@@ -962,7 +993,7 @@ export default function OrderDetailsPage() {
                               {faucet.faucetPlacement && (
                                 <div className="flex justify-between">
                                   <span className="text-slate-500">Placement:</span>
-                                  <span className="font-medium">{faucet.faucetPlacement}</span>
+                                  <span className="font-medium">{formatPlacement(faucet.faucetPlacement)}</span>
                                 </div>
                               )}
                             </div>
@@ -1016,22 +1047,19 @@ export default function OrderDetailsPage() {
                       <h4 className="font-semibold text-slate-700 border-b pb-1">Selected Accessories</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {accessories.map((accessory: any, idx: number) => (
-                          <div key={idx} className="p-3 bg-purple-50 rounded-lg">
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Assembly ID:</span>
-                                <span className="font-medium">{accessory.assemblyId}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Quantity:</span>
-                                <span className="font-medium">{accessory.quantity}</span>
-                              </div>
+                          <div key={idx} className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:shadow-md transition-shadow">
+                            <div className="space-y-2">
                               {accessory.name && (
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Name:</span>
-                                  <span className="font-medium">{accessory.name}</span>
+                                <div className="text-base font-semibold text-slate-800 mb-2">
+                                  {accessory.name}
                                 </div>
                               )}
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-slate-600">Quantity:</span>
+                                <Badge variant="secondary" className="bg-purple-200 text-purple-800 font-medium">
+                                  {accessory.quantity}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
                         ))}
