@@ -113,6 +113,7 @@ model User {
   systemNotifications     SystemNotification[]     @relation("UserSystemNotifications")
   assignedTasks           Task[]                   @relation("TaskAssignee")
   taskNotes               TaskNote[]               @relation("TaskNoteAuthor")
+  outsourcedParts         OutsourcedPart[]         @relation("UserOutsourcedParts")
 }
 
 model Order {
@@ -145,6 +146,7 @@ model Order {
   sinkConfigurations    SinkConfiguration[]
   sprayerConfigurations SprayerConfiguration[]
   tasks                 Task[]
+  outsourcedParts       OutsourcedPart[]
 }
 
 model BasinConfiguration {
@@ -252,9 +254,10 @@ model BomItem {
   isCustom           Boolean   @default(false)
   parentId           String?
   bomId              String
-  bom                Bom       @relation(fields: [bomId], references: [id])
-  parent             BomItem?  @relation("ParentChildBomItem", fields: [parentId], references: [id])
-  children           BomItem[] @relation("ParentChildBomItem")
+  bom                Bom              @relation(fields: [bomId], references: [id])
+  parent             BomItem?         @relation("ParentChildBomItem", fields: [parentId], references: [id])
+  children           BomItem[]        @relation("ParentChildBomItem")
+  outsourcedParts    OutsourcedPart[]
 }
 
 model OrderHistoryLog {
@@ -781,6 +784,32 @@ model NotificationPreference {
   @@index([userId, notificationType])
 }
 
+model OutsourcedPart {
+  id                 String    @id @default(cuid())
+  orderId            String
+  bomItemId          String?
+  partNumber         String
+  partName           String
+  quantity           Int
+  supplier           String?
+  status             OutsourcedPartStatus @default(PENDING)
+  notes              String?
+  markedAt           DateTime  @default(now())
+  markedById         String
+  expectedReturnDate DateTime?
+  actualReturnDate   DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  
+  order              Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  bomItem            BomItem?  @relation(fields: [bomItemId], references: [id])
+  markedBy           User      @relation("UserOutsourcedParts", fields: [markedById], references: [id])
+
+  @@index([orderId, status])
+  @@index([supplier, status])
+  @@index([expectedReturnDate])
+}
+
 enum PartType {
   COMPONENT
   MATERIAL
@@ -923,4 +952,12 @@ enum TestStatus {
   IN_PROGRESS
   PASSED
   FAILED
+}
+
+enum OutsourcedPartStatus {
+  PENDING
+  SENT
+  IN_PROGRESS
+  RECEIVED
+  CANCELLED
 }

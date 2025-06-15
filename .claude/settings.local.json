@@ -77,7 +77,8 @@
       "mcp__puppeteer__puppeteer_fill",
       "mcp__puppeteer__puppeteer_click",
       "mcp__puppeteer__puppeteer_evaluate",
-      "Bash(./setup-database.sh:*)"
+      "Bash(./setup-database.sh:*)",
+      "Bash(git clean:*)"
     ],
     "deny": []
   },

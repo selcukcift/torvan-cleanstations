@@ -7,7 +7,7 @@ async function runSeedScript(scriptName, description) {
   console.log(`${'='.repeat(60)}\n`);
   
   try {
-    execSync(`node ${path.join(__dirname, scriptName)}`, { 
+    execSync(`node "${path.join(__dirname, scriptName)}"`, { 
       stdio: 'inherit',
       cwd: path.join(__dirname, '..')
     });

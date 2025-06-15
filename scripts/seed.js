@@ -312,7 +312,474 @@ async function main() {
     console.error('❌ Pegboard verification failed:', error.message);
   }
 
+  console.log('\n📋 Seeding Task Templates for Assembly Workflows...');
+  try {
+    await seedTaskTemplates();
+    console.log('✅ Task Templates seeded successfully.');
+  } catch (error) {
+    console.error('❌ Task Templates seeding failed:', error.message);
+  }
+
+  console.log('\n🧪 Seeding Testing Framework...');
+  try {
+    await seedTestingFramework();
+    console.log('✅ Testing Framework seeded successfully.');
+  } catch (error) {
+    console.error('❌ Testing Framework seeding failed:', error.message);
+  }
+
+  console.log('\n📊 Seeding Sample Workflow Data...');
+  try {
+    await seedSampleWorkflowData();
+    console.log('✅ Sample Workflow Data seeded successfully.');
+  } catch (error) {
+    console.error('❌ Sample Workflow Data seeding failed:', error.message);
+  }
+
   console.log('\n🎉 Comprehensive seeding process completed!');
+}
+
+// Task Templates Seeding Function
+async function seedTaskTemplates() {
+  const existingTaskTemplates = await prisma.taskTemplate.count();
+  if (existingTaskTemplates > 0) {
+    console.log(`Skipping task templates - ${existingTaskTemplates} already exist.`);
+    return;
+  }
+
+  const taskTemplates = [
+    {
+      name: "T2 Sink Complete Assembly",
+      description: "Complete assembly workflow for T2 MDRD sinks",
+      appliesToAssemblyType: "COMPLEX",
+      appliesToProductFamily: "MDRD",
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Pre-Assembly Preparation",
+          description: "Unpack and inspect all components, verify against BOM",
+          estimatedMinutes: 15
+        },
+        {
+          stepNumber: 2, 
+          title: "Sink Body Assembly",
+          description: "Assemble main sink structure and mounting points",
+          estimatedMinutes: 45
+        },
+        {
+          stepNumber: 3,
+          title: "Basin Installation",
+          description: "Install and secure all basin components",
+          estimatedMinutes: 30
+        },
+        {
+          stepNumber: 4,
+          title: "Plumbing Connections", 
+          description: "Connect all water lines, drains, and fittings",
+          estimatedMinutes: 60
+        },
+        {
+          stepNumber: 5,
+          title: "Electrical Installation",
+          description: "Install control boxes, sensors, and wiring",
+          estimatedMinutes: 45
+        },
+        {
+          stepNumber: 6,
+          title: "Pegboard Installation",
+          description: "Mount pegboard and accessories if specified",
+          estimatedMinutes: 20
+        },
+        {
+          stepNumber: 7,
+          title: "Final Assembly Check",
+          description: "Verify all connections and prepare for testing",
+          estimatedMinutes: 15
+        }
+      ]
+    },
+    {
+      name: "Basin-Specific Assembly",
+      description: "Assembly workflow specific to basin types (E-Sink, E-Drain)",
+      appliesToAssemblyType: "SIMPLE",
+      appliesToProductFamily: "MDRD",
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Basin Preparation",
+          description: "Prepare basin for installation and check dimensions",
+          estimatedMinutes: 10
+        },
+        {
+          stepNumber: 2,
+          title: "Drain Assembly",
+          description: "Install drain components and gaskets",
+          estimatedMinutes: 20
+        },
+        {
+          stepNumber: 3,
+          title: "Special Features Installation",
+          description: "Install basin lights, sensors, or other add-ons",
+          estimatedMinutes: 25
+        }
+      ]
+    },
+    {
+      name: "Control System Setup",
+      description: "Electrical and control system configuration",
+      appliesToAssemblyType: "COMPLEX",
+      appliesToProductFamily: "MDRD",
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Control Box Mounting",
+          description: "Mount and secure control boxes",
+          estimatedMinutes: 15
+        },
+        {
+          stepNumber: 2,
+          title: "Sensor Installation", 
+          description: "Install and calibrate sensors",
+          estimatedMinutes: 30
+        },
+        {
+          stepNumber: 3,
+          title: "Wiring and Connections",
+          description: "Complete all electrical connections",
+          estimatedMinutes: 45
+        },
+        {
+          stepNumber: 4,
+          title: "System Configuration",
+          description: "Configure and test control system",
+          estimatedMinutes: 30
+        }
+      ]
+    }
+  ];
+
+  for (const template of taskTemplates) {
+    const createdTemplate = await prisma.taskTemplate.create({
+      data: {
+        name: template.name,
+        description: template.description,
+        appliesToAssemblyType: template.appliesToAssemblyType,
+        appliesToProductFamily: template.appliesToProductFamily,
+        version: "1.0",
+        isActive: true
+      }
+    });
+
+    for (const step of template.steps) {
+      await prisma.taskTemplateStep.create({
+        data: {
+          taskTemplateId: createdTemplate.id,
+          stepNumber: step.stepNumber,
+          title: step.title,
+          description: step.description,
+          estimatedMinutes: step.estimatedMinutes
+        }
+      });
+    }
+    console.log(`  Created task template: ${template.name} with ${template.steps.length} steps`);
+  }
+}
+
+// Testing Framework Seeding Function
+async function seedTestingFramework() {
+  const existingTestProcedures = await prisma.testProcedureTemplate.count();
+  if (existingTestProcedures > 0) {
+    console.log(`Skipping test procedures - ${existingTestProcedures} already exist.`);
+    return;
+  }
+
+  const testProcedures = [
+    {
+      name: "T2 Sink Functional Testing",
+      description: "Complete functional testing protocol for T2 sinks",
+      productFamily: "MDRD",
+      estimatedDurationMinutes: 60,
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Visual Inspection",
+          instruction: "Perform complete visual inspection of assembly",
+          expectedOutcome: "All components properly installed and aligned",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 2,
+          title: "Water Flow Test",
+          instruction: "Test all water connections and flow rates",
+          expectedOutcome: "Proper flow rate and no leaks",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 3,
+          title: "Electrical System Test",
+          instruction: "Test all electrical components and controls",
+          expectedOutcome: "All electrical systems functioning correctly",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 4,
+          title: "Pressure Test",
+          instruction: "Perform pressure test on all connections",
+          expectedOutcome: "System holds pressure without leaks",
+          inputDataType: "NUMERIC",
+          numericUnit: "PSI",
+          numericLowerLimit: 15.0,
+          numericUpperLimit: 25.0
+        },
+        {
+          stepNumber: 5,
+          title: "Control System Verification",
+          instruction: "Verify all control systems respond correctly",
+          expectedOutcome: "All controls function as designed",
+          inputDataType: "PASS_FAIL"
+        }
+      ]
+    },
+    {
+      name: "Basin-Specific Testing",
+      description: "Testing protocol for individual basin types",
+      productFamily: "MDRD",
+      estimatedDurationMinutes: 30,
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Basin Drain Test",
+          instruction: "Test basin drain function and seal",
+          expectedOutcome: "Drain operates correctly with proper seal",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 2,
+          title: "Basin Light Test",
+          instruction: "Test basin lighting if equipped",
+          expectedOutcome: "Lights illuminate properly",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 3,
+          title: "Sensor Calibration",
+          instruction: "Calibrate and test basin sensors",
+          expectedOutcome: "Sensors respond within specifications",
+          inputDataType: "NUMERIC",
+          numericUnit: "seconds",
+          numericLowerLimit: 0.5,
+          numericUpperLimit: 2.0
+        }
+      ]
+    },
+    {
+      name: "End-of-Line Testing",
+      description: "Final comprehensive testing before shipping",
+      productFamily: "MDRD",
+      estimatedDurationMinutes: 90,
+      steps: [
+        {
+          stepNumber: 1,
+          title: "Complete System Test",
+          instruction: "Run complete system through full operational cycle",
+          expectedOutcome: "System completes full cycle without errors",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 2,
+          title: "Safety Systems Test",
+          instruction: "Test all safety interlocks and emergency stops",
+          expectedOutcome: "All safety systems function correctly",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 3,
+          title: "Performance Validation",
+          instruction: "Validate system meets performance specifications",
+          expectedOutcome: "System meets all performance criteria",
+          inputDataType: "PASS_FAIL"
+        },
+        {
+          stepNumber: 4,
+          title: "Documentation Review",
+          instruction: "Verify all documentation is complete and accurate",
+          expectedOutcome: "All required documentation present",
+          inputDataType: "PASS_FAIL"
+        }
+      ]
+    }
+  ];
+
+  for (const procedure of testProcedures) {
+    const createdProcedure = await prisma.testProcedureTemplate.create({
+      data: {
+        name: procedure.name,
+        description: procedure.description,
+        productFamily: procedure.productFamily,
+        estimatedDurationMinutes: procedure.estimatedDurationMinutes,
+        version: "1.0",
+        isActive: true
+      }
+    });
+
+    for (const step of procedure.steps) {
+      await prisma.testProcedureStepTemplate.create({
+        data: {
+          testProcedureTemplateId: createdProcedure.id,
+          stepNumber: step.stepNumber,
+          title: step.title,
+          instruction: step.instruction,
+          expectedOutcome: step.expectedOutcome,
+          inputDataType: step.inputDataType,
+          numericUnit: step.numericUnit || null,
+          numericLowerLimit: step.numericLowerLimit || null,
+          numericUpperLimit: step.numericUpperLimit || null,
+          isRequired: true
+        }
+      });
+    }
+    console.log(`  Created test procedure: ${procedure.name} with ${procedure.steps.length} steps`);
+  }
+}
+
+// Sample Workflow Data Seeding Function
+async function seedSampleWorkflowData() {
+  // Get existing orders and users
+  const existingOrder = await prisma.order.findFirst();
+  const procurementUser = await prisma.user.findFirst({ where: { role: 'PROCUREMENT_SPECIALIST' } });
+  const qcUser = await prisma.user.findFirst({ where: { role: 'QC_PERSON' } });
+  const assemblerUser = await prisma.user.findFirst({ where: { role: 'ASSEMBLER' } });
+
+  if (!existingOrder || !procurementUser || !qcUser || !assemblerUser) {
+    console.log('Required users or orders not found for sample workflow data');
+    return;
+  }
+
+  // Create sample BOM if none exists
+  const existingBOM = await prisma.bom.findFirst();
+  if (!existingBOM) {
+    const sampleBOM = await prisma.bom.create({
+      data: {
+        orderId: existingOrder.id,
+        buildNumber: existingOrder.buildNumbers[0] || "001",
+        bomItems: {
+          create: [
+            {
+              partIdOrAssemblyId: "T2-BODY-48-60-HA",
+              name: "T2 Sink Body 48-60 Height Adjustable",
+              quantity: 1,
+              itemType: "ASSEMBLY",
+              category: "SINK BODY"
+            },
+            {
+              partIdOrAssemblyId: "T2-BASIN-20X20X8",
+              name: "Basin 20x20x8",
+              quantity: 2,
+              itemType: "ASSEMBLY", 
+              category: "BASIN"
+            },
+            {
+              partIdOrAssemblyId: "T2-CB-2BASIN-ESINK",
+              name: "Control Box 2-Basin E-Sink",
+              quantity: 1,
+              itemType: "ASSEMBLY",
+              category: "CONTROL BOX"
+            }
+          ]
+        }
+      }
+    });
+    console.log('  Created sample BOM with 3 items');
+  }
+
+  // Create sample service order if none exists
+  const existingServiceOrder = await prisma.serviceOrder.count();
+  if (existingServiceOrder === 0) {
+    const serviceUser = await prisma.user.findFirst({ where: { role: 'SERVICE_DEPARTMENT' } });
+    if (serviceUser) {
+      const serviceParts = await prisma.part.findMany({ take: 3 });
+      
+      await prisma.serviceOrder.create({
+        data: {
+          requestedById: serviceUser.id,
+          status: 'PENDING_APPROVAL',
+          notes: 'Replacement parts needed for maintenance',
+          items: {
+            create: serviceParts.map(part => ({
+              partId: part.partId,
+              quantityRequested: Math.floor(Math.random() * 5) + 1,
+              notes: `Replacement ${part.name}`
+            }))
+          }
+        }
+      });
+      console.log('  Created sample service order with parts request');
+    }
+  }
+
+  // Create sample QC result if none exists
+  const existingQCResult = await prisma.orderQcResult.count();
+  if (existingQCResult === 0) {
+    const qcTemplate = await prisma.qcFormTemplate.findFirst();
+    if (qcTemplate) {
+      await prisma.orderQcResult.create({
+        data: {
+          orderId: existingOrder.id,
+          qcFormTemplateId: qcTemplate.id,
+          qcPerformedById: qcUser.id,
+          overallStatus: 'PASSED',
+          notes: 'Sample QC inspection completed successfully',
+          externalJobId: 'JOB-' + Date.now()
+        }
+      });
+      console.log('  Created sample QC result');
+    }
+  }
+
+  // Create sample inventory transactions if none exist
+  const existingTransactions = await prisma.inventoryTransaction.count();
+  if (existingTransactions === 0) {
+    const inventoryItems = await prisma.inventoryItem.findMany({ take: 3 });
+    
+    for (const item of inventoryItems) {
+      await prisma.inventoryTransaction.create({
+        data: {
+          inventoryItemId: item.id,
+          type: 'OUTGOING',
+          quantity: -1,
+          reason: 'Used in production',
+          orderId: existingOrder.id,
+          performedById: assemblerUser.id
+        }
+      });
+    }
+    console.log(`  Created ${inventoryItems.length} sample inventory transactions`);
+  }
+
+  // Create sample notifications if none exist
+  const existingNotifications = await prisma.notification.count();
+  if (existingNotifications === 0) {
+    await prisma.notification.create({
+      data: {
+        message: `Order ${existingOrder.poNumber} is ready for procurement review`,
+        linkToOrder: existingOrder.id,
+        recipientId: procurementUser.id,
+        type: 'ORDER_STATUS_CHANGE'
+      }
+    });
+    
+    await prisma.notification.create({
+      data: {
+        message: `QC inspection completed for order ${existingOrder.poNumber}`,
+        linkToOrder: existingOrder.id,
+        recipientId: procurementUser.id,
+        type: 'QC_APPROVAL_REQUIRED'
+      }
+    });
+    console.log('  Created sample notifications');
+  }
+
+  console.log('Sample workflow data seeding completed');
 }
 
 main()

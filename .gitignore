@@ -96,6 +96,9 @@ coverage/
 *.tgz
 *.tar.gz
 
+# MCP configuration
+.mcp.json
+
 # Temporary and debug files
 debug-*.js
 test-*.js
