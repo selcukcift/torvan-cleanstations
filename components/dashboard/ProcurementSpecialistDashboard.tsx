@@ -76,6 +76,12 @@ export function ProcurementSpecialistDashboard() {
     awaitingParts: 0,
     urgentOrders: 0
   })
+  const [orderFilters, setOrderFilters] = useState({
+    status: "all",
+    customer: "",
+    searchTerm: ""
+  })
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set())
   const [serviceStats, setServiceStats] = useState({
     pendingRequests: 0,
     urgentRequests: 0
@@ -99,6 +105,10 @@ export function ProcurementSpecialistDashboard() {
     fetchOutsourcedParts()
   }, [])
 
+  useEffect(() => {
+    fetchOrders()
+  }, [orderFilters])
+
   const fetchOrders = async () => {
     setLoading(true)
     try {
@@ -107,9 +117,29 @@ export function ProcurementSpecialistDashboard() {
       
       if (response.data.success) {
         // Filter for procurement-relevant statuses (Sprint 4.1 requirement)
-        const procurementOrders = response.data.data.filter((order: any) => 
-          ["OrderCreated", "PartsSent"].includes(order.orderStatus)
+        let procurementOrders = response.data.data.filter((order: any) => 
+          ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus)
         )
+        
+        // Apply additional filters
+        if (orderFilters.status !== "all") {
+          procurementOrders = procurementOrders.filter((order: any) => 
+            order.orderStatus === orderFilters.status
+          )
+        }
+        
+        if (orderFilters.customer) {
+          procurementOrders = procurementOrders.filter((order: any) => 
+            order.customerName?.toLowerCase().includes(orderFilters.customer.toLowerCase())
+          )
+        }
+        
+        if (orderFilters.searchTerm) {
+          procurementOrders = procurementOrders.filter((order: any) => 
+            order.poNumber?.toLowerCase().includes(orderFilters.searchTerm.toLowerCase()) ||
+            order.customerName?.toLowerCase().includes(orderFilters.searchTerm.toLowerCase())
+          )
+        }
         
         setOrders(procurementOrders)
         calculateStats(procurementOrders)
@@ -134,18 +164,20 @@ export function ProcurementSpecialistDashboard() {
 
     const today = new Date()
     ordersList.forEach(order => {
-      if (order.orderStatus === "OrderCreated") {
+      if (order.orderStatus === "ORDER_CREATED") {
         stats.newOrders++
       }
-      if (order.orderStatus === "PartsSent") {
+      if (order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL") {
         stats.awaitingParts++
       }
       
       // Check if order is urgent (want date within 14 days)
-      const wantDate = new Date(order.wantDate)
-      const daysUntilDue = Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-      if (daysUntilDue <= 14) {
-        stats.urgentOrders++
+      if (order.wantDate) {
+        const wantDate = new Date(order.wantDate)
+        const daysUntilDue = Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+        if (daysUntilDue <= 14) {
+          stats.urgentOrders++
+        }
       }
     })
 
@@ -197,7 +229,7 @@ export function ProcurementSpecialistDashboard() {
     setActionLoading(orderId)
     try {
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
-        newStatus: "PartsSent",
+        newStatus: "PARTS_SENT_WAITING_ARRIVAL",
         notes: "BOM approved for production by procurement specialist"
       })
       
@@ -224,7 +256,7 @@ export function ProcurementSpecialistDashboard() {
     setActionLoading(orderId)
     try {
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
-        newStatus: "ReadyForPreQC",
+        newStatus: "READY_FOR_PRE_QC",
         notes: "Parts arrival confirmed by procurement specialist"
       })
       
@@ -246,24 +278,67 @@ export function ProcurementSpecialistDashboard() {
     }
   }
 
+  const handleBulkApprove = async () => {
+    if (selectedOrders.size === 0) {
+      toast({
+        title: "No orders selected",
+        description: "Please select orders to approve",
+        variant: "destructive"
+      })
+      return
+    }
+
+    setActionLoading("bulk-approve")
+    try {
+      const approvalPromises = Array.from(selectedOrders).map(orderId =>
+        nextJsApiClient.put(`/orders/${orderId}/status`, {
+          newStatus: "PARTS_SENT_WAITING_ARRIVAL",
+          notes: "Bulk BOM approval by procurement specialist"
+        })
+      )
+
+      await Promise.all(approvalPromises)
+
+      toast({
+        title: "Bulk Approval Complete",
+        description: `${selectedOrders.size} orders approved for production`
+      })
+      
+      setSelectedOrders(new Set())
+      fetchOrders()
+    } catch (error: any) {
+      toast({
+        title: "Bulk Approval Failed",
+        description: "Some orders could not be approved",
+        variant: "destructive"
+      })
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   const fetchServiceOrders = async () => {
     setServiceLoading(true)
     try {
       const response = await nextJsApiClient.get("/service-orders?limit=50")
       
       if (response.data.success) {
-        // Filter for pending service orders
-        const pendingServiceOrders = response.data.data.filter((serviceOrder: any) => 
-          serviceOrder.status === "PENDING"
+        // Get service orders from correct response structure
+        const serviceOrdersData = response.data.data.serviceOrders || []
+        
+        // Filter for pending service orders (PENDING or PENDING_APPROVAL)
+        const pendingServiceOrders = serviceOrdersData.filter((serviceOrder: any) => 
+          serviceOrder.status === "PENDING" || serviceOrder.status === "PENDING_APPROVAL"
         )
         
         setServiceOrders(pendingServiceOrders)
         calculateServiceStats(pendingServiceOrders)
       }
     } catch (error: any) {
+      console.error("Service orders fetch error:", error)
       toast({
         title: "Error",
-        description: "Failed to fetch service orders",
+        description: error.response?.data?.message || "Failed to fetch service orders",
         variant: "destructive"
       })
     } finally {
@@ -282,7 +357,10 @@ export function ProcurementSpecialistDashboard() {
   const handleApproveServiceOrder = async (serviceOrderId: string) => {
     setActionLoading(serviceOrderId)
     try {
-      const response = await nextJsApiClient.post(`/api/v1/service/orders/${serviceOrderId}/approve`)
+      const response = await nextJsApiClient.put(`/service-orders/${serviceOrderId}`, {
+        status: "APPROVED",
+        notes: "Approved by procurement specialist"
+      })
       
       if (response.data.success) {
         toast({
@@ -514,12 +592,84 @@ export function ProcurementSpecialistDashboard() {
         <TabsContent value="orders" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Orders Requiring Procurement</CardTitle>
-              <CardDescription>
-                Orders that need parts ordering or are awaiting parts arrival
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Orders Requiring Procurement ({orders.length})</CardTitle>
+                  <CardDescription>
+                    Orders that need parts ordering or are awaiting parts arrival
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
+              {/* Enhanced Filtering Controls */}
+              <div className="flex items-center gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  <span className="text-sm font-medium">Filters:</span>
+                </div>
+                
+                <Select
+                  value={orderFilters.status}
+                  onValueChange={(value) => setOrderFilters(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="ORDER_CREATED">New Orders</SelectItem>
+                    <SelectItem value="PARTS_SENT_WAITING_ARRIVAL">Parts Sent</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Input
+                  placeholder="Search PO# or Customer..."
+                  value={orderFilters.searchTerm}
+                  onChange={(e) => setOrderFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
+                  className="w-60"
+                />
+                
+                <Input
+                  placeholder="Filter by Customer..."
+                  value={orderFilters.customer}
+                  onChange={(e) => setOrderFilters(prev => ({ ...prev, customer: e.target.value }))}
+                  className="w-48"
+                />
+                
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setOrderFilters({ status: "all", customer: "", searchTerm: "" })}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Clear Filters
+                </Button>
+                
+                {selectedOrders.size > 0 && (
+                  <div className="flex items-center gap-2 ml-auto">
+                    <span className="text-sm text-muted-foreground">
+                      {selectedOrders.size} selected
+                    </span>
+                    <Button
+                      size="sm"
+                      onClick={handleBulkApprove}
+                      disabled={actionLoading === "bulk-approve"}
+                    >
+                      {actionLoading === "bulk-approve" ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                      )}
+                      Bulk Approve BOMs
+                    </Button>
+                  </div>
+                )}
+              </div>
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2 className="w-8 h-8 animate-spin" />
@@ -533,6 +683,18 @@ export function ProcurementSpecialistDashboard() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selectedOrders.size === orders.length && orders.length > 0}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedOrders(new Set(orders.map(o => o.id)))
+                        } else {
+                          setSelectedOrders(new Set())
+                        }
+                      }}
+                    />
+                  </TableHead>
                   <TableHead>PO Number</TableHead>
                   <TableHead>Order Date</TableHead>
                   <TableHead>Want Date</TableHead>
@@ -544,32 +706,61 @@ export function ProcurementSpecialistDashboard() {
               </TableHeader>
               <TableBody>
                 {orders.map((order) => {
-                  const wantDate = new Date(order.wantDate)
+                  const wantDate = order.wantDate ? new Date(order.wantDate) : null
                   const today = new Date()
-                  const daysUntilDue = Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-                  const isUrgent = daysUntilDue <= 14
+                  const daysUntilDue = wantDate ? Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : null
+                  const isUrgent = daysUntilDue !== null && daysUntilDue <= 14
 
                   return (
                     <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.poNumber}</TableCell>
                       <TableCell>
-                        {format(new Date(order.createdAt), "MMM dd, yyyy")}
+                        <Checkbox
+                          checked={selectedOrders.has(order.id)}
+                          onCheckedChange={(checked) => {
+                            const newSelection = new Set(selectedOrders)
+                            if (checked) {
+                              newSelection.add(order.id)
+                            } else {
+                              newSelection.delete(order.id)
+                            }
+                            setSelectedOrders(newSelection)
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {order.poNumber}
+                          {isUrgent && (
+                            <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                              Urgent
+                            </Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
-                        {format(wantDate, "MMM dd, yyyy")}
+                        {order.createdAt ? 
+                          format(new Date(order.createdAt), "MMM dd, yyyy") 
+                          : "N/A"
+                        }
+                      </TableCell>
+                      <TableCell>
+                        {wantDate ? 
+                          format(wantDate, "MMM dd, yyyy") 
+                          : "N/A"
+                        }
                       </TableCell>
                       <TableCell>
                         <Badge className={
-                          order.orderStatus === "OrderCreated" 
+                          order.orderStatus === "ORDER_CREATED" 
                             ? "bg-blue-100 text-blue-700" 
                             : "bg-purple-100 text-purple-700"
                         }>
-                          {order.orderStatus === "OrderCreated" ? "New Order" : "Parts Sent"}
+                          {order.orderStatus === "ORDER_CREATED" ? "New Order" : "Parts Sent"}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <span className={isUrgent ? "text-red-600 font-medium" : ""}>
-                          {daysUntilDue} days
+                          {daysUntilDue !== null ? `${daysUntilDue} days` : "N/A"}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -593,7 +784,7 @@ export function ProcurementSpecialistDashboard() {
                               <FileText className="w-4 h-4 mr-2" />
                               View BOM & Approve
                             </DropdownMenuItem>
-                            {order.orderStatus === "OrderCreated" && (
+                            {order.orderStatus === "ORDER_CREATED" && (
                               <DropdownMenuItem 
                                 onClick={() => handleApproveBOMForProduction(order.id)}
                                 disabled={actionLoading === order.id}
@@ -602,7 +793,7 @@ export function ProcurementSpecialistDashboard() {
                                 Approve BOM for Production
                               </DropdownMenuItem>
                             )}
-                            {order.orderStatus === "PartsSent" && (
+                            {order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL" && (
                               <DropdownMenuItem 
                                 onClick={() => handleConfirmPartsArrival(order.id)}
                                 disabled={actionLoading === order.id}
@@ -662,7 +853,10 @@ export function ProcurementSpecialistDashboard() {
                         <TableCell className="font-medium">{serviceOrder.id.slice(-8)}</TableCell>
                         <TableCell>{serviceOrder.requestedBy?.fullName || "Unknown"}</TableCell>
                         <TableCell>
-                          {format(new Date(serviceOrder.createdAt), "MMM dd, yyyy")}
+                          {serviceOrder.requestTimestamp ? 
+                            format(new Date(serviceOrder.requestTimestamp), "MMM dd, yyyy") 
+                            : "N/A"
+                          }
                         </TableCell>
                         <TableCell>
                           <Badge className={
@@ -676,7 +870,7 @@ export function ProcurementSpecialistDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {serviceOrder.serviceOrderItems?.length || 0} items
+                          {serviceOrder.items?.length || 0} items
                         </TableCell>
                         <TableCell>
                           ${serviceOrder.estimatedCost?.toFixed(2) || "TBD"}
@@ -918,8 +1112,8 @@ export function ProcurementSpecialistDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {part.expectedReturnDate 
-                            ? format(new Date(part.expectedReturnDate), "MMM dd, yyyy")
+                          {part.expectedReturnDate ? 
+                            format(new Date(part.expectedReturnDate), "MMM dd, yyyy") 
                             : "Not set"
                           }
                         </TableCell>
@@ -968,13 +1162,19 @@ export function ProcurementSpecialistDashboard() {
                 <div>
                   <p className="text-sm font-medium">Want Date:</p>
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(selectedOrder.wantDate), "MMM dd, yyyy")}
+                    {selectedOrder.wantDate ? 
+                      format(new Date(selectedOrder.wantDate), "MMM dd, yyyy") 
+                      : "N/A"
+                    }
                   </p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Order Date:</p>
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(selectedOrder.createdAt), "MMM dd, yyyy")}
+                    {selectedOrder.createdAt ? 
+                      format(new Date(selectedOrder.createdAt), "MMM dd, yyyy") 
+                      : "N/A"
+                    }
                   </p>
                 </div>
                 <div>
@@ -1003,7 +1203,7 @@ export function ProcurementSpecialistDashboard() {
               </div>
             )}
             
-            {selectedOrder?.orderStatus === "OrderCreated" && (
+            {selectedOrder?.orderStatus === "ORDER_CREATED" && (
               <div className="flex items-center justify-between pt-4 border-t">
                 <p className="text-sm text-muted-foreground">
                   Ready to approve this BOM for production?
