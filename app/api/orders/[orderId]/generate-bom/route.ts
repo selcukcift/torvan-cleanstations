@@ -213,11 +213,45 @@ export async function POST(
         await createBomItemRecursive(tx, newBom.id, item, null)
       }
 
-      // Create history log entry
+      // Create history log entry (ensure user exists in database)
+      let validUserId = user.id
+      
+      // Check if user exists in database, create if needed
+      const dbUser = await tx.user.findUnique({ where: { id: user.id } })
+      if (!dbUser) {
+        // Try to find by email/username
+        const existingUser = await tx.user.findFirst({
+          where: {
+            OR: [
+              { email: user.email },
+              { username: user.username }
+            ]
+          }
+        })
+        
+        if (existingUser) {
+          validUserId = existingUser.id
+        } else {
+          // Create user if doesn't exist
+          const newUser = await tx.user.create({
+            data: {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              passwordHash: 'SESSION_USER_NO_PASSWORD',
+              fullName: user.name,
+              role: user.role as any,
+              initials: user.initials
+            }
+          })
+          validUserId = newUser.id
+        }
+      }
+      
       await tx.orderHistoryLog.create({
         data: {
           orderId,
-          userId: user.id,
+          userId: validUserId,
           action: 'BOM_GENERATED',
           oldStatus: order.orderStatus,
           newStatus: order.orderStatus,
