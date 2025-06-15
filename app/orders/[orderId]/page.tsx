@@ -39,6 +39,7 @@ import { OrderComments } from "@/components/order/OrderComments"
 import { generateOrderDescription, generateShortDescription } from "@/lib/descriptionGenerator"
 import { ConfigurationDisplay } from "@/components/order/shared/ConfigurationDisplay"
 import { BOMDisplay } from "@/components/order/shared/BOMDisplay"
+import { ProcurementTab } from "@/components/order/tabs/ProcurementTab"
 
 // Status badge color mapping
 const statusColors: Record<string, string> = {
@@ -977,10 +978,19 @@ export default function OrderDetailsPage() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className={`grid w-full ${
+          (user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
+          ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) 
+            ? "grid-cols-8" 
+            : "grid-cols-7"
+        }`}>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="bom">Bill of Materials</TabsTrigger>
+          {(user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
+           ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) && (
+            <TabsTrigger value="procurement">Procurement</TabsTrigger>
+          )}
           <TabsTrigger value="qc">Quality Control</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="comments">Comments</TabsTrigger>
@@ -1312,6 +1322,21 @@ export default function OrderDetailsPage() {
             showDebugInfo={false}
           />
         </TabsContent>
+
+        {/* Procurement Tab */}
+        {(user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
+         ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) && (
+          <TabsContent value="procurement" className="space-y-4">
+            <ProcurementTab
+              orderId={order.id}
+              orderStatus={order.orderStatus}
+              bomData={bomData}
+              bomLoading={bomLoading}
+              bomError={bomError}
+              onStatusChange={fetchOrderDetails}
+            />
+          </TabsContent>
+        )}
 
         {/* QC Tab */}
         <TabsContent value="qc" className="space-y-4">

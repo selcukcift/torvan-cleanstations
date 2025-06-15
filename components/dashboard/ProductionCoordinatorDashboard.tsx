@@ -200,7 +200,11 @@ export function ProductionCoordinatorDashboard() {
   })
 
   // View management
-  const [currentView, setCurrentView] = useState<'orders' | 'calendar'>('orders')
+  const [currentView, setCurrentView] = useState<'orders' | 'calendar' | 'service-requests'>('orders')
+  
+  // Service requests state
+  const [serviceRequests, setServiceRequests] = useState<any[]>([])
+  const [serviceRequestsLoading, setServiceRequestsLoading] = useState(false)
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
@@ -508,6 +512,48 @@ export function ProductionCoordinatorDashboard() {
     setStats(stats)
   }
 
+  const fetchServiceRequests = async () => {
+    setServiceRequestsLoading(true)
+    try {
+      const response = await nextJsApiClient.get("/service-orders?fulfillmentMethod=PRODUCTION_TEAM&status=APPROVED")
+      
+      if (response.data.success) {
+        setServiceRequests(response.data.data.serviceOrders || [])
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch service requests",
+        variant: "destructive"
+      })
+    } finally {
+      setServiceRequestsLoading(false)
+    }
+  }
+
+  const handleCompleteServiceRequest = async (serviceOrderId: string) => {
+    try {
+      const response = await nextJsApiClient.put(`/service-orders/${serviceOrderId}`, {
+        status: "RECEIVED",
+        notes: "Completed by production team"
+      })
+      
+      if (response.data.success) {
+        toast({
+          title: "Service Request Completed",
+          description: "Service request has been marked as completed"
+        })
+        fetchServiceRequests() // Refresh the list
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to complete service request",
+        variant: "destructive"
+      })
+    }
+  }
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setCurrentPage(1)
@@ -800,11 +846,26 @@ export function ProductionCoordinatorDashboard() {
             Check Deadlines
           </Button>
           <Button 
-            onClick={() => setCurrentView(currentView === 'calendar' ? 'orders' : 'calendar')}
+            onClick={() => {
+              const nextView = currentView === 'orders' ? 'calendar' : 'orders'
+              setCurrentView(nextView)
+            }}
             variant={currentView === 'calendar' ? "default" : "outline"}
           >
             <Calendar className="w-4 h-4 mr-2" />
             {currentView === 'calendar' ? 'Orders View' : 'Calendar View'}
+          </Button>
+          <Button 
+            onClick={() => {
+              setCurrentView('service-requests')
+              if (serviceRequests.length === 0) {
+                fetchServiceRequests()
+              }
+            }}
+            variant={currentView === 'service-requests' ? "default" : "outline"}
+          >
+            <Package className="w-4 h-4 mr-2" />
+            Service Requests
           </Button>
           <Button 
             onClick={() => setShowReports(!showReports)}
@@ -1803,6 +1864,111 @@ export function ProductionCoordinatorDashboard() {
       {/* Main Content - Conditional View */}
       {currentView === 'calendar' ? (
         <ProductionScheduleCalendar />
+      ) : currentView === 'service-requests' ? (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Service Requests</CardTitle>
+                <CardDescription>
+                  Service part requests assigned to production team
+                </CardDescription>
+              </div>
+              <Button 
+                onClick={fetchServiceRequests} 
+                size="sm" 
+                variant="outline"
+                disabled={serviceRequestsLoading}
+              >
+                {serviceRequestsLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {serviceRequestsLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin" />
+              </div>
+            ) : serviceRequests.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <p className="text-slate-600">No service requests assigned to production</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Service Order ID</TableHead>
+                    <TableHead>Requested By</TableHead>
+                    <TableHead>Request Date</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Notes</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {serviceRequests.map((serviceOrder) => (
+                    <TableRow key={serviceOrder.id}>
+                      <TableCell className="font-medium">#{serviceOrder.id.slice(-8)}</TableCell>
+                      <TableCell>{serviceOrder.requestedBy?.fullName || "Unknown"}</TableCell>
+                      <TableCell>
+                        {serviceOrder.requestTimestamp ? 
+                          format(new Date(serviceOrder.requestTimestamp), "MMM dd, yyyy") 
+                          : "N/A"
+                        }
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={
+                          serviceOrder.priority === "URGENT" 
+                            ? "bg-red-100 text-red-700" 
+                            : serviceOrder.priority === "HIGH"
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-blue-100 text-blue-700"
+                        }>
+                          {serviceOrder.priority || "NORMAL"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {serviceOrder.items?.slice(0, 2).map((item: any, idx: number) => (
+                            <div key={idx} className="text-sm">
+                              <span className="font-medium">{item.partName}</span>
+                              <span className="text-slate-500 ml-2">(Qty: {item.quantity})</span>
+                            </div>
+                          ))}
+                          {serviceOrder.items?.length > 2 && (
+                            <p className="text-xs text-slate-500">
+                              +{serviceOrder.items.length - 2} more items
+                            </p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="max-w-xs truncate text-sm text-slate-600">
+                          {serviceOrder.notes || "No notes provided"}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          onClick={() => handleCompleteServiceRequest(serviceOrder.id)}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Mark Complete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
       ) : (
         <>
           {/* Orders Table */}

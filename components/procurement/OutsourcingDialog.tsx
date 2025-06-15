@@ -62,6 +62,7 @@ const statusOptions = [
 ]
 
 const commonSuppliers = [
+  "Sink Body Manufacturer",
   "Acme Manufacturing",
   "Global Parts Co.",
   "Precision Components Ltd.",

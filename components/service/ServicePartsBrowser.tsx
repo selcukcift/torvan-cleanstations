@@ -11,13 +11,12 @@ import {
   Package,
   Image as ImageIcon,
   Plus,
-  Filter
+  Filter,
+  Minus
 } from "lucide-react"
 import { nextJsApiClient } from '@/lib/api'
 import { useToast } from "@/hooks/use-toast"
-
-// Simple cart store (in a real app, use Zustand or Redux)
-const cartItems: any[] = []
+import { useServiceCartStore } from "@/stores/serviceCartStore"
 
 export function ServicePartsBrowser() {
   const [parts, setParts] = useState<any[]>([])
@@ -25,6 +24,9 @@ export function ServicePartsBrowser() {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const { toast } = useToast()
+  
+  // Cart store
+  const { addItem, items, updateQuantity, getTotalItems } = useServiceCartStore()
 
   useEffect(() => {
     fetchParts()
@@ -59,17 +61,14 @@ export function ServicePartsBrowser() {
   }
 
   const addToCart = (part: any) => {
-    const existingItem = cartItems.find(item => item.partId === part.partId)
-    if (existingItem) {
-      existingItem.quantity += 1
-    } else {
-      cartItems.push({
-        partId: part.partId,
-        name: part.name,
-        photoURL: part.photoURL,
-        quantity: 1
-      })
-    }
+    addItem({
+      partId: part.partId,
+      name: part.name,
+      partNumber: part.partNumber,
+      manufacturerPartNumber: part.manufacturerPartNumber,
+      type: part.type,
+      photoURL: part.photoURL,
+    })
     
     toast({
       title: "Added to Cart",
@@ -77,14 +76,42 @@ export function ServicePartsBrowser() {
     })
   }
 
+  const getItemQuantityInCart = (partId: string) => {
+    const item = items.find(item => item.partId === partId)
+    return item?.quantity || 0
+  }
+
+  const handleQuantityChange = (part: any, change: number) => {
+    const currentQuantity = getItemQuantityInCart(part.partId)
+    const newQuantity = currentQuantity + change
+    
+    if (newQuantity <= 0) {
+      return
+    }
+    
+    if (currentQuantity === 0) {
+      addToCart(part)
+    } else {
+      updateQuantity(part.partId, newQuantity)
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Search Header */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="w-5 h-5" />
-            Service Parts Browser
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Package className="w-5 h-5" />
+              Service Parts Browser
+            </div>
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="w-4 h-4" />
+              <Badge variant="outline">
+                {getTotalItems()} items in cart
+              </Badge>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -148,15 +175,39 @@ export function ServicePartsBrowser() {
                     </Badge>
                   </div>
                   
-                  {/* Add to Cart Button */}
-                  <Button 
-                    onClick={() => addToCart(part)}
-                    className="w-full"
-                    size="sm"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add to Cart
-                  </Button>
+                  {/* Quantity Controls */}
+                  {getItemQuantityInCart(part.partId) > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => handleQuantityChange(part, -1)}
+                        variant="outline"
+                        size="sm"
+                        className="w-8 h-8 p-0"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </Button>
+                      <span className="flex-1 text-center text-sm font-medium">
+                        {getItemQuantityInCart(part.partId)}
+                      </span>
+                      <Button 
+                        onClick={() => handleQuantityChange(part, 1)}
+                        variant="outline"
+                        size="sm"
+                        className="w-8 h-8 p-0"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      onClick={() => addToCart(part)}
+                      className="w-full"
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
