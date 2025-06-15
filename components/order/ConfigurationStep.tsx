@@ -771,12 +771,12 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                               {/* Only show items that haven't been selected yet */}
                               {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT") && (
                                 <SelectItem value="T2-OA-2D-152012-STACKED-KIT">
-                                  2 Drawer Stacked Kit (15"×20"×12")
+                                  15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT
                                 </SelectItem>
                               )}
                               {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212") && (
                                 <SelectItem value="T2-OA-PO-SHLF-1212">
-                                  Pull-Out Shelf (12"×12")
+                                  12"X12" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)
                                 </SelectItem>
                               )}
                             </SelectContent>
@@ -791,9 +791,9 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                                   <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                                     <span className="text-sm font-medium">
                                       {item === "T2-OA-2D-152012-STACKED-KIT" 
-                                        ? "2 Drawer Stacked Kit (15\"×20\"×12\")"
+                                        ? "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT"
                                         : item === "T2-OA-PO-SHLF-1212"
-                                        ? "Pull-Out Shelf (12\"×12\")"
+                                        ? "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)"
                                         : item
                                       }
                                     </span>

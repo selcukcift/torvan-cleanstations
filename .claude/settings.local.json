@@ -66,7 +66,18 @@
       "Bash(npx prisma:*)",
       "Bash(timeout 5 npx prisma db pull:*)",
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@172.16.16.61:5432/torvan-db?schema=public\" timeout 10 npx prisma db pull --print 2 >& 1)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(cat:*)",
+      "Bash(psql:*)",
+      "Bash(mkdir:*)",
+      "mcp__postgres__query",
+      "Bash(fuser:*)",
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_fill",
+      "mcp__puppeteer__puppeteer_click",
+      "mcp__puppeteer__puppeteer_evaluate",
+      "Bash(./setup-database.sh:*)"
     ],
     "deny": []
   },

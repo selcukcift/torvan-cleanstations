@@ -37,6 +37,8 @@ import { QCOrderIntegration } from "@/components/qc/QCOrderIntegration"
 import { DocumentPreview } from "@/components/ui/document-preview"
 import { OrderComments } from "@/components/order/OrderComments"
 import { generateOrderDescription, generateShortDescription } from "@/lib/descriptionGenerator"
+import { ConfigurationDisplay } from "@/components/order/shared/ConfigurationDisplay"
+import { BOMDisplay } from "@/components/order/shared/BOMDisplay"
 
 // Status badge color mapping
 const statusColors: Record<string, string> = {
@@ -105,10 +107,15 @@ const partDescriptions: Record<string, string> = {
   'GREY': 'Grey Pegboard Finish', 
   'BLACK': 'Black Pegboard Finish',
   
-  // Basin Types
+  // Basin Types (User Interface)
   'E_SINK': 'Standard E-Sink Basin',
   'E_SINK_DI': 'E-Sink Basin with Deionized Water',
   'E_DRAIN': 'E-Drain Basin for Drainage',
+  
+  // Basin Kit Assemblies (BOM Items)
+  'T2-BSN-ESK-KIT': 'E-Sink Basin Kit with Automated Dosing',
+  'T2-BSN-ESK-DI-KIT': 'E-Sink Kit for DI Water (No Bottom Fill)',
+  'T2-BSN-EDR-KIT': 'E-Drain Basin Kit with Overflow Protection',
   
   // Basin Sizes - Exact mappings from ReviewStep
   'T2-ADW-BASIN20X20X8': 'Basin 20" x 20" x 8"',
@@ -374,6 +381,95 @@ const generateDisplayModel = (sinkConfig: any, basinConfigs?: any[]) => {
   return `T2-${basinCount}B-${dimensions}HA`
 }
 
+// Order data adapter to convert database structure to shared component format
+const createOrderDataAdapter = (order: any) => {
+  const buildNumbers = order.buildNumbers || []
+  
+  // Convert database order structure to configuration format
+  const configurations: Record<string, any> = {}
+  const accessories: Record<string, any> = {}
+  
+  buildNumbers.forEach((buildNumber: string) => {
+    // Get configuration data for this build
+    const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber) || {}
+    const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
+    const faucetConfigs = order.faucetConfigurations?.filter((fc: any) => fc.buildNumber === buildNumber) || []
+    const sprayerConfigs = order.sprayerConfigurations?.filter((sc: any) => sc.buildNumber === buildNumber) || []
+    const buildAccessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
+    
+    // Convert to shared component format
+    configurations[buildNumber] = {
+      sinkModelId: sinkConfig.sinkModelId || '',
+      width: sinkConfig.width,
+      length: sinkConfig.length,
+      legsTypeId: sinkConfig.legsTypeId,
+      feetTypeId: sinkConfig.feetTypeId,
+      pegboard: sinkConfig.pegboard || false,
+      pegboardTypeId: sinkConfig.pegboardTypeId,
+      pegboardColorId: sinkConfig.pegboardColorId,
+      drawersAndCompartments: sinkConfig.drawersAndCompartments || [],
+      workflowDirection: sinkConfig.workflowDirection,
+      basins: basinConfigs.map((bc: any) => ({
+        basinTypeId: bc.basinTypeId,
+        basinType: bc.basinTypeId,
+        basinSizePartNumber: bc.basinSizePartNumber,
+        basinSize: bc.basinSizePartNumber,
+        addonIds: bc.addonIds || [],
+        customWidth: bc.customWidth,
+        customLength: bc.customLength,
+        customDepth: bc.customDepth,
+        customDimensions: (bc.customWidth || bc.customLength || bc.customDepth) ? {
+          width: bc.customWidth,
+          length: bc.customLength,
+          depth: bc.customDepth
+        } : undefined
+      })),
+      faucets: faucetConfigs.map((fc: any) => ({
+        faucetTypeId: fc.faucetTypeId,
+        quantity: fc.faucetQuantity || 1,
+        placement: fc.faucetPlacement
+      })),
+      sprayers: sprayerConfigs.flatMap((sc: any) => 
+        sc.sprayerTypeIds?.map((typeId: string, index: number) => ({
+          sprayerTypeId: typeId,
+          location: sc.sprayerLocations?.[index] || sc.sprayerLocation || 'Center',
+          quantity: 1
+        })) || []
+      ),
+      controlBoxId: sinkConfig.controlBoxId
+    }
+    
+    // Convert accessories
+    accessories[buildNumber] = buildAccessories.map((acc: any) => ({
+      assemblyId: acc.assemblyId,
+      accessoryId: acc.assemblyId,
+      name: acc.assemblyId, // Will be resolved by getPartDescription
+      partNumber: acc.assemblyId,
+      quantity: acc.quantity,
+      buildNumbers: [buildNumber]
+    }))
+  })
+  
+  return {
+    buildNumbers,
+    configurations,
+    accessories,
+    customerInfo: {
+      poNumber: order.poNumber,
+      customerName: order.customerName,
+      salesPerson: order.salesPerson,
+      projectName: order.projectName,
+      wantDate: order.wantDate,
+      notes: order.notes
+    },
+    sinkSelection: {
+      sinkModelId: order.sinkConfigurations?.[0]?.sinkModelId || '',
+      quantity: buildNumbers.length,
+      buildNumbers
+    }
+  }
+}
+
 export default function OrderDetailsPage() {
   const params = useParams()
   const router = useRouter()
@@ -386,13 +482,23 @@ export default function OrderDetailsPage() {
   const [showStatusModal, setShowStatusModal] = useState(false)
   const [newStatus, setNewStatus] = useState("")
   const [statusNotes, setStatusNotes] = useState("")
-  const [bomGenerating, setBomGenerating] = useState(false)
+  // BOM states to match order review pattern (source of truth)
+  const [bomLoading, setBomLoading] = useState(false)
+  const [bomError, setBomError] = useState<string | null>(null)
+  const [bomData, setBomData] = useState<any>(null)
   const [previewDocument, setPreviewDocument] = useState<any>(null)
   const [previewModalOpen, setPreviewModalOpen] = useState(false)
 
   useEffect(() => {
     fetchOrderDetails()
   }, [params.orderId])
+
+  // Load BOM data when order is loaded (matches order review pattern)
+  useEffect(() => {
+    if (order) {
+      loadBOMData()
+    }
+  }, [order])
 
   const fetchOrderDetails = async () => {
     try {
@@ -539,8 +645,196 @@ export default function OrderDetailsPage() {
   const allowedStatuses = getAllowedStatuses()
   const canUpdateStatus = allowedStatuses.length > 0
 
-  const handleGenerateBOM = async () => {
-    setBomGenerating(true)
+  // Load existing BOM data (matches order review pattern)
+  const loadBOMData = async () => {
+    if (!order) return
+    
+    setBomLoading(true)
+    setBomError(null)
+    
+    try {
+      // Check if BOM already exists
+      const bomData = order.generatedBoms?.[0] || order.boms?.[0]
+      const bomItems = bomData?.bomItems || []
+      
+      if (bomItems.length === 0) {
+        setBomData(null)
+        return
+      }
+      
+      // Debug: Check the structure of database BOM items
+      console.log('🔍 Database BOM Items Structure:', bomItems.slice(0, 3).map(item => ({
+        name: item.name,
+        assemblyId: item.assemblyId,
+        partNumber: item.partNumber,
+        id: item.id,
+        allFields: Object.keys(item)
+      })))
+      
+      // Process BOM data to ensure proper multi-level hierarchy like order review
+      const restructureBOMItems = (items: any[]): any[] => {
+        if (!items || items.length === 0) return []
+        
+        console.log('🔍 Original BOM items before restructuring:', items.length)
+        
+        // Step 1: Build a map of all items by their ID for quick lookup
+        const itemMap = new Map<string, any>()
+        const topLevelItems: any[] = []
+        
+        // First pass: collect all items and identify top-level items
+        items.forEach(item => {
+          const itemId = item.assemblyId || item.partNumber || item.id || item.name
+          if (itemId) {
+            itemMap.set(itemId, {
+              ...item,
+              children: item.children || item.subItems || item.components || [],
+              subItems: item.children || item.subItems || item.components || []
+            })
+          }
+          
+          // Identify top-level items (typically sink bodies, assemblies without parents)
+          const isTopLevel = item.level === 0 || 
+                           item.indentLevel === 0 || 
+                           !item.parentId ||
+                           item.type === 'COMPLEX' ||
+                           (item.assemblyId && item.assemblyId.includes('T2-BODY-'))
+          
+          if (isTopLevel) {
+            topLevelItems.push(item)
+          }
+        })
+        
+        // Step 2: Build proper hierarchy by finding orphaned items and organizing them
+        const buildHierarchy = (rootItems: any[]): any[] => {
+          return rootItems.map(item => {
+            const itemId = item.assemblyId || item.partNumber || item.id || item.name
+            let children = item.children || item.subItems || item.components || []
+            
+            // If no children but item appears to be an assembly, look for related items
+            if (children.length === 0 && (item.type === 'ASSEMBLY' || item.type === 'COMPLEX' || item.hasChildren)) {
+              // Find potential children by looking for items with this item as parent
+              const potentialChildren = items.filter(otherItem => {
+                const otherId = otherItem.assemblyId || otherItem.partNumber || otherItem.id || otherItem.name
+                return otherId !== itemId && 
+                       (otherItem.parentId === itemId || 
+                        otherItem.source?.includes(itemId) ||
+                        (otherItem.level && item.level !== undefined && otherItem.level === item.level + 1))
+              })
+              
+              if (potentialChildren.length > 0) {
+                children = potentialChildren
+              }
+            }
+            
+            const restructuredItem = {
+              ...item,
+              children: children.length > 0 ? buildHierarchy(children) : [],
+              subItems: children.length > 0 ? buildHierarchy(children) : [],
+              hasChildren: children.length > 0,
+              type: children.length > 0 ? (item.type || 'ASSEMBLY') : (item.type || 'PART'),
+              isPart: children.length === 0,
+              isAssembly: children.length > 0
+            }
+            
+            // Debug: Log part number preservation
+            if (item.name && (item.assemblyId || item.partNumber)) {
+              console.log('🔍 Part number preservation:', {
+                name: item.name,
+                originalAssemblyId: item.assemblyId,
+                originalPartNumber: item.partNumber,
+                preservedAssemblyId: restructuredItem.assemblyId,
+                preservedPartNumber: restructuredItem.partNumber
+              })
+            }
+            
+            return restructuredItem
+          })
+        }
+        
+        // Step 3: If we have clear top-level items, use them; otherwise create a proper hierarchy
+        let structuredItems: any[]
+        
+        if (topLevelItems.length > 0 && topLevelItems.length < items.length) {
+          console.log('🔍 Found top-level items:', topLevelItems.length)
+          structuredItems = buildHierarchy(topLevelItems)
+        } else {
+          // Fallback: Group items by type and create basic hierarchy
+          console.log('🔍 Creating basic hierarchy from all items')
+          const assemblies = items.filter(item => 
+            item.type === 'ASSEMBLY' || 
+            item.type === 'COMPLEX' || 
+            item.hasChildren ||
+            (item.children && item.children.length > 0) ||
+            (item.subItems && item.subItems.length > 0)
+          )
+          
+          const parts = items.filter(item => 
+            item.type === 'PART' || 
+            item.type === 'COMPONENT' || 
+            (!item.hasChildren && !item.children?.length && !item.subItems?.length)
+          )
+          
+          // If we have both assemblies and parts, assemblies are top-level
+          if (assemblies.length > 0) {
+            structuredItems = buildHierarchy(assemblies)
+          } else {
+            // All items are parts, group them logically
+            structuredItems = buildHierarchy(items)
+          }
+        }
+        
+        console.log('🔍 Structured BOM items:', structuredItems.length)
+        return structuredItems
+      }
+      
+      // Apply restructuring to create proper multi-level hierarchy
+      const restructuredBomItems = restructureBOMItems(bomItems)
+      
+      // Format BOM data to match order review format
+      const isMultiBuild = order.buildNumbers.length > 1
+      const buildBOMs: Record<string, any> = {}
+      
+      if (isMultiBuild) {
+        order.buildNumbers.forEach(buildNumber => {
+          const buildSpecificItems = restructuredBomItems.filter((item: any) => 
+            item.buildNumber === buildNumber || 
+            item.source?.includes(buildNumber) ||
+            !item.buildNumber
+          )
+          buildBOMs[buildNumber] = {
+            hierarchical: buildSpecificItems,
+            flattened: buildSpecificItems,
+            totalItems: buildSpecificItems.length
+          }
+        })
+      }
+      
+      const formattedBOMData = {
+        bom: isMultiBuild ? undefined : {
+          hierarchical: restructuredBomItems,
+          flattened: restructuredBomItems,
+          totalItems: restructuredBomItems.length
+        },
+        buildBOMs: isMultiBuild ? buildBOMs : undefined,
+        isMultiBuild,
+        totalItems: restructuredBomItems.length
+      }
+      
+      setBomData(formattedBOMData)
+    } catch (error: any) {
+      console.error('Error loading BOM data:', error)
+      setBomError('Failed to load BOM data')
+    } finally {
+      setBomLoading(false)
+    }
+  }
+
+  // Generate BOM (matches order review previewBOM pattern)
+  const handleBOMGeneration = async () => {
+    setBomLoading(true)
+    setBomError(null)
+    setBomData(null)
+    
     try {
       const response = await nextJsApiClient.post(`/orders/${params.orderId}/generate-bom`)
       
@@ -549,25 +843,20 @@ export default function OrderDetailsPage() {
           title: "BOM Generated",
           description: `Bill of Materials generated with ${response.data.data?.itemCount || 0} items`
         })
-        fetchOrderDetails() // Refresh order data to show the new BOM
+        // Refresh order data and reload BOM
+        await fetchOrderDetails()
+        // BOM data will be loaded by the loadBOMData call after fetchOrderDetails
       } else {
-        toast({
-          title: "Error",
-          description: response.data.message || "Failed to generate BOM",
-          variant: "destructive"
-        })
+        setBomError(response.data.message || "Failed to generate BOM")
       }
     } catch (error: any) {
       console.error('BOM generation error:', error)
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to generate BOM",
-        variant: "destructive"
-      })
+      setBomError(error.response?.data?.message || "Failed to generate BOM")
     } finally {
-      setBomGenerating(false)
+      setBomLoading(false)
     }
   }
+
 
   // Convert order data to description generator format
   const convertOrderForDescription = () => {
@@ -628,6 +917,9 @@ export default function OrderDetailsPage() {
   }
 
   const orderForDescription = convertOrderForDescription()
+  
+  // Convert order data for shared components
+  const adaptedOrderData = createOrderDataAdapter(order)
 
   // Handle document preview
   const handleDocumentPreview = (doc: any) => {
@@ -999,438 +1291,26 @@ export default function OrderDetailsPage() {
 
         {/* Configuration Tab */}
         <TabsContent value="configuration" className="space-y-4">
-          {order.buildNumbers.map((buildNumber: string) => {
-            // Get sink configuration for this build number
-            const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber) || {}
-            const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
-            const faucetConfigs = order.faucetConfigurations?.filter((fc: any) => fc.buildNumber === buildNumber) || []
-            const sprayerConfigs = order.sprayerConfigurations?.filter((sc: any) => sc.buildNumber === buildNumber) || []
-            const accessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
-
-            return (
-              <Card key={buildNumber}>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Build Number: {buildNumber}</span>
-                    <Badge variant="outline">{buildNumber}</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Sink Configuration */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sink Body</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Model:</span>
-                          <span className="font-medium">{generateDisplayModel(sinkConfig, basinConfigs)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Width:</span>
-                          <span className="font-medium">{sinkConfig.width || 'N/A'} inches</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Length:</span>
-                          <span className="font-medium">{sinkConfig.length || 'N/A'} inches</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Workflow Direction:</span>
-                          <span className="font-medium">{formatWorkflowDirection(sinkConfig.workflowDirection || '')}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Legs:</span>
-                          <span className="font-medium">{getPartDescription(sinkConfig.legsTypeId) || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Feet:</span>
-                          <span className="font-medium">{getPartDescription(sinkConfig.feetTypeId) || 'N/A'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Pegboard & Storage</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Has Pegboard:</span>
-                          <span className="font-medium">{sinkConfig.pegboard ? 'Yes' : 'No'}</span>
-                        </div>
-                        {sinkConfig.pegboard && (
-                          <>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500">Pegboard Type:</span>
-                              <span className="font-medium">{getPegboardTypeDescription(sinkConfig.pegboardTypeId) || 'N/A'}</span>
-                            </div>
-                            {sinkConfig.pegboardColorId && extractColorFromId(sinkConfig.pegboardColorId) !== 'N/A' && (
-                              <div className="flex justify-between">
-                                <span className="text-slate-500">Pegboard Color:</span>
-                                <span className="font-medium">{extractColorFromId(sinkConfig.pegboardColorId)}</span>
-                              </div>
-                            )}
-                            <div className="flex justify-between">
-                              <span className="text-slate-500">Size:</span>
-                              <span className="font-medium">{getPegboardSizeDescription(sinkConfig.length || 'N/A')}</span>
-                            </div>
-                          </>
-                        )}
-                        {sinkConfig.drawersAndCompartments && sinkConfig.drawersAndCompartments.length > 0 && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-500">Drawers & Compartments:</span>
-                            <span className="font-medium">{sinkConfig.drawersAndCompartments.length} items</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Drawers & Compartments */}
-                  {sinkConfig.drawersAndCompartments && sinkConfig.drawersAndCompartments.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Drawers & Compartments</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {sinkConfig.drawersAndCompartments.map((item: string, idx: number) => (
-                          <div key={idx} className="p-3 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg border border-indigo-200 hover:shadow-md transition-shadow">
-                            <div className="flex items-center gap-3">
-                              <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-300 font-medium">{idx + 1}</Badge>
-                              <span className="text-sm font-semibold text-slate-800">{getDrawerDisplayName(item)}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Basin Configurations */}
-                  {basinConfigs.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Basin Configurations</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {basinConfigs.map((basin: any, idx: number) => (
-                          <div key={idx} className="p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
-                            <div className="space-y-3">
-                              <div className="border-b border-slate-300 pb-2">
-                                <h5 className="font-semibold text-slate-800 text-base">Basin {idx + 1}</h5>
-                              </div>
-                              <div className="space-y-2">
-                                <div>
-                                  <span className="text-sm text-slate-600 block mb-1">Type:</span>
-                                  <span className="font-medium text-slate-800">{getBasinTypeDescription(basin.basinTypeId)}</span>
-                                </div>
-                                <div>
-                                  <span className="text-sm text-slate-600 block mb-1">Size:</span>
-                                  <span className="font-medium text-slate-800">{getBasinSizeDescription(basin.basinSizePartNumber)}</span>
-                                </div>
-                                {(basin.customWidth || basin.customLength || basin.customDepth) && (
-                                  <div className="p-2 bg-amber-50 rounded border border-amber-200">
-                                    <span className="text-xs font-medium text-amber-800">Custom Dimensions:</span>
-                                    <div className="text-sm text-amber-700 mt-1">
-                                      {basin.customWidth && `${basin.customWidth}"W`}
-                                      {basin.customLength && ` × ${basin.customLength}"L`}
-                                      {basin.customDepth && ` × ${basin.customDepth}"D`}
-                                    </div>
-                                  </div>
-                                )}
-                                {basin.addonIds?.length > 0 && (
-                                  <div>
-                                    <span className="text-sm text-slate-600 block mb-2">Add-ons:</span>
-                                    <div className="flex flex-wrap gap-1">
-                                      {basin.addonIds.map((addon: string, addonIdx: number) => (
-                                        <Badge key={addonIdx} variant="secondary" className="text-xs bg-slate-200 text-slate-700">{addon}</Badge>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Faucet Configurations */}
-                  {faucetConfigs.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Faucet Configurations</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {faucetConfigs.map((faucet: any, idx: number) => (
-                          <div key={idx} className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
-                            <div className="space-y-2">
-                              <div className="text-base font-semibold text-slate-800 mb-2">
-                                {getPartDescription(faucet.faucetTypeId)}
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-slate-600">Quantity:</span>
-                                  <Badge variant="secondary" className="bg-blue-200 text-blue-800 font-medium">
-                                    {faucet.faucetQuantity}
-                                  </Badge>
-                                </div>
-                                {faucet.faucetPlacement && (
-                                  <Badge variant="outline" className="text-xs text-slate-600">
-                                    {formatPlacement(faucet.faucetPlacement)}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Sprayer Configurations */}
-                  {sprayerConfigs.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Sprayer Configurations</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {sprayerConfigs.map((sprayer: any, idx: number) => (
-                          <div key={idx} className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
-                            <div className="space-y-2">
-                              {sprayer.sprayerTypeIds?.length > 0 ? (
-                                <>
-                                  <div className="text-base font-semibold text-slate-800 mb-2">
-                                    {sprayer.sprayerTypeIds.map((type: string, typeIdx: number) => getPartDescription(type)).join(', ')}
-                                  </div>
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm text-slate-600">Quantity:</span>
-                                      <Badge variant="secondary" className="bg-green-200 text-green-800 font-medium">
-                                        {sprayer.sprayerQuantity || 1}
-                                      </Badge>
-                                    </div>
-                                    {sprayer.sprayerLocation && (
-                                      <Badge variant="outline" className="text-xs text-slate-600">
-                                        {formatLocation(sprayer.sprayerLocation)}
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="text-base font-semibold text-slate-600">
-                                  No sprayer configured
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Accessories */}
-                  {accessories.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-slate-700 border-b pb-1">Selected Accessories</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {accessories.map((accessory: any, idx: number) => (
-                          <div key={idx} className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:shadow-md transition-shadow">
-                            <div className="space-y-2">
-                              <div className="text-base font-semibold text-slate-800 mb-2">
-                                {getPartDescription(accessory.assemblyId)}
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm text-slate-600">Quantity:</span>
-                                <Badge variant="secondary" className="bg-purple-200 text-purple-800 font-medium">
-                                  {accessory.quantity}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )
-          })}
+          <ConfigurationDisplay
+            buildNumbers={adaptedOrderData.buildNumbers}
+            configurations={adaptedOrderData.configurations}
+            accessories={adaptedOrderData.accessories}
+          />
         </TabsContent>
 
         {/* BOM Tab */}
         <TabsContent value="bom" className="space-y-3">
-
-
-          
-          {(order.generatedBoms || order.boms) && (order.generatedBoms || order.boms).length > 0 ? (
-            <>
-              {(() => {
-                const bomData = order.generatedBoms?.[0] || order.boms?.[0]
-                const bomItems = bomData?.bomItems || []
-                
-                // Check if this is multi-build by examining if there are build-specific BOMs
-                const isMultiBuild = order.buildNumbers.length > 1
-                const buildBOMs: Record<string, any> = {}
-                
-                if (isMultiBuild) {
-                  // Group BOM items by build number if available
-                  order.buildNumbers.forEach(buildNumber => {
-                    const buildSpecificItems = bomItems.filter((item: any) => 
-                      item.buildNumber === buildNumber || 
-                      item.source?.includes(buildNumber) ||
-                      !item.buildNumber // Include shared items
-                    )
-                    buildBOMs[buildNumber] = {
-                      hierarchical: buildSpecificItems,
-                      flattened: buildSpecificItems,
-                      totalItems: buildSpecificItems.length
-                    }
-                  })
-                }
-                
-                // Calculate summary statistics from hierarchical structure
-                const calculateHierarchicalStats = (items: any[]): { total: number; system: number; structural: number; accessories: number } => {
-                  let total = 0
-                  let system = 0
-                  let structural = 0
-                  let accessories = 0
-                  
-                  const processItem = (item: any) => {
-                    total++
-                    
-                    // Categorize based on type and category
-                    if (item.category?.includes('SYSTEM') || item.itemType?.includes('SYSTEM')) {
-                      system++
-                    } else if (item.category?.includes('STRUCTURAL') || item.itemType?.includes('STRUCTURAL') ||
-                               item.category?.includes('LEGS') || item.category?.includes('SUPPORT')) {
-                      structural++
-                    } else if (item.category?.includes('ACCESSORY') || item.itemType?.includes('ACCESSORY')) {
-                      accessories++
-                    }
-                    
-                    // Process children recursively
-                    if (item.children && item.children.length > 0) {
-                      item.children.forEach(processItem)
-                    }
-                  }
-                  
-                  items.forEach(processItem)
-                  return { total, system, structural, accessories }
-                }
-                
-                const stats = calculateHierarchicalStats(bomItems)
-                const systemComponents = stats.system
-                const structuralComponents = stats.structural  
-                const accessoryComponents = stats.accessories
-                
-                return (
-                  <>
-
-                    {/* BOM Display - Single vs Multi-Build */}
-                    {isMultiBuild && Object.keys(buildBOMs).length > 0 ? (
-                      /* Multi-Build Display */
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-medium">Bill of Materials by Build</h3>
-                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                            {Object.keys(buildBOMs).length} Build{Object.keys(buildBOMs).length !== 1 ? 's' : ''}
-                          </Badge>
-                        </div>
-                        
-                        {Object.entries(buildBOMs).map(([buildNumber, buildBOM]: [string, any]) => {
-                          // Get order data for this specific build
-                          const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber)
-                          const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
-                          const faucetConfigs = order.faucetConfigurations?.filter((fc: any) => fc.buildNumber === buildNumber) || []
-                          const sprayerConfigs = order.sprayerConfigurations?.filter((sc: any) => sc.buildNumber === buildNumber) || []
-                          const buildAccessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
-                          
-                          const orderData = {
-                            customerInfo: {
-                              customerName: order.customerName,
-                              poNumber: order.poNumber,
-                              projectName: order.projectName,
-                              salesPerson: order.salesPerson,
-                              language: order.language,
-                              wantDate: order.wantDate,
-                              notes: order.notes
-                            },
-                            sinkSelection: {
-                              quantity: 1,
-                              buildNumbers: [buildNumber]
-                            },
-                            configurations: sinkConfig ? {
-                              [buildNumber]: {
-                                ...sinkConfig,
-                                basins: basinConfigs,
-                                faucets: faucetConfigs,
-                                sprayers: sprayerConfigs
-                              }
-                            } : {},
-                            accessories: {
-                              [buildNumber]: buildAccessories
-                            }
-                          }
-                          
-                          return (
-                            <Card key={buildNumber} className="overflow-hidden">
-                              <CardHeader className="bg-slate-50 border-b">
-                                <div className="flex items-center justify-between">
-                                  <CardTitle className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-blue-100 text-blue-700">{buildNumber}</Badge>
-                                    <span className="text-base">Bill of Materials</span>
-                                  </CardTitle>
-                                  <div className="text-sm text-slate-600">
-                                    <span className="font-medium">{buildBOM?.totalItems || 0}</span> items
-                                  </div>
-                                </div>
-                              </CardHeader>
-                              <CardContent className="p-0">
-                                <BOMViewer
-                                  orderId={order.id}
-                                  poNumber={order.poNumber}
-                                  bomItems={buildBOM?.hierarchical || buildBOM?.flattened || []}
-                                  orderData={orderData}
-                                  customerInfo={orderData.customerInfo}
-                                  showDebugInfo={false}
-                                />
-                              </CardContent>
-                            </Card>
-                          )
-                        })}
-                      </div>
-                    ) : (
-                      /* Single Build Display */
-                      <BOMViewer
-                        orderId={order.id}
-                        poNumber={order.poNumber}
-                        bomItems={bomItems}
-                        orderData={orderForDescription}
-                        customerInfo={{
-                          customerName: order.customerName,
-                          poNumber: order.poNumber,
-                          projectName: order.projectName,
-                          salesPerson: order.salesPerson,
-                          language: order.language,
-                          wantDate: order.wantDate,
-                          notes: order.notes
-                        }}
-                        showDebugInfo={false}
-                      />
-                    )}
-                  </>
-                )
-              })()}
-            </>
-          ) : (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-600 mb-2">No BOM generated for this order</p>
-                <p className="text-sm text-slate-500 mb-4">
-                  Generate the Bill of Materials to see all required parts and assemblies.
-                </p>
-                <Button 
-                  onClick={handleGenerateBOM} 
-                  disabled={bomGenerating}
-                  className="min-w-[150px]"
-                >
-                  {bomGenerating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  {bomGenerating ? 'Generating...' : 'Generate BOM'}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+          <BOMDisplay
+            bomData={bomData}
+            isLoading={bomLoading}
+            error={bomError}
+            onRetry={handleBOMGeneration}
+            customerInfo={adaptedOrderData.customerInfo}
+            sinkSelection={adaptedOrderData.sinkSelection}
+            configurations={adaptedOrderData.configurations}
+            accessories={adaptedOrderData.accessories}
+            showDebugInfo={false}
+          />
         </TabsContent>
 
         {/* QC Tab */}

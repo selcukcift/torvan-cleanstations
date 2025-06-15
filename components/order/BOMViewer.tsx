@@ -61,14 +61,14 @@ interface BOMViewerProps {
   bomItems?: BOMItem[]
   orderData?: any
   customerInfo?: any
-  onExport?: (format: 'csv' | 'pdf') => void
+  onExport?: (format: 'pdf') => void
   showDebugInfo?: boolean
 }
 
 export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo, onExport, showDebugInfo = false }: BOMViewerProps) {
   const { toast } = useToast()
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
-  const [exporting, setExporting] = useState<'csv' | 'pdf' | null>(null)
+  const [exporting, setExporting] = useState<boolean>(false)
   
   // For preview mode (when orderData is provided)
   const [previewBomItems, setPreviewBomItems] = useState<BOMItem[]>([])
@@ -346,41 +346,84 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
   // Determine which items to use - either provided bomItems or generated previewBomItems
   const actualBomItems = bomItems || previewBomItems
 
-  // Quantity aggregation with enhanced deduplication
-  const processedItems = useMemo(() => {
+  // Hierarchical quantity aggregation - preserves tree structure while combining identical items within same level
+  const aggregatedBomItems = useMemo(() => {
     if (!actualBomItems || actualBomItems.length === 0) return []
 
-    const quantityMap = new Map<string, EnhancedBOMItem>()
-    
-    const processItem = (item: BOMItem, level: number = 0) => {
-      const key = item.assemblyId || item.partNumber || item.id
+    const aggregateWithinHierarchy = (items: BOMItem[]): EnhancedBOMItem[] => {
+      const itemMap = new Map<string, EnhancedBOMItem>()
       
-      if (quantityMap.has(key)) {
-        const existing = quantityMap.get(key)!
-        existing.aggregatedQuantity = (existing.aggregatedQuantity || existing.quantity) + item.quantity
-        existing.isAggregated = true
-        if (!existing.sourceInfo) existing.sourceInfo = []
-        existing.sourceInfo.push(item.sourceContext || `Level ${level}`)
-      } else {
-        quantityMap.set(key, {
-          ...item,
-          aggregatedQuantity: item.quantity,
-          isAggregated: false,
-          sourceInfo: item.sourceContext ? [item.sourceContext] : [],
-          level
-        })
-      }
-
-      // Handle both children and subItems (BOMDebugHelper uses both)
-      const childItems = item.children || item.subItems || []
-      if (childItems.length > 0) {
-        childItems.forEach(child => processItem(child, level + 1))
-      }
+      items.forEach(item => {
+        const key = item.assemblyId || item.partNumber || item.id || item.name
+        
+        if (itemMap.has(key)) {
+          // Aggregate identical items within this level
+          const existing = itemMap.get(key)!
+          existing.aggregatedQuantity = (existing.aggregatedQuantity || existing.quantity) + item.quantity
+          existing.isAggregated = true
+          if (!existing.sourceInfo) existing.sourceInfo = []
+          existing.sourceInfo.push(item.sourceContext || 'duplicate')
+        } else {
+          // First occurrence of this item at this level
+          const enhancedItem: EnhancedBOMItem = {
+            ...item,
+            aggregatedQuantity: item.quantity,
+            isAggregated: false,
+            sourceInfo: item.sourceContext ? [item.sourceContext] : []
+          }
+          
+          // Recursively aggregate children while preserving hierarchy
+          const childItems = item.children || item.subItems || item.components || []
+          if (childItems.length > 0) {
+            enhancedItem.children = aggregateWithinHierarchy(childItems)
+            enhancedItem.subItems = enhancedItem.children // Support both property names
+          }
+          
+          itemMap.set(key, enhancedItem)
+        }
+      })
+      
+      return Array.from(itemMap.values())
     }
 
-    actualBomItems.forEach(item => processItem(item))
-    return Array.from(quantityMap.values())
+    return aggregateWithinHierarchy(actualBomItems)
   }, [actualBomItems])
+
+  // Calculate hierarchical statistics without flattening to avoid duplication
+  const getHierarchicalStats = useMemo(() => {
+    const calculateStats = (items: EnhancedBOMItem[]): { uniqueItems: number, totalQuantity: number, leafItems: number, leafQuantity: number } => {
+      if (!items || items.length === 0) return { uniqueItems: 0, totalQuantity: 0, leafItems: 0, leafQuantity: 0 }
+      
+      let uniqueItems = 0
+      let totalQuantity = 0
+      let leafItems = 0
+      let leafQuantity = 0
+      
+      items.forEach(item => {
+        uniqueItems += 1
+        const itemQty = item.aggregatedQuantity || item.quantity || 0
+        totalQuantity += itemQty
+        
+        const childItems = item.children || item.subItems || []
+        if (childItems.length === 0) {
+          // This is a leaf item (actual part)
+          leafItems += 1
+          leafQuantity += itemQty
+        } else {
+          // This is an assembly, recursively calculate children stats
+          const childStats = calculateStats(childItems)
+          uniqueItems += childStats.uniqueItems
+          totalQuantity += childStats.totalQuantity
+          leafItems += childStats.leafItems
+          leafQuantity += childStats.leafQuantity
+        }
+      })
+      
+      return { uniqueItems, totalQuantity, leafItems, leafQuantity }
+    }
+    
+    return calculateStats(aggregatedBomItems)
+  }, [aggregatedBomItems])
 
 
 
@@ -415,16 +458,26 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     setExpandedItems(new Set())
   }
 
-  const handleExport = async (format: 'csv' | 'pdf') => {
+  const handleExportPDF = async () => {
     if (onExport) {
-      onExport(format)
+      onExport('pdf')
+      return
+    }
+
+    // Validate orderId exists before attempting export
+    if (!orderId) {
+      toast({
+        title: "Export Not Available",
+        description: "PDF export is only available for saved orders. Please save the order first.",
+        variant: "destructive"
+      })
       return
     }
 
     try {
-      setExporting(format)
+      setExporting(true)
       const response = await nextJsApiClient.get(
-        `/orders/${orderId}/bom-export?format=${format}`,
+        `/orders/${orderId}/bom-export?format=pdf`,
         { 
           responseType: 'blob',
           timeout: 30000
@@ -438,7 +491,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       
       // Extract filename from response headers or generate one
       const contentDisposition = response.headers['content-disposition']
-      let filename = `bom_${poNumber}_${new Date().toISOString().split('T')[0]}.${format}`
+      let filename = `bom_${poNumber || 'preview'}_${new Date().toISOString().split('T')[0]}.pdf`
       
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
@@ -455,75 +508,49 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
       toast({
         title: "Export Successful",
-        description: `BOM exported as ${format.toUpperCase()} successfully`
+        description: "BOM exported as PDF successfully"
       })
     } catch (error: any) {
       console.error('BOM export error:', error)
+      let errorMessage = "Failed to export BOM as PDF"
+      
+      if (error.response?.status === 404) {
+        errorMessage = "Order not found. Please ensure the order exists and try again."
+      } else if (error.response?.status === 403) {
+        errorMessage = "You don't have permission to export this order's BOM."
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error
+      }
+      
       toast({
         title: "Export Failed",
-        description: error.response?.data?.error || `Failed to export BOM as ${format.toUpperCase()}`,
+        description: errorMessage,
         variant: "destructive"
       })
     } finally {
-      setExporting(null)
+      setExporting(false)
     }
   }
 
   const getTotalQuantity = () => {
-    // Calculate total quantity from aggregated unique items
-    // This accounts for items that appear multiple times in the hierarchy
-    return processedItems.reduce((sum, item) => {
-      return sum + (item.aggregatedQuantity || item.quantity || 0)
-    }, 0)
+    // Calculate total quantity from hierarchical structure (no duplication)
+    return getHierarchicalStats.totalQuantity
   }
 
   const getUniqueItems = () => {
-    // Count unique items (distinct parts/assemblies) from the processed items
-    // This represents the number of different items in the BOM after aggregation
-    return processedItems.length
+    // Count unique items from hierarchical structure (no duplication)
+    return getHierarchicalStats.uniqueItems
   }
 
   // Alternative counting methods for better accuracy
   const getLeafItemsCount = () => {
-    // Count only leaf items (parts without children) from the hierarchical structure
-    const countLeafItems = (items: BOMItem[]): number => {
-      if (!items || items.length === 0) return 0
-      
-      return items.reduce((count, item) => {
-        const childItems = item.children || item.subItems || []
-        
-        if (childItems.length === 0) {
-          // This is a leaf item (actual part)
-          return count + 1
-        } else {
-          // This is an assembly, count its leaf children
-          return count + countLeafItems(childItems)
-        }
-      }, 0)
-    }
-    
-    return countLeafItems(actualBomItems || [])
+    // Count only leaf items (parts without children) from hierarchical stats
+    return getHierarchicalStats.leafItems
   }
 
   const getLeafItemsQuantity = () => {
-    // Sum quantities of only leaf items (parts without children)
-    const sumLeafQuantities = (items: BOMItem[]): number => {
-      if (!items || items.length === 0) return 0
-      
-      return items.reduce((sum, item) => {
-        const childItems = item.children || item.subItems || []
-        
-        if (childItems.length === 0) {
-          // This is a leaf item (actual part)
-          return sum + (item.quantity || 0)
-        } else {
-          // This is an assembly, sum its leaf children quantities
-          return sum + sumLeafQuantities(childItems)
-        }
-      }, 0)
-    }
-    
-    return sumLeafQuantities(actualBomItems || [])
+    // Sum quantities of only leaf items (parts without children) from hierarchical stats
+    return getHierarchicalStats.leafQuantity
   }
 
   // Debug function to understand BOM structure
@@ -559,9 +586,8 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       const hierarchicalStats = countHierarchicalItems(actualBomItems || [])
       console.log('Hierarchical Stats (All Items):', hierarchicalStats)
       
-      // Aggregated stats
-      const aggregatedQty = processedItems.reduce((sum, item) => sum + (item.aggregatedQuantity || item.quantity || 0), 0)
-      console.log('Aggregated Stats:', { uniqueItems: processedItems.length, totalQty: aggregatedQty })
+      // Hierarchical stats (no duplication)
+      console.log('Hierarchical Stats (No Duplication):', getHierarchicalStats)
       
       // Leaf items stats
       const leafCount = getLeafItemsCount()
@@ -569,10 +595,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       console.log('Leaf Items Stats (Parts Only):', { count: leafCount, totalQty: leafQty })
       
       // Summary
-      console.log('📊 Summary of Different Counting Methods:')
+      console.log('📊 Summary of Counting Methods:')
       console.log(`- All Items (Including Assemblies): ${hierarchicalStats.count} items, ${hierarchicalStats.totalQty} total quantity`)
-      console.log(`- Unique Items (After Aggregation): ${processedItems.length} items, ${aggregatedQty} total quantity`)
-      console.log(`- Leaf Items (Parts Only): ${leafCount} items, ${leafQty} total quantity`)
+      console.log(`- Hierarchical Stats (No Duplication): ${getHierarchicalStats.uniqueItems} items, ${getHierarchicalStats.totalQuantity} total quantity`)
+      console.log(`- Leaf Items (Parts Only): ${getHierarchicalStats.leafItems} items, ${getHierarchicalStats.leafQuantity} total quantity`)
     }
   }
 
@@ -581,6 +607,36 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     const hasChildren = childItems.length > 0
     const itemId = item.id || item.assemblyId || item.partNumber || `${item.name}-${index}`
     const isExpanded = expandedItems.has(itemId)
+    
+    // Separate display part number from internal itemId
+    const getDisplayPartNumber = () => {
+      // Debug: Log what we're working with
+      if (item.name && index < 3) {
+        console.log('🔍 BOMViewer item analysis:', {
+          index,
+          name: item.name,
+          assemblyId: item.assemblyId,
+          partNumber: item.partNumber,
+          id: item.id,
+          nameType: typeof item.name,
+          assemblyIdType: typeof item.assemblyId
+        })
+      }
+      
+      // Priority: assemblyId -> partNumber -> id (if it looks like a real part number)
+      // First try: only show if different from name (original logic)
+      if (item.assemblyId && item.assemblyId !== item.name) return item.assemblyId
+      if (item.partNumber && item.partNumber !== item.name) return item.partNumber
+      if (item.id && item.id !== item.name && !item.id.includes(item.name || '')) return item.id
+      
+      // Fallback: show any valid part number even if it matches name (better than nothing)
+      if (item.assemblyId && item.assemblyId.length < 50) return item.assemblyId
+      if (item.partNumber && item.partNumber.length < 50) return item.partNumber
+      if (item.id && item.id.length < 50) return item.id
+      
+      return null // No valid part number to display
+    }
+    const displayPartNumber = getDisplayPartNumber()
     
     // Enhanced type detection based on hierarchical expander data
     const isAssembly = item.isAssembly || item.type === 'ASSEMBLY' || item.type === 'COMPLEX' || 
@@ -610,14 +666,14 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       return 'text-gray-400'
     }
 
-    // Get type badge color
-    const getTypeBadgeVariant = () => {
-      if (item.type === 'COMPLEX') return "default"
-      if (item.type === 'KIT') return "secondary"
-      if (item.type === 'SIMPLE') return "outline"
-      if (isPart) return "secondary"
-      return "default"
-    }
+    // Get type badge color (commented out - type badges removed for cleaner display)
+    // const getTypeBadgeVariant = () => {
+    //   if (item.type === 'COMPLEX') return "default"
+    //   if (item.type === 'KIT') return "secondary"
+    //   if (item.type === 'SIMPLE') return "outline"
+    //   if (isPart) return "secondary"
+    //   return "default"
+    // }
 
     return (
       <div key={uniqueKey}>
@@ -659,14 +715,12 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 {item.isCustom && (
                   <Badge variant="outline" className="text-xs shrink-0">Custom</Badge>
                 )}
-                {item.isAggregated && (
-                  <Badge variant="secondary" className="text-xs shrink-0">
-                    Aggregated: {displayQuantity}
-                  </Badge>
-                )}
+{/* Aggregated badge removed for cleaner display - logic preserved */}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                <span className="font-mono truncate">{itemId}</span>
+                {displayPartNumber && (
+                  <span className="font-mono truncate">{displayPartNumber}</span>
+                )}
                 {item.description && (
                   <span className="text-gray-400 truncate max-w-[300px]" title={item.description}>
                     • {item.description}
@@ -688,9 +742,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 {childItems.length} {childItems.length === 1 ? 'component' : 'components'}
               </Badge>
             )}
-            <Badge variant={getTypeBadgeVariant()} className="text-xs">
-              {(item.type || item.category || 'UNKNOWN').replace(/_/g, ' ')}
-            </Badge>
+{/* Type badge removed for cleaner display */}
             <span className="font-medium text-sm min-w-[80px] text-right bg-gray-100 px-2 py-1 rounded">
               Qty: {displayQuantity}
             </span>
@@ -727,44 +779,20 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => handleExport('csv')}
+            onClick={handleExportPDF}
             variant="outline"
             size="sm"
-            disabled={exporting === 'csv'}
+            disabled={exporting || !orderId}
             className="flex items-center gap-2"
+            title={!orderId ? "PDF export is only available for saved orders" : "Export BOM as PDF"}
           >
-            {exporting === 'csv' ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <FileText className="w-4 h-4" />
-            )}
-            Export CSV
-          </Button>
-          <Button
-            onClick={() => handleExport('pdf')}
-            variant="outline"
-            size="sm"
-            disabled={exporting === 'pdf'}
-            className="flex items-center gap-2"
-          >
-            {exporting === 'pdf' ? (
+            {exporting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <FileText className="w-4 h-4" />
             )}
             Export PDF
           </Button>
-          {showDebugInfo && (
-            <Button
-              onClick={() => setShowCustomOnly(!showCustomOnly)}
-              variant={showCustomOnly ? "default" : "outline"}
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Eye className="w-4 h-4" />
-              {showCustomOnly ? "Show All" : "Custom Only"}
-            </Button>
-          )}
         </div>
       </div>
 
@@ -815,7 +843,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                         </AlertDescription>
                       </Alert>
                     )}
-                    {actualBomItems.map((item, idx) => renderBOMItem(item, 0, idx))}
+                    {aggregatedBomItems.map((item, idx) => renderBOMItem(item, 0, idx))}
                   </>
                 )}
               </div>

@@ -9,7 +9,10 @@ const CustomerInfoSchema = z.object({
   customerName: z.string().min(1, 'Customer Name is required'),
   projectName: z.string().optional(),
   salesPerson: z.string().min(1, 'Sales Person is required'),
-  wantDate: z.string().transform((str) => new Date(str)),
+  wantDate: z.union([
+    z.string().transform((str) => new Date(str)),
+    z.date()
+  ]).nullable(),
   language: z.enum(['EN', 'FR', 'ES']),
   notes: z.string().optional()
 })

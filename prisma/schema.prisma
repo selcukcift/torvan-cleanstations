@@ -160,7 +160,7 @@ model BasinConfiguration {
   customWidth         Float?
   order               Order    @relation(fields: [orderId], references: [id])
 
-  @@unique([orderId, buildNumber])
+  @@index([orderId, buildNumber])
 }
 
 model FaucetConfiguration {

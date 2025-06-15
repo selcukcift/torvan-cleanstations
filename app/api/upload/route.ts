@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    console.log('🔍 Upload route - User:', user)
+    console.log('🔍 Upload route - User ID:', user.id)
+    
     const formData = await request.formData()
     const file = formData.get('file') as File
     const orderId = formData.get('orderId') as string
@@ -26,6 +29,13 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json(
         { success: false, message: 'No file provided' },
+        { status: 400 }
+      )
+    }
+    
+    if (!orderId) {
+      return NextResponse.json(
+        { success: false, message: 'Order ID is required' },
         { status: 400 }
       )
     }
@@ -85,14 +95,31 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     await writeFile(filePath, Buffer.from(bytes))
 
+    // Ensure user ID exists
+    if (!user.id) {
+      console.error('❌ Upload route - User ID is missing!')
+      return NextResponse.json(
+        { success: false, message: 'User ID not found in session' },
+        { status: 400 }
+      )
+    }
+    
     // Store file information in database
+    console.log('📝 Creating document record with:', {
+      docName: file.name,
+      docURL: `/uploads/documents/${fileName}`,
+      uploadedBy: user.id,
+      docType: docType,
+      orderId: orderId
+    })
+    
     const document = await prisma.associatedDocument.create({
       data: {
         docName: file.name,
         docURL: `/uploads/documents/${fileName}`,
-        uploadedBy: user.id,
+        uploadedBy: String(user.id), // Ensure it's a string
         docType: docType,
-        orderId: orderId || null // orderId can be null for temporary uploads
+        orderId: orderId // orderId is required
       }
     })
 

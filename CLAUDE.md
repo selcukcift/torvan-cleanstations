@@ -513,4 +513,221 @@ To continue implementation:
 3. **Sprint 4.x**: Complete procurement workflows and notification system
 4. **Testing**: Implement E2E tests for all completed workflows
 
+## Common Development Workflows
+
+### Understanding the Codebase
+
+When exploring or modifying this complex hybrid architecture:
+
+**Get Project Overview**:
+```
+> give me an overview of this codebase
+> explain the main architecture patterns used here
+> how is authentication handled in this project?
+```
+
+**Find Relevant Code**:
+```
+> find the files that handle BOM generation
+> trace the order creation process from frontend to database
+> locate the QC template management logic
+```
+
+**Key Areas to Explore**:
+- Start with `CLAUDE.md` for architecture overview
+- Check `prisma/schema.prisma` for data models
+- Review `stores/orderCreateStore.ts` for state management patterns
+- Examine `lib/bomService.native.ts` for core business logic
+
+### Bug Fixing Efficiently
+
+**Systematic Bug Resolution**:
+1. **Share Error Context**: Provide full error messages, stack traces, and reproduction steps
+2. **Identify Root Cause**: Ask for analysis of the error and potential fixes
+3. **Apply Fix Safely**: Request targeted changes that maintain existing functionality
+4. **Verify Fix**: Run tests and validation commands
+
+**Example Workflow**:
+```
+> I'm seeing a TypeScript error in BOMViewer.tsx when aggregating quantities
+> suggest a few ways to fix this type error while maintaining the aggregation logic
+> update BOMViewer.tsx to add proper TypeScript interfaces
+> run npm run lint and npm run build to verify the fix
+```
+
+### Code Refactoring Patterns
+
+**Modernization Approach**:
+1. **Identify Legacy Code**: Scan for outdated patterns or deprecated APIs
+2. **Plan Refactoring**: Get recommendations for modern alternatives
+3. **Apply Changes Incrementally**: Refactor in small, testable chunks
+4. **Verify Functionality**: Ensure existing behavior is preserved
+
+**Refactoring Commands**:
+```
+> find deprecated API usage in our Next.js components
+> suggest how to refactor ConfigurationStep.tsx to use modern React patterns
+> refactor the BOM generation logic to improve TypeScript safety
+> run tests to verify refactored code maintains behavior
+```
+
+### Testing Strategies
+
+**Comprehensive Testing Approach**:
+1. **Identify Coverage Gaps**: Find untested functionality
+2. **Generate Test Structure**: Create test scaffolding following project patterns
+3. **Add Edge Cases**: Include boundary conditions and error scenarios
+4. **Integration Testing**: Test component interactions and API endpoints
+
+**Testing Commands**:
+```
+> find functions in bomService.native.ts that need test coverage
+> add unit tests for the BOM generation logic
+> create integration tests for the order creation workflow
+> run npm test and fix any failures
+```
+
+**Test Types in This Project**:
+- **Unit Tests**: Jest with React Testing Library (`__tests__/` directories)
+- **Integration Tests**: API and database interaction tests
+- **E2E Tests**: Playwright tests for complete workflows
+
+### Pull Request Creation
+
+**Structured PR Workflow**:
+1. **Summarize Changes**: Get concise overview of modifications
+2. **Generate PR**: Use built-in PR creation with proper formatting
+3. **Enhanced Documentation**: Add context about business impact
+4. **Testing Evidence**: Include verification steps and results
+
+**PR Commands**:
+```
+> summarize the changes I've made to the QC system
+> create a pr
+> enhance the PR description with context about the QC workflow improvements
+> add information about how these changes were tested
+```
+
+### Documentation Practices
+
+**Documentation Standards**:
+1. **Identify Gaps**: Find undocumented code or outdated docs
+2. **Generate Documentation**: Create comprehensive comments and docs
+3. **Business Context**: Include domain-specific explanations
+4. **Maintain Consistency**: Follow established documentation patterns
+
+**Documentation Commands**:
+```
+> find functions without proper JSDoc comments in the auth module
+> add comprehensive JSDoc comments to bomService.native.ts
+> update the component documentation for the order creation flow
+> check if documentation follows our TypeScript standards
+```
+
+### Extended Thinking for Complex Decisions
+
+**When to Use Extended Thinking**:
+- Planning complex architectural changes
+- Debugging intricate BOM generation issues
+- Designing new workflow integrations
+- Evaluating performance optimizations
+- Understanding complex business rule interactions
+
+**Extended Thinking Commands**:
+```
+> think deeply about the best approach for implementing real-time order status updates
+> think harder about potential security vulnerabilities in our authentication flow
+> think about edge cases in the pegboard kit selection logic
+```
+
+**Triggers for Deeper Analysis**:
+- Use `think` for basic analysis
+- Use `think harder`, `think deeper`, or `think more` for complex scenarios
+- Most valuable for architectural decisions and business logic design
+
+### Automation and Integration
+
+**Claude Code as Development Tool**:
+
+**Automated Code Review**:
+```bash
+# Add to package.json scripts
+"lint:claude": "claude -p 'review changes vs. main for TypeScript errors, business logic issues, and security concerns. Report filename:line format.'"
+```
+
+**Pipeline Integration**:
+```bash
+# Pipe data through Claude for analysis
+cat build-error.txt | claude -p 'explain the root cause and suggest fixes' > analysis.txt
+
+# Structured output for tooling
+claude -p 'analyze recent commits for potential issues' --output-format json
+```
+
+**Custom Project Commands**:
+
+Create `.claude/commands/` directory with project-specific workflows:
+
+```bash
+# .claude/commands/bom-debug.md
+Debug the BOM generation for order $ARGUMENTS by:
+1. Analyzing the order configuration
+2. Tracing through bomService.native.ts logic
+3. Identifying any missing parts or incorrect quantities
+4. Suggesting fixes for any issues found
+
+# Usage: /project:bom-debug 12345
+```
+
+### Development Environment Best Practices
+
+**Efficient Development Setup**:
+1. **Use Git Worktrees** for parallel development on different features
+2. **Resume Conversations** with `claude --continue` or `claude --resume`
+3. **Create Custom Commands** for repetitive project-specific tasks
+4. **Integrate with CI/CD** for automated code analysis
+
+**Worktree Example**:
+```bash
+# Create separate worktrees for different features
+git worktree add ../clean-stations-qc-improvements -b feature/qc-improvements
+git worktree add ../clean-stations-bom-optimization -b feature/bom-optimization
+
+# Run Claude in each worktree independently
+cd ../clean-stations-qc-improvements && claude
+cd ../clean-stations-bom-optimization && claude
+```
+
+**Session Management**:
+```bash
+# Continue most recent conversation
+claude --continue
+
+# Resume specific conversation
+claude --resume
+
+# Continue with specific prompt
+claude --continue --print "Continue with the QC system implementation"
+```
+
+### Project-Specific Workflow Patterns
+
+**BOM Development Workflow**:
+1. Test changes with `components/debug/BOMDebugHelper.tsx`
+2. Verify against `resources/sink configuration and bom.txt`
+3. Validate all pegboard kit combinations
+4. Run full order creation flow testing
+
+**QC System Modifications**:
+1. Update templates in admin interface
+2. Test with different user roles
+3. Verify mobile responsiveness
+4. Check analytics integration
+
+**Order System Changes**:
+1. Test entire 5-step wizard flow
+2. Verify BOM preview accuracy
+3. Check state management in Zustand store
+4. Validate against all sink configurations
+
 <!-- Revision updated: Comprehensive implementation record for Torvan Medical Workflow App completion on 2025-01-06 -->

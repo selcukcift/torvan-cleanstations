@@ -45,8 +45,15 @@ async function main() {
   for (const catKey in categoriesData) {
     if (categoriesData.hasOwnProperty(catKey)) {
       const catData = categoriesData[catKey];
-      const createdCategory = await prisma.category.create({
-        data: {
+      const createdCategory = await prisma.category.upsert({
+        where: {
+          categoryId: catKey, // Use the key as CategoryID
+        },
+        update: {
+          name: catData.name,
+          description: catData.description,
+        },
+        create: {
           categoryId: catKey, // Use the key as CategoryID
           name: catData.name,
           description: catData.description,
@@ -55,24 +62,31 @@ async function main() {
       console.log(`Created category: ${createdCategory.name} (ID: ${createdCategory.categoryId})`);
 
       if (catData.subcategories && typeof catData.subcategories === 'object') {
-        const subcategoriesToCreate = [];
+        let subcategoriesUpserted = 0;
         for (const subCatKey in catData.subcategories) {
           if (catData.subcategories.hasOwnProperty(subCatKey)) {
             const subCatData = catData.subcategories[subCatKey];
-            subcategoriesToCreate.push({
-              subcategoryId: subCatKey, // Use the key as SubcategoryID
-              name: subCatData.name,
-              description: subCatData.description,
-              categoryId: createdCategory.categoryId, // Link to parent category
-              // assemblies will be linked later if needed, or by assemblies linking to them
+            await prisma.subcategory.upsert({
+              where: {
+                subcategoryId: subCatKey,
+              },
+              update: {
+                name: subCatData.name,
+                description: subCatData.description,
+                categoryId: createdCategory.categoryId,
+              },
+              create: {
+                subcategoryId: subCatKey, // Use the key as SubcategoryID
+                name: subCatData.name,
+                description: subCatData.description,
+                categoryId: createdCategory.categoryId, // Link to parent category
+              },
             });
+            subcategoriesUpserted++;
           }
         }
-        if (subcategoriesToCreate.length > 0) {
-          await prisma.subcategory.createMany({
-            data: subcategoriesToCreate,
-          });
-          console.log(`  Created ${subcategoriesToCreate.length} subcategories for ${createdCategory.name}`);
+        if (subcategoriesUpserted > 0) {
+          console.log(`  Created ${subcategoriesUpserted} subcategories for ${createdCategory.name}`);
         }
       }
     }
@@ -80,7 +94,11 @@ async function main() {
 
   // Seed Parts
   console.log('Seeding parts...');
-  const partsToCreate = [];
+  const existingPartsCount = await prisma.part.count();
+  if (existingPartsCount > 0) {
+    console.log(`Skipping parts seeding - ${existingPartsCount} parts already exist.`);
+  } else {
+    const partsToCreate = [];
   for (const partKey in partsCollection) {
     if (partsCollection.hasOwnProperty(partKey)) {
       const part = partsCollection[partKey];
@@ -96,16 +114,21 @@ async function main() {
     }
   }
 
-  if (partsToCreate.length > 0) {
-    await prisma.part.createMany({
-      data: partsToCreate,
-    });
-    console.log(`Seeded ${partsToCreate.length} parts.`);
+    if (partsToCreate.length > 0) {
+      await prisma.part.createMany({
+        data: partsToCreate,
+      });
+      console.log(`Seeded ${partsToCreate.length} parts.`);
+    }
   }
 
   // Seed Assemblies and their Components
   console.log('Seeding assemblies and their components...');
-  for (const asmKey in assembliesCollection) {
+  const existingAssembliesCount = await prisma.assembly.count();
+  if (existingAssembliesCount > 0) {
+    console.log(`Skipping assemblies seeding - ${existingAssembliesCount} assemblies already exist.`);
+  } else {
+    for (const asmKey in assembliesCollection) {
     if (assembliesCollection.hasOwnProperty(asmKey)) {
       const asmData = assembliesCollection[asmKey];
       const assemblyPayload = {
@@ -161,6 +184,7 @@ async function main() {
         }
       }
     }
+  }
   }
 
   // Seed Users (one per major role)

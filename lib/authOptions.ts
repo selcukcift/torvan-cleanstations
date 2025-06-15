@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // Include user data in JWT token
       if (user) {
+        token.id = user.id // Store actual database ID
         token.role = user.role
         token.username = user.username
         token.initials = user.initials
@@ -75,7 +76,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Send properties to the client
       if (token) {
-        session.user.id = token.sub!
+        session.user.id = token.id as string // Use actual database ID, not token.sub
         session.user.role = token.role as string
         session.user.username = token.username as string
         session.user.initials = token.initials as string

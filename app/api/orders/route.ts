@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     // Authenticate user using centralized utility
     const user = await getAuthUser()
     
-    console.log('Auth user:', user) // Debug log
+    console.log('🔍 Auth user from session:', user) // Debug log
     
     if (!user) {
       return NextResponse.json(
@@ -160,8 +160,22 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Parse and validate request body
+    // Ensure user.id is a string (JWT safety)
+    const userId = String(user.id).trim()
+    console.log('🔍 Processed user ID:', userId)
+    
+    // Parse and validate request body with enhanced error logging
     const body = await request.json()
+    console.log('🔍 Raw request body received:', JSON.stringify(body, null, 2))
+    
+    try {
+      const validatedData = OrderCreateSchema.parse(body)
+      console.log('✅ Validation successful')
+    } catch (validationError) {
+      console.error('🚨 Validation failed:', validationError)
+      throw validationError
+    }
+    
     const validatedData = OrderCreateSchema.parse(body)
 
     const { customerInfo, sinkSelection, configurations, accessories } = validatedData
@@ -178,8 +192,89 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create the main order
-    console.log('Creating order with userId:', user.id) // Debug log
+    // Validate user exists in database before creating order
+    console.log('🔍 Looking up user in database with ID:', userId, 'and username:', user.username)
+    
+    // First check if user exists by ID or username to avoid duplicates
+    const dbUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { id: userId },
+          { username: user.username },
+          { email: user.email }
+        ]
+      }
+    })
+    
+    let validUserId: string
+    
+    if (!dbUser) {
+      console.log('📝 No existing user found, creating new user from session data...')
+      
+      try {
+        // Create user from session data if not exists
+        const newUser = await prisma.user.create({
+          data: {
+            id: userId, // Use processed user ID
+            username: user.username,
+            email: user.email,
+            passwordHash: 'SESSION_USER_NO_PASSWORD', // Placeholder for session-created users
+            fullName: user.name,
+            role: user.role as any,
+            initials: user.initials
+          }
+        })
+        
+        console.log('✅ User created successfully:', newUser.email)
+        validUserId = newUser.id
+      } catch (createError: any) {
+        // Handle unique constraint violation by looking up the existing user
+        if (createError.code === 'P2002') {
+          console.log('🔄 User creation failed due to unique constraint, looking up existing user...')
+          const existingUser = await prisma.user.findFirst({
+            where: {
+              OR: [
+                { username: user.username },
+                { email: user.email }
+              ]
+            }
+          })
+          
+          if (existingUser) {
+            console.log('✅ Found existing user:', existingUser.email)
+            validUserId = existingUser.id
+          } else {
+            console.error('❌ Failed to create user and could not find existing user')
+            throw createError
+          }
+        } else {
+          throw createError
+        }
+      }
+    } else {
+      console.log('✅ User found in database:', dbUser.email)
+      
+      // Update user session data if ID doesn't match (session user with different ID)
+      if (dbUser.id !== userId) {
+        console.log('🔄 Updating user session data for existing user')
+        try {
+          await prisma.user.update({
+            where: { id: dbUser.id },
+            data: {
+              fullName: user.name,
+              role: user.role as any,
+              initials: user.initials
+            }
+          })
+          console.log('✅ User session data updated')
+        } catch (updateError) {
+          console.warn('⚠️ Failed to update user session data:', updateError)
+          // Continue anyway as this is not critical
+        }
+      }
+      
+      validUserId = dbUser.id
+    }
     
     const order = await prisma.order.create({
       data: {
@@ -191,7 +286,7 @@ export async function POST(request: NextRequest) {
         wantDate: customerInfo.wantDate,
         notes: customerInfo.notes || null,
         language: customerInfo.language,
-        createdById: user.id
+        createdById: validUserId
       }
     })
 
@@ -202,38 +297,32 @@ export async function POST(request: NextRequest) {
       'E_SINK_DI': 'T2-BSN-ESK-DI-KIT'
     }
 
-    // Create basin configurations - ONE per build number
+    // Create basin configurations - ONE record per basin (multiple basins per build are now supported)
     const basinConfigs = []
     for (const [buildNumber, config] of Object.entries(configurations)) {
       if (config.basins && config.basins.length > 0) {
-        // For multiple basins, we need to aggregate the data
-        // Since the schema only supports one basin configuration per build,
-        // we'll use the first basin's data and store basin count
-        const firstBasin = config.basins[0]
-        const totalBasinCount = config.basins.length
-        
-        // Transform basin type ID if needed
-        let basinTypeId = firstBasin.basinTypeId || ''
-        if (firstBasin.basinType && !basinTypeId) {
-          basinTypeId = basinTypeMapping[firstBasin.basinType] || firstBasin.basinType
-        } else if (basinTypeId && basinTypeMapping[basinTypeId]) {
-          basinTypeId = basinTypeMapping[basinTypeId]
+        // Create a separate record for each basin
+        for (const basin of config.basins) {
+          // Transform basin type ID if needed
+          let basinTypeId = basin.basinTypeId || ''
+          if (basin.basinType && !basinTypeId) {
+            basinTypeId = basinTypeMapping[basin.basinType] || basin.basinType
+          } else if (basinTypeId && basinTypeMapping[basinTypeId]) {
+            basinTypeId = basinTypeMapping[basinTypeId]
+          }
+          
+          basinConfigs.push({
+            buildNumber,
+            orderId: order.id,
+            basinTypeId: basinTypeId,
+            basinSizePartNumber: basin.basinSizePartNumber || '',
+            basinCount: 1, // Each record represents one basin
+            addonIds: basin.addonIds || [],
+            customDepth: basin.customDepth || null,
+            customLength: basin.customLength || null,
+            customWidth: basin.customWidth || null
+          })
         }
-        
-        // Collect all addon IDs from all basins
-        const allAddonIds = config.basins.flatMap(basin => basin.addonIds || [])
-        
-        basinConfigs.push({
-          buildNumber,
-          orderId: order.id,
-          basinTypeId: basinTypeId,
-          basinSizePartNumber: firstBasin.basinSizePartNumber || '',
-          basinCount: totalBasinCount,
-          addonIds: allAddonIds,
-          customDepth: firstBasin.customDepth || null,
-          customLength: firstBasin.customLength || null,
-          customWidth: firstBasin.customWidth || null
-        })
       }
     }
 
@@ -418,7 +507,7 @@ export async function POST(request: NextRequest) {
     await prisma.orderHistoryLog.create({
       data: {
         orderId: order.id,
-        userId: user.id,
+        userId: validUserId,
         action: 'ORDER_CREATED',
         newStatus: 'ORDER_CREATED',
         notes: `Order created with ${sinkSelection.buildNumbers.length} sinks`

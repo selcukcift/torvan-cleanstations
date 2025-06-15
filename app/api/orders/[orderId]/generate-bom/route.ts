@@ -71,6 +71,26 @@ export async function POST(
       sprayerConfigsCount: order.sprayerConfigurations?.length,
       accessoriesCount: order.selectedAccessories?.length
     })
+    
+    // Early validation - check if order has any configurations at all
+    const hasConfigurations = (order.sinkConfigurations?.length || 0) > 0 || 
+                             (order.basinConfigurations?.length || 0) > 0
+    
+    if (!hasConfigurations) {
+      console.warn(`⚠️ Order ${orderId} has no configurations - this order may have been created incompletely`)
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: `Order ${order.poNumber} appears to be missing configuration data. This may happen if the order was created without completing the configuration steps. Please create a new order or contact support to add configurations to this order.`,
+          missingConfigurations: true,
+          orderId: orderId,
+          poNumber: order.poNumber,
+          error: 'INCOMPLETE_ORDER_DATA',
+          suggestion: 'Create a new order through the order creation wizard to ensure all configuration data is properly saved.'
+        },
+        { status: 400 }
+      )
+    }
 
     // Convert order data to BOM generation format
     const bomRequestData = {
@@ -92,7 +112,32 @@ export async function POST(
           const sprayerConfigs = order.sprayerConfigurations?.filter(sc => sc.buildNumber === buildNumber) || []
           
           if (!sinkConfig) {
-            throw new Error(`No sink configuration found for build number: ${buildNumber}`)
+            console.warn(`⚠️ No sink configuration found for build number: ${buildNumber}`)
+            return NextResponse.json(
+              { 
+                success: false, 
+                message: `Order is missing configuration data for build number: ${buildNumber}. This order may have been created without complete configuration data. Please edit the order to add sink configurations, or create a new order with complete specifications.`,
+                missingConfigurations: true,
+                buildNumber: buildNumber,
+                error: 'MISSING_SINK_CONFIGURATION'
+              },
+              { status: 400 }
+            )
+          }
+          
+          // Check for missing basin configurations
+          if (!basinConfigs || basinConfigs.length === 0) {
+            console.warn(`⚠️ No basin configurations found for build number: ${buildNumber}`)
+            return NextResponse.json(
+              { 
+                success: false, 
+                message: `Order is missing basin configuration data for build number: ${buildNumber}. At least one basin configuration is required for BOM generation. Please edit the order to add basin configurations.`,
+                missingConfigurations: true,
+                buildNumber: buildNumber,
+                error: 'MISSING_BASIN_CONFIGURATION'
+              },
+              { status: 400 }
+            )
           }
           
           return [buildNumber, {

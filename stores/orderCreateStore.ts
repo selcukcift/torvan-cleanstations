@@ -185,7 +185,8 @@ export const useOrderCreateStore = create<OrderCreateState>()(
         const state = get()
         
         switch (step) {
-          case 1:            const { poNumber, customerName, salesPerson, wantDate } = state.customerInfo
+          case 1:
+            const { poNumber, customerName, salesPerson, wantDate } = state.customerInfo
             return !!(poNumber && customerName && salesPerson && wantDate)
           
           case 2:
