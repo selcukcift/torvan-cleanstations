@@ -786,7 +786,25 @@ export default function OrderDetailsPage() {
       }
     } catch (error: any) {
       console.error('❌ Error regenerating BOM from order configuration:', error)
-      setBomError(error.response?.data?.message || 'Failed to load BOM data')
+      
+      // Enhanced error logging to capture validation details
+      if (error.response?.data) {
+        console.error('🔍 Full error response data:', JSON.stringify(error.response.data, null, 2))
+        if (error.response.data.detailedErrors) {
+          console.error('🔍 Detailed validation errors:', error.response.data.detailedErrors)
+        }
+        if (error.response.data.requestBody) {
+          console.error('🔍 Request body that caused error:', JSON.stringify(error.response.data.requestBody, null, 2))
+        }
+      }
+      
+      // Show detailed error message if available
+      const errorMessage = error.response?.data?.message || 
+                          (error.response?.data?.detailedErrors ? 
+                            `Validation errors: ${error.response.data.detailedErrors.map(e => `${e.field}: ${e.message}`).join('; ')}` : 
+                            'Failed to load BOM data')
+      
+      setBomError(errorMessage)
     } finally {
       setBomLoading(false)
     }

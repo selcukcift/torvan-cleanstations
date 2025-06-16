@@ -27,8 +27,14 @@ const CustomerInfoSchema = z.object({
 const BasinConfigurationSchema = z.object({
   basinTypeId: z.string().optional(),
   basinType: z.string().optional(),  // Allow user-friendly basin type from UI
-  basinSizePartNumber: z.string().optional(),
-  addonIds: z.array(z.string()).optional()
+  basinSizePartNumber: z.string().min(1, 'Basin size is required'),
+  addonIds: z.array(z.string()).optional(),
+  customDepth: z.number().nullable().optional(),
+  customLength: z.number().nullable().optional(),
+  customWidth: z.number().nullable().optional()
+}).refine(data => data.basinTypeId || data.basinType, {
+  message: 'Basin type is required (basinTypeId or basinType must be provided)',
+  path: ['basinType']
 })
 
 const FaucetConfigurationSchema = z.object({
@@ -297,26 +303,39 @@ export async function POST(request: NextRequest) {
       'E_SINK_DI': 'T2-BSN-ESK-DI-KIT'
     }
 
-    // Create basin configurations - ONE record per basin (multiple basins per build are now supported)
+    // Create basin configurations - ONE record per individual basin (required for BOM logic)
     const basinConfigs = []
     for (const [buildNumber, config] of Object.entries(configurations)) {
       if (config.basins && config.basins.length > 0) {
-        // Create a separate record for each basin
+        // Create individual basin records (required for BOM control box selection & assembly processing)
         for (const basin of config.basins) {
+          console.log('🔍 Processing basin configuration:', basin)
+          
           // Transform basin type ID if needed
           let basinTypeId = basin.basinTypeId || ''
           if (basin.basinType && !basinTypeId) {
             basinTypeId = basinTypeMapping[basin.basinType] || basin.basinType
+            console.log(`🔄 Mapped basin type: ${basin.basinType} -> ${basinTypeId}`)
           } else if (basinTypeId && basinTypeMapping[basinTypeId]) {
+            const originalId = basinTypeId
             basinTypeId = basinTypeMapping[basinTypeId]
+            console.log(`🔄 Mapped basin type ID: ${originalId} -> ${basinTypeId}`)
           }
+          
+          // Validate basin type ID is not empty
+          if (!basinTypeId) {
+            console.error(`❌ Empty basin type ID for basin:`, basin)
+            throw new Error(`Basin configuration is missing basin type. Each basin must have a valid basin type (E_SINK, E_SINK_DI, or E_DRAIN).`)
+          }
+          
+          console.log(`✅ Final basin config: buildNumber=${buildNumber}, basinTypeId=${basinTypeId}, size=${basin.basinSizePartNumber}`)
           
           basinConfigs.push({
             buildNumber,
             orderId: order.id,
-            basinTypeId: basinTypeId,
+            basinTypeId,
             basinSizePartNumber: basin.basinSizePartNumber || '',
-            basinCount: 1, // Each record represents one basin
+            basinCount: 1, // Always 1 for individual basin records
             addonIds: basin.addonIds || [],
             customDepth: basin.customDepth || null,
             customLength: basin.customLength || null,

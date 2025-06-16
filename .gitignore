@@ -99,6 +99,9 @@ coverage/
 # MCP configuration
 .mcp.json
 
+# Claude configuration
+.claude
+
 # Temporary and debug files
 debug-*.js
 test-*.js

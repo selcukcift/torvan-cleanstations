@@ -113,31 +113,13 @@ export async function POST(
           
           if (!sinkConfig) {
             console.warn(`⚠️ No sink configuration found for build number: ${buildNumber}`)
-            return NextResponse.json(
-              { 
-                success: false, 
-                message: `Order is missing configuration data for build number: ${buildNumber}. This order may have been created without complete configuration data. Please edit the order to add sink configurations, or create a new order with complete specifications.`,
-                missingConfigurations: true,
-                buildNumber: buildNumber,
-                error: 'MISSING_SINK_CONFIGURATION'
-              },
-              { status: 400 }
-            )
+            throw new Error(`Order is missing configuration data for build number: ${buildNumber}. This order may have been created without complete configuration data. Please edit the order to add sink configurations, or create a new order with complete specifications.`)
           }
           
           // Check for missing basin configurations
           if (!basinConfigs || basinConfigs.length === 0) {
             console.warn(`⚠️ No basin configurations found for build number: ${buildNumber}`)
-            return NextResponse.json(
-              { 
-                success: false, 
-                message: `Order is missing basin configuration data for build number: ${buildNumber}. At least one basin configuration is required for BOM generation. Please edit the order to add basin configurations.`,
-                missingConfigurations: true,
-                buildNumber: buildNumber,
-                error: 'MISSING_BASIN_CONFIGURATION'
-              },
-              { status: 400 }
-            )
+            throw new Error(`Order is missing basin configuration data for build number: ${buildNumber}. At least one basin configuration is required for BOM generation. Please edit the order to add basin configurations.`)
           }
           
           return [buildNumber, {

@@ -283,7 +283,7 @@ export async function PUT(
           }
         })
 
-        // Create basin configurations
+        // Create basin configurations - individual records for BOM logic compatibility
         for (const basin of config.basins) {
           await tx.basinConfiguration.create({
             data: {
@@ -291,6 +291,7 @@ export async function PUT(
               buildNumber,
               basinTypeId: basin.basinType,
               basinSizePartNumber: basin.basinSize,
+              basinCount: 1, // Always 1 for individual basin records
               customWidth: basin.customWidth,
               customLength: basin.customLength,
               customDepth: basin.customDepth,

@@ -80,7 +80,9 @@
       "Bash(./setup-database.sh:*)",
       "Bash(git clean:*)",
       "mcp__filesystem__search_files",
-      "mcp__brave-search__brave_web_search"
+      "mcp__brave-search__brave_web_search",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_file"
     ],
     "deny": []
   },

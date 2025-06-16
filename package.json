@@ -4,7 +4,7 @@
   "description": "Torvan Medical CleanStation Configurator and Workflow App",
   "main": "src/server.js",
   "scripts": {
-    "dev": "fuser -k 3005/tcp 2>/dev/null || true && next dev -p 3005",
+    "dev": "node scripts/kill-port.js 3005 && next dev -p 3005",
     "dev:frontend": "next dev -p 3005",
     "dev:backend": "node src/server.js",
     "build": "next build",

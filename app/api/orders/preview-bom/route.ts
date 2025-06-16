@@ -18,9 +18,9 @@ const CustomerInfoSchema = z.object({
 })
 
 const BasinConfigurationSchema = z.object({
-  basinTypeId: z.string().optional(),
-  basinType: z.string().optional(),  // Allow user-friendly basin type from UI
-  basinSizePartNumber: z.string().optional(),
+  basinTypeId: z.string().nullable().optional(),
+  basinType: z.string().nullable().optional(),  // Allow user-friendly basin type from UI
+  basinSizePartNumber: z.string().nullable().optional(),
   addonIds: z.array(z.string()).optional(),
   customDepth: z.number().nullable().optional(),
   customLength: z.number().nullable().optional(),
@@ -50,11 +50,11 @@ const SinkConfigurationSchema = z.object({
   sinkLength: z.number().optional(),
   width: z.number().optional(),
   length: z.number().optional(),
-  legsTypeId: z.string().optional(),
-  legTypeId: z.string().optional(),
-  feetTypeId: z.string().optional(),
+  legsTypeId: z.string().nullable().optional(),
+  legTypeId: z.string().nullable().optional(),
+  feetTypeId: z.string().nullable().optional(),
   pegboard: z.boolean().optional(),
-  pegboardTypeId: z.string().optional(),
+  pegboardTypeId: z.string().nullable().optional(),
   pegboardType: z.string().optional(),
   pegboardColor: z.string().optional(),
   pegboardColorId: z.string().nullable().optional(),
@@ -225,12 +225,26 @@ export async function POST(request: NextRequest) {
     console.error('Request body was:', JSON.stringify(body, null, 2))
     
     if (error instanceof z.ZodError) {
-      console.error('Validation errors:', JSON.stringify(error.errors, null, 2))
+      console.error('❌ BOM Preview Validation Error:')
+      console.error('Detailed validation errors:', JSON.stringify(error.errors, null, 2))
+      
+      // Create more detailed error messages
+      const detailedErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message,
+        received: err.received,
+        expected: err.expected
+      }))
+      
+      console.error('Formatted validation errors:', detailedErrors)
+      
       return NextResponse.json(
         { 
           success: false, 
-          message: 'Validation error', 
-          errors: error.errors 
+          message: `BOM Preview validation failed: ${detailedErrors.map(e => `${e.field}: ${e.message}`).join('; ')}`, 
+          errors: error.errors,
+          detailedErrors,
+          requestBody: body // Include the actual request body for debugging
         },
         { status: 400 }
       )
