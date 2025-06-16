@@ -45,9 +45,12 @@ export function AssemblerDashboard() {
     inProgress: 0,
     awaitingQC: 0
   })
+  const [serviceOrders, setServiceOrders] = useState<any[]>([])
+  const [serviceOrdersLoading, setServiceOrdersLoading] = useState(true)
 
   useEffect(() => {
     fetchOrders()
+    fetchServiceOrders()
   }, [])
 
   const fetchOrders = async () => {
@@ -93,6 +96,27 @@ export function AssemblerDashboard() {
     })
 
     setStats(stats)
+  }
+
+  const fetchServiceOrders = async () => {
+    setServiceOrdersLoading(true)
+    try {
+      const response = await nextJsApiClient.get("/service-orders?limit=10")
+      
+      if (response.data.success) {
+        // Filter for approved service orders that might affect production
+        const relevantServiceOrders = response.data.data.serviceOrders.filter((order: any) => 
+          ["APPROVED", "ORDERED"].includes(order.status)
+        )
+        
+        setServiceOrders(relevantServiceOrders)
+      }
+    } catch (error: any) {
+      console.error('Error fetching service orders:', error)
+      // Don't show error toast for service orders as it's secondary information
+    } finally {
+      setServiceOrdersLoading(false)
+    }
   }
 
   const navigateToOrder = (orderId: string) => {
@@ -333,18 +357,63 @@ export function AssemblerDashboard() {
         </CardContent>
       </Card>
 
-      {/* QC Checklist Placeholder */}
-      <Card className="border-dashed">
+      {/* Service Orders Impact */}
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg">QC Checklist Access</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Package className="w-5 h-5" />
+            Service Orders Activity
+          </CardTitle>
           <CardDescription>
-            Quick access to quality control checklists
+            Recent service orders that may affect parts availability
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-slate-500">
-            QC checklist functionality will be implemented in a future update.
-          </p>
+          {serviceOrdersLoading ? (
+            <div className="flex justify-center py-4">
+              <Loader2 className="w-5 h-5 animate-spin" />
+            </div>
+          ) : serviceOrders.length > 0 ? (
+            <div className="space-y-3">
+              {serviceOrders.slice(0, 5).map((order) => (
+                <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium">
+                      {order.requestedBy.initials}
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">
+                        {order.items.length} part{order.items.length !== 1 ? 's' : ''} - {order.requestedBy.fullName}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {format(new Date(order.requestTimestamp), 'MMM d, yyyy')}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge 
+                    variant="outline" 
+                    className={
+                      order.status === 'APPROVED' ? 'bg-green-50 text-green-700' : 
+                      order.status === 'ORDERED' ? 'bg-blue-50 text-blue-700' : 
+                      'bg-slate-50 text-slate-700'
+                    }
+                  >
+                    {order.status}
+                  </Badge>
+                </div>
+              ))}
+              {serviceOrders.length > 5 && (
+                <p className="text-xs text-slate-500 text-center pt-2">
+                  And {serviceOrders.length - 5} more service orders...
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <CheckCircle className="w-8 h-8 mx-auto text-green-500 mb-2" />
+              <p className="text-sm text-slate-500">No recent service orders affecting production</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

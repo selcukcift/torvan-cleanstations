@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ServicePartsBrowser } from "@/components/service/ServicePartsBrowser"
 import { ServiceOrderCart } from "@/components/service/ServiceOrderCart"
 import { ServiceOrderHistory } from "@/components/service/ServiceOrderHistory"
+import { ServiceAnalyticsDashboard } from "@/components/analytics/ServiceAnalyticsDashboard"
 
 interface ServiceOrder {
   id: string
@@ -193,11 +194,12 @@ export function ServiceDepartmentDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="browse">Browse Parts</TabsTrigger>
           <TabsTrigger value="cart">Order Cart</TabsTrigger>
           <TabsTrigger value="history">Order History</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -303,6 +305,11 @@ export function ServiceDepartmentDashboard() {
         {/* Order History Tab */}
         <TabsContent value="history">
           <ServiceOrderHistory />
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics">
+          <ServiceAnalyticsDashboard />
         </TabsContent>
       </Tabs>
     </div>

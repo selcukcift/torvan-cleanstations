@@ -24,52 +24,52 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const skip = (page - 1) * limit
 
-    // Build search filters
-    const where: any = {
-      // Filter for parts that are suitable for service
-      OR: [
-        { type: 'COMPONENT' },
-        { type: 'MATERIAL' }
-      ],
-      status: 'ACTIVE' // Only show active parts
+    // Filter ONLY for Service Parts Category (719) assemblies
+    const serviceAssemblyWhere: any = {
+      categoryCode: '719' // Only SERVICE PARTS category
     }
 
     // Add text search if provided
     if (search) {
-      where.AND = [
-        where.AND || {},
-        {
-          OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { partId: { contains: search, mode: 'insensitive' } },
-            { manufacturerPartNumber: { contains: search, mode: 'insensitive' } }
-          ]
-        }
+      serviceAssemblyWhere.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { assemblyId: { contains: search, mode: 'insensitive' } }
       ]
     }
 
-    // Add type filter if provided
-    if (type && ['COMPONENT', 'MATERIAL'].includes(type)) {
-      where.type = type
+    // Add subcategory filter if provided
+    if (category) {
+      serviceAssemblyWhere.subcategoryCode = category
     }
 
-    // Fetch parts with pagination
-    const [parts, totalCount] = await Promise.all([
-      prisma.part.findMany({
-        where,
+    // Fetch SERVICE PARTS assemblies (Category 719 only) with pagination
+    const [serviceAssemblies, totalCount] = await Promise.all([
+      prisma.assembly.findMany({
+        where: serviceAssemblyWhere,
         select: {
-          partId: true,
+          assemblyId: true,
           name: true,
-          manufacturerPartNumber: true,
           type: true,
-          status: true,
-          photoURL: true,
-          technicalDrawingURL: true,
-          // Include assembly components to show if this part is used in assemblies
-          assemblyComponents: {
-            take: 3, // Limit to avoid too much data
+          categoryCode: true,
+          subcategoryCode: true,
+          isOrderable: true,
+          kitComponentsJson: true,
+          // Include components if this assembly has them
+          components: {
             select: {
-              parentAssembly: {
+              id: true,
+              quantity: true,
+              notes: true,
+              childPart: {
+                select: {
+                  partId: true,
+                  name: true,
+                  manufacturerPartNumber: true,
+                  type: true,
+                  photoURL: true
+                }
+              },
+              childAssembly: {
                 select: {
                   assemblyId: true,
                   name: true,
@@ -80,52 +80,37 @@ export async function GET(request: NextRequest) {
           }
         },
         orderBy: [
-          { name: 'asc' },
-          { partId: 'asc' }
+          { subcategoryCode: 'asc' },
+          { name: 'asc' }
         ],
         skip,
         take: limit
       }),
-      prisma.part.count({ where })
+      prisma.assembly.count({ where: serviceAssemblyWhere })
     ])
-
-    // Also fetch available assemblies that could be service parts
-    const serviceAssemblies = await prisma.assembly.findMany({
-      where: {
-        OR: [
-          { type: 'SERVICE_PART' },
-          { type: 'KIT' }
-        ]
-      },
-      select: {
-        assemblyId: true,
-        name: true,
-        type: true,
-        categoryCode: true,
-        subcategoryCode: true
-      },
-      take: 50 // Limit assemblies for now
-    })
 
     const totalPages = Math.ceil(totalCount / limit)
 
-    // Get categories for filtering
-    const categories = await prisma.category.findMany({
+    // Get SERVICE PARTS subcategories (719.xxx) for filtering
+    const serviceSubcategories = await prisma.subcategory.findMany({
+      where: {
+        categoryId: '719' // Only SERVICE PARTS subcategories
+      },
       select: {
-        categoryId: true,
-        categoryName: true
+        subcategoryId: true,
+        name: true,
+        description: true
       },
       orderBy: {
-        categoryName: 'asc'
+        subcategoryId: 'asc'
       }
     })
 
     return NextResponse.json({
       success: true,
       data: {
-        parts,
         serviceAssemblies,
-        categories,
+        subcategories: serviceSubcategories,
         pagination: {
           page,
           limit,

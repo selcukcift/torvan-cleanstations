@@ -238,7 +238,11 @@ export function ProcurementTab({
                       {part.status.replace("_", " ")}
                     </Badge>
                     <p className="text-xs text-muted-foreground">
-                      Marked: {format(new Date(part.markedAt), "MMM dd, yyyy")}
+                      Marked: {(() => {
+                        if (!part.markedAt) return "Unknown"
+                        const date = new Date(part.markedAt)
+                        return isNaN(date.getTime()) ? "Unknown" : format(date, "MMM dd, yyyy")
+                      })()}
                     </p>
                   </div>
                 </div>

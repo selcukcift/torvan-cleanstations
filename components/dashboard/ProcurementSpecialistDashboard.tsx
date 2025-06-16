@@ -56,6 +56,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ExternalLink, Download, Filter, RefreshCw } from "lucide-react"
+import { ServiceOrderApproval } from "@/components/service/ServiceOrderApproval"
 
 // Status badge color mapping
 const statusColors: Record<string, string> = {
@@ -742,9 +743,10 @@ export function ProcurementSpecialistDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="orders">Production Orders</TabsTrigger>
           <TabsTrigger value="service">Service Requests</TabsTrigger>
+          <TabsTrigger value="service-orders">Service Order Approvals</TabsTrigger>
         </TabsList>
         
         {/* Production Orders Tab */}
@@ -952,6 +954,11 @@ export function ProcurementSpecialistDashboard() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Service Orders Tab */}
+        <TabsContent value="service-orders" className="space-y-4">
+          <ServiceOrderApproval />
         </TabsContent>
         
       </Tabs>

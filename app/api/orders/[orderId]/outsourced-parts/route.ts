@@ -28,9 +28,11 @@ const updateOutsourcedPartSchema = z.object({
 // GET /api/orders/[orderId]/outsourced-parts
 export async function GET(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
+    const { orderId } = await params
+    
     const user = await getAuthUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -41,21 +43,63 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const outsourcedParts = await prisma.outsourcedPart.findMany({
-      where: { orderId: params.orderId },
+    // TODO: OutsourcedPart model doesn't exist in schema yet
+    // For now, return a simulated response based on order history or comments
+    console.log('📦 Fetching outsourced parts for order:', orderId)
+    
+    // Check if there are any order history logs about outsourced parts
+    const orderHistory = await prisma.orderHistoryLog.findMany({
+      where: { 
+        orderId: orderId,
+        action: 'PART_MARKED_FOR_OUTSOURCING'
+      },
       include: {
-        markedBy: {
+        user: {
           select: {
             id: true,
             fullName: true,
-            email: true,
-          },
-        },
-        bomItem: true,
-      },
-      orderBy: {
-        markedAt: "desc",
-      },
+            email: true
+          }
+        }
+      }
+    })
+    
+    // Convert history logs to outsourced parts format
+    const outsourcedParts = orderHistory.map(log => {
+      try {
+        // Parse JSON data from notes field
+        if (log.notes?.startsWith('OUTSOURCED_PART_DATA:')) {
+          const jsonData = log.notes.substring('OUTSOURCED_PART_DATA:'.length)
+          const partData = JSON.parse(jsonData)
+          
+          return {
+            id: log.id,
+            partNumber: partData.partNumber,
+            partName: partData.partName,
+            quantity: partData.quantity,
+            supplier: partData.supplier,
+            status: 'SENT',
+            notes: partData.notes,
+            markedAt: log.createdAt,
+            markedBy: log.user
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing outsourced part data:', error)
+      }
+      
+      // Fallback to regex parsing for old format
+      return {
+        id: log.id,
+        partNumber: log.notes?.match(/Part\s+([^\s]+)/)?.[1] || 'Unknown',
+        partName: log.notes?.match(/Part\s+[^\s]+\s+\(([^)]+)\)/)?.[1] || 'Unknown Part',
+        quantity: 1,
+        supplier: 'Sink Body Manufacturer',
+        status: 'SENT',
+        notes: log.notes,
+        markedAt: log.createdAt,
+        markedBy: log.user
+      }
     })
 
     return NextResponse.json({
@@ -74,9 +118,11 @@ export async function GET(
 // POST /api/orders/[orderId]/outsourced-parts
 export async function POST(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
+    const { orderId } = await params
+    
     const user = await getAuthUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -90,54 +136,57 @@ export async function POST(
     const body = await request.json()
     const validatedData = createOutsourcedPartSchema.parse(body)
 
+    // TODO: OutsourcedPart model doesn't exist in schema yet
+    // For now, simulate creating an outsourced part by logging it in order history
+    
     // Verify order exists
     const order = await prisma.order.findUnique({
-      where: { id: params.orderId },
+      where: { id: orderId },
     })
 
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 })
     }
 
-    // Create outsourced part record
-    const outsourcedPart = await prisma.outsourcedPart.create({
+    // Log the action as order history (since OutsourcedPart table doesn't exist)
+    // Store part data as JSON in notes field for reliable parsing
+    const partData = {
+      partNumber: validatedData.partNumber,
+      partName: validatedData.partName,
+      quantity: validatedData.quantity,
+      supplier: validatedData.supplier || 'Sink Body Manufacturer',
+      notes: validatedData.notes
+    }
+    
+    const historyLog = await prisma.orderHistoryLog.create({
       data: {
-        orderId: params.orderId,
-        bomItemId: validatedData.bomItemId,
-        partNumber: validatedData.partNumber,
-        partName: validatedData.partName,
-        quantity: validatedData.quantity,
-        supplier: validatedData.supplier,
-        notes: validatedData.notes,
-        expectedReturnDate: validatedData.expectedReturnDate
-          ? new Date(validatedData.expectedReturnDate)
-          : undefined,
-        markedById: user.id,
-      },
-      include: {
-        markedBy: {
-          select: {
-            id: true,
-            fullName: true,
-            email: true,
-          },
-        },
+        orderId: orderId,
+        userId: user.id,
+        action: "PART_MARKED_FOR_OUTSOURCING",
+        notes: `OUTSOURCED_PART_DATA:${JSON.stringify(partData)}`,
       },
     })
 
-    // Log the action
-    await prisma.orderHistoryLog.create({
-      data: {
-        orderId: params.orderId,
-        userId: user.id,
-        action: "PART_MARKED_FOR_OUTSOURCING",
-        notes: `Part ${validatedData.partNumber} (${validatedData.partName}) marked for outsourcing`,
+    // Return a simulated outsourced part response
+    const simulatedOutsourcedPart = {
+      id: historyLog.id,
+      partNumber: validatedData.partNumber,
+      partName: validatedData.partName,
+      quantity: validatedData.quantity,
+      supplier: validatedData.supplier || 'Sink Body Manufacturer',
+      status: 'PENDING', // Default status
+      notes: validatedData.notes,
+      markedAt: historyLog.createdAt,
+      markedBy: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
       },
-    })
+    }
 
     return NextResponse.json({
       success: true,
-      data: outsourcedPart,
+      data: simulatedOutsourcedPart,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -157,9 +206,11 @@ export async function POST(
 // PUT /api/orders/[orderId]/outsourced-parts
 export async function PUT(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
+    const { orderId } = await params
+    
     const user = await getAuthUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -183,64 +234,11 @@ export async function PUT(
     const body = await request.json()
     const validatedData = updateOutsourcedPartSchema.parse(body)
 
-    // Verify outsourced part exists and belongs to the order
-    const existingPart = await prisma.outsourcedPart.findFirst({
-      where: {
-        id: outsourcedPartId,
-        orderId: params.orderId,
-      },
-    })
-
-    if (!existingPart) {
-      return NextResponse.json(
-        { error: "Outsourced part not found" },
-        { status: 404 }
-      )
-    }
-
-    // Update outsourced part
-    const updatedPart = await prisma.outsourcedPart.update({
-      where: { id: outsourcedPartId },
-      data: {
-        status: validatedData.status,
-        supplier: validatedData.supplier,
-        notes: validatedData.notes,
-        expectedReturnDate: validatedData.expectedReturnDate
-          ? new Date(validatedData.expectedReturnDate)
-          : undefined,
-        actualReturnDate: validatedData.actualReturnDate
-          ? new Date(validatedData.actualReturnDate)
-          : undefined,
-      },
-      include: {
-        markedBy: {
-          select: {
-            id: true,
-            fullName: true,
-            email: true,
-          },
-        },
-      },
-    })
-
-    // Log status changes
-    if (validatedData.status && validatedData.status !== existingPart.status) {
-      await prisma.orderHistoryLog.create({
-        data: {
-          orderId: params.orderId,
-          userId: user.id,
-          action: "OUTSOURCED_PART_STATUS_UPDATED",
-          oldStatus: existingPart.status,
-          newStatus: validatedData.status,
-          notes: `Part ${existingPart.partNumber} status changed from ${existingPart.status} to ${validatedData.status}`,
-        },
-      })
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: updatedPart,
-    })
+    // TODO: OutsourcedPart model doesn't exist in schema yet
+    return NextResponse.json(
+      { success: false, error: "OutsourcedPart feature not yet implemented" },
+      { status: 501 }
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -259,9 +257,11 @@ export async function PUT(
 // DELETE /api/orders/[orderId]/outsourced-parts
 export async function DELETE(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
+    const { orderId } = await params
+    
     const user = await getAuthUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -282,40 +282,11 @@ export async function DELETE(
       )
     }
 
-    // Verify outsourced part exists and belongs to the order
-    const existingPart = await prisma.outsourcedPart.findFirst({
-      where: {
-        id: outsourcedPartId,
-        orderId: params.orderId,
-      },
-    })
-
-    if (!existingPart) {
-      return NextResponse.json(
-        { error: "Outsourced part not found" },
-        { status: 404 }
-      )
-    }
-
-    // Delete the outsourced part
-    await prisma.outsourcedPart.delete({
-      where: { id: outsourcedPartId },
-    })
-
-    // Log the action
-    await prisma.orderHistoryLog.create({
-      data: {
-        orderId: params.orderId,
-        userId: user.id,
-        action: "OUTSOURCED_PART_REMOVED",
-        notes: `Part ${existingPart.partNumber} (${existingPart.partName}) removed from outsourcing`,
-      },
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: "Outsourced part removed successfully",
-    })
+    // TODO: OutsourcedPart model doesn't exist in schema yet
+    return NextResponse.json(
+      { success: false, error: "OutsourcedPart feature not yet implemented" },
+      { status: 501 }
+    )
   } catch (error) {
     console.error("Error deleting outsourced part:", error)
     return NextResponse.json(

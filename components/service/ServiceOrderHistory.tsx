@@ -23,15 +23,20 @@ import { useSession } from "next-auth/react"
 interface ServiceOrder {
   id: string
   status: string
-  priority: string
   notes?: string
-  createdAt: string
+  requestTimestamp: string
   updatedAt: string
   items: Array<{
     id: string
     partId: string
-    partName: string
-    quantity: number
+    quantityRequested: number
+    notes?: string
+    part: {
+      partId: string
+      name: string
+      photoURL?: string
+      manufacturerPartNumber?: string
+    }
   }>
 }
 
@@ -81,7 +86,8 @@ export function ServiceOrderHistory() {
       setLoading(true)
       const response = await nextJsApiClient.get('/service-orders')
       if (response.data.success) {
-        setOrders(response.data.data)
+        const serviceOrders = response.data.data?.serviceOrders || []
+        setOrders(Array.isArray(serviceOrders) ? serviceOrders : [])
       }
     } catch (error: any) {
       console.error('Error fetching service orders:', error)
@@ -150,7 +156,7 @@ export function ServiceOrderHistory() {
           <div className="flex items-center justify-center py-8">
             <Loader2 className="w-8 h-8 animate-spin" />
           </div>
-        ) : orders.length === 0 ? (
+        ) : !Array.isArray(orders) || orders.length === 0 ? (
           <div className="text-center py-8 space-y-4">
             <Package className="w-12 h-12 mx-auto text-slate-300" />
             <div>
@@ -178,7 +184,7 @@ export function ServiceOrderHistory() {
                           Service Order #{order.id}
                         </h4>
                         <p className="text-xs text-slate-500">
-                          {format(new Date(order.createdAt), "PPp")}
+                          {format(new Date(order.requestTimestamp), "PPp")}
                         </p>
                       </div>
                     </div>
@@ -186,11 +192,6 @@ export function ServiceOrderHistory() {
                       <Badge className={config.color}>
                         {config.label}
                       </Badge>
-                      {order.priority === "URGENT" && (
-                        <Badge variant="destructive" className="text-xs">
-                          Urgent
-                        </Badge>
-                      )}
                       <Button
                         onClick={() => toggleOrderDetails(order.id)}
                         variant="ghost"
@@ -204,7 +205,7 @@ export function ServiceOrderHistory() {
                   {/* Order Summary */}
                   <div className="text-sm text-slate-600">
                     {order.items.length} item{order.items.length !== 1 ? 's' : ''} • 
-                    Total quantity: {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+                    Total quantity: {order.items.reduce((sum, item) => sum + item.quantityRequested, 0)}
                   </div>
 
                   {/* Expanded Details */}
@@ -220,13 +221,13 @@ export function ServiceOrderHistory() {
                               className="flex items-center justify-between text-sm bg-slate-50 p-2 rounded"
                             >
                               <div>
-                                <span className="font-medium">{item.partName}</span>
+                                <span className="font-medium">{item.part.name}</span>
                                 <span className="text-slate-500 ml-2">
                                   (ID: {item.partId})
                                 </span>
                               </div>
                               <span className="font-medium">
-                                Qty: {item.quantity}
+                                Qty: {item.quantityRequested}
                               </span>
                             </div>
                           ))}
@@ -245,8 +246,8 @@ export function ServiceOrderHistory() {
 
                       {/* Timestamps */}
                       <div className="text-xs text-slate-500">
-                        <p>Created: {format(new Date(order.createdAt), "PPp")}</p>
-                        {order.updatedAt !== order.createdAt && (
+                        <p>Created: {format(new Date(order.requestTimestamp), "PPp")}</p>
+                        {order.updatedAt !== order.requestTimestamp && (
                           <p>Updated: {format(new Date(order.updatedAt), "PPp")}</p>
                         )}
                       </div>

@@ -23,7 +23,7 @@ export async function GET(
       )
     }
     
-    if (!checkUserRole(user, ['ASSEMBLER', 'QC_PERSON', 'PRODUCTION_COORDINATOR', 'ADMIN'])) {
+    if (!checkUserRole(user, ['ASSEMBLER', 'QC_PERSON', 'PRODUCTION_COORDINATOR', 'PROCUREMENT_SPECIALIST', 'ADMIN'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

@@ -201,7 +201,7 @@ export async function POST(
         where: { id: serviceOrderId },
         data: {
           status: newStatus,
-          procurementNotes: procurementNotes || serviceOrder.procurementNotes,
+          procurementNotes: updatedProcurementNotes,
           updatedAt: new Date(),
           ...(action === 'APPROVE' && estimatedDeliveryDate && {
             estimatedDeliveryDate: new Date(estimatedDeliveryDate)
@@ -242,22 +242,24 @@ export async function POST(
         }
       } else if (action === 'APPROVE') {
         // Auto-approve all items with requested quantities
-        await tx.serviceOrderItem.updateMany({
-          where: { serviceOrderId },
-          data: { quantityApproved: prisma.serviceOrderItem.fields.quantityRequested }
+        const items = await tx.serviceOrderItem.findMany({
+          where: { serviceOrderId }
         })
+        
+        for (const item of items) {
+          await tx.serviceOrderItem.update({
+            where: { id: item.id },
+            data: { quantityApproved: item.quantityRequested }
+          })
+        }
       }
 
-      // Create approval record/note
-      const approvalNote = `${action} by ${user.fullName}: ${notes || 'No additional notes'}`
-      await tx.serviceOrderNote.create({
-        data: {
-          serviceOrderId,
-          authorId: user.id,
-          content: approvalNote,
-          type: 'APPROVAL_ACTION'
-        }
-      })
+      // Store approval note in procurementNotes field
+      const existingNotes = serviceOrder.procurementNotes || ''
+      const approvalNote = `${new Date().toISOString()}: ${action} by ${user.fullName}: ${notes || 'No additional notes'}`
+      const updatedProcurementNotes = existingNotes 
+        ? `${existingNotes}\n\n${approvalNote}`
+        : approvalNote
 
       // Create notifications
       await createApprovalNotifications(
@@ -330,7 +332,6 @@ export async function PUT(request: NextRequest) {
   const requestId = getRequestId(request)
   
   try {
-    const resolvedParams = await params
     const user = await getAuthUser()
     if (!user) {
       return createAPIResponse(
@@ -455,21 +456,17 @@ export async function PUT(request: NextRequest) {
 
           // Auto-approve all items if approved
           if (action === 'APPROVE') {
-            await tx.serviceOrderItem.updateMany({
-              where: { serviceOrderId: order.id },
-              data: { quantityApproved: prisma.serviceOrderItem.fields.quantityRequested }
+            const items = await tx.serviceOrderItem.findMany({
+              where: { serviceOrderId: order.id }
             })
-          }
-
-          // Create note
-          await tx.serviceOrderNote.create({
-            data: {
-              serviceOrderId: order.id,
-              authorId: user.id,
-              content: `Batch ${action.toLowerCase()} by ${user.fullName}: ${notes || 'No additional notes'}`,
-              type: 'APPROVAL_ACTION'
+            
+            for (const item of items) {
+              await tx.serviceOrderItem.update({
+                where: { id: item.id },
+                data: { quantityApproved: item.quantityRequested }
+              })
             }
-          })
+          }
 
           // Create notification
           await tx.systemNotification.create({

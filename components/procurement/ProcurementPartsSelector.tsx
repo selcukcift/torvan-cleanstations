@@ -90,6 +90,13 @@ export function ProcurementPartsSelector({
     fetchOutsourcedParts()
   }, [bomData])
 
+  // Re-extract parts when outsourced parts change
+  useEffect(() => {
+    if (bomData && outsourcedParts.length >= 0) {
+      extractSelectableParts()
+    }
+  }, [outsourcedParts])
+
   const fetchOutsourcedParts = async () => {
     try {
       const response = await nextJsApiClient.get(`/orders/${orderId}/outsourced-parts`)
@@ -111,7 +118,7 @@ export function ProcurementPartsSelector({
     // Function to recursively search through BOM items
     const searchBOMItems = (items: any[]) => {
       items.forEach(item => {
-        const partNumber = item.assemblyId || item.partNumber || item.partIdOrAssemblyId || ""
+        const partNumber = item.id || item.assemblyId || item.partNumber || item.partIdOrAssemblyId || ""
         const isLeg = LEGS_PATTERNS.includes(partNumber)
         const isFoot = FEET_PATTERNS.includes(partNumber)
         
@@ -210,9 +217,8 @@ export function ProcurementPartsSelector({
           partName: part.name,
           quantity: part.quantity,
           supplier: "Sink Body Manufacturer",
-          status: "SENT",
           notes: notes || `${part.type === "legs" ? "Legs kit" : "Casters/Feet"} sent to sink body manufacturer`,
-          expectedReturnDate: null, // Will be set when sink body is completed
+          // Note: status is set to "PENDING" by default in the backend, can be updated later
         })
       )
 
@@ -238,6 +244,7 @@ export function ProcurementPartsSelector({
       
       // Refresh data
       await fetchOutsourcedParts()
+      // extractSelectableParts() will be called automatically by useEffect when outsourcedParts updates
       if (onStatusChange) {
         onStatusChange()
       }
