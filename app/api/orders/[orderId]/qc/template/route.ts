@@ -43,12 +43,8 @@ export async function GET(
     }
 
     // Build where clause for template search
-    const whereClause: any = {
-      isActive: true,
-      OR: [
-        { appliesToProductFamily: productFamily },
-        { appliesToProductFamily: null } // Generic template as fallback
-      ]
+    let whereClause: any = {
+      isActive: true
     };
 
     // Enhanced form type matching for our comprehensive templates
@@ -64,8 +60,38 @@ export async function GET(
       };
       
       const templateName = templateNameMap[formType] || formType;
-      whereClause.name = templateName;
+      
+      // When searching by specific template name, search for exact match first
+      // then fall back to product family specific templates
+      whereClause = {
+        isActive: true,
+        AND: [
+          { name: templateName },
+          {
+            OR: [
+              { appliesToProductFamily: null }, // Generic template
+              { appliesToProductFamily: productFamily } // Product-specific template
+            ]
+          }
+        ]
+      };
+    } else {
+      // No form type specified, search by product family only
+      whereClause = {
+        isActive: true,
+        OR: [
+          { appliesToProductFamily: productFamily },
+          { appliesToProductFamily: null } // Generic template as fallback
+        ]
+      };
     }
+
+    // Log for debugging
+    console.log('QC Template search:', {
+      formType,
+      productFamily,
+      whereClause: JSON.stringify(whereClause)
+    });
 
     // Find active template for product family and form type
     const template = await prisma.qcFormTemplate.findFirst({

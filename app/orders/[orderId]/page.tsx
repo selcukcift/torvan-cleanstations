@@ -646,7 +646,7 @@ export default function OrderDetailsPage() {
   const allowedStatuses = getAllowedStatuses()
   const canUpdateStatus = allowedStatuses.length > 0
 
-  // Load existing BOM data (matches order review pattern)
+  // Load BOM data using the same source as order review (single source of truth)
   const loadBOMData = async () => {
     if (!order) return
     
@@ -654,177 +654,139 @@ export default function OrderDetailsPage() {
     setBomError(null)
     
     try {
-      // Check if BOM already exists
-      const bomData = order.generatedBoms?.[0] || order.boms?.[0]
-      const bomItems = bomData?.bomItems || []
+      console.log('🔍 Loading BOM using same source as order review...')
       
-      if (bomItems.length === 0) {
-        setBomData(null)
-        return
+      // Convert order data to the format expected by BOM generation
+      // This matches the format used in order review step
+      const customerInfo = {
+        poNumber: order.poNumber,
+        customerName: order.customerName,
+        projectName: order.projectName,
+        salesPerson: order.salesPerson,
+        wantDate: order.wantDate,
+        language: order.language,
+        notes: order.notes
       }
       
-      // Debug: Check the structure of database BOM items
-      console.log('🔍 Database BOM Items Structure:', bomItems.slice(0, 3).map(item => ({
-        name: item.name,
-        assemblyId: item.assemblyId,
-        partNumber: item.partNumber,
-        id: item.id,
-        allFields: Object.keys(item)
-      })))
+      // Reconstruct configurations from database records
+      const configurations: Record<string, any> = {}
       
-      // Process BOM data to ensure proper multi-level hierarchy like order review
-      const restructureBOMItems = (items: any[]): any[] => {
-        if (!items || items.length === 0) return []
+      for (const buildNumber of order.buildNumbers) {
+        // Get sink configuration for this build
+        const sinkConfig = order.sinkConfigurations?.find((config: any) => 
+          config.buildNumber === buildNumber
+        )
         
-        console.log('🔍 Original BOM items before restructuring:', items.length)
-        
-        // Step 1: Build a map of all items by their ID for quick lookup
-        const itemMap = new Map<string, any>()
-        const topLevelItems: any[] = []
-        
-        // First pass: collect all items and identify top-level items
-        items.forEach(item => {
-          const itemId = item.assemblyId || item.partNumber || item.id || item.name
-          if (itemId) {
-            itemMap.set(itemId, {
-              ...item,
-              children: item.children || item.subItems || item.components || [],
-              subItems: item.children || item.subItems || item.components || []
-            })
-          }
+        if (sinkConfig) {
+          // Get basin configurations for this build
+          const basinConfigs = order.basinConfigurations?.filter((basin: any) => 
+            basin.buildNumber === buildNumber
+          ) || []
           
-          // Identify top-level items (typically sink bodies, assemblies without parents)
-          const isTopLevel = item.level === 0 || 
-                           item.indentLevel === 0 || 
-                           !item.parentId ||
-                           item.type === 'COMPLEX' ||
-                           (item.assemblyId && item.assemblyId.includes('T2-BODY-'))
+          // Get faucet configurations for this build  
+          const faucetConfigs = order.faucetConfigurations?.filter((faucet: any) => 
+            faucet.buildNumber === buildNumber
+          ) || []
           
-          if (isTopLevel) {
-            topLevelItems.push(item)
-          }
-        })
-        
-        // Step 2: Build proper hierarchy by finding orphaned items and organizing them
-        const buildHierarchy = (rootItems: any[]): any[] => {
-          return rootItems.map(item => {
-            const itemId = item.assemblyId || item.partNumber || item.id || item.name
-            let children = item.children || item.subItems || item.components || []
-            
-            // If no children but item appears to be an assembly, look for related items
-            if (children.length === 0 && (item.type === 'ASSEMBLY' || item.type === 'COMPLEX' || item.hasChildren)) {
-              // Find potential children by looking for items with this item as parent
-              const potentialChildren = items.filter(otherItem => {
-                const otherId = otherItem.assemblyId || otherItem.partNumber || otherItem.id || otherItem.name
-                return otherId !== itemId && 
-                       (otherItem.parentId === itemId || 
-                        otherItem.source?.includes(itemId) ||
-                        (otherItem.level && item.level !== undefined && otherItem.level === item.level + 1))
-              })
-              
-              if (potentialChildren.length > 0) {
-                children = potentialChildren
-              }
-            }
-            
-            const restructuredItem = {
-              ...item,
-              children: children.length > 0 ? buildHierarchy(children) : [],
-              subItems: children.length > 0 ? buildHierarchy(children) : [],
-              hasChildren: children.length > 0,
-              type: children.length > 0 ? (item.type || 'ASSEMBLY') : (item.type || 'PART'),
-              isPart: children.length === 0,
-              isAssembly: children.length > 0
-            }
-            
-            // Debug: Log part number preservation
-            if (item.name && (item.assemblyId || item.partNumber)) {
-              console.log('🔍 Part number preservation:', {
-                name: item.name,
-                originalAssemblyId: item.assemblyId,
-                originalPartNumber: item.partNumber,
-                preservedAssemblyId: restructuredItem.assemblyId,
-                preservedPartNumber: restructuredItem.partNumber
-              })
-            }
-            
-            return restructuredItem
-          })
-        }
-        
-        // Step 3: If we have clear top-level items, use them; otherwise create a proper hierarchy
-        let structuredItems: any[]
-        
-        if (topLevelItems.length > 0 && topLevelItems.length < items.length) {
-          console.log('🔍 Found top-level items:', topLevelItems.length)
-          structuredItems = buildHierarchy(topLevelItems)
-        } else {
-          // Fallback: Group items by type and create basic hierarchy
-          console.log('🔍 Creating basic hierarchy from all items')
-          const assemblies = items.filter(item => 
-            item.type === 'ASSEMBLY' || 
-            item.type === 'COMPLEX' || 
-            item.hasChildren ||
-            (item.children && item.children.length > 0) ||
-            (item.subItems && item.subItems.length > 0)
-          )
+          // Get sprayer configurations for this build
+          const sprayerConfigs = order.sprayerConfigurations?.filter((sprayer: any) => 
+            sprayer.buildNumber === buildNumber
+          ) || []
           
-          const parts = items.filter(item => 
-            item.type === 'PART' || 
-            item.type === 'COMPONENT' || 
-            (!item.hasChildren && !item.children?.length && !item.subItems?.length)
-          )
-          
-          // If we have both assemblies and parts, assemblies are top-level
-          if (assemblies.length > 0) {
-            structuredItems = buildHierarchy(assemblies)
-          } else {
-            // All items are parts, group them logically
-            structuredItems = buildHierarchy(items)
+          configurations[buildNumber] = {
+            sinkModelId: sinkConfig.sinkModelId,
+            sinkWidth: sinkConfig.sinkWidth,
+            sinkLength: sinkConfig.sinkLength,
+            width: sinkConfig.width,
+            length: sinkConfig.length,
+            legsTypeId: sinkConfig.legsTypeId,
+            legTypeId: sinkConfig.legTypeId,
+            feetTypeId: sinkConfig.feetTypeId,
+            pegboard: sinkConfig.pegboard,
+            pegboardTypeId: sinkConfig.pegboardTypeId,
+            pegboardType: sinkConfig.pegboardType,
+            pegboardColor: sinkConfig.pegboardColor,
+            pegboardColorId: sinkConfig.pegboardColorId,
+            pegboardSizePartNumber: sinkConfig.pegboardSizePartNumber,
+            specificPegboardKitId: sinkConfig.specificPegboardKitId,
+            drawersAndCompartments: sinkConfig.drawersAndCompartments || [],
+            workflowDirection: sinkConfig.workflowDirection,
+            controlBoxId: sinkConfig.controlBoxId,
+            basins: basinConfigs.map((basin: any) => ({
+              basinTypeId: basin.basinTypeId,
+              basinSizePartNumber: basin.basinSizePartNumber,
+              addonIds: basin.addonIds || [],
+              customDepth: basin.customDepth,
+              customLength: basin.customLength,
+              customWidth: basin.customWidth
+            })),
+            faucets: faucetConfigs.map((faucet: any) => ({
+              faucetTypeId: faucet.faucetTypeId,
+              quantity: faucet.faucetQuantity || 1,
+              placement: faucet.faucetPlacement
+            })),
+            sprayers: sprayerConfigs.map((sprayer: any) => ({
+              hasSprayerSystem: true,
+              sprayerTypeIds: [sprayer.sprayerTypeId],
+              location: sprayer.sprayerLocation
+            }))
           }
         }
+      }
+      
+      // Reconstruct accessories from database records
+      const accessories: Record<string, any> = {}
+      for (const buildNumber of order.buildNumbers) {
+        const buildAccessories = order.selectedAccessories?.filter((acc: any) => 
+          acc.buildNumber === buildNumber
+        ) || []
         
-        console.log('🔍 Structured BOM items:', structuredItems.length)
-        return structuredItems
+        accessories[buildNumber] = buildAccessories.map((acc: any) => ({
+          assemblyId: acc.assemblyId,
+          quantity: acc.quantity
+        }))
       }
       
-      // Apply restructuring to create proper multi-level hierarchy
-      const restructuredBomItems = restructureBOMItems(bomItems)
-      
-      // Format BOM data to match order review format
-      const isMultiBuild = order.buildNumbers.length > 1
-      const buildBOMs: Record<string, any> = {}
-      
-      if (isMultiBuild) {
-        order.buildNumbers.forEach(buildNumber => {
-          const buildSpecificItems = restructuredBomItems.filter((item: any) => 
-            item.buildNumber === buildNumber || 
-            item.source?.includes(buildNumber) ||
-            !item.buildNumber
-          )
-          buildBOMs[buildNumber] = {
-            hierarchical: buildSpecificItems,
-            flattened: buildSpecificItems,
-            totalItems: buildSpecificItems.length
-          }
-        })
-      }
-      
-      const formattedBOMData = {
-        bom: isMultiBuild ? undefined : {
-          hierarchical: restructuredBomItems,
-          flattened: restructuredBomItems,
-          totalItems: restructuredBomItems.length
+      // Use the same BOM generation endpoint as order review
+      const requestBody = {
+        customerInfo,
+        sinkSelection: {
+          sinkModelId: configurations[order.buildNumbers[0]]?.sinkModelId,
+          quantity: order.buildNumbers.length,
+          buildNumbers: order.buildNumbers
         },
-        buildBOMs: isMultiBuild ? buildBOMs : undefined,
-        isMultiBuild,
-        totalItems: restructuredBomItems.length
+        configurations,
+        accessories
       }
       
-      setBomData(formattedBOMData)
+      console.log('🔍 Regenerating BOM from order configuration:', {
+        buildNumbers: order.buildNumbers,
+        configurationsKeys: Object.keys(configurations),
+        accessoriesKeys: Object.keys(accessories)
+      })
+      
+      // Call the same preview BOM endpoint used by order review
+      const response = await nextJsApiClient.post('/orders/preview-bom', requestBody)
+      
+      if (response.data.success) {
+        console.log('✅ BOM regenerated successfully from order configuration')
+        
+        // Use the same data processing as order review
+        const bomResult = response.data.data.bom || response.data.data
+        const processedData = {
+          ...response.data.data,
+          bom: bomResult,
+          totalItems: bomResult.totalItems || (bomResult.flattened || []).length
+        }
+        
+        setBomData(processedData)
+      } else {
+        console.error('❌ Failed to regenerate BOM:', response.data.message)
+        setBomError(response.data.message || 'Failed to regenerate BOM from order configuration')
+      }
     } catch (error: any) {
-      console.error('Error loading BOM data:', error)
-      setBomError('Failed to load BOM data')
+      console.error('❌ Error regenerating BOM from order configuration:', error)
+      setBomError(error.response?.data?.message || 'Failed to load BOM data')
     } finally {
       setBomLoading(false)
     }

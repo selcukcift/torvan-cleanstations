@@ -71,8 +71,16 @@ export function QCPersonDashboard() {
         setQcTasks(tasksResponse.data.tasks)
       }
       
-      if (statsResponse.data.success) {
-        setStats(statsResponse.data.summary)
+      if (statsResponse.data.success && statsResponse.data.summary) {
+        const summary = statsResponse.data.summary
+        // Transform the summary data to match the expected QCStats interface
+        setStats({
+          totalInspections: summary.totalQcResults || 0,
+          completedToday: summary.dailyTrend?.[6]?.total || 0, // Today's total from daily trend
+          pendingTasks: (summary.inProgressCount || 0) + (summary.requiresReviewCount || 0),
+          passRate: typeof summary.passRate === 'number' ? summary.passRate : 0,
+          avgTimePerInspection: 15 // Default to 15 minutes as this isn't calculated in the API
+        })
       }
     } catch (error: any) {
       console.error('Error fetching QC data:', error)
@@ -187,7 +195,7 @@ export function QCPersonDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-600">Pass Rate</p>
-                  <p className="text-2xl font-bold">{stats.passRate.toFixed(1)}%</p>
+                  <p className="text-2xl font-bold">{(stats.passRate || 0).toFixed(1)}%</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-blue-500" />
               </div>
@@ -199,7 +207,7 @@ export function QCPersonDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-600">Avg Time</p>
-                  <p className="text-2xl font-bold">{Math.round(stats.avgTimePerInspection)}m</p>
+                  <p className="text-2xl font-bold">{Math.round(stats.avgTimePerInspection || 0)}m</p>
                 </div>
                 <ClipboardCheck className="w-8 h-8 text-purple-500" />
               </div>

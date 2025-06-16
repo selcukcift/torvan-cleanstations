@@ -160,14 +160,14 @@ export async function GET(request: NextRequest) {
 
     // Calculate pass rate
     const totalCompleted = passedCount + failedCount;
-    const passRate = totalCompleted > 0 ? (passedCount / totalCompleted * 100).toFixed(1) : 0;
+    const passRate = totalCompleted > 0 ? Number((passedCount / totalCompleted * 100).toFixed(1)) : 0;
 
     // Process inspector stats
     const inspectorStatsSummary = inspectorStats.map(inspector => {
       const passed = inspector.qcResults.filter(r => r.overallStatus === 'PASSED').length;
       const failed = inspector.qcResults.filter(r => r.overallStatus === 'FAILED').length;
       const total = inspector._count.qcResults;
-      const inspectorPassRate = (passed + failed) > 0 ? (passed / (passed + failed) * 100).toFixed(1) : 0;
+      const inspectorPassRate = (passed + failed) > 0 ? Number((passed / (passed + failed) * 100).toFixed(1)) : 0;
 
       return {
         id: inspector.id,

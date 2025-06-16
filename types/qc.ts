@@ -89,7 +89,7 @@ export interface QcSummaryStats {
   failedCount: number;
   requiresReviewCount: number;
   inProgressCount: number;
-  passRate: string;
+  passRate: number;
   periodDays: number;
 }
 
@@ -107,7 +107,7 @@ export interface QcInspectorStats {
   totalInspections: number;
   passed: number;
   failed: number;
-  passRate: string;
+  passRate: number;
 }
 
 export interface QcDailyTrend {

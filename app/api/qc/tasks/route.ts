@@ -46,20 +46,22 @@ export async function GET() {
       }
     })
 
-    // Transform to QC tasks format
+    // Transform to QC tasks format matching the QCTask interface
     const tasks = ordersNeedingQC.map(order => ({
       id: order.id,
+      orderId: order.id, // Add orderId field
       poNumber: order.poNumber,
       customerName: order.customerName,
-      projectName: order.projectName,
-      status: order.orderStatus,
-      type: order.orderStatus === "READY_FOR_PRE_QC" ? "Pre-Production Check" : "Final QC",
-      priority: "medium" as const,
-      assignedTo: order.currentAssignee || null,
-      dueDate: order.wantDate,
-      createdAt: order.createdAt,
-      createdBy: order.createdBy.fullName,
-      qcResults: order.qcResults
+      productFamily: order.productFamily || "Standard Sink", // Add productFamily with fallback
+      status: "PENDING" as const, // Map order status to QC task status
+      priority: "MEDIUM" as const, // Use uppercase to match interface
+      dueDate: order.wantDate || new Date().toISOString(),
+      templateId: order.qcResults?.[0]?.qcFormTemplate?.id || "default-template", // Get template from existing results or default
+      templateName: order.qcResults?.[0]?.qcFormTemplate?.name || 
+                    (order.orderStatus === "READY_FOR_PRE_QC" ? "Pre-Production Checklist" : "Final QC Checklist"),
+      assignedAt: order.createdAt.toISOString(),
+      completedAt: undefined,
+      notes: order.projectName || undefined
     }))
 
     return NextResponse.json({

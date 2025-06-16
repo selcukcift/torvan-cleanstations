@@ -35,9 +35,9 @@ export default function QCInspectionPage() {
         setOrderData(order)
         
         // Check order status and fetch appropriate QC template
-        if (order.status === 'ReadyForPreQC') {
+        if (order.orderStatus === 'READY_FOR_PRE_QC') {
           await fetchQCTemplate('Pre-Production Check')
-        } else if (order.status === 'ReadyForFinalQC') {
+        } else if (order.orderStatus === 'READY_FOR_FINAL_QC') {
           await fetchQCTemplate('Final QC')
         }
       } else {
@@ -102,12 +102,12 @@ export default function QCInspectionPage() {
 
   // Determine which QC phase we're in
   const getQCPhase = () => {
-    if (orderData?.status === 'ReadyForPreQC') return 'Pre-Production Check'
-    if (orderData?.status === 'ReadyForFinalQC') return 'Final QC'
+    if (orderData?.orderStatus === 'READY_FOR_PRE_QC') return 'Pre-Production Check'
+    if (orderData?.orderStatus === 'READY_FOR_FINAL_QC') return 'Final QC'
     return 'Unknown'
   }
 
-  const isValidQCStatus = orderData?.status === 'ReadyForPreQC' || orderData?.status === 'ReadyForFinalQC'
+  const isValidQCStatus = orderData?.orderStatus === 'READY_FOR_PRE_QC' || orderData?.orderStatus === 'READY_FOR_FINAL_QC'
 
   return (
     <div className="space-y-6">
@@ -126,11 +126,11 @@ export default function QCInspectionPage() {
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            This order is not ready for QC inspection. Current status: {orderData?.status || 'Unknown'}
-            {orderData?.status === 'OrderCreated' && ' (Waiting for procurement approval)'}
-            {orderData?.status === 'PartsSent' && ' (Waiting for parts to arrive)'}
-            {orderData?.status === 'ReadyForProduction' && ' (Currently in production)'}
-            {orderData?.status === 'ReadyForShip' && ' (QC complete, ready for shipping)'}
+            This order is not ready for QC inspection. Current status: {orderData?.orderStatus || 'Unknown'}
+            {orderData?.orderStatus === 'ORDER_CREATED' && ' (Waiting for procurement approval)'}
+            {orderData?.orderStatus === 'PARTS_SENT_WAITING_ARRIVAL' && ' (Waiting for parts to arrive)'}
+            {orderData?.orderStatus === 'READY_FOR_PRODUCTION' && ' (Currently in production)'}
+            {orderData?.orderStatus === 'READY_FOR_SHIP' && ' (QC complete, ready for shipping)'}
           </AlertDescription>
         </Alert>
       )}
@@ -150,7 +150,7 @@ export default function QCInspectionPage() {
             customerName: orderData.customerName,
             productFamily: orderData.productFamily || "T2 Sink",
             buildNumbers: orderData.buildNumbers,
-            status: orderData.status,
+            status: orderData.orderStatus,
             configurations: orderData.configurations
           }}
           template={qcTemplate}

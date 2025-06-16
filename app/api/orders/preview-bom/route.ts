@@ -21,12 +21,16 @@ const BasinConfigurationSchema = z.object({
   basinTypeId: z.string().optional(),
   basinType: z.string().optional(),  // Allow user-friendly basin type from UI
   basinSizePartNumber: z.string().optional(),
-  addonIds: z.array(z.string()).optional()
+  addonIds: z.array(z.string()).optional(),
+  customDepth: z.number().nullable().optional(),
+  customLength: z.number().nullable().optional(),
+  customWidth: z.number().nullable().optional()
 })
 
 const FaucetConfigurationSchema = z.object({
   faucetTypeId: z.string().optional(),
-  quantity: z.number().optional()
+  quantity: z.number().optional(),
+  placement: z.string().optional()
 })
 
 const SprayerConfigurationSchema = z.object({
@@ -53,7 +57,7 @@ const SinkConfigurationSchema = z.object({
   pegboardTypeId: z.string().optional(),
   pegboardType: z.string().optional(),
   pegboardColor: z.string().optional(),
-  pegboardColorId: z.string().optional(),
+  pegboardColorId: z.string().nullable().optional(),
   pegboardSizePartNumber: z.string().optional(),
   specificPegboardKitId: z.string().optional(),
   drawersAndCompartments: z.array(z.string()).optional(),

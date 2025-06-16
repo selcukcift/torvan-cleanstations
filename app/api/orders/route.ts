@@ -626,8 +626,8 @@ export async function GET(request: NextRequest) {
         where.orderStatus = status
       }
     } else if (user.role === 'PROCUREMENT_SPECIALIST') {
-      // Procurement sees orders that need parts management
-      where.orderStatus = { in: ['ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL'] }
+      // Procurement sees ALL orders - they need to track orders through entire lifecycle
+      // No status restriction - they can see orders in any status
       if (status) {
         where.orderStatus = status
       }

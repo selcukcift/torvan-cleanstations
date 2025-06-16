@@ -45,8 +45,6 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import { BOMViewer } from "@/components/order/BOMViewer"
-import { BOMViewerWithOutsourcing } from "@/components/order/BOMViewerWithOutsourcing"
-import { OutsourcingDialog } from "@/components/procurement/OutsourcingDialog"
 import { ExpandableProcurementRow } from "@/components/procurement/ExpandableProcurementRow"
 import {
   Select,
@@ -59,10 +57,132 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ExternalLink, Download, Filter, RefreshCw } from "lucide-react"
 
+// Status badge color mapping
+const statusColors: Record<string, string> = {
+  ORDER_CREATED: "bg-blue-100 text-blue-700",
+  PARTS_SENT_WAITING_ARRIVAL: "bg-purple-100 text-purple-700",
+  READY_FOR_PRE_QC: "bg-yellow-100 text-yellow-700",
+  READY_FOR_PRODUCTION: "bg-orange-100 text-orange-700",
+  TESTING_COMPLETE: "bg-green-100 text-green-700",
+  PACKAGING_COMPLETE: "bg-teal-100 text-teal-700",
+  READY_FOR_FINAL_QC: "bg-indigo-100 text-indigo-700",
+  READY_FOR_SHIP: "bg-emerald-100 text-emerald-700",
+  SHIPPED: "bg-gray-100 text-gray-700"
+}
+
+// Status display names
+const statusDisplayNames: Record<string, string> = {
+  ORDER_CREATED: "Order Created",
+  PARTS_SENT_WAITING_ARRIVAL: "Parts Sent",
+  READY_FOR_PRE_QC: "Pre-QC",
+  READY_FOR_PRODUCTION: "Production",
+  TESTING_COMPLETE: "Testing",
+  PACKAGING_COMPLETE: "Packaging",
+  READY_FOR_FINAL_QC: "Final QC",
+  READY_FOR_SHIP: "Ready Ship",
+  SHIPPED: "Shipped"
+}
+
+// OrderCard Component
+interface OrderCardProps {
+  order: any
+  variant: 'new' | 'progress' | 'shipped'
+  onApprove?: (orderId: string) => void
+  onView: (orderId: string) => void
+  isLoading?: boolean
+}
+
+function OrderCard({ order, variant, onApprove, onView, isLoading }: OrderCardProps) {
+  const wantDate = order.wantDate ? new Date(order.wantDate) : null
+  const today = new Date()
+  const daysUntilDue = wantDate ? Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : null
+  const isOverdue = daysUntilDue !== null && daysUntilDue < 0
+  const isUrgent = daysUntilDue !== null && daysUntilDue <= 14 && daysUntilDue >= 0
+
+  const cardHeight = variant === 'shipped' ? 'h-14' : 'h-18'
+  const borderColor = variant === 'new' ? 'border-l-blue-500' : 
+                     variant === 'progress' ? 'border-l-purple-500' : 'border-l-gray-400'
+
+  return (
+    <Card className={`${cardHeight} border-l-4 ${borderColor} hover:shadow-md transition-shadow cursor-pointer`}>
+      <CardContent className="p-2 h-full flex flex-col justify-between">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="font-medium text-sm truncate">{order.poNumber}</span>
+              {variant === 'new' && isUrgent && (
+                <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 text-xs px-1 py-0">
+                  URGENT
+                </Badge>
+              )}
+              {variant === 'progress' && (
+                <Badge className={`${statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"} text-xs px-1 py-0`}>
+                  {statusDisplayNames[order.orderStatus] || order.orderStatus}
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-slate-600 truncate">{order.customerName || "N/A"}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-1 text-xs">
+            {variant === 'shipped' ? (
+              <span className="text-slate-500">
+                📦 {order.updatedAt ? format(new Date(order.updatedAt), "MMM dd") : "N/A"}
+              </span>
+            ) : (
+              <>
+                <span className="text-slate-500">
+                  📅 {wantDate ? format(wantDate, "MMM dd") : "N/A"}
+                </span>
+                {daysUntilDue !== null && (
+                  <span className={`ml-1 ${isOverdue ? "text-red-600 font-medium" : isUrgent ? "text-orange-600 font-medium" : "text-slate-500"}`}>
+                    {isOverdue ? `${Math.abs(daysUntilDue)}d over` : `${daysUntilDue}d`}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-1">
+            {variant === 'new' && onApprove && (
+              <Button 
+                size="sm" 
+                className="h-6 px-2 text-xs bg-blue-600 hover:bg-blue-700"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onApprove(order.id)
+                }}
+                disabled={isLoading}
+              >
+                ✓
+              </Button>
+            )}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-6 px-2 text-xs"
+              onClick={(e) => {
+                e.stopPropagation()
+                onView(order.id)
+              }}
+            >
+              👁
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function ProcurementSpecialistDashboard() {
   const router = useRouter()
   const { toast } = useToast()
-  const [orders, setOrders] = useState<any[]>([])
+  const [newOrders, setNewOrders] = useState<any[]>([])
+  const [inProgressOrders, setInProgressOrders] = useState<any[]>([])
+  const [completedOrders, setCompletedOrders] = useState<any[]>([])
   const [serviceOrders, setServiceOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [serviceLoading, setServiceLoading] = useState(true)
@@ -70,31 +190,22 @@ export function ProcurementSpecialistDashboard() {
   const [activeTab, setActiveTab] = useState("orders")
   const [stats, setStats] = useState({
     newOrders: 0,
-    awaitingParts: 0,
-    urgentOrders: 0
+    inProgressOrders: 0,
+    completedOrders: 0,
+    urgentOrders: 0,
+    overdueOrders: 0
   })
   const [orderFilters, setOrderFilters] = useState({
-    status: "all",
     customer: "",
     searchTerm: ""
   })
-  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set())
+  const [selectedNewOrders, setSelectedNewOrders] = useState<Set<string>>(new Set())
+  const [selectedInProgressOrders, setSelectedInProgressOrders] = useState<Set<string>>(new Set())
   const [serviceStats, setServiceStats] = useState({
     pendingRequests: 0,
     urgentRequests: 0
   })
   
-  // Outsourcing state
-  const [outsourcedParts, setOutsourcedParts] = useState<any[]>([])
-  const [outsourcingStats, setOutsourcingStats] = useState<any>(null)
-  const [outsourcingLoading, setOutsourcingLoading] = useState(false)
-  const [selectedOutsourcedParts, setSelectedOutsourcedParts] = useState<Set<string>>(new Set())
-  const [outsourcingFilter, setOutsourcingFilter] = useState({
-    status: "all",
-    supplier: "all"
-  })
-  const [showOutsourcingDialog, setShowOutsourcingDialog] = useState(false)
-  const [editingOutsourcedPart, setEditingOutsourcedPart] = useState<any>(null)
   
   // Procurement parts selection state
   const [selectedProcurementParts, setSelectedProcurementParts] = useState<Set<string>>(new Set())
@@ -103,7 +214,6 @@ export function ProcurementSpecialistDashboard() {
   useEffect(() => {
     fetchOrders()
     fetchServiceOrders()
-    fetchOutsourcedParts()
   }, [])
 
   useEffect(() => {
@@ -116,36 +226,80 @@ export function ProcurementSpecialistDashboard() {
       // Fetch orders relevant to procurement
       const response = await nextJsApiClient.get("/orders?limit=50")
       
+      console.log("🔍 [Procurement Debug] Raw API response:", response.data)
+      
       if (response.data.success) {
-        // Filter for procurement-relevant statuses (Sprint 4.1 requirement)
-        let procurementOrders = response.data.data.filter((order: any) => 
-          ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus)
-        )
+        // Log all orders first
+        console.log("📋 [Procurement Debug] All orders from API:", response.data.data?.map((o: any) => ({
+          id: o.id.slice(-8),
+          poNumber: o.poNumber,
+          status: o.orderStatus,
+          customer: o.customerName
+        })))
         
-        // Apply additional filters
-        if (orderFilters.status !== "all") {
-          procurementOrders = procurementOrders.filter((order: any) => 
-            order.orderStatus === orderFilters.status
-          )
-        }
+        // Procurement can see ALL orders - they need to track orders through entire lifecycle
+        let allProcurementOrders = response.data.data
         
+        console.log("✅ [Procurement Debug] Filtered procurement orders:", allProcurementOrders?.map((o: any) => ({
+          id: o.id.slice(-8),
+          poNumber: o.poNumber,
+          status: o.orderStatus,
+          customer: o.customerName
+        })))
+        
+        // Apply customer and search filters to all orders
         if (orderFilters.customer) {
-          procurementOrders = procurementOrders.filter((order: any) => 
+          allProcurementOrders = allProcurementOrders.filter((order: any) => 
             order.customerName?.toLowerCase().includes(orderFilters.customer.toLowerCase())
           )
         }
         
         if (orderFilters.searchTerm) {
-          procurementOrders = procurementOrders.filter((order: any) => 
+          allProcurementOrders = allProcurementOrders.filter((order: any) => 
             order.poNumber?.toLowerCase().includes(orderFilters.searchTerm.toLowerCase()) ||
             order.customerName?.toLowerCase().includes(orderFilters.searchTerm.toLowerCase())
           )
         }
         
-        setOrders(procurementOrders)
-        calculateStats(procurementOrders)
+        // Separate orders by workflow stage
+        const newOrdersList = allProcurementOrders.filter((order: any) => 
+          order.orderStatus === "ORDER_CREATED"
+        )
+        
+        const inProgressOrdersList = allProcurementOrders.filter((order: any) => 
+          ["PARTS_SENT_WAITING_ARRIVAL", "READY_FOR_PRE_QC", "READY_FOR_PRODUCTION", 
+           "TESTING_COMPLETE", "PACKAGING_COMPLETE", "READY_FOR_FINAL_QC", "READY_FOR_SHIP"].includes(order.orderStatus)
+        )
+        
+        const completedOrdersList = allProcurementOrders.filter((order: any) => 
+          order.orderStatus === "SHIPPED"
+        )
+        
+        console.log("🆕 [Procurement Debug] New orders (ORDER_CREATED):", newOrdersList?.map((o: any) => ({
+          id: o.id.slice(-8),
+          poNumber: o.poNumber,
+          status: o.orderStatus
+        })))
+        
+        console.log("🚛 [Procurement Debug] In progress orders:", inProgressOrdersList?.map((o: any) => ({
+          id: o.id.slice(-8),
+          poNumber: o.poNumber,
+          status: o.orderStatus
+        })))
+        
+        console.log("✅ [Procurement Debug] Completed orders (SHIPPED):", completedOrdersList?.map((o: any) => ({
+          id: o.id.slice(-8),
+          poNumber: o.poNumber,
+          status: o.orderStatus
+        })))
+        
+        setNewOrders(newOrdersList)
+        setInProgressOrders(inProgressOrdersList)
+        setCompletedOrders(completedOrdersList)
+        calculateStats(allProcurementOrders)
       }
     } catch (error: any) {
+      console.error("❌ [Procurement Debug] API Error:", error)
       toast({
         title: "Error",
         description: "Failed to fetch orders",
@@ -159,8 +313,10 @@ export function ProcurementSpecialistDashboard() {
   const calculateStats = (ordersList: any[]) => {
     const stats = {
       newOrders: 0,
-      awaitingParts: 0,
-      urgentOrders: 0
+      inProgressOrders: 0,
+      completedOrders: 0,
+      urgentOrders: 0,
+      overdueOrders: 0
     }
 
     const today = new Date()
@@ -168,16 +324,25 @@ export function ProcurementSpecialistDashboard() {
       if (order.orderStatus === "ORDER_CREATED") {
         stats.newOrders++
       }
-      if (order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL") {
-        stats.awaitingParts++
+      if (["PARTS_SENT_WAITING_ARRIVAL", "READY_FOR_PRE_QC", "READY_FOR_PRODUCTION", 
+           "TESTING_COMPLETE", "PACKAGING_COMPLETE", "READY_FOR_FINAL_QC", "READY_FOR_SHIP"].includes(order.orderStatus)) {
+        stats.inProgressOrders++
+      }
+      if (order.orderStatus === "SHIPPED") {
+        stats.completedOrders++
       }
       
       // Check if order is urgent (want date within 14 days)
       if (order.wantDate) {
         const wantDate = new Date(order.wantDate)
         const daysUntilDue = Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-        if (daysUntilDue <= 14) {
+        if (daysUntilDue <= 14 && order.orderStatus !== "SHIPPED") {
           stats.urgentOrders++
+        }
+        
+        // Check if order is overdue (past want date and not shipped)
+        if (daysUntilDue < 0 && order.orderStatus !== "SHIPPED") {
+          stats.overdueOrders++
         }
       }
     })
@@ -193,20 +358,50 @@ export function ProcurementSpecialistDashboard() {
   const handleApproveBOMForProduction = async (orderId: string) => {
     setActionLoading(orderId)
     try {
+      console.log("🔄 [Procurement Debug] Approving order:", orderId, "changing status to PARTS_SENT_WAITING_ARRIVAL")
+      
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
         newStatus: "PARTS_SENT_WAITING_ARRIVAL",
         notes: "BOM approved for production by procurement specialist"
       })
+      
+      console.log("✅ [Procurement Debug] Status update response:", response.data)
       
       if (response.data.success) {
         toast({
           title: "BOM Approved",
           description: "BOM approved for production and parts procurement initiated"
         })
-        setShowBomDialog(false)
-        fetchOrders() // Refresh the list
+        
+        console.log("🔄 [Procurement Debug] Fetching orders after approval...")
+        
+        // Immediately move the order optimistically, then refresh to confirm
+        const optimisticUpdate = () => {
+          setNewOrders(prev => prev.filter(order => order.id !== orderId))
+          
+          // Find the order that was just approved and move it to in-progress
+          const approvedOrder = newOrders.find(order => order.id === orderId)
+          if (approvedOrder) {
+            const updatedOrder = { 
+              ...approvedOrder, 
+              orderStatus: "PARTS_SENT_WAITING_ARRIVAL" 
+            }
+            setInProgressOrders(prev => [updatedOrder, ...prev])
+            console.log("✨ [Procurement Debug] Optimistically moved order to in-progress section")
+          }
+        }
+        
+        // Apply optimistic update immediately
+        optimisticUpdate()
+        
+        // Refresh from server to ensure accuracy
+        setTimeout(() => {
+          console.log("🔄 [Procurement Debug] Fetching orders after approval for verification...")
+          fetchOrders() // Refresh the list
+        }, 1000)
       }
     } catch (error: any) {
+      console.error("❌ [Procurement Debug] Status update error:", error)
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to approve BOM",
@@ -244,7 +439,7 @@ export function ProcurementSpecialistDashboard() {
   }
 
   const handleBulkApprove = async () => {
-    if (selectedOrders.size === 0) {
+    if (selectedNewOrders.size === 0) {
       toast({
         title: "No orders selected",
         description: "Please select orders to approve",
@@ -255,7 +450,7 @@ export function ProcurementSpecialistDashboard() {
 
     setActionLoading("bulk-approve")
     try {
-      const approvalPromises = Array.from(selectedOrders).map(orderId =>
+      const approvalPromises = Array.from(selectedNewOrders).map(orderId =>
         nextJsApiClient.put(`/orders/${orderId}/status`, {
           newStatus: "PARTS_SENT_WAITING_ARRIVAL",
           notes: "Bulk BOM approval by procurement specialist"
@@ -266,10 +461,10 @@ export function ProcurementSpecialistDashboard() {
 
       toast({
         title: "Bulk Approval Complete",
-        description: `${selectedOrders.size} orders approved for production`
+        description: `${selectedNewOrders.size} orders approved for production`
       })
       
-      setSelectedOrders(new Set())
+      setSelectedNewOrders(new Set())
       fetchOrders()
     } catch (error: any) {
       toast({
@@ -399,93 +594,8 @@ export function ProcurementSpecialistDashboard() {
     }
   }
 
-  const fetchOutsourcedParts = async () => {
-    setOutsourcingLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (outsourcingFilter.status !== "all") {
-        params.append("status", outsourcingFilter.status)
-      }
-      if (outsourcingFilter.supplier !== "all") {
-        params.append("supplier", outsourcingFilter.supplier)
-      }
-      
-      const response = await nextJsApiClient.get(`/procurement/outsourced-parts?${params.toString()}`)
-      
-      if (response.data.success) {
-        setOutsourcedParts(response.data.data)
-        setOutsourcingStats(response.data.stats)
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch outsourced parts",
-        variant: "destructive"
-      })
-    } finally {
-      setOutsourcingLoading(false)
-    }
-  }
 
-  const handleBulkStatusUpdate = async (status: string) => {
-    if (selectedOutsourcedParts.size === 0) {
-      toast({
-        title: "No parts selected",
-        description: "Please select parts to update",
-        variant: "destructive"
-      })
-      return
-    }
 
-    try {
-      const response = await nextJsApiClient.post("/procurement/outsourced-parts", {
-        ids: Array.from(selectedOutsourcedParts),
-        status: status
-      })
-      
-      if (response.data.success) {
-        toast({
-          title: "Success",
-          description: response.data.message
-        })
-        setSelectedOutsourcedParts(new Set())
-        fetchOutsourcedParts()
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.error || "Failed to update parts",
-        variant: "destructive"
-      })
-    }
-  }
-
-  const handleExportOutsourcedParts = async () => {
-    try {
-      const response = await nextJsApiClient.put("/procurement/outsourced-parts?format=csv", null, {
-        responseType: 'blob'
-      })
-      
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `outsourced-parts-${new Date().toISOString().split('T')[0]}.csv`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      
-      toast({
-        title: "Export Successful",
-        description: "Outsourced parts list exported as CSV"
-      })
-    } catch (error: any) {
-      toast({
-        title: "Export Failed",
-        description: "Failed to export outsourced parts",
-        variant: "destructive"
-      })
-    }
-  }
 
   // Procurement parts selection handlers
   const handleProcurementPartSelection = (partId: string, orderId: string) => {
@@ -572,371 +682,170 @@ export function ProcurementSpecialistDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold">Procurement Dashboard</h2>
-        <p className="text-slate-600">Manage parts ordering and track procurement status</p>
-      </div>
-
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
-              New Orders
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{stats.newOrders}</span>
-              <ShoppingCart className="w-8 h-8 text-blue-500 opacity-20" />
-            </div>
-            <p className="text-xs text-slate-500 mt-1">Requiring parts procurement</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
-              Awaiting Parts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{stats.awaitingParts}</span>
-              <TruckIcon className="w-8 h-8 text-purple-500 opacity-20" />
-            </div>
-            <p className="text-xs text-slate-500 mt-1">Parts sent, waiting arrival</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
-              Urgent Orders
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{stats.urgentOrders}</span>
-              <AlertCircle className="w-8 h-8 text-red-500 opacity-20" />
-            </div>
-            <p className="text-xs text-slate-500 mt-1">Due within 14 days</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
-              Service Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{serviceStats.pendingRequests}</span>
-              <Package className="w-8 h-8 text-green-500 opacity-20" />
-            </div>
-            <p className="text-xs text-slate-500 mt-1">Pending approval</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
-              Urgent Service
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{serviceStats.urgentRequests}</span>
-              <Send className="w-8 h-8 text-orange-500 opacity-20" />
-            </div>
-            <p className="text-xs text-slate-500 mt-1">High priority requests</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-4">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Procurement Dashboard</h2>
+          <div className="flex items-center gap-4 mt-1.5 text-sm">
+            <span className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="font-medium">{stats.newOrders}</span>
+              <span className="text-slate-600">New</span>
+            </span>
+            <span className="text-slate-300">•</span>
+            <span className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="font-medium">{stats.inProgressOrders}</span>
+              <span className="text-slate-600">In Progress</span>
+            </span>
+            <span className="text-slate-300">•</span>
+            <span className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+              <span className="font-medium">{stats.completedOrders}</span>
+              <span className="text-slate-600">Shipped</span>
+            </span>
+            {stats.overdueOrders > 0 && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3 text-red-500" />
+                  <span className="font-medium text-red-600">{stats.overdueOrders}</span>
+                  <span className="text-red-600">Overdue</span>
+                </span>
+              </>
+            )}
+            {serviceStats.pendingRequests > 0 && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="flex items-center gap-1">
+                  <Package className="w-3 h-3 text-green-500" />
+                  <span className="font-medium text-green-600">{serviceStats.pendingRequests}</span>
+                  <span className="text-green-600">Service Requests</span>
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="Search PO# or Customer..."
+            value={orderFilters.searchTerm}
+            onChange={(e) => setOrderFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
+            className="w-64"
+          />
+          <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="orders">Production Orders</TabsTrigger>
           <TabsTrigger value="service">Service Requests</TabsTrigger>
-          <TabsTrigger value="outsourcing">Outsourcing Management</TabsTrigger>
         </TabsList>
         
         {/* Production Orders Tab */}
-        <TabsContent value="orders" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Orders Requiring Procurement ({orders.length})</CardTitle>
-                  <CardDescription>
-                    Orders that need parts ordering or are awaiting parts arrival
-                  </CardDescription>
-                </div>
-                <Button variant="outline" size="sm" onClick={fetchOrders} disabled={loading}>
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
+        <TabsContent value="orders" className="space-y-2">
+          {/* Kanban Board Layout */}
+          {/* Three Column Kanban Layout */}
+          <div className="grid grid-cols-12 gap-3 h-[620px]">
+            
+            {/* Column 1: New Orders (30% width - 4 columns) */}
+            <div className="col-span-4 bg-blue-50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <h3 className="font-semibold text-blue-800">New Orders ({newOrders.length})</h3>
               </div>
-            </CardHeader>
-            <CardContent>
-              {/* Enhanced Filtering Controls */}
-              <div className="flex items-center gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4" />
-                  <span className="text-sm font-medium">Filters:</span>
-                </div>
-                
-                <Select
-                  value={orderFilters.status}
-                  onValueChange={(value) => setOrderFilters(prev => ({ ...prev, status: value }))}
-                >
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="ORDER_CREATED">New Orders</SelectItem>
-                    <SelectItem value="PARTS_SENT_WAITING_ARRIVAL">Parts Sent</SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                <Input
-                  placeholder="Search PO# or Customer..."
-                  value={orderFilters.searchTerm}
-                  onChange={(e) => setOrderFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                  className="w-60"
-                />
-                
-                <Input
-                  placeholder="Filter by Customer..."
-                  value={orderFilters.customer}
-                  onChange={(e) => setOrderFilters(prev => ({ ...prev, customer: e.target.value }))}
-                  className="w-48"
-                />
-                
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setOrderFilters({ status: "all", customer: "", searchTerm: "" })}
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Clear Filters
-                </Button>
-              </div>
-
-              {/* Quick Actions for Procurement Parts */}
-              {selectedProcurementParts.size > 0 && (
-                <div className="flex items-center gap-4 mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">
-                      {selectedProcurementParts.size} parts selected across orders
-                    </span>
+              <div className="space-y-2 overflow-y-auto h-[565px]">
+                {loading ? (
+                  <div className="flex items-center justify-center h-32">
+                    <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
-                  
-                  <div className="flex items-center gap-2 ml-auto">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleSelectAllLegs}
-                    >
-                      Select All Legs
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleSelectAllCasters}
-                    >
-                      Select All Casters
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleBulkSendParts}
-                      disabled={bulkSending}
-                    >
-                      {bulkSending ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4 mr-2" />
-                      )}
-                      Send Selected to Manufacturer
-                    </Button>
+                ) : newOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <CheckCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                    <p className="text-sm text-slate-600">No new orders</p>
                   </div>
-                </div>
-              )}
-
-              {/* Bulk Order Actions */}
-              {selectedOrders.size > 0 && (
-                <div className="flex items-center gap-4 mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                  <span className="text-sm text-muted-foreground">
-                    {selectedOrders.size} orders selected
-                  </span>
-                  <div className="flex items-center gap-2 ml-auto">
-                    <Button
-                      size="sm"
-                      onClick={handleBulkApprove}
-                      disabled={actionLoading === "bulk-approve"}
-                    >
-                      {actionLoading === "bulk-approve" ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                      )}
-                      Bulk Approve BOMs
-                    </Button>
-                  </div>
-                </div>
-              )}
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin" />
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-              <p className="text-slate-600">No orders requiring procurement action</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedOrders.size === orders.length && orders.length > 0}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedOrders(new Set(orders.map(o => o.id)))
-                        } else {
-                          setSelectedOrders(new Set())
-                        }
-                      }}
+                ) : (
+                  newOrders.map((order) => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      variant="new"
+                      onApprove={handleApproveBOMForProduction}
+                      onView={navigateToOrder}
+                      isLoading={actionLoading === order.id}
                     />
-                  </TableHead>
-                  <TableHead>PO Number</TableHead>
-                  <TableHead>Order Date</TableHead>
-                  <TableHead>Want Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Days Until Due</TableHead>
-                  <TableHead>Procurement Parts</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => {
-                  const wantDate = order.wantDate ? new Date(order.wantDate) : null
-                  const today = new Date()
-                  const daysUntilDue = wantDate ? Math.ceil((wantDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : null
-                  const isUrgent = daysUntilDue !== null && daysUntilDue <= 14
+                  ))
+                )}
+              </div>
+            </div>
 
-                  return (
-                    <TableRow key={order.id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedOrders.has(order.id)}
-                          onCheckedChange={(checked) => {
-                            const newSelection = new Set(selectedOrders)
-                            if (checked) {
-                              newSelection.add(order.id)
-                            } else {
-                              newSelection.delete(order.id)
-                            }
-                            setSelectedOrders(newSelection)
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          {order.poNumber}
-                          {isUrgent && (
-                            <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                              Urgent
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {order.createdAt ? 
-                          format(new Date(order.createdAt), "MMM dd, yyyy") 
-                          : "N/A"
-                        }
-                      </TableCell>
-                      <TableCell>
-                        {wantDate ? 
-                          format(wantDate, "MMM dd, yyyy") 
-                          : "N/A"
-                        }
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={
-                          order.orderStatus === "ORDER_CREATED" 
-                            ? "bg-blue-100 text-blue-700" 
-                            : "bg-purple-100 text-purple-700"
-                        }>
-                          {order.orderStatus === "ORDER_CREATED" ? "New Order" : "Parts Sent"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className={isUrgent ? "text-red-600 font-medium" : ""}>
-                          {daysUntilDue !== null ? `${daysUntilDue} days` : "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <ExpandableProcurementRow
-                          order={order}
-                          selectedParts={selectedProcurementParts}
-                          onPartSelection={handleProcurementPartSelection}
-                          onPartsUpdate={fetchOrders}
-                        />
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigateToOrder(order.id)}>
-                              <Eye className="w-4 h-4 mr-2" />
-                              View Details
-                            </DropdownMenuItem>
-                            {order.orderStatus === "ORDER_CREATED" && (
-                              <DropdownMenuItem 
-                                onClick={() => handleApproveBOMForProduction(order.id)}
-                                disabled={actionLoading === order.id}
-                              >
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Approve BOM for Production
-                              </DropdownMenuItem>
-                            )}
-                            {order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL" && (
-                              <DropdownMenuItem 
-                                onClick={() => handleConfirmPartsArrival(order.id)}
-                                disabled={actionLoading === order.id}
-                              >
-                                <Package className="w-4 h-4 mr-2" />
-                                Confirm Parts Arrival
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+            {/* Column 2: In Progress Orders (50% width - 6 columns) */}
+            <div className="col-span-6 bg-purple-50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                <h3 className="font-semibold text-purple-800">In Progress ({inProgressOrders.length})</h3>
+              </div>
+              <div className="space-y-2 overflow-y-auto h-[565px]">
+                {loading ? (
+                  <div className="flex items-center justify-center h-32">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : inProgressOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <TruckIcon className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                    <p className="text-sm text-slate-600">No orders in progress</p>
+                  </div>
+                ) : (
+                  inProgressOrders.map((order) => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      variant="progress"
+                      onView={navigateToOrder}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Column 3: Shipped Orders (20% width - 2 columns) */}
+            <div className="col-span-2 bg-gray-50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                <h3 className="font-semibold text-gray-800">Shipped ({completedOrders.length})</h3>
+              </div>
+              <div className="space-y-2 overflow-y-auto h-[565px]">
+                {loading ? (
+                  <div className="flex items-center justify-center h-32">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : completedOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <CheckCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                    <p className="text-sm text-slate-600">No shipped orders</p>
+                  </div>
+                ) : (
+                  completedOrders.map((order) => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      variant="shipped"
+                      onView={navigateToOrder}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
         </TabsContent>
         
         {/* Service Requests Tab */}
-        <TabsContent value="service" className="space-y-6">
+        <TabsContent value="service" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Service Part Requests</CardTitle>
@@ -1045,266 +954,9 @@ export function ProcurementSpecialistDashboard() {
           </Card>
         </TabsContent>
         
-        {/* Outsourcing Management Tab */}
-        <TabsContent value="outsourcing" className="space-y-6">
-          {/* Outsourcing Statistics */}
-          {outsourcingStats && (
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.total}</span>
-                    <Package className="w-8 h-8 text-blue-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Total Outsourced</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.pending}</span>
-                    <Clock className="w-8 h-8 text-yellow-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Pending</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.sent}</span>
-                    <Send className="w-8 h-8 text-blue-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Sent</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.inProgress}</span>
-                    <TruckIcon className="w-8 h-8 text-purple-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">In Progress</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.received}</span>
-                    <CheckCircle className="w-8 h-8 text-green-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Received</p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{outsourcingStats.overdueCount}</span>
-                    <AlertCircle className="w-8 h-8 text-red-500 opacity-20" />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Overdue</p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-          
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Outsourced Parts Management</CardTitle>
-                  <CardDescription>
-                    Track and manage parts sent to external suppliers
-                  </CardDescription>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => fetchOutsourcedParts()}>
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Refresh
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={handleExportOutsourcedParts}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Export CSV
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {/* Filters */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4" />
-                  <span className="text-sm font-medium">Filters:</span>
-                </div>
-                <Select
-                  value={outsourcingFilter.status}
-                  onValueChange={(value) => {
-                    setOutsourcingFilter(prev => ({ ...prev, status: value }))
-                    setTimeout(fetchOutsourcedParts, 100)
-                  }}
-                >
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="PENDING">Pending</SelectItem>
-                    <SelectItem value="SENT">Sent</SelectItem>
-                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                    <SelectItem value="RECEIVED">Received</SelectItem>
-                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                {selectedOutsourcedParts.size > 0 && (
-                  <div className="flex items-center gap-2 ml-auto">
-                    <span className="text-sm text-muted-foreground">
-                      {selectedOutsourcedParts.size} selected
-                    </span>
-                    <Button size="sm" onClick={() => handleBulkStatusUpdate("SENT")}>
-                      Mark as Sent
-                    </Button>
-                    <Button size="sm" onClick={() => handleBulkStatusUpdate("RECEIVED")}>
-                      Mark as Received
-                    </Button>
-                  </div>
-                )}
-              </div>
-              
-              {outsourcingLoading ? (
-                <div className="flex items-center justify-center h-64">
-                  <Loader2 className="w-8 h-8 animate-spin" />
-                </div>
-              ) : outsourcedParts.length === 0 ? (
-                <div className="text-center py-12">
-                  <ExternalLink className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600">No outsourced parts found</p>
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-12">
-                        <Checkbox
-                          checked={selectedOutsourcedParts.size === outsourcedParts.length}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedOutsourcedParts(new Set(outsourcedParts.map(p => p.id)))
-                            } else {
-                              setSelectedOutsourcedParts(new Set())
-                            }
-                          }}
-                        />
-                      </TableHead>
-                      <TableHead>Part</TableHead>
-                      <TableHead>PO Number</TableHead>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>Supplier</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Expected Return</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {outsourcedParts.map((part) => (
-                      <TableRow key={part.id}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedOutsourcedParts.has(part.id)}
-                            onCheckedChange={(checked) => {
-                              const newSelection = new Set(selectedOutsourcedParts)
-                              if (checked) {
-                                newSelection.add(part.id)
-                              } else {
-                                newSelection.delete(part.id)
-                              }
-                              setSelectedOutsourcedParts(newSelection)
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <span className="font-medium">{part.partNumber}</span>
-                            <p className="text-sm text-muted-foreground">{part.partName}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>{part.order?.poNumber}</TableCell>
-                        <TableCell>{part.order?.customerName}</TableCell>
-                        <TableCell>{part.supplier || "Not specified"}</TableCell>
-                        <TableCell>
-                          <Badge className={
-                            part.status === "PENDING" ? "bg-yellow-100 text-yellow-700" :
-                            part.status === "SENT" ? "bg-blue-100 text-blue-700" :
-                            part.status === "IN_PROGRESS" ? "bg-purple-100 text-purple-700" :
-                            part.status === "RECEIVED" ? "bg-green-100 text-green-700" :
-                            "bg-red-100 text-red-700"
-                          }>
-                            {part.status.replace("_", " ")}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {part.expectedReturnDate ? 
-                            format(new Date(part.expectedReturnDate), "MMM dd, yyyy") 
-                            : "Not set"
-                          }
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setEditingOutsourcedPart(part)
-                              setShowOutsourcingDialog(true)
-                            }}
-                          >
-                            Edit
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
 
 
-      {/* Outsourcing Dialog */}
-      <OutsourcingDialog
-        open={showOutsourcingDialog}
-        onOpenChange={setShowOutsourcingDialog}
-        part={editingOutsourcedPart}
-        mode="edit"
-        onSave={async (data) => {
-          try {
-            const response = await nextJsApiClient.put(
-              `/orders/${editingOutsourcedPart?.order?.id}/outsourced-parts?id=${data.id}`,
-              data
-            )
-            if (response.data.success) {
-              toast({
-                title: "Success",
-                description: "Outsourcing details updated",
-              })
-              setShowOutsourcingDialog(false)
-              fetchOutsourcedParts()
-            }
-          } catch (error: any) {
-            toast({
-              title: "Error",
-              description: error.response?.data?.error || "Failed to update outsourcing details",
-              variant: "destructive",
-            })
-          }
-        }}
-        loading={false}
-      />
     </div>
   )
 }
