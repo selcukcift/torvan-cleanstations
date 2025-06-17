@@ -159,10 +159,17 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       
       // If E_SINK_DI basin exists but no DI Gooseneck faucet, add one
       if (!hasDIGooseneck) {
+        // Find the E_SINK_DI basin and place the faucet on it
+        const eSinkDIBasinIndex = currentConfig.basins?.findIndex((basin: any) => 
+          basin.basinTypeId === 'E_SINK_DI' || basin.basinType === 'E_SINK_DI'
+        )
+        // Default to the E_SINK_DI basin if found, otherwise first basin
+        const defaultPlacement = eSinkDIBasinIndex >= 0 ? `BASIN_${eSinkDIBasinIndex + 1}` : 'BASIN_1'
+        
         const diGooseneckFaucet = {
           id: `faucet-di-${Date.now()}`,
           faucetTypeId: 'T2-OA-DI-GOOSENECK-FAUCET-KIT',
-          placement: 'CENTER',
+          placement: defaultPlacement,
           isMandatory: true // Mark as mandatory for UI indication
         }
         
@@ -254,24 +261,23 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       if (basinCount >= 2) {
         const between12 = 'BETWEEN_1_2'
         if (!occupiedPlacements.includes(between12)) {
-          options.push({ value: between12, label: 'Between Basin 1 & 2' })
+          options.push({ value: between12, label: 'Between Basins (1 & 2)', category: 'Between Basins' })
         }
       }
       
       if (basinCount >= 3) {
         const between23 = 'BETWEEN_2_3'
         if (!occupiedPlacements.includes(between23)) {
-          options.push({ value: between23, label: 'Between Basin 2 & 3' })
+          options.push({ value: between23, label: 'Between Basins (2 & 3)', category: 'Between Basins' })
         }
       }
       
       return options
     }
     
-    // For mixed configurations or non-E-Drain basins
-    // Remove the CENTER option entirely - faucets should be placed on specific basins or between them
+    // For mixed configurations or non-E-Drain basins, organize by category
     
-    // Add individual basin options only for non-E-Drain basins
+    // Add "Center of Basin" options for non-E-Drain basins
     if (!allBasinsAreEDrain) {
       for (let i = 1; i <= basinCount; i++) {
         const basin = currentConfig.basins?.[i - 1]
@@ -281,29 +287,72 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
         if (!isEDrain) {
           const basinValue = `BASIN_${i}`
           if (!occupiedPlacements.includes(basinValue)) {
-            options.push({ value: basinValue, label: `Basin ${i}` })
+            options.push({ 
+              value: basinValue, 
+              label: `Center of Basin ${i}`, 
+              category: 'Center of Basin' 
+            })
           }
         }
       }
     }
     
-    // Add between-basin options based on basin count
+    // Add "Between Basins" options
     if (basinCount >= 2) {
       const between12 = 'BETWEEN_1_2'
       if (!occupiedPlacements.includes(between12)) {
-        options.push({ value: between12, label: 'Between Basin 1 & 2' })
+        options.push({ 
+          value: between12, 
+          label: 'Between Basins (1 & 2)', 
+          category: 'Between Basins' 
+        })
       }
     }
     
     if (basinCount >= 3) {
       const between23 = 'BETWEEN_2_3'
       if (!occupiedPlacements.includes(between23)) {
-        options.push({ value: between23, label: 'Between Basin 2 & 3' })
+        options.push({ 
+          value: between23, 
+          label: 'Between Basins (2 & 3)', 
+          category: 'Between Basins' 
+        })
       }
     }
     
     return options
   }
+
+  // Helper function to get default placement for new faucet
+  const getDefaultFaucetPlacement = () => {
+    const options = getPlacementOptions(-1) // -1 means no current faucet to exclude
+    return options.length > 0 ? options[0].value : 'BASIN_1'
+  }
+
+  // Validate and fix invalid faucet placements when basin configuration changes
+  useEffect(() => {
+    if (!currentConfig.faucets || currentConfig.faucets.length === 0) return
+
+    let needsUpdate = false
+    const updatedFaucets = currentConfig.faucets.map((faucet: any, index: number) => {
+      const validOptions = getPlacementOptions(index)
+      const isValidPlacement = validOptions.some(option => option.value === faucet.placement)
+      
+      if (!isValidPlacement) {
+        needsUpdate = true
+        // Use first available option or default
+        const newPlacement = validOptions.length > 0 ? validOptions[0].value : 'BASIN_1'
+        console.warn(`Invalid faucet placement "${faucet.placement}" fixed to "${newPlacement}"`)
+        return { ...faucet, placement: newPlacement }
+      }
+      
+      return faucet
+    })
+
+    if (needsUpdate) {
+      updateConfig({ faucets: updatedFaucets })
+    }
+  }, [currentConfig.basins]) // Only depend on basins to avoid infinite loop
 
   const getSectionStatus = (sectionId: string) => {
     switch (sectionId) {
@@ -1115,6 +1164,10 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                   <CardTitle className="text-xl">Faucet Configuration</CardTitle>
                   <CardDescription>
                     Configure faucets for your sink (Maximum: {getMaxFaucets()} faucets)
+                    <br />
+                    <span className="text-sm text-slate-600">
+                      E-Drain basins: Faucets can only be placed between basins • E-Sink basins: No restrictions
+                    </span>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1127,11 +1180,12 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                         onClick={() => {
                           const currentFaucets = currentConfig.faucets || []
                           if (currentFaucets.length < getMaxFaucets()) {
+                            const defaultPlacement = getDefaultFaucetPlacement()
                             updateConfig({ 
                               faucets: [...currentFaucets, {
                                 id: `faucet-${Date.now()}`,
                                 faucetTypeId: '',
-                                placement: 'CENTER'
+                                placement: defaultPlacement
                               }]
                             })
                           }
@@ -1208,11 +1262,31 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
                                     <SelectValue placeholder="Select placement" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {getPlacementOptions(index).map((option) => (
-                                      <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                      </SelectItem>
-                                    ))}
+                                    {(() => {
+                                      const options = getPlacementOptions(index)
+                                      const categories = Array.from(new Set(options.map(o => o.category))).filter(Boolean)
+                                      
+                                      if (categories.length <= 1) {
+                                        // Simple list if only one or no categories
+                                        return options.map((option) => (
+                                          <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                          </SelectItem>
+                                        ))
+                                      }
+                                      
+                                      // Grouped by category
+                                      return categories.map((category) => (
+                                        <div key={category}>
+                                          <div className="px-2 py-1 text-sm font-semibold text-gray-600">{category}</div>
+                                          {options.filter(o => o.category === category).map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                              {option.label}
+                                            </SelectItem>
+                                          ))}
+                                        </div>
+                                      ))
+                                    })()}
                                   </SelectContent>
                                 </Select>
                               </div>
