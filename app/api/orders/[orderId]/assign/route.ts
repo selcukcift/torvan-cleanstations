@@ -82,13 +82,13 @@ export async function PATCH(
         )
       }
 
-      // Check if assignee has appropriate role for the order status
-      const appropriateRoles = getAppropriateRolesForStatus(order.orderStatus)
-      if (!appropriateRoles.includes(assignee.role)) {
+      // Check if order is ready for assignment based on status and role
+      const validationResult = validateAssignmentForStatus(order.orderStatus, assignee.role)
+      if (!validationResult.isValid) {
         return NextResponse.json(
           { 
             success: false, 
-            message: `Cannot assign ${assignee.role} to order with status ${order.orderStatus}. Appropriate roles: ${appropriateRoles.join(', ')}` 
+            message: validationResult.message
           },
           { status: 400 }
         )
@@ -180,7 +180,64 @@ export async function PATCH(
   }
 }
 
-// Helper function to determine appropriate roles for order status
+// Helper function to validate assignment based on order status and user role
+function validateAssignmentForStatus(status: string, role: string): { isValid: boolean; message: string } {
+  // Define production department roles (users who can work on production orders)
+  const productionDepartmentRoles = ['ASSEMBLER']
+
+  switch (status) {
+    case 'ORDER_CREATED':
+    case 'PARTS_SENT_WAITING_ARRIVAL':
+      // Only procurement can be assigned to early-stage orders
+      if (role === 'PROCUREMENT_SPECIALIST') {
+        return { isValid: true, message: '' }
+      }
+      return { 
+        isValid: false, 
+        message: `Orders with status "${status}" can only be assigned to Procurement Specialists. Current status must advance to "Ready for Production" before assigning to production department.`
+      }
+
+    case 'READY_FOR_PRE_QC':
+    case 'READY_FOR_FINAL_QC':
+      // Only QC can be assigned to QC-stage orders
+      if (role === 'QC_PERSON') {
+        return { isValid: true, message: '' }
+      }
+      return { 
+        isValid: false, 
+        message: `Orders with status "${status}" can only be assigned to QC Personnel.`
+      }
+
+    case 'READY_FOR_PRODUCTION':
+    case 'TESTING_COMPLETE':
+    case 'PACKAGING_COMPLETE':
+      // Only production department (assemblers) can be assigned to production orders
+      if (productionDepartmentRoles.includes(role)) {
+        return { isValid: true, message: '' }
+      }
+      return { 
+        isValid: false, 
+        message: `Orders with status "${status}" can only be assigned to Production Department members (Assemblers). Non-production roles cannot be assigned to production-ready orders.`
+      }
+
+    case 'READY_FOR_SHIP':
+    case 'SHIPPED':
+      // Final stages - primarily assemblers but also allow QC for final inspections
+      if (role === 'ASSEMBLER' || role === 'QC_PERSON') {
+        return { isValid: true, message: '' }
+      }
+      return { 
+        isValid: false, 
+        message: `Orders with status "${status}" can only be assigned to Assemblers or QC Personnel.`
+      }
+
+    default:
+      // For any undefined statuses, allow assignment but warn
+      return { isValid: true, message: '' }
+  }
+}
+
+// Legacy helper function for backward compatibility (kept for other potential uses)
 function getAppropriateRolesForStatus(status: string): string[] {
   switch (status) {
     case 'ORDER_CREATED':
@@ -193,6 +250,9 @@ function getAppropriateRolesForStatus(status: string): string[] {
     case 'TESTING_COMPLETE':
     case 'PACKAGING_COMPLETE':
       return ['ASSEMBLER']
+    case 'READY_FOR_SHIP':
+    case 'SHIPPED':
+      return ['ASSEMBLER', 'QC_PERSON']
     default:
       return ['ASSEMBLER', 'QC_PERSON', 'PROCUREMENT_SPECIALIST']
   }

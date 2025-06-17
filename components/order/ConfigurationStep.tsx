@@ -163,8 +163,24 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
         const eSinkDIBasinIndex = currentConfig.basins?.findIndex((basin: any) => 
           basin.basinTypeId === 'E_SINK_DI' || basin.basinType === 'E_SINK_DI'
         )
-        // Default to the E_SINK_DI basin if found, otherwise first basin
-        const defaultPlacement = eSinkDIBasinIndex >= 0 ? `BASIN_${eSinkDIBasinIndex + 1}` : 'BASIN_1'
+        // Use smart placement selection for E_SINK_DI basin
+        const getESinkDIPlacement = () => {
+          const placementOptions = getPlacementOptions(-1) // Get all available options
+          
+          // First try to place on the E_SINK_DI basin itself if it's a valid option
+          if (eSinkDIBasinIndex >= 0) {
+            const preferredPlacement = `BASIN_${eSinkDIBasinIndex + 1}`
+            const isValidPlacement = placementOptions.some(opt => opt.value === preferredPlacement)
+            if (isValidPlacement) {
+              return preferredPlacement
+            }
+          }
+          
+          // Fallback to first available option
+          return placementOptions.length > 0 ? placementOptions[0].value : 'BETWEEN_1_2'
+        }
+        
+        const defaultPlacement = getESinkDIPlacement()
         
         const diGooseneckFaucet = {
           id: `faucet-di-${Date.now()}`,
@@ -326,7 +342,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
   // Helper function to get default placement for new faucet
   const getDefaultFaucetPlacement = () => {
     const options = getPlacementOptions(-1) // -1 means no current faucet to exclude
-    return options.length > 0 ? options[0].value : 'BASIN_1'
+    return options.length > 0 ? options[0].value : 'BETWEEN_1_2'
   }
 
   // Validate and fix invalid faucet placements when basin configuration changes

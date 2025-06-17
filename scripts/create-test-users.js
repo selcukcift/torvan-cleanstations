@@ -87,6 +87,22 @@ async function createAllTestUsers() {
       fullName: 'Production Assembler',
       role: 'ASSEMBLER',
       initials: 'PA'
+    },
+    {
+      username: 'assembler1',
+      email: 'assembler1@torvanmedical.com',
+      password: 'assembler123',
+      fullName: 'Production Assembler 1',
+      role: 'ASSEMBLER',
+      initials: 'PA1'
+    },
+    {
+      username: 'assembler2',
+      email: 'assembler2@torvanmedical.com',
+      password: 'assembler123',
+      fullName: 'Production Assembler 2',
+      role: 'ASSEMBLER',
+      initials: 'PA2'
     }
   ];
 
@@ -114,6 +130,10 @@ async function createAllTestUsers() {
   users.forEach(user => {
     console.log(`${user.role}: ${user.username} / ${user.password}`);
   });
+  console.log('\nProduction Department Users:');
+  console.log('- assembler / asm123 (Original Assembler)');
+  console.log('- assembler1 / assembler123 (Production Assembler 1)');
+  console.log('- assembler2 / assembler123 (Production Assembler 2)');
   console.log('\nAccess the app at: http://localhost:3000');
 }
 

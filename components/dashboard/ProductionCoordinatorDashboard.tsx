@@ -678,9 +678,104 @@ export function ProductionCoordinatorDashboard() {
     }
   }
 
+  // Helper function to determine if assignment UI should be shown for an order
+  const shouldShowAssignmentOption = (orderStatus: string): boolean => {
+    // Only show assignment option when order reaches certain states
+    const assignableStates = [
+      'ORDER_CREATED',
+      'PARTS_SENT_WAITING_ARRIVAL',
+      'READY_FOR_PRE_QC', 
+      'READY_FOR_FINAL_QC',
+      'READY_FOR_PRODUCTION',
+      'TESTING_COMPLETE',
+      'PACKAGING_COMPLETE',
+      'READY_FOR_SHIP',
+      'SHIPPED'
+    ]
+
+    return assignableStates.includes(orderStatus)
+  }
+
+  // Helper function to validate if order can be assigned
+  const canAssignOrder = (orderStatus: string, userRole?: string): { canAssign: boolean; reason?: string } => {
+    const productionReadyStates = [
+      'READY_FOR_PRODUCTION',
+      'TESTING_COMPLETE', 
+      'PACKAGING_COMPLETE',
+      'READY_FOR_FINAL_QC',
+      'READY_FOR_SHIP',
+      'SHIPPED'
+    ]
+
+    switch (orderStatus) {
+      case 'ORDER_CREATED':
+      case 'PARTS_SENT_WAITING_ARRIVAL':
+        if (userRole && userRole !== 'PROCUREMENT_SPECIALIST') {
+          return { 
+            canAssign: false, 
+            reason: `Orders with status "${orderStatus}" can only be assigned to Procurement Specialists. Order must advance to "Ready for Production" before assigning to production department.`
+          }
+        }
+        return { canAssign: true }
+
+      case 'READY_FOR_PRE_QC':
+      case 'READY_FOR_FINAL_QC':
+        if (userRole && userRole !== 'QC_PERSON') {
+          return { 
+            canAssign: false, 
+            reason: `Orders with status "${orderStatus}" can only be assigned to QC Personnel.`
+          }
+        }
+        return { canAssign: true }
+
+      case 'READY_FOR_PRODUCTION':
+      case 'TESTING_COMPLETE':
+      case 'PACKAGING_COMPLETE':
+        if (userRole && userRole !== 'ASSEMBLER') {
+          return { 
+            canAssign: false, 
+            reason: `Orders with status "${orderStatus}" can only be assigned to Production Department members (Assemblers).`
+          }
+        }
+        return { canAssign: true }
+
+      case 'READY_FOR_SHIP':
+      case 'SHIPPED':
+        if (userRole && !['ASSEMBLER', 'QC_PERSON'].includes(userRole)) {
+          return { 
+            canAssign: false, 
+            reason: `Orders with status "${orderStatus}" can only be assigned to Assemblers or QC Personnel.`
+          }
+        }
+        return { canAssign: true }
+
+      default:
+        return { canAssign: true }
+    }
+  }
+
   const handleSingleAssignment = async (orderId: string, assigneeId: string | null) => {
     try {
       setAssignmentLoading(true)
+      
+      // Client-side validation
+      if (assigneeId) {
+        const order = orders.find(o => o.id === orderId)
+        const assignee = assignableUsers.find(u => u.id === assigneeId)
+        
+        if (order && assignee) {
+          const validation = canAssignOrder(order.orderStatus, assignee.role)
+          if (!validation.canAssign) {
+            toast({
+              title: "Assignment Not Allowed",
+              description: validation.reason,
+              variant: "destructive"
+            })
+            return
+          }
+        }
+      }
+
       const response = await nextJsApiClient.patch(`/orders/${orderId}/assign`, {
         assigneeId
       })
@@ -712,6 +807,29 @@ export function ProductionCoordinatorDashboard() {
 
     setBulkActionLoading(true)
     try {
+      // Pre-validate assignments if assigneeId is provided
+      if (assigneeId) {
+        const assignee = assignableUsers.find(u => u.id === assigneeId)
+        if (assignee) {
+          const selectedOrderData = orders.filter(o => selectedOrders.includes(o.id))
+          const invalidAssignments = selectedOrderData.filter(order => {
+            const validation = canAssignOrder(order.orderStatus, assignee.role)
+            return !validation.canAssign
+          })
+
+          if (invalidAssignments.length > 0) {
+            const firstInvalid = invalidAssignments[0]
+            const validation = canAssignOrder(firstInvalid.orderStatus, assignee.role)
+            toast({
+              title: "Bulk Assignment Failed",
+              description: `Cannot assign ${assignee.fullName} to ${invalidAssignments.length} order(s). ${validation.reason}`,
+              variant: "destructive"
+            })
+            return
+          }
+        }
+      }
+
       const assignmentPromises = selectedOrders.map(orderId =>
         nextJsApiClient.patch(`/orders/${orderId}/assign`, { assigneeId })
       )
@@ -2301,8 +2419,13 @@ export function ProductionCoordinatorDashboard() {
                                order.currentAssignee}
                             </span>
                           </div>
-                        ) : (
+                        ) : shouldShowAssignmentOption(order.orderStatus) ? (
                           <span className="text-slate-500">Unassigned</span>
+                        ) : (
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1 text-amber-500" />
+                            <span className="text-xs text-slate-400">Pending assignment eligibility</span>
+                          </div>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
@@ -2321,13 +2444,15 @@ export function ProductionCoordinatorDashboard() {
                               <Edit className="w-4 h-4 mr-2" />
                               Update Status
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                              setAssignmentOrderId(order.id)
-                              setAssignmentDialogOpen(true)
-                            }}>
-                              <UserPlus className="w-4 h-4 mr-2" />
-                              Assign To
-                            </DropdownMenuItem>
+                            {shouldShowAssignmentOption(order.orderStatus) && (
+                              <DropdownMenuItem onClick={() => {
+                                setAssignmentOrderId(order.id)
+                                setAssignmentDialogOpen(true)
+                              }}>
+                                <UserPlus className="w-4 h-4 mr-2" />
+                                Assign To
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => handleViewDocuments(order.id)}>
                               <FolderOpen className="w-4 h-4 mr-2" />
                               View Documents
@@ -2399,6 +2524,11 @@ export function ProductionCoordinatorDashboard() {
                   Order: {orders.find(o => o.id === assignmentOrderId)?.poNumber}
                 </p>
                 <p className="text-sm text-slate-600">
+                  Status: <Badge variant="outline" className="ml-1">
+                    {orders.find(o => o.id === assignmentOrderId)?.orderStatus?.replace(/_/g, ' ')}
+                  </Badge>
+                </p>
+                <p className="text-sm text-slate-600">
                   Current: {orders.find(o => o.id === assignmentOrderId)?.currentAssignee 
                     ? assignableUsers.find(u => u.id === orders.find(o => o.id === assignmentOrderId)?.currentAssignee)?.fullName || 'Unknown'
                     : 'Unassigned'}
@@ -2423,16 +2553,41 @@ export function ProductionCoordinatorDashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="unassign">Remove Assignment</SelectItem>
-                  {assignableUsers.map(user => (
-                    <SelectItem key={user.id} value={user.id}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>{user.fullName}</span>
-                        <Badge variant="outline" className="ml-2 text-xs">
-                          {user.role}
-                        </Badge>
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {assignableUsers.map(user => {
+                    const currentOrder = orders.find(o => o.id === assignmentOrderId)
+                    const validation = currentOrder ? canAssignOrder(currentOrder.orderStatus, user.role) : { canAssign: true }
+                    
+                    return (
+                      <SelectItem 
+                        key={user.id} 
+                        value={user.id}
+                        disabled={!validation.canAssign}
+                        className={!validation.canAssign ? "opacity-50" : ""}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex flex-col">
+                            <span>{user.fullName}</span>
+                            {!validation.canAssign && (
+                              <span className="text-xs text-red-500 mt-1">
+                                Cannot assign to {currentOrder?.orderStatus}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center ml-2">
+                            <Badge variant="outline" className="text-xs">
+                              {user.role}
+                            </Badge>
+                            {validation.canAssign && (
+                              <CheckCircle className="w-3 h-3 text-green-500 ml-1" />
+                            )}
+                            {!validation.canAssign && (
+                              <AlertCircle className="w-3 h-3 text-red-500 ml-1" />
+                            )}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
             </div>

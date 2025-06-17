@@ -231,6 +231,22 @@ async function main() {
       email: 'assembler@torvan.local',
     },
     {
+      username: 'assembler1',
+      password: 'assembler123',
+      fullName: 'Production Assembler 1',
+      role: 'ASSEMBLER',
+      initials: 'PA1',
+      email: 'assembler1@torvan.local',
+    },
+    {
+      username: 'assembler2',
+      password: 'assembler123',
+      fullName: 'Production Assembler 2',
+      role: 'ASSEMBLER',
+      initials: 'PA2',
+      email: 'assembler2@torvan.local',
+    },
+    {
       username: 'service',
       password: 'service123',
       fullName: 'Service Department',

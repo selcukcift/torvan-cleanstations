@@ -52,17 +52,19 @@ export default function LoginPage() {
         return
       }
 
-      // Get session to retrieve user info
-      const session = await getSession()
-      if (session?.user) {
+      if (result?.ok) {
+        // Add small delay to ensure JWT token is properly set
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
         toast({
           variant: "success",
           title: "Login Successful",
-          description: `Welcome back, ${session.user.name}!`,
+          description: "Welcome back!",
         })
 
-        // Redirect to dashboard
+        // Force router refresh to ensure session loads properly
         router.push('/dashboard')
+        router.refresh()
       }
 
     } catch (error: any) {

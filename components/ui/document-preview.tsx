@@ -162,7 +162,10 @@ export function DocumentPreview({ file, open, onOpenChange, downloadUrl, onDownl
               <FileIconComponent className="w-6 h-6 text-blue-500" />
               <div>
                 <DialogTitle className="text-lg">{file.originalName}</DialogTitle>
-                <DialogDescription className="flex items-center space-x-2 mt-1">
+                <DialogDescription>
+                  File information and preview
+                </DialogDescription>
+                <div className="flex items-center space-x-2 mt-1">
                   <Badge variant="outline">{file.mimeType}</Badge>
                   <span>•</span>
                   <span>{formatFileSize(file.size)}</span>
@@ -172,7 +175,7 @@ export function DocumentPreview({ file, open, onOpenChange, downloadUrl, onDownl
                       <Badge variant="secondary">{file.category}</Badge>
                     </>
                   )}
-                </DialogDescription>
+                </div>
               </div>
             </div>
             
