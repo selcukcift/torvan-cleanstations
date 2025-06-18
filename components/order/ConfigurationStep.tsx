@@ -277,14 +277,14 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       if (basinCount >= 2) {
         const between12 = 'BETWEEN_1_2'
         if (!occupiedPlacements.includes(between12)) {
-          options.push({ value: between12, label: 'Between Basins (1 & 2)', category: 'Between Basins' })
+          options.push({ value: between12, label: 'Between Basin 1 & 2', category: 'Between Basins' })
         }
       }
       
       if (basinCount >= 3) {
         const between23 = 'BETWEEN_2_3'
         if (!occupiedPlacements.includes(between23)) {
-          options.push({ value: between23, label: 'Between Basins (2 & 3)', category: 'Between Basins' })
+          options.push({ value: between23, label: 'Between Basin 2 & 3', category: 'Between Basins' })
         }
       }
       
@@ -319,7 +319,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       if (!occupiedPlacements.includes(between12)) {
         options.push({ 
           value: between12, 
-          label: 'Between Basins (1 & 2)', 
+          label: 'Between Basin 1 & 2', 
           category: 'Between Basins' 
         })
       }
@@ -330,7 +330,7 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       if (!occupiedPlacements.includes(between23)) {
         options.push({ 
           value: between23, 
-          label: 'Between Basins (2 & 3)', 
+          label: 'Between Basin 2 & 3', 
           category: 'Between Basins' 
         })
       }

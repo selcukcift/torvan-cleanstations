@@ -2523,11 +2523,11 @@ export function ProductionCoordinatorDashboard() {
                 <p className="text-sm font-medium">
                   Order: {orders.find(o => o.id === assignmentOrderId)?.poNumber}
                 </p>
-                <p className="text-sm text-slate-600">
+                <div className="text-sm text-slate-600">
                   Status: <Badge variant="outline" className="ml-1">
                     {orders.find(o => o.id === assignmentOrderId)?.orderStatus?.replace(/_/g, ' ')}
                   </Badge>
-                </p>
+                </div>
                 <p className="text-sm text-slate-600">
                   Current: {orders.find(o => o.id === assignmentOrderId)?.currentAssignee 
                     ? assignableUsers.find(u => u.id === orders.find(o => o.id === assignmentOrderId)?.currentAssignee)?.fullName || 'Unknown'

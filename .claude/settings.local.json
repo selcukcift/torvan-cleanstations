@@ -83,7 +83,17 @@
       "mcp__brave-search__brave_web_search",
       "mcp__filesystem__list_directory",
       "mcp__filesystem__read_file",
-      "mcp__filesystem__edit_file"
+      "mcp__filesystem__edit_file",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma migrate status)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npm run db:reset)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npm run prisma:seed:all)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npm run prisma:seed)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db pull)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma migrate dev --name fix_missing_fields)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma migrate dev --name fix_missing_fields --skip-generate --create-only)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db push --skip-generate)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db push --accept-data-loss)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db pull --print)"
     ],
     "deny": []
   },

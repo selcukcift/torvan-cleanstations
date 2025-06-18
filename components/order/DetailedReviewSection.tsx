@@ -60,12 +60,27 @@ export function DetailedReviewSection({
   const getPlacementLabel = (placement: string) => {
     switch (placement) {
       case 'CENTER': return 'Center'
+      case 'BASIN_1': return 'Center of Basin 1'
+      case 'BASIN_2': return 'Center of Basin 2'
+      case 'BASIN_3': return 'Center of Basin 3'
       case 'LEFT': return 'Left Side'
       case 'RIGHT': return 'Right Side'
-      case 'BETWEEN_1_2': return 'Between Basin 1-2'
-      case 'BETWEEN_2_3': return 'Between Basin 2-3'
+      case 'BETWEEN_1_2': return 'Between Basin 1 & 2'
+      case 'BETWEEN_2_3': return 'Between Basin 2 & 3'
       case 'BETWEEN_BASINS': return 'Between Basins' // Legacy
-      default: return placement || 'Center'
+      default: 
+        // Handle dynamic basin placement patterns
+        if (placement?.startsWith('BASIN_')) {
+          const basinNumber = placement.replace('BASIN_', '')
+          return `Center of Basin ${basinNumber}`
+        }
+        if (placement?.startsWith('BETWEEN_')) {
+          const parts = placement.replace('BETWEEN_', '').split('_')
+          if (parts.length === 2) {
+            return `Between Basin ${parts[0]} & ${parts[1]}`
+          }
+        }
+        return placement || 'Center of Basin 1'
     }
   }
 

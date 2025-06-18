@@ -363,7 +363,7 @@ export async function POST(request: NextRequest) {
               orderId: order.id,
               faucetTypeId: faucet.faucetTypeId,
               faucetQuantity: 1,
-              faucetPlacement: faucet.placement || 'Center'
+              faucetPlacement: faucet.placement || 'BASIN_1'
             })
           }
         }
@@ -374,7 +374,7 @@ export async function POST(request: NextRequest) {
           orderId: order.id,
           faucetTypeId: config.faucet.faucetTypeId,
           faucetQuantity: config.faucet.quantity || 1,
-          faucetPlacement: 'Center' // Default placement
+          faucetPlacement: 'BASIN_1' // Default placement
         })
       }
     }
