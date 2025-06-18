@@ -126,7 +126,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     return `T2-${mappedType}-${basinSize}`
   }
 
-  // Generate BOM preview using the same logic as BOMDebugHelper
+  // Generate BOM preview
   const generateBOMPreview = useCallback(async (retryCount = 0) => {
     if (!orderData) return
 
@@ -134,12 +134,12 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     setError(null)
     
     try {
-      // Use the EXACT same data structure as BOMDebugHelper for consistency
+      // Build the configuration data structure
       const configData: any = {
         sinkModelId: orderData.sinkModelId
       }
 
-      // Add optional fields only if they exist (same as BOMDebugHelper)
+      // Add optional fields only if they exist
       if (orderData.width) configData.width = orderData.width
       if (orderData.length) configData.length = orderData.length
       if (orderData.legsTypeId) configData.legsTypeId = orderData.legsTypeId
@@ -149,7 +149,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         if (orderData.pegboardTypeId) configData.pegboardTypeId = orderData.pegboardTypeId
         if (orderData.pegboardColorId) configData.pegboardColorId = orderData.pegboardColorId
         
-        // Extract pegboard type and color from IDs (same logic as BOMDebugHelper)
+        // Extract pegboard type and color from IDs
         const pegboardType = orderData.pegboardTypeId || orderData.pegboardType
         let pegboardColor = orderData.pegboardColor
         
@@ -175,7 +175,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         configData.drawersAndCompartments = orderData.drawersAndCompartments
       }
 
-      // Add basins if configured (same processing as BOMDebugHelper)
+      // Add basins if configured
       if (orderData.basins && orderData.basins.length > 0) {
         configData.basins = orderData.basins.map((basin: any) => {
           const basinData: any = {}
@@ -225,7 +225,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         }).filter((basin: any) => basin.basinTypeId || basin.basinSizePartNumber || (basin.addonIds && basin.addonIds.length > 0))
       }
 
-      // Add faucets if configured (same processing as BOMDebugHelper)
+      // Add faucets if configured
       if (orderData.faucets && orderData.faucets.length > 0) {
         configData.faucets = orderData.faucets.map((faucet: any) => ({
           faucetTypeId: faucet.faucetTypeId,
@@ -233,7 +233,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
         })).filter((faucet: any) => faucet.faucetTypeId)
       }
 
-      // Add sprayers if configured (same processing as BOMDebugHelper)
+      // Add sprayers if configured
       if (orderData.sprayers && orderData.sprayers.length > 0) {
         configData.sprayers = orderData.sprayers.map((sprayer: any) => ({
           id: sprayer.id,
@@ -244,7 +244,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
       if (orderData.controlBoxId) configData.controlBoxId = orderData.controlBoxId
 
-      // Use the BOM service directly (same as BOMDebugHelper)
+      // Use the BOM service directly
       const response = await nextJsApiClient.post('/bom/generate', {
         orderId: 'preview',
         buildNumber: 'preview-001',

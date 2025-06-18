@@ -118,7 +118,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       if (response.data.success) {
         console.log('ReviewStep BOM data received:', response.data)
         
-        // Use the same data processing as BOMDebugHelper
+        // Process BOM data
         const bomResult = response.data.data.bom || response.data.data
         const processedData = {
           ...response.data.data,

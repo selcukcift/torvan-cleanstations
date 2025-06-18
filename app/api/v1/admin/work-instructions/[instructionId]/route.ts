@@ -22,7 +22,7 @@ const WorkInstructionUpdateSchema = z.object({
 // GET /api/v1/admin/work-instructions/[instructionId] - Get single work instruction
 export async function GET(
   request: NextRequest,
-  { params }: { params: { instructionId: string } }
+  { params }: { params: Promise<{ instructionId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -34,8 +34,9 @@ export async function GET(
       }, { status: 401 })
     }
 
+    const { instructionId } = await params
     const instruction = await prisma.workInstruction.findUnique({
-      where: { id: params.instructionId },
+      where: { id: instructionId },
       include: {
         steps: {
           orderBy: {
@@ -68,7 +69,7 @@ export async function GET(
 // PUT /api/v1/admin/work-instructions/[instructionId] - Update work instruction
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { instructionId: string } }
+  { params }: { params: Promise<{ instructionId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -80,12 +81,13 @@ export async function PUT(
       }, { status: 401 })
     }
 
+    const { instructionId } = await params
     const body = await request.json()
     const validatedData = WorkInstructionUpdateSchema.parse(body)
 
     // Check if instruction exists
     const existingInstruction = await prisma.workInstruction.findUnique({
-      where: { id: params.instructionId }
+      where: { id: instructionId }
     })
 
     if (!existingInstruction) {
@@ -99,7 +101,7 @@ export async function PUT(
     const instruction = await prisma.$transaction(async (tx) => {
       // Update the main instruction
       const updatedInstruction = await tx.workInstruction.update({
-        where: { id: params.instructionId },
+        where: { id: instructionId },
         data: {
           title: validatedData.title,
           description: validatedData.description
@@ -110,13 +112,13 @@ export async function PUT(
       if (validatedData.steps) {
         // Delete existing steps
         await tx.workInstructionStep.deleteMany({
-          where: { workInstructionId: params.instructionId }
+          where: { workInstructionId: instructionId }
         })
 
         // Create new steps
         await tx.workInstructionStep.createMany({
           data: validatedData.steps.map(step => ({
-            workInstructionId: params.instructionId,
+            workInstructionId: instructionId,
             stepNumber: step.stepNumber,
             description: step.description,
             notes: step.notes
@@ -126,7 +128,7 @@ export async function PUT(
 
       // Return updated instruction with steps
       return await tx.workInstruction.findUnique({
-        where: { id: params.instructionId },
+        where: { id: instructionId },
         include: {
           steps: {
             orderBy: {
@@ -162,7 +164,7 @@ export async function PUT(
 // DELETE /api/v1/admin/work-instructions/[instructionId] - Delete work instruction
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { instructionId: string } }
+  { params }: { params: Promise<{ instructionId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -174,9 +176,10 @@ export async function DELETE(
       }, { status: 401 })
     }
 
+    const { instructionId } = await params
     // Check if instruction exists
     const existingInstruction = await prisma.workInstruction.findUnique({
-      where: { id: params.instructionId }
+      where: { id: instructionId }
     })
 
     if (!existingInstruction) {
@@ -188,7 +191,7 @@ export async function DELETE(
 
     // Delete instruction (steps will be deleted due to cascade)
     await prisma.workInstruction.delete({
-      where: { id: params.instructionId }
+      where: { id: instructionId }
     })
 
     return NextResponse.json({

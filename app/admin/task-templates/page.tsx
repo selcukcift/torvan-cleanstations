@@ -99,8 +99,8 @@ export default function TaskTemplatesPage() {
       setLoading(true);
       const response = await nextJsApiClient.get('/api/admin/task-templates');
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         setTemplates(data.templates || []);
         setTemplateGroups(data.templateGroups || []);
       } else {
@@ -126,7 +126,7 @@ export default function TaskTemplatesPage() {
     try {
       const response = await nextJsApiClient.post('/api/admin/task-templates', formData);
       
-      if (response.ok) {
+      if (response.status === 200) {
         toast({
           title: 'Success',
           description: 'Task template created successfully'
@@ -135,7 +135,7 @@ export default function TaskTemplatesPage() {
         resetForm();
         fetchTemplates();
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         toast({
           title: 'Error',
           description: errorData.error || 'Failed to create task template',
@@ -158,7 +158,7 @@ export default function TaskTemplatesPage() {
     try {
       const response = await nextJsApiClient.put(`/api/admin/task-templates/${editingTemplate.id}`, formData);
       
-      if (response.ok) {
+      if (response.status === 200) {
         toast({
           title: 'Success',
           description: 'Task template updated successfully'
@@ -168,7 +168,7 @@ export default function TaskTemplatesPage() {
         resetForm();
         fetchTemplates();
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         toast({
           title: 'Error',
           description: errorData.error || 'Failed to update task template',
@@ -191,14 +191,14 @@ export default function TaskTemplatesPage() {
     try {
       const response = await nextJsApiClient.delete(`/api/admin/task-templates/${templateId}`);
       
-      if (response.ok) {
+      if (response.status === 200) {
         toast({
           title: 'Success',
           description: 'Task template deleted successfully'
         });
         fetchTemplates();
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         toast({
           title: 'Error',
           description: errorData.error || 'Failed to delete task template',

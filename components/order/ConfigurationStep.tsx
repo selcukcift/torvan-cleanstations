@@ -25,7 +25,6 @@ import { cn } from "@/lib/utils"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { nextJsApiClient } from "@/lib/api"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { BOMDebugHelper } from "@/components/debug/BOMDebugHelper"
 
 interface ConfigurationStepProps {
   buildNumbers: string[]
@@ -63,7 +62,6 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
   const [controlBoxLoading, setControlBoxLoading] = useState(false)
   
   // Debug helper state
-  const [showBOMDebug, setShowBOMDebug] = useState(true)
 
   const currentBuildNumber = buildNumbers[currentBuildIndex]
   const currentConfig = configurations[currentBuildNumber] || {}
@@ -1484,19 +1482,6 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
         </ScrollArea>
       </div>
 
-      {/* BOM Debug Helper */}
-      <BOMDebugHelper
-        orderConfig={currentConfig}
-        customerInfo={customerInfo}
-        isVisible={showBOMDebug}
-        onToggleVisibility={() => setShowBOMDebug(!showBOMDebug)}
-        completeOrderData={{
-          customerInfo,
-          sinkSelection,
-          configurations,
-          accessories
-        }}
-      />
     </div>
   )
 }

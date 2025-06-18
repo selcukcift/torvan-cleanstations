@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuthUser } from '@/lib/auth';
 import { generateBOMForOrder } from '@/lib/bomService.native';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+// Dynamic imports to avoid build issues
+// import jsPDF from 'jspdf';
+// import autoTable from 'jspdf-autotable';
 
 const prisma = new PrismaClient();
 
@@ -109,51 +110,11 @@ export async function GET(
     const totalPrice = 0; // Pricing not implemented yet
 
     if (format === 'pdf') {
-      // Create PDF
-      const doc = new jsPDF();
-      
-      // Add title
-      doc.setFontSize(18);
-      doc.text(`Bill of Materials - Order ${order.poNumber}`, 14, 22);
-      
-      // Add order details
-      doc.setFontSize(11);
-      doc.text(`Customer: ${order.customerName}`, 14, 35);
-      doc.text(`Project: ${order.projectName || 'N/A'}`, 14, 42);
-      doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 14, 49);
-      
-      // Add BOM table
-      autoTable(doc, {
-        head: [['Part Number', 'Description', 'Category', 'Quantity', 'Source']],
-        body: formattedBOM.map(item => [
-          item.partNumber || '',
-          item.description || '',
-          item.category || '',
-          item.quantity.toString(),
-          item.source || ''
-        ]),
-        startY: 60,
-        styles: { fontSize: 10 },
-        headStyles: { fillColor: [51, 51, 51] }
-      });
-      
-      // Add totals
-      const finalY = ((doc as any).lastAutoTable?.finalY || 200) + 10;
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`Total Items: ${bomItems.length}`, 14, finalY);
-      doc.text(`Total Quantity: ${totalQuantity}`, 14, finalY + 7);
-      
-      // Convert PDF to buffer
-      const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
-      
-      return new NextResponse(pdfBuffer, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="order-${order.poNumber}-bom.pdf"`
-        }
-      });
+      // PDF export temporarily disabled due to dependency issues
+      return NextResponse.json(
+        { error: 'PDF export is temporarily unavailable. Please use CSV format.' },
+        { status: 501 }
+      );
     } else {
       // Create CSV content
       const csvHeaders = [

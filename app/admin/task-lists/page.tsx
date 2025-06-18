@@ -125,6 +125,12 @@ export default function TaskListsPage() {
   const [workInstructions, setWorkInstructions] = useState<WorkInstruction[]>([])
   const [tools, setTools] = useState<Tool[]>([])
   const [parts, setParts] = useState<Part[]>([])
+  
+  // Search and filtered data
+  const [toolSearch, setToolSearch] = useState('')
+  const [partSearch, setPartSearch] = useState('')
+  const [filteredTools, setFilteredTools] = useState<Tool[]>([])
+  const [filteredParts, setFilteredParts] = useState<Part[]>([])
 
   useEffect(() => {
     fetchTaskLists()

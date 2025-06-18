@@ -28,8 +28,8 @@ export async function GET(
     // Get total usage count
     const totalUsage = await prisma.orderQcResult.count({
       where: { 
-        templateId: templateId,
-        completedAt: { not: null }
+        qcFormTemplateId: templateId,
+        overallStatus: { not: 'PENDING' }
       }
     });
 
@@ -38,56 +38,56 @@ export async function GET(
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
     const monthlyUsage = await prisma.orderQcResult.groupBy({
-      by: ['createdAt'],
+      by: ['qcTimestamp'],
       where: {
-        templateId: templateId,
-        completedAt: { not: null },
-        createdAt: { gte: sixMonthsAgo }
+        qcFormTemplateId: templateId,
+        overallStatus: { not: 'PENDING' },
+        qcTimestamp: { gte: sixMonthsAgo }
       },
       _count: { id: true }
     });
 
     // Process monthly data
     const monthlyData = monthlyUsage.map(item => ({
-      month: item.createdAt.toISOString().substring(0, 7), // YYYY-MM
+      month: item.qcTimestamp.toISOString().substring(0, 7), // YYYY-MM
       count: item._count.id
     }));
 
     // Get status breakdown
     const statusBreakdown = await prisma.orderQcResult.groupBy({
-      by: ['status'],
+      by: ['overallStatus'],
       where: {
-        templateId: templateId,
-        completedAt: { not: null }
+        qcFormTemplateId: templateId,
+        overallStatus: { not: 'PENDING' }
       },
       _count: { id: true }
     });
 
     const statusData = statusBreakdown.map(item => ({
-      status: item.status,
+      status: item.overallStatus,
       count: item._count.id
     }));
 
     // Get recent QC results
     const recentResults = await prisma.orderQcResult.findMany({
       where: {
-        templateId: templateId,
-        completedAt: { not: null }
+        qcFormTemplateId: templateId,
+        overallStatus: { not: 'PENDING' }
       },
       include: {
         order: {
           select: {
-            orderNumber: true,
+            poNumber: true,
             customerName: true
           }
         },
-        completedBy: {
+        qcPerformedBy: {
           select: {
             username: true
           }
         }
       },
-      orderBy: { completedAt: 'desc' },
+      orderBy: { qcTimestamp: 'desc' },
       take: 10
     });
 
@@ -99,11 +99,11 @@ export async function GET(
         statusBreakdown: statusData,
         recentResults: recentResults.map(result => ({
           id: result.id,
-          orderNumber: result.order.orderNumber,
+          orderNumber: result.order.poNumber,
           customerName: result.order.customerName,
-          status: result.status,
-          completedAt: result.completedAt,
-          completedBy: result.completedBy?.username
+          status: result.overallStatus,
+          completedAt: result.qcTimestamp,
+          completedBy: result.qcPerformedBy?.username
         })),
         canModify: totalUsage === 0,
         message: totalUsage > 0 

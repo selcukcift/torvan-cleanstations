@@ -93,7 +93,9 @@
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma migrate dev --name fix_missing_fields --skip-generate --create-only)",
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db push --skip-generate)",
       "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db push --accept-data-loss)",
-      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db pull --print)"
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/torvan-db?schema=public\" npx prisma db pull --print)",
+      "Bash(diff:*)",
+      "Bash(npx shadcn@latest add:*)"
     ],
     "deny": []
   },

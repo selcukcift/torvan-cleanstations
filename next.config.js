@@ -105,6 +105,20 @@ const nextConfig = {
 
   // Output configuration for production
   output: 'standalone',
+
+  // Webpack configuration
+  webpack: (config, { isServer }) => {
+    // Handle missing optional dependencies
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        canvas: false,
+        html2canvas: false,
+      };
+    }
+    return config;
+  },
 }
 
 module.exports = nextConfig

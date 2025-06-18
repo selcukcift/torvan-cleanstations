@@ -13,7 +13,7 @@ const AssignmentSchema = z.object({
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     // Authenticate user
@@ -34,7 +34,7 @@ export async function PATCH(
       )
     }
 
-    const { orderId } = params
+    const { orderId } = await params
     const body = await request.json()
     const { assigneeId } = AssignmentSchema.parse(body)
 

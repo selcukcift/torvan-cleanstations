@@ -5,10 +5,10 @@ const prisma = new PrismaClient()
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { assemblyId: string } }
+  { params }: { params: Promise<{ assemblyId: string }> }
 ) {
   try {
-    const { assemblyId } = params
+    const { assemblyId } = await params
 
     const assembly = await prisma.assembly.findUnique({
       where: { assemblyId },

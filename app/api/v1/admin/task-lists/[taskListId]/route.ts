@@ -29,7 +29,7 @@ const TaskListUpdateSchema = z.object({
 // GET /api/v1/admin/task-lists/[taskListId] - Get single task list
 export async function GET(
   request: NextRequest,
-  { params }: { params: { taskListId: string } }
+  { params }: { params: Promise<{ taskListId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -41,8 +41,9 @@ export async function GET(
       }, { status: 401 })
     }
 
+    const { taskListId } = await params
     const taskList = await prisma.taskList.findUnique({
-      where: { id: params.taskListId },
+      where: { id: taskListId },
       include: {
         tasks: {
           include: {
@@ -83,7 +84,7 @@ export async function GET(
 // PUT /api/v1/admin/task-lists/[taskListId] - Update task list
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { taskListId: string } }
+  { params }: { params: Promise<{ taskListId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -95,12 +96,13 @@ export async function PUT(
       }, { status: 401 })
     }
 
+    const { taskListId } = await params
     const body = await request.json()
     const validatedData = TaskListUpdateSchema.parse(body)
 
     // Check if task list exists
     const existingTaskList = await prisma.taskList.findUnique({
-      where: { id: params.taskListId }
+      where: { id: taskListId }
     })
 
     if (!existingTaskList) {
@@ -114,7 +116,7 @@ export async function PUT(
     const taskList = await prisma.$transaction(async (tx) => {
       // Update the main task list
       const updatedTaskList = await tx.taskList.update({
-        where: { id: params.taskListId },
+        where: { id: taskListId },
         data: {
           name: validatedData.name,
           description: validatedData.description,
@@ -127,14 +129,14 @@ export async function PUT(
       if (validatedData.tasks) {
         // Delete existing tasks
         await tx.task.deleteMany({
-          where: { taskListId: params.taskListId }
+          where: { taskListId: taskListId }
         })
 
         // Create new tasks
         if (validatedData.tasks.length > 0) {
           await tx.task.createMany({
             data: validatedData.tasks.map(task => ({
-              taskListId: params.taskListId,
+              taskListId: taskListId,
               taskNumber: task.taskNumber,
               title: task.title,
               description: task.description,
@@ -150,7 +152,7 @@ export async function PUT(
 
       // Return updated task list with tasks
       return await tx.taskList.findUnique({
-        where: { id: params.taskListId },
+        where: { id: taskListId },
         include: {
           tasks: {
             include: {
@@ -194,7 +196,7 @@ export async function PUT(
 // DELETE /api/v1/admin/task-lists/[taskListId] - Delete task list
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { taskListId: string } }
+  { params }: { params: Promise<{ taskListId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -206,9 +208,10 @@ export async function DELETE(
       }, { status: 401 })
     }
 
+    const { taskListId } = await params
     // Check if task list exists
     const existingTaskList = await prisma.taskList.findUnique({
-      where: { id: params.taskListId }
+      where: { id: taskListId }
     })
 
     if (!existingTaskList) {
@@ -220,7 +223,7 @@ export async function DELETE(
 
     // Delete task list (tasks will be deleted due to cascade)
     await prisma.taskList.delete({
-      where: { id: params.taskListId }
+      where: { id: taskListId }
     })
 
     return NextResponse.json({

@@ -43,28 +43,24 @@ export async function GET(request: NextRequest) {
     const categoryFilter = searchParams.get('category') || ''
     
     const result = await accessoriesService.getAllAccessories({ 
-      searchTerm, 
-      categoryFilter, 
+      search: searchTerm, 
       limit, 
       offset 
-    }) as { accessories: Array<{
-      id: string;
-      name: string;
-      category: string;
-      description?: string;
-      price?: number;
-      imageUrl?: string;
-    }>, pagination: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    } }
+    })
+    
+    // Transform the result to match expected format
+    const totalPages = Math.ceil(result.total / limit)
+    const currentPage = Math.floor(offset / limit) + 1
     
     return NextResponse.json({ 
       success: true, 
       accessories: result.accessories,
-      pagination: result.pagination
+      pagination: {
+        total: result.total,
+        page: currentPage,
+        limit: limit,
+        totalPages: totalPages
+      }
     })
 
   } catch (error) {

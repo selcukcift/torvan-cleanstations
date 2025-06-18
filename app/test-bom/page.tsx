@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { BOMDebugHelper } from '@/components/debug/BOMDebugHelper'
 
 export default function TestBOMPage() {
   const [orderConfig, setOrderConfig] = useState({
@@ -117,7 +116,6 @@ export default function TestBOMPage() {
     language: 'EN'
   })
 
-  const [bomHelperVisible, setBomHelperVisible] = useState(true)
 
   const updateConfig = (key: string, value: any) => {
     setOrderConfig(prev => {
@@ -350,13 +348,6 @@ export default function TestBOMPage() {
         </CardContent>
       </Card>
 
-      {/* BOM Debug Helper */}
-      <BOMDebugHelper 
-        orderConfig={orderConfig}
-        customerInfo={customerInfo}
-        isVisible={bomHelperVisible}
-        onToggleVisibility={() => setBomHelperVisible(!bomHelperVisible)}
-      />
     </div>
   )
 }

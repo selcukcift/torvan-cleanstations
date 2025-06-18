@@ -5,10 +5,10 @@ const prisma = new PrismaClient()
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { partId: string } }
+  { params }: { params: Promise<{ partId: string }> }
 ) {
   try {
-    const { partId } = params
+    const { partId } = await params
 
     const part = await prisma.part.findUnique({
       where: { partId }

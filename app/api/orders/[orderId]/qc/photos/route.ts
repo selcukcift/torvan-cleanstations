@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 // GET /api/orders/[orderId]/qc/photos
 export async function GET(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -20,12 +20,13 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
+    const { orderId } = await params
     // Get QC photos for this order
     const photos = await prisma.fileUpload.findMany({
       where: {
         metadata: {
           path: ["orderId"],
-          equals: params.orderId
+          equals: orderId
         },
         category: "qc-photo"
       },
@@ -75,7 +76,7 @@ export async function GET(
 // POST /api/orders/[orderId]/qc/photos
 export async function POST(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -88,6 +89,7 @@ export async function POST(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
+    const { orderId } = await params
     const { fileId, category, notes } = await request.json()
 
     // Update the file metadata to mark it as a QC photo for this order
@@ -96,7 +98,7 @@ export async function POST(
       data: {
         category: "qc-photo",
         metadata: {
-          orderId: params.orderId,
+          orderId: orderId,
           category: category || "inspection",
           notes: notes || "",
           qcPhotoType: "inspection"
@@ -107,7 +109,7 @@ export async function POST(
     // Log the action
     await prisma.orderHistoryLog.create({
       data: {
-        orderId: params.orderId,
+        orderId: orderId,
         userId: user.id,
         action: "QC_PHOTO_ADDED",
         notes: `QC photo added: ${category} - ${notes}`
@@ -135,7 +137,7 @@ export async function POST(
 // DELETE /api/orders/[orderId]/qc/photos
 export async function DELETE(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     const user = await getAuthUser()
@@ -148,6 +150,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
+    const { orderId } = await params
     const { searchParams } = new URL(request.url)
     const photoId = searchParams.get("photoId")
 
@@ -164,7 +167,7 @@ export async function DELETE(
         id: photoId,
         metadata: {
           path: ["orderId"],
-          equals: params.orderId
+          equals: orderId
         }
       }
     })
@@ -184,7 +187,7 @@ export async function DELETE(
     // Log the action
     await prisma.orderHistoryLog.create({
       data: {
-        orderId: params.orderId,
+        orderId: orderId,
         userId: user.id,
         action: "QC_PHOTO_DELETED",
         notes: `QC photo deleted: ${photo.originalName}`

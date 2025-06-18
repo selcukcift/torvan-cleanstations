@@ -19,18 +19,17 @@ export async function GET(
     // First, get the template to find its formName and formType
     const baseTemplate = await prisma.qcFormTemplate.findUnique({
       where: { id: templateId },
-      select: { formName: true, formType: true }
+      select: { name: true, description: true }
     });
 
     if (!baseTemplate) {
       return NextResponse.json({ error: 'Template not found' }, { status: 404 });
     }
 
-    // Get all versions of templates with the same formName and formType
+    // Get all versions of templates with the same name
     const versions = await prisma.qcFormTemplate.findMany({
       where: {
-        formName: baseTemplate.formName,
-        formType: baseTemplate.formType
+        name: baseTemplate.name
       },
       select: {
         id: true,
@@ -62,8 +61,8 @@ export async function GET(
       success: true,
       data: {
         currentTemplate: {
-          formName: baseTemplate.formName,
-          formType: baseTemplate.formType
+          name: baseTemplate.name,
+          description: baseTemplate.description
         },
         versions: versionData,
         totalVersions: versionData.length

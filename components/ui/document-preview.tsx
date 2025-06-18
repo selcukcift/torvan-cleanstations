@@ -30,6 +30,7 @@ import {
   Maximize2
 } from "lucide-react"
 import { format } from "date-fns"
+import { PDFViewer } from "@/components/ui/pdf-viewer"
 
 interface DocumentFile {
   id: string
@@ -344,10 +345,11 @@ export function DocumentPreview({ file, open, onOpenChange, downloadUrl, onDownl
               </div>
             ) : previewUrl && isPdf ? (
               <div className="flex-1">
-                <iframe
-                  src={previewUrl}
-                  className="w-full h-full border-0"
-                  title={`PDF Preview: ${file.originalName}`}
+                <PDFViewer
+                  url={previewUrl}
+                  fileName={file.originalName}
+                  onDownload={handleDownload}
+                  className="h-full"
                 />
               </div>
             ) : previewUrl && isImage ? (

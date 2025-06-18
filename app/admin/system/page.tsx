@@ -83,6 +83,7 @@ export default function AdminSystemPage() {
   
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null)
   const [systemStats, setSystemStats] = useState<SystemStats | null>(null)
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -119,7 +120,7 @@ export default function AdminSystemPage() {
       ])
     } catch (err) {
       console.error('Error fetching system data:', err)
-      setError(err.message || 'Failed to fetch system data')
+      setError(err instanceof Error ? err.message : 'Failed to fetch system data')
     } finally {
       setLoading(false)
     }

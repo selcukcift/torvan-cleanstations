@@ -272,7 +272,7 @@ export default function AdminUsersPage() {
       console.error('Error saving user:', error)
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to save user",
+        description: (error as any)?.response?.data?.message || "Failed to save user",
         variant: "destructive"
       })
     } finally {
