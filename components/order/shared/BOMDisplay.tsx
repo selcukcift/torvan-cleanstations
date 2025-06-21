@@ -113,7 +113,6 @@ export function BOMDisplay({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-medium">Bill of Materials by Build</h3>
-            <p className="text-sm text-gray-600">Multi-level hierarchical structure</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -121,7 +120,7 @@ export function BOMDisplay({
             </Badge>
             {onRetry && (
               <Button onClick={onRetry} variant="outline" size="sm">
-                Regenerate BOM
+                Refresh
               </Button>
             )}
           </div>
@@ -165,15 +164,11 @@ export function BOMDisplay({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-medium">Bill of Materials</h3>
-          <p className="text-sm text-gray-600">Multi-level hierarchical structure</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-            Single Build
-          </Badge>
           {onRetry && (
             <Button onClick={onRetry} variant="outline" size="sm">
-              Regenerate BOM
+              Refresh
             </Button>
           )}
         </div>

@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
+import { toTitleCase } from "@/lib/utils"
 
 interface BOMItem {
   assemblyId: string
@@ -296,47 +297,12 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     }
   }, [orderData, bomItems, generateBOMPreview])
 
-  // Auto-expand hierarchical assemblies when BOM is loaded
+  // Initialize BOM with collapsed state for cleaner initial view
   useEffect(() => {
     const itemsToUse = bomItems || previewBomItems
     if (itemsToUse && itemsToUse.length > 0) {
-      const itemsToExpand = new Set<string>()
-      
-      // Find all assemblies with sub-components to auto-expand
-      const findExpandableItems = (items: BOMItem[], depth: number = 0) => {
-        items.forEach(item => {
-          const itemId = item.id || item.assemblyId || item.partNumber
-          const childItems = item.children || item.subItems || item.components || []
-          
-          // Auto-expand:
-          // 1. All top-level assemblies (depth 0)
-          // 2. Key assembly types (sink bodies, basin kits, etc.)
-          // 3. Any assembly with sub-components
-          if (itemId && (
-            depth === 0 || // Top level
-            itemId.includes('T2-BODY-') || // Sink bodies
-            itemId.includes('T2-BSN-') || // Basin kits
-            itemId.includes('T2-VALVE-') || // Valve assemblies
-            itemId.includes('T2-DRAIN-') || // Drain assemblies
-            itemId.includes('-KIT') || // Kit assemblies
-            (childItems.length > 0 && depth < 2) // Any assembly with children (up to 2 levels deep)
-          )) {
-            itemsToExpand.add(itemId)
-          }
-          
-          // Recursively check children
-          if (childItems.length > 0) {
-            findExpandableItems(childItems, depth + 1)
-          }
-        })
-      }
-      
-      findExpandableItems(itemsToUse)
-      
-      if (itemsToExpand.size > 0) {
-        console.log(`🔍 Auto-expanding ${itemsToExpand.size} hierarchical assemblies`)
-        setExpandedItems(prev => new Set([...prev, ...itemsToExpand]))
-      }
+      // Start with all items collapsed for cleaner initial view
+      setExpandedItems(new Set())
       
       // Run debug function to understand BOM structure
       debugBOMStructure()
@@ -710,7 +676,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`${level === 0 ? "font-semibold text-gray-900" : level === 1 ? "font-medium text-gray-800" : "text-sm text-gray-700"} truncate`}>
-                  {item.name}
+                  {toTitleCase(item.name)}
                 </span>
                 {item.isCustom && (
                   <Badge variant="outline" className="text-xs shrink-0">Custom</Badge>
@@ -762,51 +728,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
   return (
     <div className="space-y-4">
-      {/* Compact Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
-        <div>
-          <h3 className="font-semibold text-lg text-gray-900">
-            {orderData ? 'BOM Preview' : 'Bill of Materials'}
-          </h3>
-          <p className="text-sm text-gray-600">
-            {poNumber ? `PO: ${poNumber}` : 'Preview Mode'} • Hierarchical Bill of Materials
-            {showDebugInfo && (
-              <span className="ml-2 text-xs text-blue-600">
-                • {getLeafItemsCount()} parts only • {getLeafItemsQuantity()} parts quantity
-              </span>
-            )}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={handleExportPDF}
-            variant="outline"
-            size="sm"
-            disabled={exporting || !orderId}
-            className="flex items-center gap-2"
-            title={!orderId ? "PDF export is only available for saved orders" : "Export BOM as PDF"}
-          >
-            {exporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <FileText className="w-4 h-4" />
-            )}
-            Export PDF
-          </Button>
-        </div>
-      </div>
 
-      {/* Controls */}
-      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={expandAll}>
-            Expand All
-          </Button>
-          <Button variant="outline" size="sm" onClick={collapseAll}>
-            Collapse All
-          </Button>
-        </div>
-      </div>
 
       {/* BOM Items Display */}
       <Card>

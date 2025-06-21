@@ -100,7 +100,8 @@
       "mcp__filesystem__directory_tree",
       "Bash(for migration in 20250601015552_add_user_authentication 20250601113956_add_order_management_models 20250602001555_add_qc_system_complete 20250602175255_add_service_orders 20250605131341_add_enhanced_features 20250605135225_add_advanced_database_features 20250605195249_add_sink_configuration 20250606164501_add_custom_basin_dimensions 20250611000000_add_order_comments_and_notifications)",
       "Bash(do npx prisma migrate resolve --applied $migration)",
-      "Bash(done)"
+      "Bash(done)",
+      "mcp__filesystem__read_multiple_files"
     ],
     "deny": []
   },

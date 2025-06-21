@@ -32,6 +32,11 @@ import { format } from "date-fns"
 import { generateOrderDescription, generateShortDescription, generateSinkModel } from "@/lib/descriptionGenerator"
 import { ConfigurationDisplay } from "./shared/ConfigurationDisplay"
 import { BOMDisplay } from "./shared/BOMDisplay"
+import { 
+  getEnhancedBasinDescription, 
+  formatAccessoriesDisplay, 
+  formatDocumentsDisplay 
+} from "@/lib/utils"
 
 interface OrderSubmitResponse {
   success: boolean

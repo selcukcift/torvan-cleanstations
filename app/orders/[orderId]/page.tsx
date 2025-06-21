@@ -40,6 +40,11 @@ import { generateOrderDescription, generateShortDescription } from "@/lib/descri
 import { ConfigurationDisplay } from "@/components/order/shared/ConfigurationDisplay"
 import { BOMDisplay } from "@/components/order/shared/BOMDisplay"
 import { ProcurementTab } from "@/components/order/tabs/ProcurementTab"
+import { 
+  getEnhancedBasinDescription, 
+  formatAccessoriesDisplay, 
+  formatDocumentsDisplay 
+} from "@/lib/utils"
 
 // Status badge color mapping
 const statusColors: Record<string, string> = {
@@ -978,71 +983,122 @@ export default function OrderDetailsPage() {
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-3">
-          {/* Unified Order Information */}
-          <Card className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="space-y-3">
-                <h4 className="font-medium text-slate-700 border-b pb-1">Customer</h4>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="text-slate-500 block">Name</span>
-                    <span className="font-medium">{order.customerName}</span>
-                  </div>
-                  {order.projectName && (
-                    <div>
-                      <span className="text-slate-500 block">Project</span>
-                      <span className="font-medium">{order.projectName}</span>
+        <TabsContent value="overview" className="space-y-4">
+          {/* Main Information Grid - 2 Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Column - Order Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Order Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Customer Info */}
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-slate-700 border-b pb-1">Customer</h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-slate-500 block">Name</span>
+                        <span className="font-medium">{order.customerName}</span>
+                      </div>
+                      {order.projectName && (
+                        <div>
+                          <span className="text-slate-500 block">Project</span>
+                          <span className="font-medium">{order.projectName}</span>
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-slate-500 block">Sales Person</span>
+                        <span className="font-medium">{order.salesPerson}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Language</span>
+                        <span className="font-medium">
+                          {order.language === "EN" ? "English" : 
+                           order.language === "FR" ? "French" : "Spanish"}
+                        </span>
+                      </div>
                     </div>
-                  )}
-                  <div>
-                    <span className="text-slate-500 block">Sales Person</span>
-                    <span className="font-medium">{order.salesPerson}</span>
                   </div>
-                  <div>
-                    <span className="text-slate-500 block">Language</span>
-                    <span className="font-medium">
-                      {order.language === "EN" ? "English" : 
-                       order.language === "FR" ? "French" : "Spanish"}
-                    </span>
+
+                  {/* Order Details */}
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-slate-700 border-b pb-1">Details</h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-slate-500 block">PO Number</span>
+                        <span className="font-medium">{order.poNumber}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Created</span>
+                        <span className="font-medium">{format(new Date(order.createdAt), "MMM dd, yyyy")}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Want Date</span>
+                        <span className="font-medium">{format(new Date(order.wantDate), "MMM dd, yyyy")}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block">Created By</span>
+                        <span className="font-medium">{order.createdBy.fullName}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-3">
-                <h4 className="font-medium text-slate-700 border-b pb-1">Order Details</h4>
-                <div className="space-y-2 text-sm">
+            {/* Right Column - Status & Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Status & Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Current Status */}
                   <div>
-                    <span className="text-slate-500 block">PO Number</span>
-                    <span className="font-medium">{order.poNumber}</span>
+                    <span className="text-slate-500 text-sm block mb-2">Current Status</span>
+                    <Badge className={`${statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"} text-sm px-3 py-1`}>
+                      {statusDisplayNames[order.orderStatus] || order.orderStatus}
+                    </Badge>
                   </div>
-                  <div>
-                    <span className="text-slate-500 block">{order.buildNumbers.length === 1 ? 'Build & Model' : 'Sink Models'}</span>
-                    {order.buildNumbers.length === 1 ? (
-                      <div className="text-sm">
+
+                  {/* Configuration Summary */}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-slate-500 block">Sink Quantity</span>
+                      <span className="font-medium">{order.buildNumbers.length} Unit{order.buildNumbers.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block">Configuration</span>
+                      <span className="font-medium">
                         {(() => {
-                          const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === order.buildNumbers[0])
-                          const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === order.buildNumbers[0]) || []
-                          if (!sinkConfig) return <span className="font-medium">{order.buildNumbers[0]}: N/A</span>
-                          
-                          const basinCount = basinConfigs.length || 1
-                          const length = sinkConfig.length || 48
-                          const width = sinkConfig.width || 30
-                          const lengthStr = length.toString().padStart(2, '0')
-                          const widthStr = width.toString().padStart(2, '0')
-                          const dimensions = lengthStr + widthStr
-                          const sinkModel = `T2-${basinCount}B-${dimensions}HA`
-                          
-                          return <span className="font-medium">{order.buildNumbers[0]}: {sinkModel}</span>
+                          // Get all basin configs for enhanced description
+                          const allBasinConfigs = order.basinConfigurations || []
+                          return getEnhancedBasinDescription(allBasinConfigs)
                         })()}
-                      </div>
-                    ) : (
-                      <div className="space-y-1 mt-1">
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block">Accessories</span>
+                      <span className="font-medium">{formatAccessoriesDisplay(order.selectedAccessories || [])}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block">Documents</span>
+                      <span className="font-medium">{formatDocumentsDisplay(order.associatedDocuments || [])}</span>
+                    </div>
+                  </div>
+
+                  {/* Sink Models */}
+                  {order.buildNumbers.length > 0 && (
+                    <div>
+                      <span className="text-slate-500 text-sm block mb-2">
+                        {order.buildNumbers.length === 1 ? 'Sink Model' : 'Sink Models'}
+                      </span>
+                      <div className="space-y-1">
                         {order.buildNumbers.map((buildNumber: string) => {
                           const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber)
                           if (!sinkConfig) return null
                           
-                          // Generate sink model for this specific build
                           const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
                           const basinCount = basinConfigs.length || 1
                           const length = sinkConfig.length || 48
@@ -1053,185 +1109,140 @@ export default function OrderDetailsPage() {
                           const buildSinkModel = `T2-${basinCount}B-${dimensions}HA`
                           
                           return (
-                            <div key={buildNumber} className="text-xs">
+                            <div key={buildNumber} className="text-sm">
                               <span className="font-medium">{buildNumber}: {buildSinkModel}</span>
                             </div>
                           )
                         })}
                       </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Product Description & Notes - Single Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Product Description */}
+            {order.buildNumbers.length === 1 ? (
+              /* Single Build - Show unified description */
+              <Card>
+                <CardHeader>
+                  <CardTitle>Product Description</CardTitle>
+                  <CardDescription>Detailed specification of the configured sink</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Short Description */}
+                    {orderForDescription && (
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <h4 className="font-medium text-blue-900 mb-2">Summary</h4>
+                        <p className="text-blue-800">
+                          {generateShortDescription(orderForDescription)}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Full Description */}
+                    {orderForDescription && (
+                      <div className="p-4 bg-slate-50 rounded-lg">
+                        <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
+                        <p className="text-slate-700 leading-relaxed text-sm capitalize">
+                          {generateOrderDescription(orderForDescription)?.toLowerCase()}
+                        </p>
+                      </div>
                     )}
                   </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-medium text-slate-700 border-b pb-1">Timeline</h4>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="text-slate-500 block">Created</span>
-                    <span className="font-medium">{format(new Date(order.createdAt), "MMM dd, yyyy")}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Want Date</span>
-                    <span className="font-medium">{format(new Date(order.wantDate), "MMM dd, yyyy")}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Created By</span>
-                    <span className="font-medium">{order.createdBy.fullName}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Quantity</span>
-                    <span className="font-medium">{order.buildNumbers.length} Unit{order.buildNumbers.length !== 1 ? 's' : ''}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-medium text-slate-700 border-b pb-1">Summary</h4>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="text-slate-500 block">Current Status</span>
-                    <Badge className={statusColors[order.orderStatus] || "bg-gray-100 text-gray-700"}>
-                      {statusDisplayNames[order.orderStatus] || order.orderStatus}
-                    </Badge>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Configurations</span>
-                    <span className="font-medium">{order.buildNumbers.length} build{order.buildNumbers.length !== 1 ? 's' : ''}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Accessories</span>
-                    <span className="font-medium">{order.selectedAccessories?.length || 0} item{(order.selectedAccessories?.length || 0) !== 1 ? 's' : ''}</span>
-                  </div>
-                  {order.associatedDocuments && order.associatedDocuments.length > 0 && (
-                    <div>
-                      <span className="text-slate-500 block">Documents</span>
-                      <span className="font-medium">{order.associatedDocuments.length} file{order.associatedDocuments.length !== 1 ? 's' : ''}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Build-Specific Summaries */}
-          {order.buildNumbers.length === 1 ? (
-            /* Single Build - Show unified description */
-            <Card>
-              <CardHeader>
-                <CardTitle>Product Description</CardTitle>
-                <CardDescription>Detailed specification of the configured sink</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Short Description */}
-                  {orderForDescription && (
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Summary</h4>
-                      <p className="text-blue-800">
-                        {generateShortDescription(orderForDescription)}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Full Description */}
-                  {orderForDescription && (
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                      <h4 className="font-medium text-slate-900 mb-3">Complete Specification</h4>
-                      <p className="text-slate-700 leading-relaxed text-sm capitalize">
-                        {generateOrderDescription(orderForDescription)?.toLowerCase()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            /* Multiple Builds - Show per-build summaries */
-            <Card>
-              <CardHeader>
-                <CardTitle>Build Summaries</CardTitle>
-                <CardDescription>Specifications for each sink configuration in this order</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {order.buildNumbers.map((buildNumber: string) => {
-                    const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber)
-                    const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
-                    const buildAccessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
-                    
-                    if (!sinkConfig) return null
-                    
-                    return (
-                      <div key={buildNumber} className="p-4 border border-slate-200 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-slate-900">{buildNumber}</h4>
-                          <Badge variant="outline" className="bg-blue-50 text-blue-700">{buildNumber}</Badge>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                          <div>
-                            <span className="text-slate-500 block">Sink Model</span>
-                            <span className="font-medium">{getPartDescription(sinkConfig.sinkModelId) || 'N/A'}</span>
+                </CardContent>
+              </Card>
+            ) : (
+              /* Multiple Builds - Show per-build summaries */
+              <Card>
+                <CardHeader>
+                  <CardTitle>Build Summaries</CardTitle>
+                  <CardDescription>Specifications for each sink configuration in this order</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {order.buildNumbers.map((buildNumber: string) => {
+                      const sinkConfig = order.sinkConfigurations?.find((sc: any) => sc.buildNumber === buildNumber)
+                      const basinConfigs = order.basinConfigurations?.filter((bc: any) => bc.buildNumber === buildNumber) || []
+                      const buildAccessories = order.selectedAccessories?.filter((sa: any) => sa.buildNumber === buildNumber) || []
+                      
+                      if (!sinkConfig) return null
+                      
+                      return (
+                        <div key={buildNumber} className="p-4 border border-slate-200 rounded-lg">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-medium text-slate-900">{buildNumber}</h4>
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700">{buildNumber}</Badge>
                           </div>
-                          <div>
-                            <span className="text-slate-500 block">Dimensions</span>
-                            <span className="font-medium">{sinkConfig.width}" × {sinkConfig.length}"</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500 block">Legs/Feet</span>
-                            <span className="font-medium">{getPartDescription(sinkConfig.legsTypeId || '') || 'N/A'}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500 block">Pegboard</span>
-                            <span className="font-medium">
-                              {sinkConfig.pegboard ? 
-                                `${getPartDescription(sinkConfig.pegboardTypeId || '')} - ${extractColorFromId(sinkConfig.pegboardColorId || '')}` : 
-                                'No'
-                              }
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500 block">Basins</span>
-                            <span className="font-medium">{basinConfigs.length} basin{basinConfigs.length !== 1 ? 's' : ''}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500 block">Accessories</span>
-                            <span className="font-medium">{buildAccessories.length} item{buildAccessories.length !== 1 ? 's' : ''}</span>
-                          </div>
-                        </div>
-                        
-                        {basinConfigs.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-slate-100">
-                            <span className="text-slate-500 text-xs block mb-2">Basin Configuration:</span>
-                            <div className="flex flex-wrap gap-2">
-                              {basinConfigs.map((basin: any, idx: number) => (
-                                <Badge key={idx} variant="secondary" className="text-xs">
-                                  {getPartDescription(basin.basinTypeId)} ({getPartDescription(basin.basinSizePartNumber)})
-                                </Badge>
-                              ))}
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <span className="text-slate-500 block">Sink Model</span>
+                              <span className="font-medium">{getPartDescription(sinkConfig.sinkModelId) || 'N/A'}</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block">Dimensions</span>
+                              <span className="font-medium">{sinkConfig.width}" × {sinkConfig.length}"</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block">Legs/Feet</span>
+                              <span className="font-medium">{getPartDescription(sinkConfig.legsTypeId || '') || 'N/A'}</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block">Pegboard</span>
+                              <span className="font-medium">
+                                {sinkConfig.pegboard ? 
+                                  `${getPartDescription(sinkConfig.pegboardTypeId || '')} - ${extractColorFromId(sinkConfig.pegboardColorId || '')}` : 
+                                  'No'
+                                }
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block">Basins</span>
+                              <span className="font-medium">{basinConfigs.length} basin{basinConfigs.length !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-500 block">Accessories</span>
+                              <span className="font-medium">{buildAccessories.length} item{buildAccessories.length !== 1 ? 's' : ''}</span>
                             </div>
                           </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                          
+                          {basinConfigs.length > 0 && (
+                            <div className="mt-3 pt-3 border-t border-slate-100">
+                              <span className="text-slate-500 text-xs block mb-2">Basin Configuration:</span>
+                              <div className="flex flex-wrap gap-2">
+                                {basinConfigs.map((basin: any, idx: number) => (
+                                  <Badge key={idx} variant="secondary" className="text-xs">
+                                    {getPartDescription(basin.basinTypeId)} ({getPartDescription(basin.basinSizePartNumber)})
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Notes */}
-          {order.notes && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Notes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-700">{order.notes}</p>
-              </CardContent>
-            </Card>
-          )}
+            {/* Notes */}
+            {order.notes && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Notes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700">{order.notes}</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
 
           {/* Status Update */}
           {canUpdateStatus && (
@@ -1241,8 +1252,8 @@ export default function OrderDetailsPage() {
                 <CardDescription>Change the order status based on current progress</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-end gap-4">
-                  <div className="flex-1">
+                <div className="space-y-4">
+                  <div>
                     <Label>New Status</Label>
                     <Select value={newStatus} onValueChange={setNewStatus}>
                       <SelectTrigger>
@@ -1257,18 +1268,19 @@ export default function OrderDetailsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <Label>Notes (Optional)</Label>
                     <Textarea
                       value={statusNotes}
                       onChange={(e) => setStatusNotes(e.target.value)}
                       placeholder="Add notes about this status change..."
-                      rows={2}
+                      rows={3}
                     />
                   </div>
                   <Button
                     onClick={handleStatusUpdate}
                     disabled={!newStatus || statusUpdating}
+                    className="w-full"
                   >
                     {statusUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                     Update Status
