@@ -1,0 +1,712 @@
+{
+  "order": {
+    "id": "clr1234567890abcdef",
+    "orderNumber": "ORD-2024-001234",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T14:45:00.000Z",
+    "status": "IN_PRODUCTION",
+    "priority": "HIGH",
+    "wantDate": "2024-02-15T00:00:00.000Z",
+    "completedAt": null,
+    
+    "customerInfo": {
+      "customerName": "Memorial Hospital",
+      "poNumber": "PO-2024-5678",
+      "projectName": "OR Suite Renovation Phase 2",
+      "salesPerson": "John Smith",
+      "language": "EN",
+      "notes": "Rush order for hospital installation. Please coordinate delivery with loading dock.",
+      "poDocuments": [
+        {
+          "id": "doc_001",
+          "fileName": "PO-2024-5678.pdf",
+          "fileSize": 245678,
+          "fileType": "application/pdf",
+          "uploadedAt": "2024-01-15T10:35:00.000Z"
+        }
+      ],
+      "sinkDrawings": [
+        {
+          "id": "doc_002",
+          "fileName": "sink-layout-or-suite.dwg",
+          "fileSize": 1567890,
+          "fileType": "application/acad",
+          "uploadedAt": "2024-01-15T10:36:00.000Z"
+        }
+      ]
+    },
+    
+    "sinkSelection": {
+      "sinkFamily": "MDRD",
+      "sinkModelId": "T2-B2",
+      "sinkModelName": "Dual Basin CleanStation",
+      "quantity": 2,
+      "buildNumbers": ["CS-2024-001", "CS-2024-002"]
+    },
+    
+    "sinkConfigurations": [
+      {
+        "buildNumber": "CS-2024-001",
+        "sinkModelId": "T2-B2",
+        "width": 72,
+        "length": 60,
+        "workflowDirection": "LEFT_TO_RIGHT",
+        
+        "structuralComponents": {
+          "legsTypeId": "DL27",
+          "legsTypeName": "HEIGHT ADJUSTABLE - DL27 34\"-37\" ADJUSTABLE HEIGHT",
+          "feetTypeId": "LEVELING_CASTERS",
+          "feetTypeName": "Leveling Casters"
+        },
+        
+        "pegboardConfiguration": {
+          "pegboard": true,
+          "pegboardTypeId": "PERFORATED",
+          "pegboardColorId": "T-OA-PB-COLOR-BLUE",
+          "pegboardColorName": "Blue (Color-safe+)"
+        },
+        
+        "drawersAndCompartments": [
+          {
+            "id": "T2-OA-2D-152012-STACKED-KIT",
+            "name": "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT",
+            "quantity": 1
+          }
+        ],
+        
+        "basins": [
+          {
+            "position": 1,
+            "basinTypeId": "E_DRAIN",
+            "basinType": "E-Drain Basin",
+            "basinSizePartNumber": "T2-EDR-21X18",
+            "basinSizeName": "21\" x 18\" E-Drain Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": [
+              "T2-OA-BASIN-LIGHT-EDR-KIT"
+            ],
+            "addons": [
+              {
+                "id": "T2-OA-BASIN-LIGHT-EDR-KIT",
+                "name": "Basin Light Kit for E-Drain",
+                "quantity": 1
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "basinTypeId": "E_SINK",
+            "basinType": "E-Sink Basin",
+            "basinSizePartNumber": "T2-ESK-21X18",
+            "basinSizeName": "21\" x 18\" E-Sink Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": [
+              "T2-OA-MS-1026",
+              "T2-OA-BASIN-LIGHT-ESK-KIT"
+            ],
+            "addons": [
+              {
+                "id": "T2-OA-MS-1026",
+                "name": "P-Trap Disinfection Drain Unit",
+                "quantity": 1
+              },
+              {
+                "id": "T2-OA-BASIN-LIGHT-ESK-KIT",
+                "name": "Basin Light Kit for E-Sink",
+                "quantity": 1
+              }
+            ]
+          }
+        ],
+        
+        "faucets": [
+          {
+            "id": "faucet_001",
+            "faucetTypeId": "T2-FCT-ESK-8CC",
+            "faucetTypeName": "8\" CENTER ELECTRONIC FAUCET",
+            "placement": "BASIN_2",
+            "quantity": 1
+          },
+          {
+            "id": "faucet_002",
+            "faucetTypeId": "T2-FCT-MAN-8CC",
+            "faucetTypeName": "8\" CENTER MANUAL FAUCET",
+            "placement": "BETWEEN_1_2",
+            "quantity": 1
+          }
+        ],
+        
+        "sprayers": [
+          {
+            "id": "sprayer_001",
+            "sprayerTypeId": "T2-SPR-12",
+            "sprayerTypeName": "12\" Retractable Sprayer",
+            "location": "RIGHT_SIDE"
+          }
+        ],
+        
+        "controlBoxId": "T2-CTRL-EDR1-ESK1",
+        "controlBoxName": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS"
+      },
+      {
+        "buildNumber": "CS-2024-002",
+        "sinkModelId": "T2-B2",
+        "width": 72,
+        "length": 60,
+        "workflowDirection": "RIGHT_TO_LEFT",
+        
+        "structuralComponents": {
+          "legsTypeId": "DL14-FH",
+          "legsTypeName": "FIXED HEIGHT - DL14-FH 36\" FIXED HEIGHT",
+          "feetTypeId": "SEISMIC_FEET",
+          "feetTypeName": "Seismic Feet"
+        },
+        
+        "pegboardConfiguration": {
+          "pegboard": true,
+          "pegboardTypeId": "SOLID",
+          "pegboardColorId": "T-OA-PB-COLOR-WHITE",
+          "pegboardColorName": "White (Color-safe+)"
+        },
+        
+        "drawersAndCompartments": [
+          {
+            "id": "T2-OA-PO-SHLF-1212",
+            "name": "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)",
+            "quantity": 2
+          }
+        ],
+        
+        "basins": [
+          {
+            "position": 1,
+            "basinTypeId": "E_SINK_DI",
+            "basinType": "E-Sink DI Basin",
+            "basinSizePartNumber": "T2-ESK-DI-21X18",
+            "basinSizeName": "21\" x 18\" E-Sink DI Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": [],
+            "addons": []
+          },
+          {
+            "position": 2,
+            "basinTypeId": "E_SINK",
+            "basinType": "E-Sink Basin",
+            "basinSizePartNumber": "T2-ESK-18X15",
+            "basinSizeName": "18\" x 15\" E-Sink Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": [],
+            "addons": []
+          }
+        ],
+        
+        "faucets": [
+          {
+            "id": "faucet_003",
+            "faucetTypeId": "T2-OA-DI-GOOSENECK-FAUCET-KIT",
+            "faucetTypeName": "DI Gooseneck Faucet Kit (Auto-added)",
+            "placement": "BASIN_1",
+            "quantity": 1
+          },
+          {
+            "id": "faucet_004",
+            "faucetTypeId": "T2-FCT-ESK-4CC",
+            "faucetTypeName": "4\" CENTER ELECTRONIC FAUCET",
+            "placement": "BASIN_2",
+            "quantity": 1
+          }
+        ],
+        
+        "sprayers": [
+          {
+            "id": "sprayer_002",
+            "sprayerTypeId": "T2-SPR-8",
+            "sprayerTypeName": "8\" Retractable Sprayer",
+            "location": "LEFT_SIDE"
+          },
+          {
+            "id": "sprayer_003",
+            "sprayerTypeId": "T2-SPR-12",
+            "sprayerTypeName": "12\" Retractable Sprayer",
+            "location": "RIGHT_SIDE"
+          }
+        ],
+        
+        "controlBoxId": "T2-CTRL-ESK2",
+        "controlBoxName": "CONTROL BOX ONLY FOR 2 ESINK BASINS"
+      }
+    ],
+    
+    "accessories": [
+      {
+        "assemblyId": "T2-ACC-SOAP-DISP",
+        "accessoryId": "T2-ACC-SOAP-DISP",
+        "name": "Automatic Soap Dispenser",
+        "partNumber": "T2-ACC-SOAP-DISP",
+        "quantity": 2,
+        "buildNumbers": ["CS-2024-001", "CS-2024-002"],
+        "category": "STORAGE"
+      },
+      {
+        "assemblyId": "T2-ACC-TOWEL-DISP",
+        "accessoryId": "T2-ACC-TOWEL-DISP",
+        "name": "Paper Towel Dispenser",
+        "partNumber": "T2-ACC-TOWEL-DISP",
+        "quantity": 1,
+        "buildNumbers": ["CS-2024-001"],
+        "category": "ORGANIZATION"
+      },
+      {
+        "assemblyId": "T2-ACC-UV-LIGHT",
+        "accessoryId": "T2-ACC-UV-LIGHT",
+        "name": "UV Sanitization Light",
+        "partNumber": "T2-ACC-UV-LIGHT",
+        "quantity": 1,
+        "buildNumbers": ["CS-2024-002"],
+        "category": "TECHNOLOGY"
+      }
+    ],
+    
+    "generatedBOM": {
+      "generatedAt": "2024-01-15T10:45:00.000Z",
+      "totalItems": 89,
+      "categories": [
+        {
+          "categoryCode": "710",
+          "categoryName": "FRAME/LEG/FEET",
+          "items": [
+            {
+              "partNumber": "DL27",
+              "name": "HEIGHT ADJUSTABLE - DL27 34\"-37\" ADJUSTABLE HEIGHT",
+              "quantity": 4,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "DL14-FH",
+              "name": "FIXED HEIGHT - DL14-FH 36\" FIXED HEIGHT",
+              "quantity": 4,
+              "buildNumber": "CS-2024-002"
+            },
+            {
+              "partNumber": "LEVELING_CASTERS",
+              "name": "Leveling Casters",
+              "quantity": 4,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "SEISMIC_FEET",
+              "name": "Seismic Feet",
+              "quantity": 4,
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "715",
+          "categoryName": "BASINS",
+          "items": [
+            {
+              "partNumber": "T2-EDR-21X18",
+              "name": "21\" x 18\" E-Drain Basin",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-ESK-21X18",
+              "name": "21\" x 18\" E-Sink Basin",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-ESK-DI-21X18",
+              "name": "21\" x 18\" E-Sink DI Basin",
+              "quantity": 1,
+              "buildNumber": "CS-2024-002"
+            },
+            {
+              "partNumber": "T2-ESK-18X15",
+              "name": "18\" x 15\" E-Sink Basin",
+              "quantity": 1,
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "719",
+          "categoryName": "CONTROL BOX",
+          "items": [
+            {
+              "partNumber": "T2-CTRL-EDR1-ESK1",
+              "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001",
+              "components": [
+                {
+                  "partNumber": "Q13404-02",
+                  "name": "CONTROL BOX ENCLOSURE FOR UP TO DUAL BASIN SINKS",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "PW-105R3-06",
+                  "name": "RIGHT ANGLE POWER CABLE - SJT",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "4995",
+                  "name": "SILICONE RJ-45 DUST COVER INSERTS - 10 PACK",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "2926438",
+                  "name": "ASSEMBLED SHIELDED ROUND CABLE CONNECTION DSUB PIN STRIP",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "2302081",
+                  "name": "CABLE ASSY DB15 SHIELDED GRAY 2M",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "320X12539X",
+                  "name": "DSUB GENDER CHANGER DB15F DB15F",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T2-M8-3P-MP-STR-0.61M",
+                  "name": "CBL 3POS MALE TO WIRE 4.92'",
+                  "quantity": 15
+                },
+                {
+                  "partNumber": "HDR-150-24",
+                  "name": "DIN RAIL POWER SUPPLIES 150W",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T2-ESINK-BOARD-R3",
+                  "name": "ESINK CONTROL BOARD",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T2-EDRAIN-BOARD-R3",
+                  "name": "EDRAIN W/ OVERFLOW CONTROL BOARD",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T2-CTRL-BOX-BRKT",
+                  "name": "BRACKET FOR ENCLOSURE WITH HOOKS",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "1201578",
+                  "name": "DINRAIL ADAPTER UNIVERSAL",
+                  "quantity": 4
+                },
+                {
+                  "partNumber": "E7512-L-BLUE",
+                  "name": "WIRE FERRULE, SINGLE WIRE, 20 AWG",
+                  "quantity": 5
+                },
+                {
+                  "partNumber": "M8-DUST-CAP-M",
+                  "name": "M8 INNER THREAD COVER",
+                  "quantity": 4
+                },
+                {
+                  "partNumber": "T2-RJ45-SPLITTER",
+                  "name": "STRAIGHT THROUGH RJ45 SPLITTER",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T-ESOM-F4-01",
+                  "name": "MCU BOARD",
+                  "quantity": 2
+                }
+              ]
+            },
+            {
+              "partNumber": "T2-CTRL-ESK2",
+              "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+              "quantity": 1,
+              "buildNumber": "CS-2024-002",
+              "components": [
+                {
+                  "partNumber": "Q13404-02",
+                  "name": "CONTROL BOX ENCLOSURE FOR UP TO DUAL BASIN SINKS",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "PW-105R3-06",
+                  "name": "RIGHT ANGLE POWER CABLE - SJT",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "4995",
+                  "name": "SILICONE RJ-45 DUST COVER INSERTS - 10 PACK",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "2926438",
+                  "name": "ASSEMBLED SHIELDED ROUND CABLE CONNECTION DSUB PIN STRIP",
+                  "quantity": 2
+                },
+                {
+                  "partNumber": "2302081",
+                  "name": "CABLE ASSY DB15 SHIELDED GRAY 2M",
+                  "quantity": 2
+                },
+                {
+                  "partNumber": "320X12539X",
+                  "name": "DSUB GENDER CHANGER DB15F DB15F",
+                  "quantity": 2
+                },
+                {
+                  "partNumber": "T2-M8-3P-MP-STR-0.61M",
+                  "name": "CBL 3POS MALE TO WIRE 4.92'",
+                  "quantity": 20
+                },
+                {
+                  "partNumber": "HDR-150-24",
+                  "name": "DIN RAIL POWER SUPPLIES 150W",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T2-ESINK-BOARD-R3",
+                  "name": "ESINK CONTROL BOARD",
+                  "quantity": 2
+                },
+                {
+                  "partNumber": "T2-CTRL-BOX-BRKT",
+                  "name": "BRACKET FOR ENCLOSURE WITH HOOKS",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "1201578",
+                  "name": "DINRAIL ADAPTER UNIVERSAL",
+                  "quantity": 4
+                },
+                {
+                  "partNumber": "E7512-L-BLUE",
+                  "name": "WIRE FERRULE, SINGLE WIRE, 20 AWG",
+                  "quantity": 5
+                },
+                {
+                  "partNumber": "M8-DUST-CAP-M",
+                  "name": "M8 INNER THREAD COVER",
+                  "quantity": 5
+                },
+                {
+                  "partNumber": "T2-RJ45-SPLITTER",
+                  "name": "STRAIGHT THROUGH RJ45 SPLITTER",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "MD-D237-1",
+                  "name": "RJ45 8P8C JACK 4-WAY BUSS BREAKOUT BOARD",
+                  "quantity": 1
+                },
+                {
+                  "partNumber": "T-ESOM-F4-01",
+                  "name": "MCU BOARD",
+                  "quantity": 2
+                },
+                {
+                  "partNumber": "N204-S01-BL-UD",
+                  "name": "CAT6 GIGABIT ANGLED SLIM PATCH CABLE",
+                  "quantity": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "categoryCode": "716",
+          "categoryName": "FAUCETS",
+          "items": [
+            {
+              "partNumber": "T2-FCT-ESK-8CC",
+              "name": "8\" CENTER ELECTRONIC FAUCET",
+              "quantity": 1,
+              "placement": "BASIN_2",
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-FCT-MAN-8CC",
+              "name": "8\" CENTER MANUAL FAUCET",
+              "quantity": 1,
+              "placement": "BETWEEN_1_2",
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-OA-DI-GOOSENECK-FAUCET-KIT",
+              "name": "DI Gooseneck Faucet Kit",
+              "quantity": 1,
+              "placement": "BASIN_1",
+              "buildNumber": "CS-2024-002"
+            },
+            {
+              "partNumber": "T2-FCT-ESK-4CC",
+              "name": "4\" CENTER ELECTRONIC FAUCET",
+              "quantity": 1,
+              "placement": "BASIN_2",
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "717",
+          "categoryName": "SPRAYERS",
+          "items": [
+            {
+              "partNumber": "T2-SPR-12",
+              "name": "12\" Retractable Sprayer",
+              "quantity": 2,
+              "locations": ["RIGHT_SIDE (CS-2024-001)", "RIGHT_SIDE (CS-2024-002)"]
+            },
+            {
+              "partNumber": "T2-SPR-8",
+              "name": "8\" Retractable Sprayer",
+              "quantity": 1,
+              "location": "LEFT_SIDE",
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "720",
+          "categoryName": "PEGBOARD",
+          "items": [
+            {
+              "partNumber": "T2-PEG-72-PERF",
+              "name": "72\" Perforated Pegboard",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T-OA-PB-COLOR-BLUE",
+              "name": "Pegboard Color - Blue (Color-safe+)",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-PEG-72-SOLID",
+              "name": "72\" Solid Pegboard",
+              "quantity": 1,
+              "buildNumber": "CS-2024-002"
+            },
+            {
+              "partNumber": "T-OA-PB-COLOR-WHITE",
+              "name": "Pegboard Color - White (Color-safe+)",
+              "quantity": 1,
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "721",
+          "categoryName": "DRAWERS AND COMPARTMENTS",
+          "items": [
+            {
+              "partNumber": "T2-OA-2D-152012-STACKED-KIT",
+              "name": "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001"
+            },
+            {
+              "partNumber": "T2-OA-PO-SHLF-1212",
+              "name": "12\"X12\" PULL OUT SHELF",
+              "quantity": 2,
+              "buildNumber": "CS-2024-002"
+            }
+          ]
+        },
+        {
+          "categoryCode": "722",
+          "categoryName": "BASIN ADDONS",
+          "items": [
+            {
+              "partNumber": "T2-OA-BASIN-LIGHT-EDR-KIT",
+              "name": "Basin Light Kit for E-Drain",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001",
+              "basinPosition": 1
+            },
+            {
+              "partNumber": "T2-OA-MS-1026",
+              "name": "P-Trap Disinfection Drain Unit",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001",
+              "basinPosition": 2
+            },
+            {
+              "partNumber": "T2-OA-BASIN-LIGHT-ESK-KIT",
+              "name": "Basin Light Kit for E-Sink",
+              "quantity": 1,
+              "buildNumber": "CS-2024-001",
+              "basinPosition": 2
+            }
+          ]
+        },
+        {
+          "categoryCode": "730",
+          "categoryName": "ACCESSORIES",
+          "items": [
+            {
+              "partNumber": "T2-ACC-SOAP-DISP",
+              "name": "Automatic Soap Dispenser",
+              "quantity": 2,
+              "buildNumbers": ["CS-2024-001", "CS-2024-002"]
+            },
+            {
+              "partNumber": "T2-ACC-TOWEL-DISP",
+              "name": "Paper Towel Dispenser",
+              "quantity": 1,
+              "buildNumbers": ["CS-2024-001"]
+            },
+            {
+              "partNumber": "T2-ACC-UV-LIGHT",
+              "name": "UV Sanitization Light",
+              "quantity": 1,
+              "buildNumbers": ["CS-2024-002"]
+            }
+          ]
+        }
+      ]
+    },
+    
+    "validation": {
+      "status": "VALID",
+      "messages": [],
+      "businessRules": {
+        "sinkLengthValid": true,
+        "basinCountMatches": true,
+        "faucetPlacementValid": true,
+        "uniqueBuildNumbers": true,
+        "requiredFieldsComplete": true,
+        "diBasinFaucetAdded": true
+      }
+    },
+    
+    "metadata": {
+      "createdBy": {
+        "id": "user_123",
+        "name": "Jane Doe",
+        "role": "PRODUCTION_COORDINATOR"
+      },
+      "lastModifiedBy": {
+        "id": "user_123",
+        "name": "Jane Doe",
+        "role": "PRODUCTION_COORDINATOR"
+      },
+      "version": 1,
+      "systemVersion": "1.2.0"
+    }
+  }
+}

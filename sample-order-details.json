@@ -1,0 +1,483 @@
+{
+  "order": {
+    "id": "ord_2024_001234",
+    "orderNumber": "ORD-2024-001234",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T14:45:00.000Z",
+    "status": "IN_PRODUCTION",
+    "priority": "HIGH",
+    "expectedDeliveryDate": "2024-02-15T00:00:00.000Z",
+    "actualDeliveryDate": null,
+    "notes": "Rush order for hospital installation",
+    
+    "customer": {
+      "id": "cust_001",
+      "name": "Memorial Hospital",
+      "email": "purchasing@memorialhospital.com",
+      "phone": "+1-555-123-4567",
+      "address": {
+        "street": "123 Medical Center Drive",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02115",
+        "country": "USA"
+      },
+      "contactPerson": "John Smith",
+      "contactTitle": "Purchasing Manager"
+    },
+    
+    "purchaseOrder": {
+      "number": "PO-2024-5678",
+      "date": "2024-01-10T00:00:00.000Z",
+      "amount": 45678.90,
+      "currency": "USD",
+      "paymentTerms": "NET 30",
+      "documents": [
+        {
+          "id": "doc_001",
+          "fileName": "PO-2024-5678.pdf",
+          "fileSize": 245678,
+          "uploadedAt": "2024-01-15T10:35:00.000Z",
+          "uploadedBy": "user_123"
+        }
+      ]
+    },
+    
+    "configuration": {
+      "sinkModel": "T2000-SERIES",
+      "numberOfBasins": 2,
+      "overallDimensions": {
+        "width": 72,
+        "depth": 24,
+        "height": 36,
+        "unit": "inches"
+      },
+      
+      "basins": [
+        {
+          "position": 1,
+          "type": "T2-EDR-21X18",
+          "name": "E-DRAIN BASIN 21\" X 18\"",
+          "dimensions": {
+            "width": 21,
+            "depth": 18,
+            "height": 12,
+            "unit": "inches"
+          },
+          "features": [
+            "Electronic drain control",
+            "Overflow protection",
+            "Temperature monitoring"
+          ],
+          "accessories": []
+        },
+        {
+          "position": 2,
+          "type": "T2-ESK-21X18",
+          "name": "E-SINK BASIN 21\" X 18\"",
+          "dimensions": {
+            "width": 21,
+            "depth": 18,
+            "height": 12,
+            "unit": "inches"
+          },
+          "features": [
+            "Electronic faucet control",
+            "Hands-free operation",
+            "Water flow monitoring"
+          ],
+          "accessories": [
+            {
+              "id": "T2-ESK-SPR-12",
+              "name": "12\" SPRAYER FOR E-SINK",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      
+      "frame": {
+        "type": "T2-LEG-ADJ-34-37",
+        "name": "ADJUSTABLE HEIGHT LEGS 34\"-37\"",
+        "material": "Stainless Steel 304",
+        "finish": "Brushed",
+        "features": ["Height adjustable", "Leveling feet", "Cross bracing"]
+      },
+      
+      "pegboard": {
+        "included": true,
+        "type": "T2-PEG-72",
+        "name": "72\" PEGBOARD WITH RAIL SYSTEM",
+        "accessories": [
+          {
+            "id": "T2-PEG-HOOK-SET",
+            "name": "Pegboard Hook Set",
+            "quantity": 1
+          }
+        ]
+      },
+      
+      "controlBox": {
+        "id": "T2-CTRL-EDR1-ESK1",
+        "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+        "location": "Under sink - center mounted"
+      },
+      
+      "faucets": [
+        {
+          "basinPosition": 2,
+          "type": "T2-FCT-ESK-8CC",
+          "name": "8\" CENTER ELECTRONIC FAUCET",
+          "features": ["Touchless operation", "Temperature control", "Auto shut-off"]
+        }
+      ],
+      
+      "drains": [
+        {
+          "basinPosition": 1,
+          "type": "ELECTRONIC",
+          "controlledBy": "T2-EDRAIN-BOARD-R3"
+        },
+        {
+          "basinPosition": 2,
+          "type": "MANUAL",
+          "size": "1.5 inch"
+        }
+      ],
+      
+      "accessories": [
+        {
+          "id": "T2-ACC-SOAP",
+          "name": "Soap Dispenser - Touchless",
+          "quantity": 2,
+          "location": "Pegboard mounted"
+        },
+        {
+          "id": "T2-ACC-TOWEL",
+          "name": "Paper Towel Dispenser",
+          "quantity": 1,
+          "location": "Pegboard mounted"
+        }
+      ]
+    },
+    
+    "billOfMaterials": {
+      "generatedAt": "2024-01-15T10:45:00.000Z",
+      "totalItems": 45,
+      "totalCost": 38456.78,
+      "categories": [
+        {
+          "code": "710",
+          "name": "FRAME COMPONENTS",
+          "items": [
+            {
+              "partId": "T2-LEG-ADJ-34-37",
+              "name": "ADJUSTABLE HEIGHT LEGS 34\"-37\"",
+              "quantity": 4,
+              "unitPrice": 125.50,
+              "totalPrice": 502.00,
+              "type": "MANUFACTURED",
+              "leadTime": 5
+            },
+            {
+              "partId": "T2-CROSS-BRACE-72",
+              "name": "72\" CROSS BRACING KIT",
+              "quantity": 1,
+              "unitPrice": 89.00,
+              "totalPrice": 89.00,
+              "type": "PURCHASED",
+              "vendor": "Industrial Supply Co",
+              "leadTime": 3
+            }
+          ]
+        },
+        {
+          "code": "715",
+          "name": "BASIN COMPONENTS",
+          "items": [
+            {
+              "partId": "T2-EDR-21X18",
+              "name": "E-DRAIN BASIN 21\" X 18\"",
+              "quantity": 1,
+              "unitPrice": 1250.00,
+              "totalPrice": 1250.00,
+              "type": "MANUFACTURED",
+              "leadTime": 10
+            },
+            {
+              "partId": "T2-ESK-21X18",
+              "name": "E-SINK BASIN 21\" X 18\"",
+              "quantity": 1,
+              "unitPrice": 1350.00,
+              "totalPrice": 1350.00,
+              "type": "MANUFACTURED",
+              "leadTime": 10
+            }
+          ]
+        },
+        {
+          "code": "719",
+          "name": "CONTROL BOX",
+          "items": [
+            {
+              "partId": "T2-CTRL-EDR1-ESK1",
+              "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+              "quantity": 1,
+              "components": [
+                {
+                  "partId": "Q13404-02",
+                  "name": "CONTROL BOX ENCLOSURE FOR UP TO DUAL BASIN SINKS",
+                  "quantity": 1,
+                  "unitPrice": 245.00
+                },
+                {
+                  "partId": "PW-105R3-06",
+                  "name": "RIGHT ANGLE POWER CABLE - SJT",
+                  "quantity": 1,
+                  "unitPrice": 18.50
+                },
+                {
+                  "partId": "4995",
+                  "name": "SILICONE RJ-45 DUST COVER INSERTS - 10 PACK",
+                  "quantity": 1,
+                  "unitPrice": 12.00
+                },
+                {
+                  "partId": "2926438",
+                  "name": "ASSEMBLED SHIELDED ROUND CABLE CONNECTION DSUB PIN STRIP",
+                  "quantity": 1,
+                  "unitPrice": 45.00
+                },
+                {
+                  "partId": "2302081",
+                  "name": "CABLE ASSY DB15 SHIELDED GRAY 2M",
+                  "quantity": 1,
+                  "unitPrice": 38.00
+                },
+                {
+                  "partId": "320X12539X",
+                  "name": "DSUB GENDER CHANGER DB15F DB15F",
+                  "quantity": 1,
+                  "unitPrice": 8.50
+                },
+                {
+                  "partId": "T2-M8-3P-MP-STR-0.61M",
+                  "name": "CBL 3POS MALE TO WIRE 4.92'",
+                  "quantity": 15,
+                  "unitPrice": 12.00
+                },
+                {
+                  "partId": "HDR-150-24",
+                  "name": "DIN RAIL POWER SUPPLIES 150W",
+                  "quantity": 1,
+                  "unitPrice": 125.00
+                },
+                {
+                  "partId": "T2-ESINK-BOARD-R3",
+                  "name": "ESINK CONTROL BOARD",
+                  "quantity": 1,
+                  "unitPrice": 285.00
+                },
+                {
+                  "partId": "T2-EDRAIN-BOARD-R3",
+                  "name": "EDRAIN W/ OVERFLOW CONTROL BOARD",
+                  "quantity": 1,
+                  "unitPrice": 295.00
+                },
+                {
+                  "partId": "T2-CTRL-BOX-BRKT",
+                  "name": "BRACKET FOR ENCLOSURE WITH HOOKS",
+                  "quantity": 1,
+                  "unitPrice": 35.00
+                },
+                {
+                  "partId": "1201578",
+                  "name": "DINRAIL ADAPTER UNIVERSAL",
+                  "quantity": 4,
+                  "unitPrice": 3.50
+                },
+                {
+                  "partId": "E7512-L-BLUE",
+                  "name": "WIRE FERRULE, SINGLE WIRE, 20 AWG",
+                  "quantity": 5,
+                  "unitPrice": 0.25
+                },
+                {
+                  "partId": "M8-DUST-CAP-M",
+                  "name": "M8 INNER THREAD COVER",
+                  "quantity": 4,
+                  "unitPrice": 1.50
+                },
+                {
+                  "partId": "T2-RJ45-SPLITTER",
+                  "name": "STRAIGHT THROUGH RJ45 SPLITTER",
+                  "quantity": 1,
+                  "unitPrice": 15.00
+                },
+                {
+                  "partId": "T-ESOM-F4-01",
+                  "name": "MCU BOARD",
+                  "quantity": 2,
+                  "unitPrice": 125.00
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    
+    "manufacturing": {
+      "assignedTo": {
+        "assembler": {
+          "id": "user_456",
+          "name": "Mike Johnson",
+          "assignedAt": "2024-01-15T11:00:00.000Z"
+        },
+        "qualityControl": {
+          "id": "user_789",
+          "name": "Sarah Williams",
+          "assignedAt": "2024-01-15T11:00:00.000Z"
+        }
+      },
+      "workInstructions": [
+        {
+          "id": "wi_001",
+          "step": 1,
+          "title": "Frame Assembly",
+          "description": "Assemble base frame with adjustable legs",
+          "estimatedTime": 45,
+          "status": "COMPLETED",
+          "completedAt": "2024-01-16T09:30:00.000Z",
+          "completedBy": "user_456"
+        },
+        {
+          "id": "wi_002",
+          "step": 2,
+          "title": "Basin Installation",
+          "description": "Install E-Drain and E-Sink basins",
+          "estimatedTime": 60,
+          "status": "IN_PROGRESS",
+          "startedAt": "2024-01-16T10:00:00.000Z"
+        }
+      ],
+      "qualityControl": {
+        "template": "QC-TEMPLATE-DUAL-BASIN-V2",
+        "checks": [
+          {
+            "id": "qc_001",
+            "name": "Frame Level Check",
+            "status": "PASSED",
+            "checkedAt": "2024-01-16T09:45:00.000Z",
+            "checkedBy": "user_789",
+            "measurements": {
+              "frontToBack": "0.1°",
+              "leftToRight": "0.05°"
+            }
+          },
+          {
+            "id": "qc_002",
+            "name": "Electrical Safety Test",
+            "status": "PENDING",
+            "requiredTools": ["Multimeter", "Ground tester"]
+          }
+        ]
+      }
+    },
+    
+    "logistics": {
+      "shipping": {
+        "method": "FREIGHT",
+        "carrier": "XYZ Logistics",
+        "estimatedWeight": 450,
+        "weightUnit": "lbs",
+        "dimensions": {
+          "length": 78,
+          "width": 30,
+          "height": 42,
+          "unit": "inches"
+        },
+        "specialInstructions": "Fragile - Electronic Components",
+        "insurance": true,
+        "trackingNumber": null
+      },
+      "packaging": {
+        "type": "CUSTOM_CRATE",
+        "materials": [
+          "Wooden crate",
+          "Foam padding",
+          "Anti-static wrap for electronics"
+        ]
+      }
+    },
+    
+    "financials": {
+      "costs": {
+        "materials": 38456.78,
+        "labor": 3200.00,
+        "overhead": 1600.00,
+        "shipping": 856.12,
+        "totalCost": 44112.90,
+        "margin": 0.035,
+        "sellingPrice": 45678.90
+      },
+      "invoices": [
+        {
+          "number": "INV-2024-001234",
+          "date": "2024-02-15T00:00:00.000Z",
+          "amount": 45678.90,
+          "status": "PENDING"
+        }
+      ]
+    },
+    
+    "timeline": {
+      "events": [
+        {
+          "timestamp": "2024-01-15T10:30:00.000Z",
+          "event": "Order Created",
+          "user": "user_123",
+          "details": "Initial order submission"
+        },
+        {
+          "timestamp": "2024-01-15T10:45:00.000Z",
+          "event": "BOM Generated",
+          "user": "system",
+          "details": "Automatic BOM generation completed"
+        },
+        {
+          "timestamp": "2024-01-15T11:00:00.000Z",
+          "event": "Order Assigned",
+          "user": "user_234",
+          "details": "Assigned to production team"
+        },
+        {
+          "timestamp": "2024-01-16T08:00:00.000Z",
+          "event": "Production Started",
+          "user": "user_456",
+          "details": "Frame assembly begun"
+        }
+      ]
+    },
+    
+    "compliance": {
+      "standards": [
+        "ISO 13485:2016",
+        "NSF/ANSI 2",
+        "UL 61010-1"
+      ],
+      "certifications": {
+        "required": ["CE Mark", "FDA Registration"],
+        "completed": ["UL Listing"],
+        "pending": ["CE Mark"]
+      },
+      "documentation": [
+        {
+          "type": "Test Report",
+          "number": "TR-2024-0156",
+          "date": "2024-01-10T00:00:00.000Z"
+        }
+      ]
+    }
+  }
+}

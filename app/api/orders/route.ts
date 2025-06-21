@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { generateBOMForOrder } from '@/lib/bomService.native'
+import { generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
 
 const prisma = new PrismaClient()
 
@@ -163,6 +164,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
         { status: 401 }
+      )
+    }
+
+    // Check if user has permission to create orders
+    if (user.role !== 'ADMIN' && user.role !== 'PRODUCTION_COORDINATOR') {
+      return NextResponse.json(
+        { success: false, message: 'Insufficient permissions to create orders. Only ADMIN and PRODUCTION_COORDINATOR roles can create orders.' },
+        { status: 403 }
       )
     }
     
@@ -532,6 +541,29 @@ export async function POST(request: NextRequest) {
         notes: `Order created with ${sinkSelection.buildNumbers.length} sinks`
       }
     })
+
+    // Generate single source of truth JSON (async, non-blocking)
+    try {
+      console.log('\n🏗️ Initiating single source of truth JSON generation...')
+      console.log(`📋 Order ID: ${order.id}`)
+      console.log(`📦 PO Number: ${customerInfo.poNumber}`)
+      console.log(`🏢 Customer: ${customerInfo.customerName}`)
+      console.log(`🔢 Build Numbers: ${sinkSelection.buildNumbers.join(', ')}`)
+      
+      const singleSourceOfTruthPath = await generateOrderSingleSourceOfTruth(order.id)
+      
+      console.log('🎯 SINGLE SOURCE OF TRUTH INTEGRATION COMPLETE')
+      console.log(`✅ Order ${order.id} now has complete JSON reference`)
+      console.log(`📁 Available for downstream modules at: ${singleSourceOfTruthPath}`)
+    } catch (singleSourceError) {
+      console.error('\n❌ WARNING: Single Source of Truth generation failed')
+      console.error(`📋 Order ID: ${order.id}`)
+      console.error(`⚠️ Error: ${singleSourceError.message}`)
+      console.error('📝 Order creation will continue, but JSON reference is not available')
+      console.error('💡 Administrators can regenerate using the API endpoint later')
+      // Don't fail the order creation if JSON generation fails
+      // Log the error for monitoring but continue with order creation
+    }
 
     return NextResponse.json({
       success: true,

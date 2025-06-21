@@ -173,91 +173,181 @@ async function addControlBoxWithDynamicComponents(
   switch (controlBoxId) {
     case 'T2-CTRL-EDR1':
       dynamicComponents = [
-        ...baseComponents,
-        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 1 },
-        { partId: 'T-ESOM-F4-01-EDR', quantity: 1 },
-        { partId: '52-67001-7', quantity: 1 },
-        { partId: 'DC11.0031.201', quantity: 1 },
-        { partId: 'T4072014031-001', quantity: 1 }
+        { partId: 'Q13404-02', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 5 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 2 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 4 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 2 },
+        { partId: 'T-ESOM-F4-01', quantity: 2 },
+        { partId: 'T2-BSN-OHL-BTN', quantity: 1 }
       ]
       break
       
     case 'T2-CTRL-ESK1':
       dynamicComponents = [
-        ...baseComponents,
-        { partId: 'T2-ESINK-BOARD-R3', quantity: 1 },
-        { partId: 'T-ESOM-F4-01-ESK', quantity: 1 },
-        { partId: '52-67001-7', quantity: 1 },
-        { partId: 'DC11.0031.201', quantity: 1 },
-        { partId: 'T4072014031-001', quantity: 1 }
+        { partId: 'Q13404-02', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 1 },
+        { partId: '2302081', quantity: 1 },
+        { partId: '320X12539X', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 10 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 1 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 4 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 2 },
+        { partId: 'T2-RJ45-SPLITTER', quantity: 1 },
+        { partId: 'T-ESOM-F4-01', quantity: 1 }
       ]
       break
       
     case 'T2-CTRL-EDR1-ESK1':
       dynamicComponents = [
-        ...baseComponents,
-        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 1 },
+        { partId: 'Q13404-02', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 1 },
+        { partId: '2302081', quantity: 1 },
+        { partId: '320X12539X', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 15 },
+        { partId: 'HDR-150-24', quantity: 1 },
         { partId: 'T2-ESINK-BOARD-R3', quantity: 1 },
-        { partId: 'T-ESOM-F4-01-EDR', quantity: 1 },
-        { partId: 'T-ESOM-F4-01-ESK', quantity: 1 },
-        { partId: '52-67001-7', quantity: 2 },
-        { partId: 'DC11.0031.201', quantity: 2 },
-        { partId: 'T4072014031-001', quantity: 2 }
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 1 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 4 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 4 },
+        { partId: 'T2-RJ45-SPLITTER', quantity: 1 },
+        { partId: 'T-ESOM-F4-01', quantity: 2 }
       ]
       break
       
     case 'T2-CTRL-EDR2':
+      dynamicComponents = [
+        { partId: 'Q13404-02', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 10 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 3 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 6 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 4 },
+        { partId: 'T-ESOM-F4-01', quantity: 3 },
+        { partId: 'T2-BSN-OHL-BTN', quantity: 1 }
+      ]
+      break
+      
     case 'T2-CTRL-ESK2':
+      dynamicComponents = [
+        { partId: 'Q13404-02', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 2 },
+        { partId: '2302081', quantity: 2 },
+        { partId: '320X12539X', quantity: 2 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 20 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-ESINK-BOARD-R3', quantity: 2 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 4 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 5 },
+        { partId: 'T2-RJ45-SPLITTER', quantity: 1 },
+        { partId: 'MD-D237-1', quantity: 1 },
+        { partId: 'T-ESOM-F4-01', quantity: 2 },
+        { partId: 'N204-S01-BL-UD', quantity: 2 }
+      ]
+      break
+      
     case 'T2-CTRL-EDR1-ESK2':
+      dynamicComponents = [
+        { partId: 'Q13404-01', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 2 },
+        { partId: '2302081', quantity: 2 },
+        { partId: '320X12539X', quantity: 2 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 25 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-ESINK-BOARD-R3', quantity: 2 },
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 1 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 6 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 5 },
+        { partId: 'T2-RJ45-SPLITTER', quantity: 1 },
+        { partId: 'N204-S01-BL-UD', quantity: 2 },
+        { partId: 'MD-D237-1', quantity: 1 },
+        { partId: 'T-ESOM-F4-01', quantity: 3 }
+      ]
+      break
+      
     case 'T2-CTRL-EDR2-ESK1':
-      // For dual basin configurations, add bracket
-      dynamicComponents = [...baseComponents]
-      if (controlBoxId.includes('EDR')) {
-        const edrCount = controlBoxId.includes('EDR2') ? 2 : 1
-        dynamicComponents.push(
-          { partId: 'T2-EDRAIN-BOARD-R3', quantity: edrCount },
-          { partId: 'T-ESOM-F4-01-EDR', quantity: edrCount }
-        )
-      }
-      if (controlBoxId.includes('ESK')) {
-        const eskCount = controlBoxId.includes('ESK2') ? 2 : 1
-        dynamicComponents.push(
-          { partId: 'T2-ESINK-BOARD-R3', quantity: eskCount },
-          { partId: 'T-ESOM-F4-01-ESK', quantity: eskCount }
-        )
-      }
-      const totalBoards = (controlBoxId.match(/\d/g) || []).reduce((a, b) => parseInt(a.toString()) + parseInt(b), 0)
-      dynamicComponents.push(
-        { partId: '52-67001-7', quantity: totalBoards },
-        { partId: 'DC11.0031.201', quantity: totalBoards },
-        { partId: 'T4072014031-001', quantity: totalBoards },
-        { partId: 'T2-UPG-CTRL-BOX-BRKT', quantity: 1 }
-      )
+      dynamicComponents = [
+        { partId: 'Q13404-01', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 1 },
+        { partId: '2302081', quantity: 1 },
+        { partId: '320X12539X', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 20 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-ESINK-BOARD-R3', quantity: 1 },
+        { partId: 'T2-EDRAIN-BOARD-R3', quantity: 2 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 6 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 5 },
+        { partId: 'T-ESOM-F4-01', quantity: 3 }
+      ]
       break
       
     case 'T2-CTRL-EDR3':
-    case 'T2-CTRL-ESK3':
-      // For triple basin configurations
       dynamicComponents = [
-        ...baseComponents,
-        { partId: 'T2-UPG-CTRL-BOX-BRKT', quantity: 1 }
+        { partId: 'Q13404-01', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 15 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-ESINK-BOARD-R3', quantity: 3 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 6 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 5 },
+        { partId: 'T-ESOM-F4-01', quantity: 4 },
+        { partId: 'T2-BSN-OHL-BTN', quantity: 1 }
       ]
-      if (controlBoxId === 'T2-CTRL-EDR3') {
-        dynamicComponents.push(
-          { partId: 'T2-EDRAIN-BOARD-R3', quantity: 3 },
-          { partId: 'T-ESOM-F4-01-EDR', quantity: 3 }
-        )
-      } else {
-        dynamicComponents.push(
-          { partId: 'T2-ESINK-BOARD-R3', quantity: 3 },
-          { partId: 'T-ESOM-F4-01-ESK', quantity: 3 }
-        )
-      }
-      dynamicComponents.push(
-        { partId: '52-67001-7', quantity: 3 },
-        { partId: 'DC11.0031.201', quantity: 3 },
-        { partId: 'T4072014031-001', quantity: 3 }
-      )
+      break
+      
+    case 'T2-CTRL-ESK3':
+      dynamicComponents = [
+        { partId: 'Q13404-01', quantity: 1 },
+        { partId: 'PW-105R3-06', quantity: 1 },
+        { partId: '4995', quantity: 1 },
+        { partId: '2926438', quantity: 3 },
+        { partId: '2302081', quantity: 3 },
+        { partId: '320X12539X', quantity: 3 },
+        { partId: 'T2-M8-3P-MP-STR-0.61M', quantity: 30 },
+        { partId: 'HDR-150-24', quantity: 1 },
+        { partId: 'T2-ESINK-BOARD-R3', quantity: 3 },
+        { partId: 'T2-CTRL-BOX-BRKT', quantity: 1 },
+        { partId: '1201578', quantity: 6 },
+        { partId: 'E7512-L-BLUE', quantity: 5 },
+        { partId: 'M8-DUST-CAP-M', quantity: 5 },
+        { partId: 'T2-RJ45-SPLITTER', quantity: 2 },
+        { partId: 'N204-S01-BL-UD', quantity: 3 },
+        { partId: 'MD-D237-1', quantity: 1 },
+        { partId: 'T-ESOM-F4-01', quantity: 3 }
+      ]
       break
   }
 

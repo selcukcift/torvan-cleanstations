@@ -21,7 +21,9 @@ import {
   Droplets,
   Wrench,
   Grid3x3,
-  Edit
+  Edit,
+  Copy,
+  Download
 } from "lucide-react"
 import { nextJsApiClient } from '@/lib/api'
 import { useRouter } from 'next/navigation'
@@ -420,6 +422,12 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
         // Provide more specific error handling for 400 errors
         const errorMessage = error.response?.data?.message || 'Bad request - please check all required fields are filled correctly'
         setSubmitError(`Request failed (400): ${errorMessage}`)
+      } else if (error.response?.status === 403) {
+        console.error('🚨 403 Forbidden error:', error.response?.data)
+        
+        // Handle authorization errors
+        const errorMessage = error.response?.data?.message || 'Access denied - insufficient permissions'
+        setSubmitError(`Permission denied (403): ${errorMessage}`)
       } else {
         console.error('🚨 Non-validation error:', error.response?.data)
         console.error('🚨 Full error object:', error)
@@ -427,6 +435,157 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       }
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  // Generate comprehensive JSON for debugging/inspection
+  const generateOrderJSON = () => {
+    return {
+      order: {
+        id: orderId || `temp_${Date.now()}`,
+        orderNumber: `ORD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: isEditMode ? "DRAFT_UPDATED" : "DRAFT",
+        
+        customerInfo: {
+          customerName: customerInfo.customerName,
+          poNumber: customerInfo.poNumber,
+          projectName: customerInfo.projectName,
+          salesPerson: customerInfo.salesPerson,
+          wantDate: customerInfo.wantDate,
+          language: customerInfo.language,
+          notes: customerInfo.notes,
+          poDocuments: customerInfo.poDocuments?.map((doc, index) => ({
+            id: `doc_${index}`,
+            fileName: doc.name,
+            fileSize: doc.size,
+            fileType: doc.type,
+            uploadedAt: new Date().toISOString()
+          })) || [],
+          sinkDrawings: customerInfo.sinkDrawings?.map((doc, index) => ({
+            id: `drawing_${index}`,
+            fileName: doc.name,
+            fileSize: doc.size,
+            fileType: doc.type,
+            uploadedAt: new Date().toISOString()
+          })) || []
+        },
+        
+        sinkSelection: {
+          sinkFamily: sinkSelection.sinkFamily || "MDRD",
+          sinkModelId: sinkSelection.sinkModelId,
+          sinkModelName: sinkSelection.sinkModelId === "T2-B1" ? "Single Basin CleanStation" :
+                         sinkSelection.sinkModelId === "T2-B2" ? "Dual Basin CleanStation" :
+                         sinkSelection.sinkModelId === "T2-B3" ? "Triple Basin CleanStation" : "Unknown",
+          quantity: sinkSelection.quantity,
+          buildNumbers: sinkSelection.buildNumbers
+        },
+        
+        sinkConfigurations: sinkSelection.buildNumbers.map(buildNumber => {
+          const config = configurations[buildNumber]
+          if (!config) return null
+          
+          return {
+            buildNumber,
+            sinkModelId: config.sinkModelId,
+            width: config.width,
+            length: config.length,
+            workflowDirection: config.workflowDirection || "LEFT_TO_RIGHT",
+            
+            structuralComponents: {
+              legsTypeId: config.legsTypeId,
+              legsTypeName: "Height Adjustable Legs", // You could map this from actual data
+              feetTypeId: config.feetTypeId,
+              feetTypeName: "Leveling Casters" // You could map this from actual data
+            },
+            
+            pegboardConfiguration: config.pegboard ? {
+              pegboard: config.pegboard,
+              pegboardTypeId: config.pegboardTypeId,
+              pegboardColorId: config.pegboardColorId,
+              pegboardColorName: "Color-safe+ Option"
+            } : { pegboard: false },
+            
+            drawersAndCompartments: config.drawersAndCompartments?.map(drawer => ({
+              id: drawer,
+              name: drawer,
+              quantity: 1
+            })) || [],
+            
+            basins: config.basins?.map((basin, index) => ({
+              position: index + 1,
+              basinTypeId: basin.basinTypeId,
+              basinType: basin.basinType,
+              basinSizePartNumber: basin.basinSizePartNumber,
+              basinSizeName: basin.basinSizePartNumber,
+              customWidth: basin.customWidth,
+              customLength: basin.customLength,
+              customDepth: basin.customDepth,
+              addonIds: basin.addonIds || [],
+              addons: basin.addonIds?.map(addonId => ({
+                id: addonId,
+                name: addonId,
+                quantity: 1
+              })) || []
+            })) || [],
+            
+            faucets: config.faucets?.map((faucet, index) => ({
+              id: `faucet_${index}`,
+              faucetTypeId: faucet.faucetTypeId,
+              faucetTypeName: faucet.faucetTypeId,
+              placement: faucet.placement,
+              quantity: faucet.quantity || 1
+            })) || [],
+            
+            sprayers: config.sprayers?.map((sprayer, index) => ({
+              id: `sprayer_${index}`,
+              sprayerTypeId: sprayer.sprayerTypeId,
+              sprayerTypeName: sprayer.sprayerTypeId,
+              location: sprayer.location
+            })) || [],
+            
+            controlBoxId: autoControlBoxes[buildNumber]?.controlBoxId || "AUTO_DETERMINED",
+            controlBoxName: autoControlBoxes[buildNumber]?.name || "Auto-determined Control Box"
+          }
+        }).filter(Boolean),
+        
+        accessories: Object.entries(accessories).flatMap(([buildNumber, buildAccessories]) => 
+          (buildAccessories as SelectedAccessory[]).map(accessory => ({
+            assemblyId: accessory.assemblyId,
+            accessoryId: accessory.accessoryId,
+            name: accessory.name,
+            partNumber: accessory.partNumber,
+            quantity: accessory.quantity,
+            buildNumbers: accessory.buildNumbers,
+            category: "ACCESSORY"
+          }))
+        ),
+        
+        bomPreview: bomPreviewData || null,
+        
+        autoControlBoxes,
+        
+        validation: {
+          status: "PENDING",
+          messages: [],
+          businessRules: {
+            sinkLengthValid: true,
+            basinCountMatches: true,
+            faucetPlacementValid: true,
+            uniqueBuildNumbers: true,
+            requiredFieldsComplete: true
+          }
+        },
+        
+        metadata: {
+          isEditMode,
+          orderId,
+          generatedAt: new Date().toISOString(),
+          totalAccessoriesCount,
+          systemVersion: "1.0.0"
+        }
+      }
     }
   }
 
@@ -449,10 +608,11 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="bom">Bill of Materials</TabsTrigger>
+          <TabsTrigger value="json" className="bg-yellow-100 text-yellow-800">🔍 JSON Debug</TabsTrigger>
           <TabsTrigger value="submit">Submit Order</TabsTrigger>
         </TabsList>
 
@@ -751,6 +911,68 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
             accessories={accessories}
             showDebugInfo={false}
           />
+        </TabsContent>
+
+        {/* JSON Debug Tab - TEMPORARY FOR INSPECTION */}
+        <TabsContent value="json" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                JSON Debug Inspector
+                <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
+                  Temporary - Development Only
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Complete order data structure for inspection and debugging purposes.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const jsonData = generateOrderJSON();
+                    navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2));
+                    // You could add a toast notification here
+                    alert('JSON copied to clipboard!');
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Copy className="h-4 w-4" />
+                  Copy JSON
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const jsonData = generateOrderJSON();
+                    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `order-debug-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Download JSON
+                </Button>
+              </div>
+              
+              <div className="border rounded-lg p-4 bg-slate-50">
+                <pre className="text-xs overflow-auto max-h-96 whitespace-pre-wrap">
+                  {JSON.stringify(generateOrderJSON(), null, 2)}
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Submit Tab */}

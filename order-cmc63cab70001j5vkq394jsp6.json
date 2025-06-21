@@ -1,0 +1,262 @@
+{
+  "order": {
+    "id": "cmc63cab70001j5vkq394jsp6",
+    "orderNumber": "ORD-2025-4587",
+    "createdAt": "2025-06-21T14:23:27.000Z",
+    "updatedAt": "2025-06-21T14:23:27.000Z",
+    "status": "ORDER_CREATED",
+    "priority": "NORMAL",
+    
+    "customerInfo": {
+      "customerName": "Acme",
+      "poNumber": "4587",
+      "projectName": "VCx",
+      "salesPerson": "Sal",
+      "wantDate": "2025-07-02T00:00:00.000Z",
+      "language": "FR",
+      "notes": "333",
+      "poDocuments": [],
+      "sinkDrawings": []
+    },
+    
+    "sinkSelection": {
+      "sinkFamily": "MDRD",
+      "sinkModelId": "T2-B2",
+      "sinkModelName": "Dual Basin CleanStation",
+      "quantity": 1,
+      "buildNumbers": ["2222"]
+    },
+    
+    "sinkConfigurations": [
+      {
+        "buildNumber": "2222",
+        "sinkModelId": "T2-B2",
+        "width": 48,
+        "length": 90,
+        "workflowDirection": "LEFT_TO_RIGHT",
+        
+        "structuralComponents": {
+          "legsTypeId": "T2-DL14-KIT",
+          "legsTypeName": "DL14 Height Adjustable Legs Kit",
+          "feetTypeId": "T2-LEVELING-CASTOR-475",
+          "feetTypeName": "Leveling Casters 475lbs"
+        },
+        
+        "pegboardConfiguration": {
+          "pegboard": true,
+          "pegboardTypeId": "SOLID",
+          "pegboardColorId": null,
+          "pegboardColorName": "Standard Solid Pegboard"
+        },
+        
+        "drawersAndCompartments": [
+          {
+            "id": "T2-OA-PO-SHLF-1212",
+            "name": "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)",
+            "quantity": 1
+          }
+        ],
+        
+        "basins": [
+          {
+            "position": 1,
+            "basinTypeId": "E_DRAIN",
+            "basinType": "E-Drain Basin",
+            "basinKitId": "T2-BSN-EDR-KIT",
+            "basinSizePartNumber": "T2-ADW-BASIN24X20X10",
+            "basinSizeName": "24\" x 20\" x 10\" ADW Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": ["T2-OA-BASIN-LIGHT-EDR-KIT"],
+            "addons": [
+              {
+                "id": "T2-OA-BASIN-LIGHT-EDR-KIT",
+                "name": "Basin Light Kit for E-Drain",
+                "quantity": 1
+              }
+            ]
+          },
+          {
+            "position": 2,
+            "basinTypeId": "E_SINK",
+            "basinType": "E-Sink Basin",
+            "basinKitId": "T2-BSN-ESK-KIT",
+            "basinSizePartNumber": "T2-ADW-BASIN24X20X10",
+            "basinSizeName": "24\" x 20\" x 10\" ADW Basin",
+            "customWidth": null,
+            "customLength": null,
+            "customDepth": null,
+            "addonIds": ["T2-OA-BASIN-LIGHT-ESK-KIT"],
+            "addons": [
+              {
+                "id": "T2-OA-BASIN-LIGHT-ESK-KIT",
+                "name": "Basin Light Kit for E-Sink",
+                "quantity": 1
+              }
+            ]
+          }
+        ],
+        
+        "faucets": [
+          {
+            "id": "faucet_001",
+            "faucetTypeId": "T2-OA-STD-FAUCET-WB-KIT",
+            "faucetTypeName": "Standard Faucet with Water Break Kit",
+            "placement": "BASIN_1",
+            "quantity": 1
+          }
+        ],
+        
+        "sprayers": [
+          {
+            "id": "sprayer_001",
+            "sprayerTypeId": "T2-OA-WATERGUN-TURRET-KIT",
+            "sprayerTypeName": "Water Gun Turret Kit",
+            "location": "RIGHT_SIDE",
+            "hasSpray": true
+          }
+        ],
+        
+        "controlBoxId": "T2-CTRL-EDR1-ESK1",
+        "controlBoxName": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS"
+      }
+    ],
+    
+    "accessories": [
+      {
+        "assemblyId": "T-OA-BINRAIL-36-KIT",
+        "accessoryId": "T-OA-BINRAIL-36-KIT",
+        "name": "36\" Bin Rail Kit",
+        "partNumber": "T-OA-BINRAIL-36-KIT",
+        "quantity": 5,
+        "buildNumbers": ["2222"],
+        "category": "ORGANIZATION"
+      }
+    ],
+    
+    "bomConfiguration": {
+      "controlBoxComponents": [
+        {
+          "partNumber": "Q13404-02",
+          "name": "CONTROL BOX ENCLOSURE FOR UP TO DUAL BASIN SINKS",
+          "quantity": 1
+        },
+        {
+          "partNumber": "PW-105R3-06",
+          "name": "RIGHT ANGLE POWER CABLE - SJT",
+          "quantity": 1
+        },
+        {
+          "partNumber": "4995",
+          "name": "SILICONE RJ-45 DUST COVER INSERTS - 10 PACK",
+          "quantity": 1
+        },
+        {
+          "partNumber": "2926438",
+          "name": "ASSEMBLED SHIELDED ROUND CABLE CONNECTION DSUB PIN STRIP",
+          "quantity": 1
+        },
+        {
+          "partNumber": "2302081",
+          "name": "CABLE ASSY DB15 SHIELDED GRAY 2M",
+          "quantity": 1
+        },
+        {
+          "partNumber": "320X12539X",
+          "name": "DSUB GENDER CHANGER DB15F DB15F",
+          "quantity": 1
+        },
+        {
+          "partNumber": "T2-M8-3P-MP-STR-0.61M",
+          "name": "CBL 3POS MALE TO WIRE 4.92'",
+          "quantity": 15
+        },
+        {
+          "partNumber": "HDR-150-24",
+          "name": "DIN RAIL POWER SUPPLIES 150W",
+          "quantity": 1
+        },
+        {
+          "partNumber": "T2-ESINK-BOARD-R3",
+          "name": "ESINK CONTROL BOARD",
+          "quantity": 1
+        },
+        {
+          "partNumber": "T2-EDRAIN-BOARD-R3",
+          "name": "EDRAIN W/ OVERFLOW CONTROL BOARD",
+          "quantity": 1
+        },
+        {
+          "partNumber": "T2-CTRL-BOX-BRKT",
+          "name": "BRACKET FOR ENCLOSURE WITH HOOKS",
+          "quantity": 1
+        },
+        {
+          "partNumber": "1201578",
+          "name": "DINRAIL ADAPTER UNIVERSAL",
+          "quantity": 4
+        },
+        {
+          "partNumber": "E7512-L-BLUE",
+          "name": "WIRE FERRULE, SINGLE WIRE, 20 AWG",
+          "quantity": 5
+        },
+        {
+          "partNumber": "M8-DUST-CAP-M",
+          "name": "M8 INNER THREAD COVER",
+          "quantity": 4
+        },
+        {
+          "partNumber": "T2-RJ45-SPLITTER",
+          "name": "STRAIGHT THROUGH RJ45 SPLITTER",
+          "quantity": 1
+        },
+        {
+          "partNumber": "T-ESOM-F4-01",
+          "name": "MCU BOARD",
+          "quantity": 2
+        }
+      ]
+    },
+    
+    "summary": {
+      "totalBasins": 2,
+      "basinTypes": ["E_DRAIN", "E_SINK"],
+      "hasPegboard": true,
+      "hasDrawers": true,
+      "faucetCount": 1,
+      "sprayerCount": 1,
+      "accessoryCount": 5,
+      "estimatedLeadTime": "8-10 weeks",
+      "specialFeatures": [
+        "Basin lighting on both basins",
+        "Water gun turret sprayer system",
+        "Pull-out shelf storage",
+        "Bin rail organization system",
+        "Electronic drain control",
+        "Electronic sink control"
+      ]
+    },
+    
+    "manufacturing": {
+      "assignedTo": null,
+      "status": "NOT_STARTED",
+      "bomGenerated": false,
+      "workInstructions": [],
+      "qualityControl": {
+        "template": null,
+        "checks": []
+      }
+    },
+    
+    "metadata": {
+      "createdBy": "cmc5gmdq70001j5xkj59vkd3y",
+      "lastModifiedBy": "cmc5gmdq70001j5xkj59vkd3y",
+      "version": 1,
+      "systemVersion": "1.0.0",
+      "extractedAt": "2025-01-21T15:30:00.000Z",
+      "source": "Database Export"
+    }
+  }
+}
