@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { generateBOMForOrder } from '@/lib/bomService.native'
 import { generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
-
-const prisma = new PrismaClient()
 
 // Validation schemas
 const CustomerInfoSchema = z.object({
@@ -612,8 +610,23 @@ export async function GET(request: NextRequest) {
     }
     
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    
+    // Validate and parse query parameters with better error handling
+    let page: number, limit: number
+    try {
+      page = parseInt(searchParams.get('page') || '1')
+      limit = parseInt(searchParams.get('limit') || '10')
+      
+      // Validate ranges
+      if (page < 1) page = 1
+      if (limit < 1 || limit > 1000) limit = 10 // Reasonable limits
+    } catch (parseError) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid page or limit parameters' },
+        { status: 400 }
+      )
+    }
+    
     const status = searchParams.get('status')
     const poNumber = searchParams.get('poNumber')
     const customerName = searchParams.get('customerName')
@@ -621,6 +634,29 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get('dateFrom')
     const dateTo = searchParams.get('dateTo')
     const dateType = searchParams.get('dateType') || 'createdAt' // createdAt or wantDate
+    
+    // Validate date parameters if provided
+    if (dateFrom) {
+      try {
+        new Date(dateFrom).toISOString()
+      } catch {
+        return NextResponse.json(
+          { success: false, message: 'Invalid dateFrom parameter' },
+          { status: 400 }
+        )
+      }
+    }
+    
+    if (dateTo) {
+      try {
+        new Date(dateTo).toISOString()
+      } catch {
+        return NextResponse.json(
+          { success: false, message: 'Invalid dateTo parameter' },
+          { status: 400 }
+        )
+      }
+    }
 
     let where: any = {}
 
@@ -764,11 +800,13 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error fetching orders:', error)
+    console.error('Request URL:', request.url)
     
     if (error instanceof Error) {
+      console.error('Error details:', error.stack)
       return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 400 }
+        { success: false, message: error.message, error: error.message },
+        { status: 500 } // Changed from 400 to 500 for server errors
       )
     }
 

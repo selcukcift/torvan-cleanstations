@@ -8,9 +8,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { 
   AlertCircle,
   Loader2,
-  Package
+  Package,
+  FileDown
 } from "lucide-react"
 import { BOMViewer } from "../BOMViewer"
+import { ProcurementActionsPanel } from "../../procurement/ProcurementActionsPanel"
 
 export interface BOMData {
   bom?: {
@@ -50,6 +52,13 @@ export interface BOMDisplayProps {
   configurations: Record<string, any>
   accessories: Record<string, any>
   showDebugInfo?: boolean
+  showProcurementActions?: boolean
+  orderId?: string
+  orderStatus?: string
+  onStatusChange?: () => void
+  onExportPDF?: () => void
+  exportingPDF?: boolean
+  isEditMode?: boolean
 }
 
 export function BOMDisplay({ 
@@ -61,8 +70,84 @@ export function BOMDisplay({
   sinkSelection,
   configurations,
   accessories,
-  showDebugInfo = false
+  showDebugInfo = false,
+  showProcurementActions = false,
+  orderId,
+  orderStatus,
+  onStatusChange,
+  onExportPDF,
+  exportingPDF = false,
+  isEditMode = false
 }: BOMDisplayProps) {
+  // Part number patterns for procurement detection
+  const LEGS_PATTERNS = [
+    "T2-DL27-KIT",
+    "T2-DL14-KIT", 
+    "T2-LC1-KIT",
+    "T2-DL27-FH-KIT",
+    "T2-DL14-FH-KIT",
+  ]
+
+  const FEET_PATTERNS = [
+    "T2-LEVELING-CASTOR-475",
+    "T2-SEISMIC-FEET",
+  ]
+
+  // Extract procurement items from BOM data
+  const extractProcurementItems = () => {
+    if (!bomData || !showProcurementActions) return []
+
+    const items: Array<{
+      id: string
+      partNumber: string
+      partName: string
+      quantity: number
+      category: "LEGS" | "FEET"
+    }> = []
+
+    const searchBOMItems = (bomItems: any[]) => {
+      bomItems?.forEach(item => {
+        const partNumber = item.id || item.assemblyId || item.partNumber || item.partIdOrAssemblyId || ""
+        const isLeg = LEGS_PATTERNS.includes(partNumber)
+        const isFoot = FEET_PATTERNS.includes(partNumber)
+        
+        if (isLeg || isFoot) {
+          items.push({
+            id: item.id || partNumber,
+            partNumber,
+            partName: item.name || item.description || partNumber,
+            quantity: item.quantity || 1,
+            category: isLeg ? "LEGS" : "FEET"
+          })
+        }
+        
+        // Recursively search children
+        if (item.children && item.children.length > 0) {
+          searchBOMItems(item.children)
+        }
+        if (item.subItems && item.subItems.length > 0) {
+          searchBOMItems(item.subItems)
+        }
+      })
+    }
+
+    // Handle different BOM data structures
+    if (bomData.bom?.hierarchical) {
+      searchBOMItems(bomData.bom.hierarchical)
+    } else if (bomData.buildBOMs) {
+      // Multi-build order
+      Object.values(bomData.buildBOMs).forEach((buildBom: any) => {
+        if (buildBom.hierarchical) {
+          searchBOMItems(buildBom.hierarchical)
+        }
+      })
+    }
+
+    return items
+  }
+
+  const procurementItems = extractProcurementItems()
+
   if (isLoading) {
     return (
       <Card>
@@ -118,6 +203,22 @@ export function BOMDisplay({
             <Badge variant="outline" className="bg-blue-50 text-blue-700">
               {Object.keys(bomData.buildBOMs).length} Build{Object.keys(bomData.buildBOMs).length !== 1 ? 's' : ''}
             </Badge>
+            {onExportPDF && (
+              <Button 
+                onClick={onExportPDF} 
+                variant="outline" 
+                size="sm"
+                disabled={exportingPDF}
+                className="flex items-center gap-2"
+              >
+                {exportingPDF ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FileDown className="w-4 h-4" />
+                )}
+                {exportingPDF ? 'Exporting...' : 'Export PDF'}
+              </Button>
+            )}
             {onRetry && (
               <Button onClick={onRetry} variant="outline" size="sm">
                 Refresh
@@ -150,6 +251,8 @@ export function BOMDisplay({
                 }}
                 customerInfo={customerInfo}
                 showDebugInfo={showDebugInfo}
+                showProcurementActions={showProcurementActions}
+                hideHeader={true}
               />
             </CardContent>
           </Card>
@@ -161,11 +264,37 @@ export function BOMDisplay({
   // Single Build Display
   return (
     <div className="space-y-4">
+      {/* Procurement Actions Panel */}
+      {showProcurementActions && orderId && orderStatus && (
+        <ProcurementActionsPanel
+          orderId={orderId}
+          orderStatus={orderStatus}
+          procurementItems={procurementItems}
+          onStatusChange={onStatusChange}
+        />
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-medium">Bill of Materials</h3>
         </div>
         <div className="flex items-center gap-2">
+          {onExportPDF && (
+            <Button 
+              onClick={onExportPDF} 
+              variant="outline" 
+              size="sm"
+              disabled={exportingPDF}
+              className="flex items-center gap-2"
+            >
+              {exportingPDF ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileDown className="w-4 h-4" />
+              )}
+              {exportingPDF ? 'Exporting...' : 'Export PDF'}
+            </Button>
+          )}
           {onRetry && (
             <Button onClick={onRetry} variant="outline" size="sm">
               Refresh
@@ -184,6 +313,8 @@ export function BOMDisplay({
         }}
         customerInfo={customerInfo}
         showDebugInfo={showDebugInfo}
+        showProcurementActions={showProcurementActions}
+        hideHeader={true}
       />
     </div>
   )

@@ -72,12 +72,12 @@ export async function GET(request: NextRequest) {
 
     // Group templates by formName and product family to show version history
     const templateGroups = templates.reduce((groups, template) => {
-      const key = `${template.formName}|${template.appliesToProductFamily || 'generic'}`;
+      const key = `${(template as any).formName}|${(template as any).appliesToProductFamily || 'generic'}`;
       if (!groups[key]) {
         groups[key] = {
-          formName: template.formName,
-          formType: template.formType,
-          productFamily: template.appliesToProductFamily,
+          formName: (template as any).formName,
+          formType: (template as any).formType,
+          productFamily: (template as any).appliesToProductFamily,
           activeVersion: null,
           versions: []
         };

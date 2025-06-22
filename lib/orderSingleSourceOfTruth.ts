@@ -45,7 +45,7 @@ export async function generateOrderSingleSourceOfTruth(orderId: string): Promise
         sinkConfigurations: true,
         faucetConfigurations: true,
         sprayerConfigurations: true,
-        accessoryConfigurations: true,
+        selectedAccessories: true,
         createdBy: true
       }
     })
@@ -163,7 +163,7 @@ function buildOrderConfiguration(order: any): OrderConfiguration {
     }
     
     // Accessories for this build number
-    accessories[buildNumber] = order.accessoryConfigurations
+    accessories[buildNumber] = order.selectedAccessories
       ?.filter((ac: any) => ac.buildNumber === buildNumber)
       ?.map((ac: any) => ({
         assemblyId: ac.assemblyId,

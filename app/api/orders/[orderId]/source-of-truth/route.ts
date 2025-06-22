@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getOrderSingleSourceOfTruth, updateOrderWorkflowState } from '@/lib/orderSingleSourceOfTruth'
+import { getOrderSingleSourceOfTruth, updateOrderWorkflowState, generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
 import { getAuthUser } from '@/lib/auth'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     orderId: string
-  }
+  }>
 }
 
 /**
@@ -14,7 +14,8 @@ interface RouteParams {
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    console.log(`🔍 Fetching single source of truth for order: ${params.orderId}`)
+    const { orderId } = await params
+    console.log(`🔍 Fetching single source of truth for order: ${orderId}`)
 
     // Check authentication
     const user = await getAuthUser()
@@ -25,10 +26,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    // Get the single source of truth JSON
-    const singleSourceOfTruth = await getOrderSingleSourceOfTruth(params.orderId)
+    // Get the single source of truth JSON - generate if it doesn't exist
+    let singleSourceOfTruth
+    try {
+      singleSourceOfTruth = await getOrderSingleSourceOfTruth(orderId)
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('not found')) {
+        console.log(`📋 Single source of truth not found for order ${orderId}, generating...`)
+        await generateOrderSingleSourceOfTruth(orderId)
+        singleSourceOfTruth = await getOrderSingleSourceOfTruth(orderId)
+        console.log(`✅ Single source of truth generated and retrieved for order: ${orderId}`)
+      } else {
+        throw error
+      }
+    }
 
-    console.log(`✅ Single source of truth retrieved for order: ${params.orderId}`)
+    console.log(`✅ Single source of truth ready for order: ${orderId}`)
 
     return NextResponse.json({
       success: true,
@@ -37,7 +50,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error(`❌ Error fetching single source of truth for order ${params.orderId}:`, error)
+    const { orderId } = await params
+    console.error(`❌ Error fetching single source of truth for order ${orderId}:`, error)
 
     if (error instanceof Error && error.message.includes('not found')) {
       return NextResponse.json(
@@ -59,7 +73,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  */
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    console.log(`🔄 Updating single source of truth for order: ${params.orderId}`)
+    const { orderId } = await params
+    console.log(`🔄 Updating single source of truth for order: ${orderId}`)
 
     // Check authentication
     const user = await getAuthUser()
@@ -110,9 +125,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     // Update the workflow state
-    await updateOrderWorkflowState(params.orderId, stage, additionalData)
+    await updateOrderWorkflowState(orderId, stage, additionalData)
 
-    console.log(`✅ Single source of truth updated for order: ${params.orderId}, stage: ${stage}`)
+    console.log(`✅ Single source of truth updated for order: ${orderId}, stage: ${stage}`)
 
     return NextResponse.json({
       success: true,
@@ -120,7 +135,8 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error(`❌ Error updating single source of truth for order ${params.orderId}:`, error)
+    const { orderId } = await params
+    console.error(`❌ Error updating single source of truth for order ${orderId}:`, error)
 
     if (error instanceof Error && error.message.includes('not found')) {
       return NextResponse.json(

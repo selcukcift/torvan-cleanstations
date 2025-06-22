@@ -163,7 +163,7 @@ export function ExpandableProcurementRow({
       // Update order status if needed
       if (order.orderStatus === "ORDER_CREATED") {
         await nextJsApiClient.put(`/orders/${order.id}/status`, {
-          newStatus: "PARTS_SENT_WAITING_ARRIVAL",
+          newStatus: "SINK_BODY_EXTERNAL_PRODUCTION",
           notes: `Procurement sent ${orderParts.length} parts to sink body manufacturer`,
         })
       }

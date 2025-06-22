@@ -17,7 +17,9 @@ const attachResponseInterceptor = (client: AxiosInstance) => {
         if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
           // Import signOut dynamically to avoid SSR issues
           const { signOut } = await import('next-auth/react')
-          signOut({ callbackUrl: '/login' })
+          signOut({ callbackUrl: '/login' }).catch(signOutError => {
+            console.error('Error during sign out:', signOutError)
+          })
         }
       }
       return Promise.reject(error)

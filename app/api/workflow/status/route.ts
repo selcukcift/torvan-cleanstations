@@ -15,7 +15,7 @@ const WORKFLOW_STAGES = [
     target: 'PROCUREMENT_SPECIALIST'
   },
   { 
-    id: 'PARTS_SENT_WAITING_ARRIVAL', 
+    id: 'SINK_BODY_EXTERNAL_PRODUCTION', 
     name: 'Parts Sent', 
     description: 'Waiting for parts arrival',
     color: 'purple',

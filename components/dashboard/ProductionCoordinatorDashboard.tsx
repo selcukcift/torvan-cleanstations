@@ -97,7 +97,7 @@ import { ProductionScheduleCalendar } from "../production/ProductionScheduleCale
 // Status colors and display names
 const statusColors: Record<string, string> = {
   ORDER_CREATED: "bg-blue-100 text-blue-700",
-  PARTS_SENT_WAITING_ARRIVAL: "bg-purple-100 text-purple-700",
+  SINK_BODY_EXTERNAL_PRODUCTION: "bg-purple-100 text-purple-700",
   READY_FOR_PRE_QC: "bg-yellow-100 text-yellow-700",
   READY_FOR_PRODUCTION: "bg-orange-100 text-orange-700",
   TESTING_COMPLETE: "bg-green-100 text-green-700",
@@ -109,7 +109,7 @@ const statusColors: Record<string, string> = {
 
 const statusDisplayNames: Record<string, string> = {
   ORDER_CREATED: "Order Created",
-  PARTS_SENT_WAITING_ARRIVAL: "Parts Sent - Waiting",
+  SINK_BODY_EXTERNAL_PRODUCTION: "External Production",
   READY_FOR_PRE_QC: "Ready for Pre-QC",
   READY_FOR_PRODUCTION: "Ready for Production",
   TESTING_COMPLETE: "Testing Complete",
@@ -122,7 +122,7 @@ const statusDisplayNames: Record<string, string> = {
 // Production Coordinator relevant statuses
 const PC_RELEVANT_STATUSES = [
   "ORDER_CREATED",
-  "PARTS_SENT_WAITING_ARRIVAL",
+  "SINK_BODY_EXTERNAL_PRODUCTION",
   "READY_FOR_PRE_QC",
   "READY_FOR_PRODUCTION",
   "TESTING_COMPLETE",
@@ -496,7 +496,7 @@ export function ProductionCoordinatorDashboard() {
         stats.totalActive++
       }
       
-      if (order.orderStatus === "PARTS_SENT_WAITING_ARRIVAL") {
+      if (order.orderStatus === "SINK_BODY_EXTERNAL_PRODUCTION") {
         stats.awaitingParts++
       }
       
@@ -683,7 +683,7 @@ export function ProductionCoordinatorDashboard() {
     // Only show assignment option when order reaches certain states
     const assignableStates = [
       'ORDER_CREATED',
-      'PARTS_SENT_WAITING_ARRIVAL',
+      'SINK_BODY_EXTERNAL_PRODUCTION',
       'READY_FOR_PRE_QC', 
       'READY_FOR_FINAL_QC',
       'READY_FOR_PRODUCTION',
@@ -709,7 +709,7 @@ export function ProductionCoordinatorDashboard() {
 
     switch (orderStatus) {
       case 'ORDER_CREATED':
-      case 'PARTS_SENT_WAITING_ARRIVAL':
+      case 'SINK_BODY_EXTERNAL_PRODUCTION':
         if (userRole && userRole !== 'PROCUREMENT_SPECIALIST') {
           return { 
             canAssign: false, 

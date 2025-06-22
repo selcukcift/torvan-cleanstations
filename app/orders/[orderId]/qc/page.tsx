@@ -128,7 +128,7 @@ export default function QCInspectionPage() {
           <AlertDescription>
             This order is not ready for QC inspection. Current status: {orderData?.orderStatus || 'Unknown'}
             {orderData?.orderStatus === 'ORDER_CREATED' && ' (Waiting for procurement approval)'}
-            {orderData?.orderStatus === 'PARTS_SENT_WAITING_ARRIVAL' && ' (Waiting for parts to arrive)'}
+            {orderData?.orderStatus === 'SINK_BODY_EXTERNAL_PRODUCTION' && ' (Sink body in external production)'}
             {orderData?.orderStatus === 'READY_FOR_PRODUCTION' && ' (Currently in production)'}
             {orderData?.orderStatus === 'READY_FOR_SHIP' && ' (QC complete, ready for shipping)'}
           </AlertDescription>

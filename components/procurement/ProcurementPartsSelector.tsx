@@ -227,7 +227,7 @@ export function ProcurementPartsSelector({
       // Update order status if it's still ORDER_CREATED
       if (orderStatus === "ORDER_CREATED") {
         await nextJsApiClient.put(`/orders/${orderId}/status`, {
-          newStatus: "PARTS_SENT_WAITING_ARRIVAL",
+          newStatus: "SINK_BODY_EXTERNAL_PRODUCTION",
           notes: `Procurement sent ${selectedPartsData.length} parts to sink body manufacturer: ${selectedPartsData.map(p => p.partNumber).join(", ")}`,
         })
       }
@@ -295,7 +295,7 @@ export function ProcurementPartsSelector({
                 Select legs kits and casters to send to the external sink body manufacturer
               </CardDescription>
             </div>
-            {orderStatus === "PARTS_SENT_WAITING_ARRIVAL" && (
+            {orderStatus === "SINK_BODY_EXTERNAL_PRODUCTION" && (
               <Badge className="bg-purple-100 text-purple-700">
                 <TruckIcon className="w-4 h-4 mr-1" />
                 Parts Already Sent

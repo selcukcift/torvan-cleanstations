@@ -1,0 +1,700 @@
+{
+  "metadata": {
+    "orderId": "cmc7momst005gj55ki3j37ugp",
+    "orderNumber": "ORD-2025-PO-2025-001",
+    "generatedAt": "2025-06-22T12:49:01.092Z",
+    "version": "1.0.0",
+    "sourceOfTruth": true,
+    "description": "Complete single source of truth for all downstream modules",
+    "lastUpdated": "2025-06-22T12:49:01.092Z",
+    "status": "ORDER_CREATED"
+  },
+  "orderDetails": {
+    "id": "cmc7momst005gj55ki3j37ugp",
+    "status": "ORDER_CREATED",
+    "createdAt": "2025-06-22T12:12:42.222Z",
+    "updatedAt": "2025-06-22T12:12:42.222Z",
+    "customer": {
+      "poNumber": "PO-2025-001",
+      "customerName": "Sample Medical Center",
+      "projectName": null,
+      "salesPerson": "John Doe",
+      "wantDate": "2025-07-06T12:12:42.220Z",
+      "language": "EN",
+      "notes": "Sample order for testing"
+    },
+    "sinkSelection": {
+      "sinkModelId": "",
+      "quantity": 1,
+      "buildNumbers": [
+        "BN-2025-001"
+      ]
+    },
+    "createdBy": {
+      "id": "cmc7mom860000j55k3ul8htyt",
+      "email": "admin@torvan.local",
+      "role": "ADMIN"
+    }
+  },
+  "configuration": {},
+  "billOfMaterials": {
+    "source": "BOM Service API",
+    "generatedAt": "2025-06-22T12:49:01.092Z",
+    "hierarchical": [
+      {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "quantity": 1,
+        "category": "SYSTEM",
+        "type": "KIT",
+        "components": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          }
+        ]
+      }
+    ],
+    "flattened": [
+      {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "quantity": 1,
+        "category": "SYSTEM",
+        "type": "KIT",
+        "components": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          }
+        ],
+        "isChild": false,
+        "indentLevel": 0
+      },
+      {
+        "id": "T2-USER-MANUAL-EN",
+        "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1
+      },
+      {
+        "id": "T2-PREINST-MANUAL-EN",
+        "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1
+      }
+    ],
+    "totalItems": 3,
+    "byCategory": {
+      "SYSTEM": [
+        {
+          "id": "T2-STD-MANUAL-EN-KIT",
+          "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+          "quantity": 1,
+          "category": "SYSTEM",
+          "type": "KIT",
+          "components": [
+            {
+              "id": "T2-USER-MANUAL-EN",
+              "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            },
+            {
+              "id": "T2-PREINST-MANUAL-EN",
+              "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            }
+          ],
+          "parentPath": "",
+          "level": 0,
+          "fullPath": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH"
+        }
+      ],
+      "PART": [
+        {
+          "id": "T2-USER-MANUAL-EN",
+          "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": [],
+          "parentPath": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+          "level": 1,
+          "fullPath": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH → ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM"
+        },
+        {
+          "id": "T2-PREINST-MANUAL-EN",
+          "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": [],
+          "parentPath": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+          "level": 1,
+          "fullPath": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH → ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL"
+        }
+      ]
+    },
+    "byType": {
+      "KIT": [
+        {
+          "id": "T2-STD-MANUAL-EN-KIT",
+          "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+          "quantity": 1,
+          "category": "SYSTEM",
+          "type": "KIT",
+          "components": [
+            {
+              "id": "T2-USER-MANUAL-EN",
+              "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            },
+            {
+              "id": "T2-PREINST-MANUAL-EN",
+              "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            }
+          ]
+        }
+      ],
+      "COMPONENT": [
+        {
+          "id": "T2-USER-MANUAL-EN",
+          "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": []
+        },
+        {
+          "id": "T2-PREINST-MANUAL-EN",
+          "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": []
+        }
+      ]
+    },
+    "byAssembly": {
+      "T2-STD-MANUAL-EN-KIT": {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "quantity": 1,
+        "category": "SYSTEM",
+        "type": "KIT",
+        "components": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          }
+        ],
+        "parentPath": "",
+        "level": 0,
+        "componentCount": 2
+      }
+    },
+    "summary": {
+      "totalCategories": 2,
+      "totalTypes": 2,
+      "totalAssemblies": 1,
+      "categoryCounts": {
+        "SYSTEM": 1,
+        "PART": 2
+      }
+    },
+    "flattenedWithRelationships": [
+      {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "quantity": 1,
+        "category": "SYSTEM",
+        "type": "KIT",
+        "components": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          }
+        ],
+        "isChild": false,
+        "indentLevel": 0,
+        "index": 1,
+        "parentPath": "Top Level",
+        "childCount": 2,
+        "isAssembly": true,
+        "isPart": false,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "ASSEMBLY_KIT",
+        "procurementType": "ASSEMBLY",
+        "children": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART"
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART"
+          }
+        ],
+        "parentInfo": null
+      },
+      {
+        "id": "T2-USER-MANUAL-EN",
+        "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1,
+        "index": 2,
+        "parentPath": "Top Level",
+        "childCount": 0,
+        "isAssembly": false,
+        "isPart": true,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "MANUFACTURED_PART",
+        "procurementType": "INTERNAL_MANUFACTURE",
+        "children": [],
+        "parentInfo": null
+      },
+      {
+        "id": "T2-PREINST-MANUAL-EN",
+        "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1,
+        "index": 3,
+        "parentPath": "Top Level",
+        "childCount": 0,
+        "isAssembly": false,
+        "isPart": true,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "MANUFACTURED_PART",
+        "procurementType": "INTERNAL_MANUFACTURE",
+        "children": [],
+        "parentInfo": null
+      }
+    ],
+    "manufacturingBreakdown": {
+      "totalParts": 3,
+      "assemblies": 1,
+      "purchasedParts": 0,
+      "manufacturedParts": 2,
+      "complexAssemblies": 0,
+      "simpleAssemblies": 0,
+      "kits": 1
+    },
+    "procurementBreakdown": {
+      "internalManufacture": [
+        {
+          "id": "T2-USER-MANUAL-EN",
+          "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": [],
+          "isChild": true,
+          "indentLevel": 1,
+          "index": 2,
+          "parentPath": "Top Level",
+          "childCount": 0,
+          "isAssembly": false,
+          "isPart": true,
+          "isTopLevel": true,
+          "depth": 0,
+          "manufacturingType": "MANUFACTURED_PART",
+          "procurementType": "INTERNAL_MANUFACTURE",
+          "children": [],
+          "parentInfo": null
+        },
+        {
+          "id": "T2-PREINST-MANUAL-EN",
+          "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+          "quantity": 1,
+          "type": "COMPONENT",
+          "category": "PART",
+          "components": [],
+          "isChild": true,
+          "indentLevel": 1,
+          "index": 3,
+          "parentPath": "Top Level",
+          "childCount": 0,
+          "isAssembly": false,
+          "isPart": true,
+          "isTopLevel": true,
+          "depth": 0,
+          "manufacturingType": "MANUFACTURED_PART",
+          "procurementType": "INTERNAL_MANUFACTURE",
+          "children": [],
+          "parentInfo": null
+        }
+      ],
+      "externalPurchase": [],
+      "assemblies": [
+        {
+          "id": "T2-STD-MANUAL-EN-KIT",
+          "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+          "quantity": 1,
+          "category": "SYSTEM",
+          "type": "KIT",
+          "components": [
+            {
+              "id": "T2-USER-MANUAL-EN",
+              "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            },
+            {
+              "id": "T2-PREINST-MANUAL-EN",
+              "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART",
+              "components": []
+            }
+          ],
+          "isChild": false,
+          "indentLevel": 0,
+          "index": 1,
+          "parentPath": "Top Level",
+          "childCount": 2,
+          "isAssembly": true,
+          "isPart": false,
+          "isTopLevel": true,
+          "depth": 0,
+          "manufacturingType": "ASSEMBLY_KIT",
+          "procurementType": "ASSEMBLY",
+          "children": [
+            {
+              "id": "T2-USER-MANUAL-EN",
+              "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART"
+            },
+            {
+              "id": "T2-PREINST-MANUAL-EN",
+              "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+              "quantity": 1,
+              "type": "COMPONENT",
+              "category": "PART"
+            }
+          ],
+          "parentInfo": null
+        }
+      ],
+      "totalItems": 3
+    },
+    "assemblyTree": [
+      {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "type": "KIT",
+        "category": "SYSTEM",
+        "quantity": 1,
+        "hasChildren": true,
+        "childCount": 2,
+        "children": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "type": "COMPONENT",
+            "quantity": 1,
+            "hasChildren": false
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "type": "COMPONENT",
+            "quantity": 1,
+            "hasChildren": false
+          }
+        ]
+      }
+    ],
+    "criticalComponents": []
+  },
+  "manufacturingData": {
+    "assemblySequence": [
+      {
+        "step": 1,
+        "category": "SYSTEM",
+        "description": "Documentation and manuals",
+        "estimatedTime": "30 min"
+      },
+      {
+        "step": 2,
+        "category": "SINK_BODY",
+        "description": "Main structural assembly",
+        "estimatedTime": "6-8 hours"
+      },
+      {
+        "step": 3,
+        "category": "SUB_ASSEMBLY",
+        "description": "Component sub-assemblies",
+        "estimatedTime": "2-3 hours"
+      }
+    ],
+    "estimatedLeadTime": "8-10 weeks",
+    "specialRequirements": [
+      "Basin lighting installation",
+      "Electronic control system setup",
+      "Height adjustable leg calibration"
+    ]
+  },
+  "qualityControlData": {
+    "inspectionPoints": [
+      {
+        "stage": "Frame Assembly",
+        "checkpoints": [
+          "Weld quality",
+          "Dimensional accuracy"
+        ]
+      },
+      {
+        "stage": "Basin Installation",
+        "checkpoints": [
+          "Alignment",
+          "Seal integrity"
+        ]
+      },
+      {
+        "stage": "Electronic Systems",
+        "checkpoints": [
+          "Wiring continuity",
+          "Control box function"
+        ]
+      }
+    ],
+    "complianceStandards": [
+      "ISO 13485:2016",
+      "NSF/ANSI 2"
+    ]
+  },
+  "procurementData": {
+    "internalManufacture": [
+      {
+        "id": "T2-USER-MANUAL-EN",
+        "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1,
+        "index": 2,
+        "parentPath": "Top Level",
+        "childCount": 0,
+        "isAssembly": false,
+        "isPart": true,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "MANUFACTURED_PART",
+        "procurementType": "INTERNAL_MANUFACTURE",
+        "children": [],
+        "parentInfo": null
+      },
+      {
+        "id": "T2-PREINST-MANUAL-EN",
+        "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+        "quantity": 1,
+        "type": "COMPONENT",
+        "category": "PART",
+        "components": [],
+        "isChild": true,
+        "indentLevel": 1,
+        "index": 3,
+        "parentPath": "Top Level",
+        "childCount": 0,
+        "isAssembly": false,
+        "isPart": true,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "MANUFACTURED_PART",
+        "procurementType": "INTERNAL_MANUFACTURE",
+        "children": [],
+        "parentInfo": null
+      }
+    ],
+    "externalPurchase": [],
+    "assemblies": [
+      {
+        "id": "T2-STD-MANUAL-EN-KIT",
+        "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+        "quantity": 1,
+        "category": "SYSTEM",
+        "type": "KIT",
+        "components": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART",
+            "components": []
+          }
+        ],
+        "isChild": false,
+        "indentLevel": 0,
+        "index": 1,
+        "parentPath": "Top Level",
+        "childCount": 2,
+        "isAssembly": true,
+        "isPart": false,
+        "isTopLevel": true,
+        "depth": 0,
+        "manufacturingType": "ASSEMBLY_KIT",
+        "procurementType": "ASSEMBLY",
+        "children": [
+          {
+            "id": "T2-USER-MANUAL-EN",
+            "name": "ENGLISH - CLEANSTATIONS INSTALL AND OPERATIONS MANUAL INCLUDING ESINK SYSTEM",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART"
+          },
+          {
+            "id": "T2-PREINST-MANUAL-EN",
+            "name": "ENGLISH - REPROCESSING SINKS SITE PREPARATION MANUAL",
+            "quantity": 1,
+            "type": "COMPONENT",
+            "category": "PART"
+          }
+        ],
+        "parentInfo": null
+      }
+    ],
+    "totalItems": 3,
+    "leadTimeAnalysis": {
+      "internalParts": "2-3 weeks",
+      "purchasedParts": "4-6 weeks",
+      "electronicComponents": "6-8 weeks"
+    }
+  },
+  "shippingData": {
+    "estimatedWeight": "450 lbs",
+    "dimensions": {
+      "length": 96,
+      "width": 54,
+      "height": 42,
+      "unit": "inches"
+    },
+    "specialHandling": [
+      "Electronic components",
+      "Heavy lifting required"
+    ]
+  },
+  "workflowState": {
+    "currentStage": "ORDER_CREATED",
+    "nextSteps": [
+      "BOM_REVIEW",
+      "PROCUREMENT_PLANNING",
+      "MANUFACTURING_SCHEDULING"
+    ],
+    "completedSteps": [
+      "ORDER_CONFIGURATION",
+      "BOM_GENERATION"
+    ],
+    "milestones": {
+      "orderCreated": "2025-06-22T12:49:01.092Z",
+      "bomGenerated": "2025-06-22T12:49:01.092Z",
+      "procurementStarted": null,
+      "manufacturingStarted": null,
+      "qualityControlStarted": null,
+      "shippingStarted": null,
+      "orderCompleted": null
+    },
+    "estimatedDelivery": "2025-06-29T12:12:42.220Z"
+  }
+}

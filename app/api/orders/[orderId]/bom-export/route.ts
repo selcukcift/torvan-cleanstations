@@ -1,18 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getAuthUser } from '@/lib/auth';
 import { generateBOMForOrder } from '@/lib/bomService.native';
-// Dynamic imports to avoid build issues
-// import jsPDF from 'jspdf';
-// import autoTable from 'jspdf-autotable';
+// PDF export types will be imported dynamically to avoid build issues
 
-const prisma = new PrismaClient();
+// Local type definitions to avoid static imports
+interface BOMItem {
+  id?: string
+  partIdOrAssemblyId?: string
+  partNumber?: string
+  name: string
+  description?: string
+  quantity: number
+  category?: string
+  itemType?: string
+  isCustom?: boolean
+  parentId?: string
+}
+
+interface OrderInfo {
+  poNumber: string
+  customerName: string
+  orderDate?: string | Date
+  wantDate?: string | Date
+  projectName?: string
+  salesPerson?: string
+  buildNumbers?: string[]
+}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ orderId: string }> }
 ) {
-  const { orderId } = await params;
+  const resolvedParams = await params;
+  const orderId = resolvedParams.orderId;
   
   try {
     // Check authentication
@@ -70,27 +91,48 @@ export async function GET(
     }
 
     // Generate BOM if not already generated
-    interface BomItem {
-      id: string;
-      partIdOrAssemblyId: string;
-      name: string;
-      quantity: number;
-      itemType: string;
-      category?: string | null;
-      isCustom: boolean;
-      parentId?: string | null;
-      bomId: string;
-    }
-    
-    let bomItems: BomItem[] = [];
+    let bomItems: BOMItem[] = [];
     if (order.generatedBoms && order.generatedBoms.length > 0) {
-      // Use existing BOM items
-      bomItems = order.generatedBoms[0].bomItems;
+      // Use existing BOM items and convert to our format
+      bomItems = order.generatedBoms[0].bomItems.map(item => ({
+        id: item.id,
+        partIdOrAssemblyId: item.partIdOrAssemblyId,
+        partNumber: item.partIdOrAssemblyId,
+        name: item.name,
+        description: item.name,
+        quantity: item.quantity,
+        itemType: item.itemType,
+        category: item.category || undefined,
+        isCustom: item.isCustom,
+        parentId: item.parentId || undefined
+      }));
     } else {
       // Generate new BOM
       const bomResult = await generateBOMForOrder(order);
-      bomItems = bomResult.bomItems || [];
+      bomItems = (bomResult.bomItems || []).map(item => ({
+        id: item.id,
+        partIdOrAssemblyId: item.partIdOrAssemblyId,
+        partNumber: item.partIdOrAssemblyId,
+        name: item.name,
+        description: item.name,
+        quantity: item.quantity,
+        itemType: item.itemType,
+        category: item.category || undefined,
+        isCustom: item.isCustom,
+        parentId: item.parentId || undefined
+      }));
     }
+
+    // Prepare order info for PDF generation
+    const orderInfo: OrderInfo = {
+      poNumber: order.poNumber,
+      customerName: order.customerName,
+      orderDate: order.createdAt,
+      wantDate: order.wantDate,
+      projectName: order.projectName || undefined,
+      salesPerson: order.salesPerson || undefined,
+      buildNumbers: order.sinkConfigurations?.map(config => config.buildNumber) || undefined
+    };
 
     // Format BOM items for export
     const formattedBOM = bomItems.map(item => ({
@@ -110,11 +152,29 @@ export async function GET(
     const totalPrice = 0; // Pricing not implemented yet
 
     if (format === 'pdf') {
-      // PDF export temporarily disabled due to dependency issues
-      return NextResponse.json(
-        { error: 'PDF export is temporarily unavailable. Please use CSV format.' },
-        { status: 501 }
-      );
+      // PDF generation is now handled client-side due to browser dependencies
+      // Return the data needed for client-side PDF generation
+      try {
+        // Import server-safe aggregation utilities (no jsPDF dependencies)
+        const { aggregateBOMItems, sortBOMItemsByPriority } = await import('@/lib/bomAggregation');
+        
+        // Aggregate BOM items (flatten and combine quantities)
+        const aggregatedItems = sortBOMItemsByPriority(aggregateBOMItems(bomItems));
+        
+        return NextResponse.json({
+          success: true,
+          data: {
+            bomItems: aggregatedItems,
+            orderInfo: orderInfo
+          }
+        });
+      } catch (pdfError) {
+        console.error('PDF data preparation error:', pdfError);
+        return NextResponse.json(
+          { error: 'Failed to prepare PDF data. Please try CSV format.' },
+          { status: 500 }
+        );
+      }
     } else {
       // Create CSV content
       const csvHeaders = [

@@ -79,7 +79,10 @@ export async function GET(
       }
     });
 
-    return NextResponse.json({ qcResult });
+    return NextResponse.json({ 
+      success: true, 
+      qcResults: qcResult ? [qcResult] : [] 
+    });
   } catch (error) {
     console.error('Error fetching QC result:', error);
     return NextResponse.json({ error: 'Failed to fetch QC result' }, { status: 500 });

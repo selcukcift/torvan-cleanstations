@@ -47,7 +47,7 @@ export function ProcurementTab({
 
   // Check if user has permission to view this tab
   const hasPermission = session?.user?.role === "ADMIN" || session?.user?.role === "PROCUREMENT_SPECIALIST"
-  const isRelevantStatus = ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(orderStatus)
+  const isRelevantStatus = ["ORDER_CREATED", "SINK_BODY_EXTERNAL_PRODUCTION"].includes(orderStatus)
 
   useEffect(() => {
     if (hasPermission && isRelevantStatus) {
@@ -89,7 +89,7 @@ export function ProcurementTab({
       // Update order status to READY_FOR_PRE_QC
       await nextJsApiClient.put(`/orders/${orderId}/status`, {
         newStatus: "READY_FOR_PRE_QC",
-        notes: "All parts received from sink body manufacturer - ready for Pre-QC",
+        notes: "Sink body received from manufacturer - ready for Pre-QC",
       })
       
       onStatusChange()
@@ -152,17 +152,17 @@ export function ProcurementTab({
             </div>
             
             {/* Show confirm button when all parts are received */}
-            {orderStatus === "PARTS_SENT_WAITING_ARRIVAL" && summary.sent === 0 && summary.pending === 0 && summary.total > 0 && (
+            {orderStatus === "SINK_BODY_EXTERNAL_PRODUCTION" && summary.sent === 0 && summary.pending === 0 && summary.total > 0 && (
               <div className="mt-4 pt-4 border-t">
                 <Alert className="mb-4">
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
-                    All outsourced parts have been received. You can now proceed to Pre-QC.
+                    Sink body with assembled legs has been received. You can now proceed to Pre-QC.
                   </AlertDescription>
                 </Alert>
                 <Button onClick={handleConfirmAllPartsReceived}>
                   <CheckCircle className="w-4 h-4 mr-2" />
-                  Confirm All Parts Received & Proceed to Pre-QC
+                  Confirm Sink Body Received & Proceed to Pre-QC
                 </Button>
               </div>
             )}

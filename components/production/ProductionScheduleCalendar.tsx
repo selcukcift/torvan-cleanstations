@@ -50,7 +50,7 @@ interface ScheduleEvent {
 
 const statusColors = {
   ORDER_CREATED: "bg-blue-100 text-blue-700 border-blue-200",
-  PARTS_SENT_WAITING_ARRIVAL: "bg-purple-100 text-purple-700 border-purple-200",
+  SINK_BODY_EXTERNAL_PRODUCTION: "bg-purple-100 text-purple-700 border-purple-200",
   READY_FOR_PRE_QC: "bg-yellow-100 text-yellow-700 border-yellow-200",
   READY_FOR_PRODUCTION: "bg-orange-100 text-orange-700 border-orange-200",
   TESTING_COMPLETE: "bg-green-100 text-green-700 border-green-200",

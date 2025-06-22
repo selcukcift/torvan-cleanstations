@@ -68,6 +68,17 @@ export function AppHeader({
                     </a>
                   </Button>
                 )}
+                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.role)) && (
+                  <Button 
+                    variant={isActive("/procurement") ? "secondary" : "ghost"} 
+                    size="sm" 
+                    asChild
+                  >
+                    <a href="/procurement" className="text-sm font-medium">
+                      Procurement
+                    </a>
+                  </Button>
+                )}
               </nav>
 
               {/* User Actions */}
@@ -157,6 +168,18 @@ export function AppHeader({
                   >
                     <a href="/orders/create" className="text-sm font-medium">
                       Create Order
+                    </a>
+                  </Button>
+                )}
+                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.role)) && (
+                  <Button 
+                    variant={isActive("/procurement") ? "secondary" : "ghost"} 
+                    size="sm" 
+                    asChild 
+                    className="w-full justify-start"
+                  >
+                    <a href="/procurement" className="text-sm font-medium">
+                      Procurement
                     </a>
                   </Button>
                 )}

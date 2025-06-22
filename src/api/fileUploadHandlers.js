@@ -325,7 +325,7 @@ function checkOrderAccess(order, user) {
     case 'PRODUCTION_COORDINATOR':
       return true;
     case 'PROCUREMENT_SPECIALIST':
-      return ['ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL'].includes(order.orderStatus);
+      return ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION'].includes(order.orderStatus);
     case 'QC_PERSON':
       return ['READY_FOR_PRE_QC', 'READY_FOR_FINAL_QC'].includes(order.orderStatus);
     case 'ASSEMBLER':

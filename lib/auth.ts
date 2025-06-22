@@ -75,7 +75,7 @@ export function canAccessOrder(user: AuthUser, order: any): boolean {
   
   // Procurement can access orders that need parts management
   if (user.role === 'PROCUREMENT_SPECIALIST') {
-    return ['ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL'].includes(order.orderStatus)
+    return ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION'].includes(order.orderStatus)
   }
   
   return false

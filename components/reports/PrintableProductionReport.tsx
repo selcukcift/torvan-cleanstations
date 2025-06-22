@@ -12,7 +12,7 @@ interface PrintableProductionReportProps {
 // Status display names
 const statusDisplayNames: Record<string, string> = {
   ORDER_CREATED: "Order Created",
-  PARTS_SENT_WAITING_ARRIVAL: "Parts Sent - Waiting Arrival",
+  SINK_BODY_EXTERNAL_PRODUCTION: "Sink Body in External Production",
   READY_FOR_PRE_QC: "Ready for Pre-QC",
   READY_FOR_PRODUCTION: "Ready for Production",
   TESTING_COMPLETE: "Testing Complete",

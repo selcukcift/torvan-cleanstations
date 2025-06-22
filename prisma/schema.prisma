@@ -127,6 +127,7 @@ model Order {
   language              String                 @default("EN")
   orderStatus           OrderStatus            @default(ORDER_CREATED)
   currentAssignee       String?
+  procurementData       Json?
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   createdById           String
@@ -809,7 +810,7 @@ enum UserRole {
 
 enum OrderStatus {
   ORDER_CREATED
-  PARTS_SENT_WAITING_ARRIVAL
+  SINK_BODY_EXTERNAL_PRODUCTION
   READY_FOR_PRE_QC
   READY_FOR_PRODUCTION
   TESTING_COMPLETE

@@ -49,7 +49,7 @@ import {
 // Status badge color mapping
 const statusColors: Record<string, string> = {
   ORDER_CREATED: "bg-blue-100 text-blue-700",
-  PARTS_SENT_WAITING_ARRIVAL: "bg-purple-100 text-purple-700",
+  SINK_BODY_EXTERNAL_PRODUCTION: "bg-purple-100 text-purple-700",
   READY_FOR_PRE_QC: "bg-yellow-100 text-yellow-700",
   READY_FOR_PRODUCTION: "bg-orange-100 text-orange-700",
   TESTING_COMPLETE: "bg-green-100 text-green-700",
@@ -62,7 +62,7 @@ const statusColors: Record<string, string> = {
 // Status display names
 const statusDisplayNames: Record<string, string> = {
   ORDER_CREATED: "Order Created",
-  PARTS_SENT_WAITING_ARRIVAL: "Parts Sent - Waiting Arrival",
+  SINK_BODY_EXTERNAL_PRODUCTION: "Sink Body in External Production",
   READY_FOR_PRE_QC: "Ready for Pre-QC",
   READY_FOR_PRODUCTION: "Ready for Production",
   TESTING_COMPLETE: "Testing Complete",
@@ -567,8 +567,8 @@ export default function OrderDetailsPage() {
     // Role-specific transitions
     const transitions: Record<string, Record<string, string[]>> = {
       PROCUREMENT_SPECIALIST: {
-        ORDER_CREATED: ["PARTS_SENT_WAITING_ARRIVAL"],
-        PARTS_SENT_WAITING_ARRIVAL: ["READY_FOR_PRE_QC"]
+        ORDER_CREATED: ["SINK_BODY_EXTERNAL_PRODUCTION"],
+        SINK_BODY_EXTERNAL_PRODUCTION: ["READY_FOR_PRE_QC"]
       },
       QC_PERSON: {
         READY_FOR_PRE_QC: ["READY_FOR_PRODUCTION"],
@@ -965,7 +965,7 @@ export default function OrderDetailsPage() {
       <Tabs defaultValue="overview" className="space-y-3">
         <TabsList className={`grid w-full ${
           (user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
-          ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) 
+          ["ORDER_CREATED", "SINK_BODY_EXTERNAL_PRODUCTION"].includes(order.orderStatus) 
             ? "grid-cols-8" 
             : "grid-cols-7"
         }`}>
@@ -973,7 +973,7 @@ export default function OrderDetailsPage() {
           <TabsTrigger value="configuration">Configuration</TabsTrigger>
           <TabsTrigger value="bom">Bill of Materials</TabsTrigger>
           {(user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
-           ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) && (
+           ["ORDER_CREATED", "SINK_BODY_EXTERNAL_PRODUCTION"].includes(order.orderStatus) && (
             <TabsTrigger value="procurement">Procurement</TabsTrigger>
           )}
           <TabsTrigger value="qc">Quality Control</TabsTrigger>
@@ -1312,12 +1312,16 @@ export default function OrderDetailsPage() {
             configurations={adaptedOrderData.configurations}
             accessories={adaptedOrderData.accessories}
             showDebugInfo={false}
+            showProcurementActions={user?.role === "PROCUREMENT_SPECIALIST" || user?.role === "ADMIN"}
+            orderId={order.id}
+            orderStatus={order.orderStatus}
+            onStatusChange={fetchOrderDetails}
           />
         </TabsContent>
 
         {/* Procurement Tab */}
         {(user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST") && 
-         ["ORDER_CREATED", "PARTS_SENT_WAITING_ARRIVAL"].includes(order.orderStatus) && (
+         ["ORDER_CREATED", "SINK_BODY_EXTERNAL_PRODUCTION"].includes(order.orderStatus) && (
           <TabsContent value="procurement" className="space-y-4">
             <ProcurementTab
               orderId={order.id}

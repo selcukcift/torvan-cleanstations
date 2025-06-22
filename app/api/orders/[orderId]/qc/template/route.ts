@@ -13,10 +13,10 @@ export async function GET(
   try {
     const user = await getAuthUser();
     if (!user) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 });
     }
     if (!checkUserRole(user, ['ASSEMBLER', 'QC_PERSON', 'PRODUCTION_COORDINATOR', 'ADMIN'])) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -33,7 +33,7 @@ export async function GET(
       });
 
       if (!order) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+        return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
       }
 
       // Determine product family based on order details
@@ -109,6 +109,7 @@ export async function GET(
 
     if (!template) {
       return NextResponse.json({ 
+        success: false,
         error: `No active QC template found for product family ${productFamily}${formType ? ` and form type "${formType}"` : ''}`,
         productFamily,
         formType 
@@ -130,12 +131,13 @@ export async function GET(
     });
 
     return NextResponse.json({ 
+      success: true,
       template,
       existingResult,
       productFamily
     });
   } catch (error) {
     console.error('Error fetching QC template:', error);
-    return NextResponse.json({ error: 'Failed to fetch QC template' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to fetch QC template' }, { status: 500 });
   }
 }

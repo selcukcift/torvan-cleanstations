@@ -56,14 +56,22 @@ export default function LoginPage() {
         // Add small delay to ensure JWT token is properly set
         await new Promise(resolve => setTimeout(resolve, 500))
         
+        // Get user session to determine role-based redirection
+        const session = await getSession()
+        const userRole = session?.user?.role
+        
         toast({
           variant: "success",
           title: "Login Successful",
           description: "Welcome back!",
         })
 
-        // Force router refresh to ensure session loads properly
-        router.push('/dashboard')
+        // Role-based redirection
+        if (userRole === 'PROCUREMENT_SPECIALIST') {
+          router.push('/procurement')
+        } else {
+          router.push('/dashboard')
+        }
         router.refresh()
       }
 

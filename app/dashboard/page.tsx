@@ -9,16 +9,15 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { AppHeader } from "@/components/ui/app-header"
 import { useSession } from "next-auth/react"
 import { ProductionCoordinatorDashboard } from "@/components/dashboard/ProductionCoordinatorDashboard"
-import { ProcurementSpecialistDashboard } from "@/components/dashboard/ProcurementSpecialistDashboard"
 import { AssemblerDashboard } from "@/components/dashboard/AssemblerDashboard"
 import { QCPersonDashboard } from "@/components/dashboard/QCPersonDashboard"
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard"
 import { ServiceDepartmentDashboard } from "@/components/dashboard/ServiceDepartmentDashboard"
+import { ProcurementSpecialistDashboard } from "@/components/dashboard/ProcurementSpecialistDashboard"
 
 const roleIcons = {
   ADMIN: Settings,
   PRODUCTION_COORDINATOR: Clipboard,
-  PROCUREMENT_SPECIALIST: Package,
   QC_PERSON: Clipboard,
   ASSEMBLER: Wrench,
 }
@@ -26,7 +25,6 @@ const roleIcons = {
 const roleDescriptions = {
   ADMIN: "System administration and user management",
   PRODUCTION_COORDINATOR: "Order creation and workflow coordination",
-  PROCUREMENT_SPECIALIST: "Parts ordering and inventory management",
   QC_PERSON: "Quality control and inspection tasks",
   ASSEMBLER: "Production assembly and testing",
 }
@@ -99,14 +97,14 @@ export default function DashboardPage() {
         return <AdminDashboard />
       case 'PRODUCTION_COORDINATOR':
         return <ProductionCoordinatorDashboard />
-      case 'PROCUREMENT_SPECIALIST':
-        return <ProcurementSpecialistDashboard />
       case 'ASSEMBLER':
         return <AssemblerDashboard />
       case 'QC_PERSON':
         return <QCPersonDashboard />
       case 'SERVICE_DEPARTMENT':
         return <ServiceDepartmentDashboard />
+      case 'PROCUREMENT_SPECIALIST':
+        return <ProcurementSpecialistDashboard />
       default:
         return null
     }
@@ -226,27 +224,6 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Development Notice */}
-        <div className="mt-8">
-          <Card className="border-amber-200 bg-amber-50">
-            <CardContent className="pt-6">
-              <div className="flex items-start space-x-3">
-                <div className="p-1 bg-amber-200 rounded-full">
-                  <Settings className="h-4 w-4 text-amber-600" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-amber-800 mb-1">
-                    Development in Progress
-                  </h3>
-                  <p className="text-sm text-amber-700">
-                    This is the basic authentication system for the Torvan Medical CleanStation workflow.
-                    Additional features like order creation, workflow management, and role-specific dashboards 
-                    are currently being developed.
-                  </p>                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </main>
     </div>
   )

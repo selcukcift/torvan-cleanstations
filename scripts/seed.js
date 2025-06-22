@@ -110,6 +110,9 @@ async function main() {
         status: part.status, // Corrected to lowercase 'status'
         photoURL: part.photoURL, // Assuming this casing is correct or needs adjustment
         technicalDrawingURL: part.technicalDrawingURL, // Assuming this casing is correct
+        revision: "1", // Default revision value
+        manufacturerName: part.manufacturer_name || null, // Optional manufacturer name
+        unitOfMeasure: part.unit_of_measure || null, // Optional unit of measure
       });
     }
   }
@@ -140,6 +143,8 @@ async function main() {
         workInstructionId: asmData.work_instruction_id, // Corrected to snake_case
         qrData: asmData.qr_data, // Corrected to snake_case
         kitComponentsJson: (asmData.is_kit && asmData.kit_components) ? JSON.stringify(asmData.kit_components) : null, // Corrected to snake_case
+        revision: "1", // Default revision value
+        isOrderable: asmData.is_orderable || false, // Default to false if not specified
       };
 
       // Handling the M-N relation to Subcategory

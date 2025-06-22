@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
 function getAppropriateRolesForStatus(status: string): string[] {
   switch (status) {
     case 'ORDER_CREATED':
-    case 'PARTS_SENT_WAITING_ARRIVAL':
+    case 'SINK_BODY_EXTERNAL_PRODUCTION':
       return ['PROCUREMENT_SPECIALIST']
     case 'READY_FOR_PRE_QC':
     case 'READY_FOR_FINAL_QC':

@@ -187,7 +187,7 @@ function validateAssignmentForStatus(status: string, role: string): { isValid: b
 
   switch (status) {
     case 'ORDER_CREATED':
-    case 'PARTS_SENT_WAITING_ARRIVAL':
+    case 'SINK_BODY_EXTERNAL_PRODUCTION':
       // Only procurement can be assigned to early-stage orders
       if (role === 'PROCUREMENT_SPECIALIST') {
         return { isValid: true, message: '' }
@@ -241,7 +241,7 @@ function validateAssignmentForStatus(status: string, role: string): { isValid: b
 function getAppropriateRolesForStatus(status: string): string[] {
   switch (status) {
     case 'ORDER_CREATED':
-    case 'PARTS_SENT_WAITING_ARRIVAL':
+    case 'SINK_BODY_EXTERNAL_PRODUCTION':
       return ['PROCUREMENT_SPECIALIST']
     case 'READY_FOR_PRE_QC':
     case 'READY_FOR_FINAL_QC':

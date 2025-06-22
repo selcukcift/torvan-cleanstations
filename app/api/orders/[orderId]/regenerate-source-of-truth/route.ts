@@ -3,9 +3,9 @@ import { generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth
 import { getAuthUser } from '@/lib/auth'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     orderId: string
-  }
+  }>
 }
 
 /**
@@ -15,7 +15,8 @@ interface RouteParams {
  */
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    console.log(`🔄 Regenerating single source of truth for order: ${params.orderId}`)
+    const { orderId } = await params
+    console.log(`🔄 Regenerating single source of truth for order: ${orderId}`)
 
     // Check authentication
     const user = await getAuthUser()
@@ -36,13 +37,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Regenerate the single source of truth JSON
     console.log(`\n🔄 REGENERATING SINGLE SOURCE OF TRUTH`)
-    console.log(`📋 Order ID: ${params.orderId}`)
+    console.log(`📋 Order ID: ${orderId}`)
     console.log(`👤 Requested by: ${user.username} (${user.role})`)
     
-    const singleSourceOfTruthPath = await generateOrderSingleSourceOfTruth(params.orderId)
+    const singleSourceOfTruthPath = await generateOrderSingleSourceOfTruth(orderId)
 
     console.log(`\n🎯 REGENERATION COMPLETE`)
-    console.log(`✅ Single source of truth regenerated for order: ${params.orderId}`)
+    console.log(`✅ Single source of truth regenerated for order: ${orderId}`)
     console.log(`📁 New file saved to: ${singleSourceOfTruthPath}`)
     console.log(`🔄 Previous version overwritten with updated data`)
 
@@ -53,7 +54,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error(`❌ Error regenerating single source of truth for order ${params.orderId}:`, error)
+    const { orderId } = await params
+    console.error(`❌ Error regenerating single source of truth for order ${orderId}:`, error)
 
     if (error instanceof Error) {
       return NextResponse.json(

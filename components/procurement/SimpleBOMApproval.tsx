@@ -136,24 +136,48 @@ export function SimpleBOMApproval({ onOrderUpdate }: SimpleBOMApprovalProps) {
 
     setLoadingBom(prev => new Set(prev).add(orderId))
     try {
-      // Force generate BOM to ensure we have the latest data
-      const response = await nextJsApiClient.post(`/orders/${orderId}/generate-bom`, {
-        forceRegenerate: true
-      })
+      // Generate BOM for the order (no body needed)
+      const response = await nextJsApiClient.post(`/orders/${orderId}/generate-bom`)
+      
       if (response.data.success) {
-        const bom = response.data.data.bom?.hierarchical || []
-        setBomData(prev => ({ ...prev, [orderId]: bom }))
+        // Try to get the BOM data from the saved order
+        const bomResponse = await nextJsApiClient.get(`/orders/${orderId}`)
+        if (bomResponse.data.success && bomResponse.data.data.generatedBoms?.length > 0) {
+          const latestBom = bomResponse.data.data.generatedBoms[0]
+          const bomItems = latestBom.bomItems || []
+          
+          // Convert flat BOM items to hierarchical structure
+          const hierarchicalBom = buildHierarchicalBOM(bomItems)
+          setBomData(prev => ({ ...prev, [orderId]: hierarchicalBom }))
+        }
         
         toast({
           title: "BOM Generated",
           description: "CleanStation production BOM has been generated successfully",
         })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating BOM:", error)
+      
+      let errorMessage = "Failed to generate CleanStation production BOM"
+      
+      // Handle specific error cases
+      if (error.response?.status === 400) {
+        const errorData = error.response.data
+        if (errorData.missingConfigurations) {
+          errorMessage = `Order ${errorData.poNumber} is missing configuration data. Please complete the order configuration first.`
+        } else if (errorData.message) {
+          errorMessage = errorData.message
+        }
+      } else if (error.response?.status === 403) {
+        errorMessage = "You don't have permission to generate BOMs for this order"
+      } else if (error.response?.status === 404) {
+        errorMessage = "Order not found"
+      }
+      
       toast({
         title: "BOM Generation Failed",
-        description: "Failed to generate CleanStation production BOM",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {
@@ -163,6 +187,43 @@ export function SimpleBOMApproval({ onOrderUpdate }: SimpleBOMApprovalProps) {
         return newSet
       })
     }
+  }
+
+  // Helper function to build hierarchical BOM from flat items
+  const buildHierarchicalBOM = (bomItems: any[]): BOMItem[] => {
+    const itemMap = new Map<string, BOMItem>()
+    const rootItems: BOMItem[] = []
+
+    // First pass: create all items
+    bomItems.forEach(item => {
+      const bomItem: BOMItem = {
+        id: item.partIdOrAssemblyId,
+        name: item.name,
+        partNumber: item.partIdOrAssemblyId,
+        quantity: item.quantity,
+        type: item.itemType === 'PART' ? 'PART' : 'ASSEMBLY',
+        children: []
+      }
+      itemMap.set(item.id, bomItem)
+    })
+
+    // Second pass: build hierarchy
+    bomItems.forEach(item => {
+      const bomItem = itemMap.get(item.id)
+      if (bomItem) {
+        if (item.parentId) {
+          const parent = itemMap.get(item.parentId)
+          if (parent) {
+            parent.children = parent.children || []
+            parent.children.push(bomItem)
+          }
+        } else {
+          rootItems.push(bomItem)
+        }
+      }
+    })
+
+    return rootItems
   }
 
   const handleOrderExpand = (orderId: string) => {

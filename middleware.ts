@@ -102,22 +102,33 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login')
   const isRootPage = request.nextUrl.pathname === '/'
 
-  // If accessing root page, redirect based on auth status
+  // If accessing root page, redirect based on auth status and role
   if (isRootPage) {
     if (token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      // Role-based redirection
+      const userRole = token.role as string
+      if (userRole === 'PROCUREMENT_SPECIALIST') {
+        return NextResponse.redirect(new URL('/procurement', request.url))
+      } else {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
     } else {
       return NextResponse.redirect(new URL('/login', request.url))
     }
   }
 
-  // If trying to access login page while authenticated, redirect to dashboard
+  // If trying to access login page while authenticated, redirect based on role
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const userRole = token.role as string
+    if (userRole === 'PROCUREMENT_SPECIALIST') {
+      return NextResponse.redirect(new URL('/procurement', request.url))
+    } else {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
   }
 
   // If trying to access protected pages without authentication, redirect to login
-  const protectedPaths = ['/dashboard', '/orders', '/service-orders']
+  const protectedPaths = ['/dashboard', '/orders', '/service-orders', '/procurement']
   const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
   
   if (isProtectedPath && !token) {
@@ -128,5 +139,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*', '/orders/:path*', '/service-orders/:path*', '/api/:path*']
+  matcher: ['/', '/login', '/dashboard/:path*', '/orders/:path*', '/service-orders/:path*', '/procurement/:path*', '/api/:path*']
 }

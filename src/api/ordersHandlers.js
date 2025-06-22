@@ -200,7 +200,7 @@ async function getOrders(req, res) {
       case 'PROCUREMENT_SPECIALIST':
         // Can see orders that need procurement attention
         whereClause.orderStatus = {
-          in: ['ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL']
+          in: ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION']
         };
         break;
       case 'QC_PERSON':
@@ -376,7 +376,7 @@ async function updateOrderStatus(req, res, orderId) {
 
     // Validate status enum
     const validStatuses = [
-      'ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL', 'READY_FOR_PRE_QC',
+      'ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION', 'READY_FOR_PRE_QC',
       'READY_FOR_PRODUCTION', 'TESTING_COMPLETE', 'PACKAGING_COMPLETE',
       'READY_FOR_FINAL_QC', 'READY_FOR_SHIP', 'SHIPPED'
     ];
@@ -464,7 +464,7 @@ function checkOrderAccess(order, user) {
     case 'PRODUCTION_COORDINATOR':
       return true; // Can access all orders
     case 'PROCUREMENT_SPECIALIST':
-      return ['ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL'].includes(order.orderStatus);
+      return ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION'].includes(order.orderStatus);
     case 'QC_PERSON':
       return ['READY_FOR_PRE_QC', 'READY_FOR_FINAL_QC'].includes(order.orderStatus);
     case 'ASSEMBLER':
@@ -480,12 +480,12 @@ function checkOrderAccess(order, user) {
 function validateStatusTransition(currentStatus, newStatus, userRole) {
   const transitions = {
     'PRODUCTION_COORDINATOR': {
-      'ORDER_CREATED': ['PARTS_SENT_WAITING_ARRIVAL', 'READY_FOR_PRE_QC'],
+      'ORDER_CREATED': ['SINK_BODY_EXTERNAL_PRODUCTION', 'READY_FOR_PRE_QC'],
       'READY_FOR_SHIP': ['SHIPPED']
     },
     'PROCUREMENT_SPECIALIST': {
-      'ORDER_CREATED': ['PARTS_SENT_WAITING_ARRIVAL'],
-      'PARTS_SENT_WAITING_ARRIVAL': ['READY_FOR_PRE_QC']
+      'ORDER_CREATED': ['SINK_BODY_EXTERNAL_PRODUCTION'],
+      'SINK_BODY_EXTERNAL_PRODUCTION': ['READY_FOR_PRE_QC']
     },
     'QC_PERSON': {
       'READY_FOR_PRE_QC': ['READY_FOR_PRODUCTION'],
@@ -499,7 +499,7 @@ function validateStatusTransition(currentStatus, newStatus, userRole) {
     'ADMIN': {
       // Admin can transition to any status
       'ORDER_CREATED': validStatuses.slice(1),
-      'PARTS_SENT_WAITING_ARRIVAL': validStatuses.slice(2),
+      'SINK_BODY_EXTERNAL_PRODUCTION': validStatuses.slice(2),
       'READY_FOR_PRE_QC': validStatuses.slice(3),
       'READY_FOR_PRODUCTION': validStatuses.slice(4),
       'TESTING_COMPLETE': validStatuses.slice(5),
@@ -510,7 +510,7 @@ function validateStatusTransition(currentStatus, newStatus, userRole) {
   };
 
   const validStatuses = [
-    'ORDER_CREATED', 'PARTS_SENT_WAITING_ARRIVAL', 'READY_FOR_PRE_QC',
+    'ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION', 'READY_FOR_PRE_QC',
     'READY_FOR_PRODUCTION', 'TESTING_COMPLETE', 'PACKAGING_COMPLETE',
     'READY_FOR_FINAL_QC', 'READY_FOR_SHIP', 'SHIPPED'
   ];

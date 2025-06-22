@@ -64,9 +64,25 @@ interface BOMViewerProps {
   customerInfo?: any
   onExport?: (format: 'pdf') => void
   showDebugInfo?: boolean
+  showProcurementActions?: boolean
+  hideHeader?: boolean
 }
 
-export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo, onExport, showDebugInfo = false }: BOMViewerProps) {
+// Part number patterns for legs and feet/casters (procurement specific)
+const LEGS_PATTERNS = [
+  "T2-DL27-KIT",
+  "T2-DL14-KIT", 
+  "T2-LC1-KIT",
+  "T2-DL27-FH-KIT",
+  "T2-DL14-FH-KIT",
+]
+
+const FEET_PATTERNS = [
+  "T2-LEVELING-CASTOR-475",
+  "T2-SEISMIC-FEET",
+]
+
+export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo, onExport, showDebugInfo = false, showProcurementActions = false, hideHeader = false }: BOMViewerProps) {
   const { toast } = useToast()
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const [exporting, setExporting] = useState<boolean>(false)
@@ -444,38 +460,26 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
       setExporting(true)
       const response = await nextJsApiClient.get(
         `/orders/${orderId}/bom-export?format=pdf`,
-        { 
-          responseType: 'blob',
-          timeout: 30000
-        }
+        { timeout: 30000 }
       )
 
-      // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      
-      // Extract filename from response headers or generate one
-      const contentDisposition = response.headers['content-disposition']
-      let filename = `bom_${poNumber || 'preview'}_${new Date().toISOString().split('T')[0]}.pdf`
-      
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-        if (filenameMatch && filenameMatch[1]) {
-          filename = filenameMatch[1].replace(/['"]/g, '')
-        }
-      }
-      
-      link.setAttribute('download', filename)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      if (response.data.success && response.data.data) {
+        // Import the PDF export utilities dynamically
+        const { downloadBOMPDF } = await import('@/lib/pdfExport.client')
+        
+        // Generate and download PDF client-side
+        await downloadBOMPDF(
+          response.data.data.bomItems,
+          response.data.data.orderInfo
+        )
 
-      toast({
-        title: "Export Successful",
-        description: "BOM exported as PDF successfully"
-      })
+        toast({
+          title: "Export Successful",
+          description: "BOM exported as PDF successfully"
+        })
+      } else {
+        throw new Error('Invalid response from server')
+      }
     } catch (error: any) {
       console.error('BOM export error:', error)
       let errorMessage = "Failed to export BOM as PDF"
@@ -568,11 +572,22 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     }
   }
 
+  // Helper function to detect if item is procurement-relevant (legs/feet)
+  const isProcurementItem = (item: BOMItem) => {
+    const partNumber = item.assemblyId || item.partNumber || item.id || ""
+    const isLeg = LEGS_PATTERNS.includes(partNumber)
+    const isFoot = FEET_PATTERNS.includes(partNumber)
+    return { isLeg, isFoot, isProcurement: isLeg || isFoot, category: isLeg ? "LEGS" : isFoot ? "FEET" : null }
+  }
+
   const renderBOMItem = (item: EnhancedBOMItem, level: number = 0, index: number = 0) => {
     const childItems = item.children || item.subItems || item.components || []
     const hasChildren = childItems.length > 0
     const itemId = item.id || item.assemblyId || item.partNumber || `${item.name}-${index}`
     const isExpanded = expandedItems.has(itemId)
+    
+    // Check if this item is procurement-relevant
+    const procurementInfo = isProcurementItem(item)
     
     // Separate display part number from internal itemId
     const getDisplayPartNumber = () => {
@@ -617,6 +632,10 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
     // Determine the visual styling based on item type and level
     const getItemStyle = () => {
+      // Procurement items get special highlighting
+      if (procurementInfo.isProcurement && showProcurementActions) {
+        return 'bg-purple-50 border-l-4 border-purple-600 font-medium ring-2 ring-purple-200'
+      }
       if (level === 0) return 'bg-blue-50 border-l-4 border-blue-600 font-semibold'
       if (item.isAggregated) return 'bg-amber-50 border-l-4 border-amber-500'
       if (isAssembly && !isPart) return 'bg-gray-50 border-l-4 border-gray-400'
@@ -681,6 +700,11 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
                 {item.isCustom && (
                   <Badge variant="outline" className="text-xs shrink-0">Custom</Badge>
                 )}
+                {procurementInfo.isProcurement && showProcurementActions && (
+                  <Badge className="text-xs shrink-0 bg-purple-100 text-purple-800 border-purple-300">
+                    {procurementInfo.category}
+                  </Badge>
+                )}
 {/* Aggregated badge removed for cleaner display - logic preserved */}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
@@ -728,7 +752,53 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
   return (
     <div className="space-y-4">
-
+      {/* Header with controls - only show if not hidden */}
+      {!hideHeader && (
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium">Bill of Materials</h3>
+            <p className="text-sm text-slate-600">
+              {getHierarchicalStats.uniqueItems} unique items • {getHierarchicalStats.totalQuantity} total quantity
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={expandAll}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <FolderOpen className="w-4 h-4" />
+              Expand All
+            </Button>
+            <Button
+              onClick={collapseAll}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Folder className="w-4 h-4" />
+              Collapse All
+            </Button>
+            {orderId && (
+              <Button
+                onClick={handleExportPDF}
+                variant="outline"
+                size="sm"
+                disabled={exporting}
+                className="flex items-center gap-2"
+              >
+                {exporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                {exporting ? 'Exporting...' : 'Export PDF'}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* BOM Items Display */}
       <Card>

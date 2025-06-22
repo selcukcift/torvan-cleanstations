@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 const StatusUpdateSchema = z.object({
   newStatus: z.enum([
     'ORDER_CREATED',
-    'PARTS_SENT_WAITING_ARRIVAL',
+    'SINK_BODY_EXTERNAL_PRODUCTION',
     'READY_FOR_PRE_QC',
     'READY_FOR_PRODUCTION',
     'TESTING_COMPLETE',
@@ -41,10 +41,10 @@ function validateStatusTransition(
   // Define allowed transitions based on current status and role
   const transitions: Record<string, Record<string, string[]>> = {
     'ORDER_CREATED': {
-      'PROCUREMENT_SPECIALIST': ['PARTS_SENT_WAITING_ARRIVAL'],
-      'PRODUCTION_COORDINATOR': ['PARTS_SENT_WAITING_ARRIVAL', 'READY_FOR_PRE_QC']
+      'PROCUREMENT_SPECIALIST': ['SINK_BODY_EXTERNAL_PRODUCTION'],
+      'PRODUCTION_COORDINATOR': ['SINK_BODY_EXTERNAL_PRODUCTION', 'READY_FOR_PRE_QC']
     },
-    'PARTS_SENT_WAITING_ARRIVAL': {
+    'SINK_BODY_EXTERNAL_PRODUCTION': {
       'PROCUREMENT_SPECIALIST': ['READY_FOR_PRE_QC'],
       'PRODUCTION_COORDINATOR': ['READY_FOR_PRE_QC', 'READY_FOR_PRODUCTION']
     },

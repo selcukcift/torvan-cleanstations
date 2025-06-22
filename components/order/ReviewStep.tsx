@@ -23,7 +23,8 @@ import {
   Grid3x3,
   Edit,
   Copy,
-  Download
+  Download,
+  FileDown
 } from "lucide-react"
 import { nextJsApiClient } from '@/lib/api'
 import { useRouter } from 'next/navigation'
@@ -37,6 +38,89 @@ import {
   formatAccessoriesDisplay, 
   formatDocumentsDisplay 
 } from "@/lib/utils"
+
+// Part/Assembly description mappings
+const partDescriptions: Record<string, string> = {
+  // Sink Models
+  'MDRD_B1_ESINK_48': 'Single Basin E-Sink (48")',
+  'MDRD_B1_ESINK_60': 'Single Basin E-Sink (60")',
+  'MDRD_B1_ESINK_72': 'Single Basin E-Sink (72")',
+  'MDRD_B2_ESINK_48': 'Double Basin E-Sink (48")',
+  'MDRD_B2_ESINK_60': 'Double Basin E-Sink (60")',
+  'MDRD_B2_ESINK_72': 'Double Basin E-Sink (72")',
+  'MDRD_B3_ESINK_72': 'Triple Basin E-Sink (72")',
+  'MDRD_B3_ESINK_84': 'Triple Basin E-Sink (84")',
+  
+  // Legs
+  'T2-DL27-KIT': 'Height Adjustable Column Kit (DL27)',
+  'T2-DL14-KIT': 'Height Adjustable Column Kit (DL14)',
+  'T2-LC1-KIT': 'Height Adjustable Triple Column Kit (LC1)',
+  'T2-DL27-FH-KIT': 'Fixed Height Column Kit (DL27)',
+  'T2-DL14-FH-KIT': 'Fixed Height Column Kit (DL14)',
+  
+  // Feet
+  'T2-LEVELING-CASTOR-475': 'Lock & Leveling Casters',
+  'T2-SEISMIC-FEET': 'S.S Adjustable Seismic Feet',
+  
+  // Control Boxes
+  'T2-CB-BASIC': 'Basic Control Box - Manual Controls',
+  'T2-CB-ADVANCED': 'Advanced Control Box - Digital Display',
+  'T2-CB-PREMIUM': 'Premium Control Box - Touch Screen',
+  
+  // Pegboard Types
+  'PERF': 'Perforated Pegboard',
+  'SOLID': 'Solid Pegboard',
+  
+  // Basin Types
+  'E_SINK': 'Standard E-Sink Basin',
+  'E_SINK_DI': 'E-Sink Basin with Deionized Water',
+  'E_DRAIN': 'E-Drain Basin for Drainage',
+  
+  // Basin Sizes
+  'T2-ADW-BASIN20X20X8': 'Basin 20" x 20" x 8"',
+  'T2-ADW-BASIN24X20X8': 'Basin 24" x 20" x 8"',
+  'T2-ADW-BASIN24X20X10': 'Basin 24" x 20" x 10"',
+  'T2-ADW-BASIN30X20X8': 'Basin 30" x 20" x 8"',
+  'T2-ADW-BASIN30X20X10': 'Basin 30" x 20" x 10"',
+  
+  // Faucet Types
+  'T2-FAUCET-STANDARD': 'Standard Single Handle Faucet',
+  'T2-FAUCET-DUAL': 'Dual Handle Hot/Cold Faucet',
+  'T2-FAUCET-SENSOR': 'Sensor Activated Touchless Faucet',
+  'T2-FAUCET-KNEE': 'Knee Operated Hands-Free Faucet',
+  'T2-OA-STD-FAUCET-WB-KIT': '10" Wrist Blade, Swing Spout, Wall Mounted Faucet Kit',
+  'T2-OA-PRE-RINSE-FAUCET-KIT': 'Pre-Rinse Overhead Spray Unit Kit',
+  'T2-OA-DI-GOOSENECK-FAUCET-KIT': 'Gooseneck Treated Water Faucet Kit, PVC',
+  
+  // Sprayer Types
+  'T2-SPRAYER-HANDHELD': 'Handheld Flexible Sprayer',
+  'T2-SPRAYER-FIXED': 'Fixed Position Sprayer',
+  'T2-SPRAYER-RETRACTABLE': 'Retractable Pull-Out Sprayer',
+  'T2-OA-WATERGUN-TURRET-KIT': 'Water Gun Kit & Turret, Treated Water Compatible',
+  'T2-OA-WATERGUN-ROSETTE-KIT': 'Water Gun Kit & Rosette, Treated Water Compatible',
+  'T2-OA-AIRGUN-TURRET-KIT': 'Air Gun Kit & Turret',
+  'T2-OA-AIRGUN-ROSETTE-KIT': 'Air Gun Kit & Rosette'
+}
+
+const getPartDescription = (partId: string): string => {
+  return partDescriptions[partId] || partId
+}
+
+// Helper function for color extraction
+const extractColorFromId = (colorId: string) => {
+  if (!colorId) return 'None'
+  const colorMap: { [key: string]: string } = {
+    'T-OA-PB-COLOR-GREEN': 'Green',
+    'T-OA-PB-COLOR-BLUE': 'Blue', 
+    'T-OA-PB-COLOR-RED': 'Red',
+    'T-OA-PB-COLOR-BLACK': 'Black',
+    'T-OA-PB-COLOR-YELLOW': 'Yellow',
+    'T-OA-PB-COLOR-GREY': 'Grey',
+    'T-OA-PB-COLOR-WHITE': 'White',
+    'T-OA-PB-COLOR-ORANGE': 'Orange'
+  }
+  return colorMap[colorId] || colorId
+}
 
 interface OrderSubmitResponse {
   success: boolean
@@ -69,6 +153,7 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
   const [bomPreviewError, setBomPreviewError] = useState<string | null>(null)
   const [bomPreviewData, setBomPreviewData] = useState<any>(null)
   const [autoControlBoxes, setAutoControlBoxes] = useState<Record<string, any>>({})
+  const [exportingPDF, setExportingPDF] = useState(false)
 
   // Load BOM preview and auto-determine control boxes on component mount
   useEffect(() => {
@@ -142,6 +227,83 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
       setBomPreviewError(error.response?.data?.message || 'Failed to generate BOM preview')
     } finally {
       setBomPreviewLoading(false)
+    }
+  }
+
+  const handleExportPDF = async () => {
+    if (!customerInfo.poNumber) {
+      alert('Cannot export PDF: PO Number is required')
+      return
+    }
+
+    setExportingPDF(true)
+    try {
+      // Dynamically import PDF utilities to avoid build-time import issues
+      const { downloadBOMPDF, aggregateBOMItems, sortBOMItemsByPriority } = await import('@/lib/pdfExport.client')
+      
+      if (isEditMode && orderId) {
+        // For saved orders, get data from API and generate PDF client-side
+        const response = await nextJsApiClient.get(`/orders/${orderId}/bom-export`, {
+          params: { format: 'pdf' }
+        })
+
+        if (response.data.success && response.data.data) {
+          await downloadBOMPDF(
+            response.data.data.bomItems,
+            response.data.data.orderInfo
+          )
+        } else {
+          throw new Error('Failed to get BOM data from API')
+        }
+      } else {
+        // For preview mode, generate PDF client-side from preview data
+        if (!bomPreviewData || !bomPreviewData.bom) {
+          alert('No BOM data available. Please generate BOM preview first.')
+          return
+        }
+
+        // Extract BOM items from preview data
+        const bomItems: any[] = bomPreviewData.bom.flattened || bomPreviewData.bom.hierarchical || []
+        
+        if (bomItems.length === 0) {
+          alert('No BOM items found to export.')
+          return
+        }
+
+        // Convert to our BOMItem format
+        const convertedItems: any[] = bomItems.map(item => ({
+          partNumber: item.assemblyId || item.partNumber || item.id,
+          name: item.name,
+          description: item.description || item.name,
+          quantity: item.quantity,
+          category: item.category || item.itemType || 'UNCATEGORIZED',
+          itemType: item.itemType
+        }))
+
+        // Prepare order info
+        const orderInfo: any = {
+          poNumber: customerInfo.poNumber,
+          customerName: customerInfo.customerName,
+          orderDate: new Date(),
+          wantDate: customerInfo.wantDate || undefined,
+          projectName: customerInfo.projectName || undefined,
+          salesPerson: customerInfo.salesPerson || undefined,
+          buildNumbers: sinkSelection.buildNumbers
+        }
+
+        // Aggregate and download PDF
+        const aggregatedItems = sortBOMItemsByPriority(aggregateBOMItems(convertedItems))
+        await downloadBOMPDF(aggregatedItems, orderInfo)
+      }
+    } catch (error: any) {
+      console.error('PDF export error:', error)
+      if (isEditMode) {
+        alert('Failed to export PDF from saved order.')
+      } else {
+        alert('Failed to export PDF from preview data.')
+      }
+    } finally {
+      setExportingPDF(false)
     }
   }
 
@@ -915,6 +1077,10 @@ export function ReviewStep({ isEditMode = false, orderId }: ReviewStepProps) {
             configurations={configurations}
             accessories={accessories}
             showDebugInfo={false}
+            onExportPDF={handleExportPDF}
+            exportingPDF={exportingPDF}
+            orderId={orderId}
+            isEditMode={isEditMode}
           />
         </TabsContent>
 

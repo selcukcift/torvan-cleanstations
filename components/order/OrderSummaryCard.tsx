@@ -43,8 +43,8 @@ const statusConfig = {
     icon: FileText,
     progress: 10 
   },
-  PARTS_SENT_WAITING_ARRIVAL: { 
-    label: "Parts Sent", 
+  SINK_BODY_EXTERNAL_PRODUCTION: { 
+    label: "External Production", 
     color: "bg-purple-100 text-purple-700", 
     icon: Package,
     progress: 20 
