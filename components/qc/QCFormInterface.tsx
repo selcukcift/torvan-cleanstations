@@ -35,11 +35,16 @@ interface QCTemplateItem {
   section: string
   checklistItem: string
   itemType: 'PASS_FAIL' | 'TEXT_INPUT' | 'NUMERIC_INPUT' | 'SINGLE_SELECT' | 'MULTI_SELECT' | 'DATE_INPUT' | 'CHECKBOX'
-  isBasinSpecific: boolean
+  isBasinSpecific?: boolean
   isRequired: boolean
   order: number
-  options?: string[]
+  options?: any
   expectedValue?: string
+  applicabilityCondition?: string
+  repeatPer?: string
+  repeatIndex?: number
+  originalId?: string
+  notesPrompt?: string
 }
 
 interface QCTemplate {
@@ -311,13 +316,16 @@ export function QCFormInterface({ orderId, orderData, template: templateProp, se
         )
 
       case 'SINGLE_SELECT':
+        const selectOptions = typeof item.options === 'string' 
+          ? JSON.parse(item.options || '[]') 
+          : (item.options || []);
         return (
           <Select value={itemData.value} onValueChange={(value) => handleItemValueChange(item.id, value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select an option..." />
             </SelectTrigger>
             <SelectContent>
-              {item.options?.map((option) => (
+              {selectOptions.map((option: string) => (
                 <SelectItem key={option} value={option}>
                   {option}
                 </SelectItem>
@@ -327,9 +335,12 @@ export function QCFormInterface({ orderId, orderData, template: templateProp, se
         )
 
       case 'MULTI_SELECT':
+        const multiOptions = typeof item.options === 'string' 
+          ? JSON.parse(item.options || '[]') 
+          : (item.options || []);
         return (
           <div className="space-y-2">
-            {item.options?.map((option) => (
+            {multiOptions.map((option: string) => (
               <div key={option} className="flex items-center space-x-2">
                 <Checkbox
                   id={`${item.id}-${option}`}
@@ -460,16 +471,26 @@ export function QCFormInterface({ orderId, orderData, template: templateProp, se
                     {items
                       .sort((a, b) => a.order - b.order)
                       .map((item) => (
-                        <div key={item.id} className="space-y-3">
+                        <div key={item.repeatIndex ? `${item.originalId || item.id}-${item.repeatIndex}` : item.id} className="space-y-3">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <Label className="text-base font-medium flex items-center gap-2">
                                 {item.checklistItem}
                                 {item.isRequired && <span className="text-red-500">*</span>}
-                                {item.isBasinSpecific && <Badge variant="outline" className="text-xs ml-2">Basin Specific</Badge>}
+                                {(item.isBasinSpecific || item.repeatIndex) && (
+                                  <Badge variant="outline" className="text-xs ml-2">
+                                    {item.repeatIndex ? `Basin ${item.repeatIndex}` : 'Basin Specific'}
+                                  </Badge>
+                                )}
+                                {item.applicabilityCondition && (
+                                  <Badge variant="secondary" className="text-xs ml-2">Dynamic</Badge>
+                                )}
                               </Label>
                               {item.expectedValue && (
                                 <p className="text-sm text-slate-600 mt-1">Expected: {item.expectedValue}</p>
+                              )}
+                              {item.notesPrompt && (
+                                <p className="text-sm text-blue-600 mt-1 italic">{item.notesPrompt}</p>
                               )}
                             </div>
                           </div>
@@ -484,7 +505,7 @@ export function QCFormInterface({ orderId, orderData, template: templateProp, se
                             <Textarea
                               value={formData[item.id]?.notes || ''}
                               onChange={(e) => handleItemValueChange(item.id, e.target.value, 'notes')}
-                              placeholder="Add any additional notes..."
+                              placeholder={item.notesPrompt || "Add any additional notes..."}
                               rows={2}
                               className="mt-1"
                             />

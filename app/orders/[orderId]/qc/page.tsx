@@ -8,6 +8,9 @@ import { useToast } from "@/hooks/use-toast"
 import { QCFormInterface } from "@/components/qc/QCFormInterface"
 import { QCFormWithDocuments } from "@/components/qc/QCFormWithDocuments"
 import { QCFormInterfaceEnhanced } from "@/components/qc/QCFormInterfaceEnhanced"
+import { QCTabbedInterface } from "@/components/qc/QCTabbedInterface"
+import { QCChecklistInterface } from "@/components/qc/QCChecklistInterface"
+import { QCResultsViewer } from "@/components/qc/QCResultsViewer"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, AlertCircle, Info } from "lucide-react"
 
@@ -63,6 +66,13 @@ export default function QCInspectionPage() {
       
       if (response.data.success) {
         setQcTemplate(response.data.template)
+        // Store order configuration for verification
+        if (response.data.orderConfiguration) {
+          setQcTemplate({
+            ...response.data.template,
+            orderConfiguration: response.data.orderConfiguration
+          })
+        }
       } else {
         console.error('No QC template found for form type:', formType)
         toast({
@@ -100,14 +110,29 @@ export default function QCInspectionPage() {
     )
   }
 
-  // Determine which QC phase we're in
+  // Determine which QC phase we're in or have completed
   const getQCPhase = () => {
     if (orderData?.orderStatus === 'READY_FOR_PRE_QC') return 'Pre-Production Check'
     if (orderData?.orderStatus === 'READY_FOR_FINAL_QC') return 'Final QC'
+    if (orderData?.orderStatus === 'READY_FOR_PRODUCTION') return 'Pre-Production Check (Completed)'
+    if (orderData?.orderStatus === 'READY_FOR_SHIP') return 'Final QC (Completed)'
+    if (orderData?.orderStatus === 'TESTING_COMPLETE') return 'QC (Completed)'
     return 'Unknown'
   }
 
-  const isValidQCStatus = orderData?.orderStatus === 'READY_FOR_PRE_QC' || orderData?.orderStatus === 'READY_FOR_FINAL_QC'
+  const isValidQCStatus = [
+    'READY_FOR_PRE_QC', 
+    'READY_FOR_FINAL_QC',
+    'READY_FOR_PRODUCTION', // Allow viewing completed Pre-QC
+    'READY_FOR_SHIP', // Allow viewing completed Final QC
+    'TESTING_COMPLETE' // Allow viewing completed QC
+  ].includes(orderData?.orderStatus || '')
+
+  const isQCCompleted = [
+    'READY_FOR_PRODUCTION',
+    'READY_FOR_SHIP', 
+    'TESTING_COMPLETE'
+  ].includes(orderData?.orderStatus || '')
 
   return (
     <div className="space-y-6">
@@ -142,39 +167,48 @@ export default function QCInspectionPage() {
         </div>
       )}
 
-      {isValidQCStatus && qcTemplate && (
-        <QCFormInterfaceEnhanced
-          orderId={params.orderId as string}
-          orderData={{
-            poNumber: orderData.poNumber,
-            customerName: orderData.customerName,
-            productFamily: orderData.productFamily || "T2 Sink",
-            buildNumbers: orderData.buildNumbers,
-            status: orderData.orderStatus,
-            configurations: orderData.configurations
-          }}
-          template={qcTemplate}
-          onSubmit={async (formData) => {
-            // Handle QC form submission
-            try {
-              const response = await nextJsApiClient.post(`/orders/${params.orderId}/qc`, formData)
-              if (response.data.success) {
-                toast({
-                  title: "QC Inspection Complete",
-                  description: `QC inspection submitted successfully with result: ${formData.overallStatus}`
-                })
-                window.location.href = `/orders/${params.orderId}`
-              }
-            } catch (error: any) {
-              console.error('QC submission error:', error)
-              toast({
-                title: "Submission Failed",
-                description: error.response?.data?.message || "Failed to submit QC inspection",
-                variant: "destructive"
-              })
-            }
-          }}
-        />
+      {isValidQCStatus && (
+        isQCCompleted ? (
+          // Show QC results for completed inspections
+          <QCResultsViewer
+            orderId={params.orderId as string}
+            orderData={{
+              poNumber: orderData.poNumber,
+              customerName: orderData.customerName,
+              buildNumbers: orderData.buildNumbers,
+              status: orderData.orderStatus
+            }}
+          />
+        ) : qcTemplate ? (
+          // Show QC form for pending inspections
+          getQCPhase() === 'Pre-Production Check' ? (
+            <QCChecklistInterface
+              orderId={params.orderId as string}
+              orderData={{
+                poNumber: orderData.poNumber,
+                customerName: orderData.customerName,
+                buildNumbers: orderData.buildNumbers,
+                status: orderData.orderStatus
+              }}
+              template={qcTemplate}
+              session={session}
+              orderConfiguration={qcTemplate?.orderConfiguration}
+            />
+          ) : (
+            <QCTabbedInterface
+              orderId={params.orderId as string}
+              orderData={{
+                poNumber: orderData.poNumber,
+                customerName: orderData.customerName,
+                buildNumbers: orderData.buildNumbers,
+                status: orderData.orderStatus
+              }}
+              template={qcTemplate}
+              session={session}
+              orderConfiguration={qcTemplate?.orderConfiguration}
+            />
+          )
+        ) : null
       )}
 
       {isValidQCStatus && !templateLoading && !qcTemplate && (

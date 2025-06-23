@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "orderId": "cmc88vbwb0006j5vywm10nopd",
+    "orderNumber": "ORD-2025-TEST-10nopd",
+    "generatedAt": "2025-06-23T00:20:45.797Z",
+    "version": "1.0.0",
+    "sourceOfTruth": true,
+    "description": "Mock single source of truth for testing",
+    "lastUpdated": "2025-06-23T00:20:45.797Z",
+    "status": "READY_FOR_PRE_QC"
+  },
+  "orderDetails": {
+    "id": "cmc88vbwb0006j5vywm10nopd",
+    "status": "READY_FOR_PRE_QC"
+  },
+  "configuration": {
+    "buildNumber": "B002",
+    "sinkModel": "T2-SINK-STANDARD",
+    "dimensions": {
+      "width": 72,
+      "length": 120,
+      "unit": "inches"
+    },
+    "structuralComponents": {
+      "legs": {
+        "typeId": "T2-DL14-KIT",
+        "name": "DL14 Height Adjustable Legs Kit",
+        "type": "HEIGHT_ADJUSTABLE"
+      },
+      "feet": {
+        "typeId": "T2-FIXED-FEET",
+        "name": "Fixed Feet",
+        "type": "LEVELING_FEET"
+      }
+    },
+    "pegboard": false,
+    "pegboardType": null,
+    "storage": {
+      "drawersAndCompartments": []
+    },
+    "basins": [
+      {
+        "position": 1,
+        "type": "T2-BASIN-STANDARD",
+        "size": "T2-BASIN-18X24",
+        "addons": [
+          "DRAIN_BUTTON",
+          "BASIN_LIGHT"
+        ]
+      },
+      {
+        "position": 2,
+        "type": "T2-BASIN-STANDARD",
+        "size": "T2-BASIN-18X24",
+        "addons": [
+          "DRAIN_BUTTON",
+          "BASIN_LIGHT"
+        ]
+      },
+      {
+        "position": 3,
+        "type": "T2-BASIN-STANDARD",
+        "size": "T2-BASIN-18X24",
+        "addons": [
+          "DRAIN_BUTTON",
+          "BASIN_LIGHT"
+        ]
+      }
+    ],
+    "faucets": [],
+    "sprayers": [],
+    "workflowDirection": "LEFT_TO_RIGHT"
+  }
+}

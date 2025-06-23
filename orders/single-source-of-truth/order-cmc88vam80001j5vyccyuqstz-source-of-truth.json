@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "orderId": "cmc88vam80001j5vyccyuqstz",
+    "orderNumber": "ORD-2025-TEST-yuqstz",
+    "generatedAt": "2025-06-23T00:20:45.797Z",
+    "version": "1.0.0",
+    "sourceOfTruth": true,
+    "description": "Mock single source of truth for testing",
+    "lastUpdated": "2025-06-23T00:20:45.797Z",
+    "status": "READY_FOR_PRE_QC"
+  },
+  "orderDetails": {
+    "id": "cmc88vam80001j5vyccyuqstz",
+    "status": "READY_FOR_PRE_QC"
+  },
+  "configuration": {
+    "buildNumber": "B001",
+    "sinkModel": "T2-SINK-STANDARD",
+    "dimensions": {
+      "width": 48,
+      "length": 90,
+      "unit": "inches"
+    },
+    "structuralComponents": {
+      "legs": {
+        "typeId": "T2-DL14-KIT",
+        "name": "DL14 Height Adjustable Legs Kit",
+        "type": "HEIGHT_ADJUSTABLE"
+      },
+      "feet": {
+        "typeId": "T2-LEVELING-CASTOR-475",
+        "name": "Leveling Casters 475lbs",
+        "type": "LEVELING_CASTERS"
+      }
+    },
+    "pegboard": true,
+    "pegboardType": "T2-PEGBOARD-48",
+    "storage": {
+      "drawersAndCompartments": []
+    },
+    "basins": [
+      {
+        "position": 1,
+        "type": "T2-BASIN-STANDARD",
+        "size": "T2-BASIN-18X24",
+        "addons": [
+          "DRAIN_BUTTON",
+          "BASIN_LIGHT"
+        ]
+      },
+      {
+        "position": 2,
+        "type": "T2-BASIN-STANDARD",
+        "size": "T2-BASIN-18X24",
+        "addons": [
+          "DRAIN_BUTTON",
+          "BASIN_LIGHT"
+        ]
+      }
+    ],
+    "faucets": [],
+    "sprayers": [],
+    "workflowDirection": "LEFT_TO_RIGHT"
+  }
+}

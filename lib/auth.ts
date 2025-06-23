@@ -68,9 +68,9 @@ export function canAccessOrder(user: AuthUser, order: any): boolean {
            ['READY_FOR_PRODUCTION', 'TESTING_COMPLETE'].includes(order.orderStatus)
   }
   
-  // QC can access orders ready for QC
+  // QC can access orders ready for QC and completed QC orders
   if (user.role === 'QC_PERSON') {
-    return ['READY_FOR_PRE_QC', 'READY_FOR_FINAL_QC'].includes(order.orderStatus)
+    return ['READY_FOR_PRE_QC', 'READY_FOR_FINAL_QC', 'READY_FOR_PRODUCTION', 'READY_FOR_SHIP', 'TESTING_COMPLETE'].includes(order.orderStatus)
   }
   
   // Procurement can access orders that need parts management

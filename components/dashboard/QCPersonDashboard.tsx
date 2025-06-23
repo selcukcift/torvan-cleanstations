@@ -29,7 +29,7 @@ interface QCTask {
   poNumber: string
   customerName: string
   productFamily: string
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
+  status: 'PENDING' | 'IN_PROGRESS' | 'PRE_QC_COMPLETED' | 'FINAL_QC_COMPLETED' | 'FAILED'
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
   dueDate: string
   templateId: string
@@ -104,8 +104,10 @@ export function QCPersonDashboard() {
         return 'bg-yellow-100 text-yellow-700'
       case 'IN_PROGRESS':
         return 'bg-blue-100 text-blue-700'
-      case 'COMPLETED':
+      case 'PRE_QC_COMPLETED':
         return 'bg-green-100 text-green-700'
+      case 'FINAL_QC_COMPLETED':
+        return 'bg-emerald-100 text-emerald-700'
       case 'FAILED':
         return 'bg-red-100 text-red-700'
       default:
@@ -135,7 +137,7 @@ export function QCPersonDashboard() {
       case 'in-progress':
         return qcTasks.filter(task => task.status === 'IN_PROGRESS')
       case 'completed':
-        return qcTasks.filter(task => ['COMPLETED', 'FAILED'].includes(task.status))
+        return qcTasks.filter(task => ['PRE_QC_COMPLETED', 'FINAL_QC_COMPLETED', 'FAILED'].includes(task.status))
       default:
         return qcTasks
     }
@@ -317,7 +319,10 @@ export function QCPersonDashboard() {
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium">PO: {task.poNumber}</h4>
                               <Badge className={getStatusColor(task.status)}>
-                                {task.status.replace('_', ' ')}
+                                {task.status === 'PRE_QC_COMPLETED' ? 'Pre-QC Completed' :
+                                 task.status === 'FINAL_QC_COMPLETED' ? 'Final QC Completed' :
+                                 task.status === 'IN_PROGRESS' ? 'In Progress' :
+                                 task.status.replace('_', ' ')}
                               </Badge>
                             </div>
                             
@@ -361,7 +366,8 @@ export function QCPersonDashboard() {
                 <div className="space-y-3">
                   {filterTasksByStatus('completed').map((task) => (
                     <Card key={task.id} className={`border-l-4 ${
-                      task.status === 'COMPLETED' ? 'border-l-green-500' : 'border-l-red-500'
+                      task.status === 'PRE_QC_COMPLETED' ? 'border-l-green-500' : 
+                      task.status === 'FINAL_QC_COMPLETED' ? 'border-l-emerald-500' : 'border-l-red-500'
                     }`}>
                       <CardContent className="pt-4">
                         <div className="flex items-start justify-between">
@@ -369,7 +375,10 @@ export function QCPersonDashboard() {
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium">PO: {task.poNumber}</h4>
                               <Badge className={getStatusColor(task.status)}>
-                                {task.status}
+                                {task.status === 'PRE_QC_COMPLETED' ? 'Pre-QC Completed' :
+                                 task.status === 'FINAL_QC_COMPLETED' ? 'Final QC Completed' :
+                                 task.status === 'IN_PROGRESS' ? 'In Progress' :
+                                 task.status}
                               </Badge>
                             </div>
                             
@@ -390,12 +399,12 @@ export function QCPersonDashboard() {
                           </div>
                           
                           <Button 
-                            onClick={() => router.push(`/orders/${task.orderId}`)}
+                            onClick={() => router.push(`/orders/${task.orderId}/qc`)}
                             variant="outline"
                             size="sm"
                             className="ml-4"
                           >
-                            View Details
+                            View QC Results
                           </Button>
                         </div>
                       </CardContent>

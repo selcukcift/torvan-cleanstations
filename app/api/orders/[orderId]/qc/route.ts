@@ -105,7 +105,7 @@ export async function POST(
       )
     }
     
-    if (!checkUserRole(user, ['ASSEMBLER', 'QC_PERSON'])) {
+    if (!checkUserRole(user, ['ASSEMBLER', 'QC_PERSON', 'PRODUCTION_COORDINATOR', 'ADMIN'])) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
