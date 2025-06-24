@@ -113,6 +113,10 @@ model User {
   systemNotifications     SystemNotification[]     @relation("UserSystemNotifications")
   assignedTasks           Task[]                   @relation("TaskAssignee")
   taskNotes               TaskNote[]               @relation("TaskNoteAuthor")
+  performedChecklists     ProductionChecklist[]    @relation("UserPerformedChecklists")
+  completedProdTasks      ProductionTask[]         @relation("UserCompletedProdTasks")
+  approvedProdDocs        ProductionDocument[]     @relation("UserApprovedProdDocs")
+  productionSyncs         ProductionWorkstationSync[] @relation("UserProductionSyncs")
 }
 
 model Order {
@@ -146,6 +150,10 @@ model Order {
   sinkConfigurations    SinkConfiguration[]
   sprayerConfigurations SprayerConfiguration[]
   tasks                 Task[]
+  productionChecklists  ProductionChecklist[]
+  productionTasks       ProductionTask[]
+  productionDocuments   ProductionDocument[]
+  productionSyncs       ProductionWorkstationSync[]
 }
 
 model BasinConfiguration {
@@ -893,6 +901,21 @@ enum OrderCommentPriority {
   URGENT
 }
 
+enum ProductionChecklistStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  APPROVED
+}
+
+enum ProductionDocType {
+  CHECKLIST_REPORT
+  COMPLETION_CERTIFICATE
+  QC_REPORT
+  COMPLIANCE_PACKAGE
+  PRODUCTION_SUMMARY
+}
+
 enum InventoryTransactionType {
   INCOMING
   OUTGOING
@@ -924,4 +947,102 @@ enum TestStatus {
   IN_PROGRESS
   PASSED
   FAILED
+}
+
+// Production Management Models
+
+model ProductionChecklist {
+  id            String   @id @default(cuid())
+  orderId       String
+  buildNumber   String?
+  jobId         String
+  sections      Json     // Structured checklist data from CLP.T2.001.V01
+  signatures    Json     // Digital signatures array
+  status        ProductionChecklistStatus @default(DRAFT)
+  performedBy   String
+  performedById String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  completedAt   DateTime?
+  
+  order         Order    @relation(fields: [orderId], references: [id])
+  performer     User     @relation("UserPerformedChecklists", fields: [performedById], references: [id])
+  
+  @@unique([orderId, buildNumber])
+  @@index([status, orderId])
+}
+
+model ProductionTask {
+  id            String   @id @default(cuid())
+  orderId       String
+  buildNumber   String?
+  taskId        String   // From ConfigurationDrivenTasks
+  category      String
+  title         String
+  description   String
+  completed     Boolean  @default(false)
+  actualTime    Int?     // minutes
+  estimatedTime Int
+  photos        String[] @default([])
+  notes         String?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  completedBy   String?
+  
+  order         Order    @relation(fields: [orderId], references: [id])
+  completer     User?    @relation("UserCompletedProdTasks", fields: [completedBy], references: [id])
+  
+  @@index([orderId, category])
+  @@index([completed, orderId])
+}
+
+model ProductionMetrics {
+  id               String   @id @default(cuid())
+  date             DateTime @db.Date
+  ordersStarted    Int      @default(0)
+  ordersCompleted  Int      @default(0)
+  avgCycleTime     Float?   // hours
+  avgTaskTime      Json     // by category
+  bottlenecks      Json     // identified issues
+  qualityScore     Float?   // percentage
+  createdAt        DateTime @default(now())
+  
+  @@unique([date])
+  @@index([date])
+}
+
+model ProductionDocument {
+  id            String   @id @default(cuid())
+  orderId       String
+  buildNumber   String?
+  type          ProductionDocType
+  title         String
+  version       Int      @default(1)
+  content       String   @db.Text
+  format        String   // pdf, html, etc
+  approved      Boolean  @default(false)
+  approvedBy    String?
+  approvedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  order         Order    @relation(fields: [orderId], references: [id])
+  approver      User?    @relation("UserApprovedProdDocs", fields: [approvedBy], references: [id])
+  
+  @@index([orderId, type])
+}
+
+model ProductionWorkstationSync {
+  id            String   @id @default(cuid())
+  userId        String
+  orderId       String
+  syncData      Json     // Offline changes to sync
+  synced        Boolean  @default(false)
+  syncedAt      DateTime?
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation("UserProductionSyncs", fields: [userId], references: [id])
+  order         Order    @relation(fields: [orderId], references: [id])
+  
+  @@index([synced, userId])
 }

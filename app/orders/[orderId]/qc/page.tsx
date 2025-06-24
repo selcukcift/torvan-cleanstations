@@ -211,7 +211,7 @@ export default function QCInspectionPage() {
         ) : null
       )}
 
-      {isValidQCStatus && !templateLoading && !qcTemplate && (
+      {isValidQCStatus && !templateLoading && !qcTemplate && !isQCCompleted && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>

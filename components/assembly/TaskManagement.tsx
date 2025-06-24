@@ -29,6 +29,8 @@ import {
 import { nextJsApiClient } from "@/lib/api"
 import { WorkInstructionViewer } from "./WorkInstructionViewer"
 import { ToolRequirements } from "./ToolRequirements"
+import { ProductionChecklistInterface } from "../production/ProductionChecklistInterface"
+import { ConfigurationDrivenTasks } from "../production/ConfigurationDrivenTasks"
 
 interface AssemblyTask {
   id: string
@@ -59,10 +61,19 @@ interface PackagingItem {
 
 interface TaskManagementProps {
   orderId: string
+  buildNumber?: string
   userRole?: string
+  viewMode?: 'traditional' | 'enhanced' | 'checklist'
+  onTaskSelect?: (taskId: string) => void
 }
 
-export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
+export function TaskManagement({ 
+  orderId, 
+  buildNumber,
+  userRole,
+  viewMode = 'enhanced',
+  onTaskSelect
+}: TaskManagementProps) {
   const { data: session } = useSession()
   const { toast } = useToast()
   const [assemblyTasks, setAssemblyTasks] = useState<AssemblyTask[]>([])
@@ -72,6 +83,9 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
   const [orderData, setOrderData] = useState<any>(null)
   const [submitting, setSubmitting] = useState(false)
   const [completionProgress, setCompletionProgress] = useState(0)
+  const [activeView, setActiveView] = useState<'tasks' | 'checklist' | 'configuration'>(
+    viewMode === 'checklist' ? 'checklist' : 'tasks'
+  )
 
   const fetchAssemblyData = useCallback(async () => {
     try {
@@ -253,6 +267,42 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
     return userRole === 'ADMIN' || userRole === 'PRODUCTION_COORDINATOR' || userRole === 'ASSEMBLER'
   }
 
+  const handleChecklistComplete = (checklistData: any) => {
+    toast({
+      title: "Production Checklist Complete",
+      description: "Digital checklist has been completed and signed off"
+    })
+    
+    // Update order status to indicate checklist completion
+    updateOrderStatus('TESTING_COMPLETE')
+  }
+
+  const handleConfigurationTaskComplete = () => {
+    toast({
+      title: "Configuration Tasks Complete",
+      description: "All configuration-driven tasks have been completed"
+    })
+    
+    // Move to checklist view or next step
+    setActiveView('checklist')
+  }
+
+  const updateOrderStatus = async (newStatus: string) => {
+    try {
+      const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
+        newStatus,
+        notes: `Status updated from TaskManagement - ${newStatus}`
+      })
+      
+      if (response.data.success) {
+        // Refresh order data
+        fetchAssemblyData()
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -277,9 +327,15 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Guided Assembly Workflow</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            {viewMode === 'enhanced' ? 'Enhanced Production Workflow' : 'Guided Assembly Workflow'}
+          </h2>
           <p className="text-muted-foreground">
-            Step-by-step assembly process for Order {orderData?.poNumber || orderId}
+            {viewMode === 'enhanced' 
+              ? 'Configuration-driven tasks and digital checklists for' 
+              : 'Step-by-step assembly process for'
+            } Order {orderData?.poNumber || orderId}
+            {buildNumber && ` - Build #${buildNumber}`}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -297,8 +353,71 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
         </div>
       </div>
 
-      {/* Progress Overview */}
-      <Card>
+      {/* Enhanced View Mode Navigation */}
+      {viewMode === 'enhanced' && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-1">
+              <Button
+                variant={activeView === 'configuration' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveView('configuration')}
+              >
+                <Wrench className="w-4 h-4 mr-2" />
+                Configuration Tasks
+              </Button>
+              <Button
+                variant={activeView === 'checklist' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveView('checklist')}
+              >
+                <ClipboardCheck className="w-4 h-4 mr-2" />
+                Production Checklist
+              </Button>
+              <Button
+                variant={activeView === 'tasks' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveView('tasks')}
+              >
+                <Package className="w-4 h-4 mr-2" />
+                Traditional Tasks
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Enhanced Views Content */}
+      {viewMode === 'enhanced' && activeView === 'configuration' && (
+        <ConfigurationDrivenTasks
+          orderId={orderId}
+          buildNumber={buildNumber}
+          orderConfiguration={orderData?.configurations?.[buildNumber || orderData?.buildNumbers?.[0]]}
+          bomData={orderData?.bomData}
+          onTaskUpdate={(taskId, updates) => {
+            console.log('Configuration task updated:', taskId, updates)
+            onTaskSelect?.(taskId)
+          }}
+          onAllTasksComplete={handleConfigurationTaskComplete}
+          readonly={!canEdit()}
+        />
+      )}
+
+      {viewMode === 'enhanced' && activeView === 'checklist' && (
+        <ProductionChecklistInterface
+          orderId={orderId}
+          buildNumber={buildNumber}
+          orderConfiguration={orderData?.configurations?.[buildNumber || orderData?.buildNumbers?.[0]]}
+          onComplete={handleChecklistComplete}
+          readonly={!canEdit()}
+        />
+      )}
+
+      {/* Traditional/Enhanced Tasks View */}
+      {(viewMode !== 'enhanced' || activeView === 'tasks') && (
+        <>
+          {/* Progress Overview */}
+          <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Package className="w-5 h-5" />
@@ -541,6 +660,8 @@ export function TaskManagement({ orderId, userRole }: TaskManagementProps) {
           </div>
         </CardContent>
       </Card>
+        </>
+      )}
     </div>
   )
 }

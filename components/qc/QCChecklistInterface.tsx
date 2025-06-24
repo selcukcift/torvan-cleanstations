@@ -78,6 +78,23 @@ export function QCChecklistInterface({ orderId, orderData, template: templatePro
   const [saving, setSaving] = useState(false)
   const [overallResult, setOverallResult] = useState<'PASSED' | 'FAILED' | null>(null)
 
+  // Function to improve specific wording issues
+  const improveItemWording = (originalText: string): string => {
+    const text = originalText.toLowerCase()
+    
+    // Fix mounting holes wording
+    if (text.includes('faucet mounting holes drilled and positioned per drawing specifications')) {
+      return 'Faucet mounting holes - position and specifications'
+    }
+    
+    if (text.includes('all mounting holes match drawing specifications - check positions and sizes')) {
+      return 'All mounting holes - positions and sizes per specifications'
+    }
+    
+    // Default: return original text
+    return originalText
+  }
+
   useEffect(() => {
     if (templateProp) {
       setTemplate(templateProp)
@@ -308,7 +325,7 @@ export function QCChecklistInterface({ orderId, orderData, template: templatePro
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <Label className="text-sm font-medium leading-relaxed">
-                {item.checklistItem}
+                {improveItemWording(item.checklistItem)}
                 {item.isRequired && <span className="text-red-500 ml-1">*</span>}
               </Label>
               

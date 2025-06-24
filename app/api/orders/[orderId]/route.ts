@@ -440,3 +440,135 @@ async function createBomItemRecursive(
     }
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ orderId: string }> }
+) {
+  const { orderId } = await params;
+  try {
+    const user = await getAuthUser()
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    // Only admins can delete orders
+    if (user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden: Only admins can delete orders" }, { status: 403 })
+    }
+
+    // Check if order exists
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        comments: true,
+        notifications: true,
+        associatedDocuments: true,
+        generatedBoms: true,
+        historyLogs: true,
+        tasks: true,
+        qcResults: true,
+        orderTestResults: true
+      }
+    })
+
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 })
+    }
+
+    // Delete related records in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Delete notifications
+      await tx.notification.deleteMany({
+        where: { linkToOrder: orderId }
+      })
+
+      // Delete associated documents
+      await tx.associatedDocument.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete comments
+      await tx.orderComment.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete tasks
+      await tx.task.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete QC results
+      await tx.orderQcResult.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete test results and their step results
+      const testResults = await tx.orderTestResult.findMany({
+        where: { orderId },
+        select: { id: true }
+      })
+
+      for (const testResult of testResults) {
+        await tx.orderTestStepResult.deleteMany({
+          where: { orderTestResultId: testResult.id }
+        })
+      }
+
+      await tx.orderTestResult.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete history logs
+      await tx.orderHistoryLog.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete inventory transactions
+      await tx.inventoryTransaction.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete BOM items and BOMs
+      const boms = await tx.bom.findMany({
+        where: { orderId },
+        select: { id: true }
+      })
+
+      for (const bom of boms) {
+        await tx.bomItem.deleteMany({
+          where: { bomId: bom.id }
+        })
+      }
+
+      await tx.bom.deleteMany({
+        where: { orderId }
+      })
+
+      // Delete configurations
+      await tx.sinkConfiguration.deleteMany({ where: { orderId } })
+      await tx.basinConfiguration.deleteMany({ where: { orderId } })
+      await tx.faucetConfiguration.deleteMany({ where: { orderId } })
+      await tx.sprayerConfiguration.deleteMany({ where: { orderId } })
+      await tx.selectedAccessory.deleteMany({ where: { orderId } })
+
+      // Finally, delete the order
+      await tx.order.delete({
+        where: { id: orderId }
+      })
+    })
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Order deleted successfully" 
+    })
+
+  } catch (error: any) {
+    console.error("Error deleting order:", error)
+    const errorMessage = error?.message || "Failed to delete order"
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    )
+  }
+}

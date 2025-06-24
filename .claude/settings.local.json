@@ -107,7 +107,8 @@
       "Bash(npm outdated)",
       "Bash(sudo rm:*)",
       "Bash(timeout 10s npm run dev)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(npx eslint:*)"
     ],
     "deny": []
   },

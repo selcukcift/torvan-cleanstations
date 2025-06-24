@@ -1336,7 +1336,31 @@ export default function OrderDetailsPage() {
 
         {/* QC Tab */}
         <TabsContent value="qc" className="space-y-4">
-          <QCOrderIntegration orderId={order.id} orderStatus={order.orderStatus} />
+          <QCOrderIntegration 
+            orderId={order.id} 
+            orderStatus={order.orderStatus}
+            orderDetails={{
+              poNumber: order.poNumber,
+              customerName: order.customerName,
+              buildNumbers: order.buildNumbers,
+              productType: (() => {
+                // Get the first sink configuration to determine product type
+                const firstSinkConfig = order.sinkConfigurations?.[0]
+                if (!firstSinkConfig) return 'CleanStation'
+                
+                const basinConfigs = order.basinConfigurations?.filter((bc: any) => 
+                  bc.buildNumber === order.buildNumbers?.[0]
+                ) || []
+                const basinCount = basinConfigs.length || 1
+                const length = firstSinkConfig.length || 48
+                const width = firstSinkConfig.width || 30
+                const lengthStr = length.toString().padStart(2, '0')
+                const widthStr = width.toString().padStart(2, '0')
+                const dimensions = lengthStr + widthStr
+                return `T2-${basinCount}B-${dimensions}HA`
+              })(),
+            }}
+          />
         </TabsContent>
 
         {/* Documents Tab */}

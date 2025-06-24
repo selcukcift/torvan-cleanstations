@@ -24,39 +24,59 @@ import { format } from "date-fns"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { QCCertificateDocument } from "./QCCertificateDocument"
 
 interface QCResult {
   id: string
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
-  inspectorId: string
-  inspector: {
+  overallStatus: 'PASSED' | 'FAILED'
+  qcPerformedById: string
+  qcPerformedBy: {
     fullName: string
   }
-  completedAt?: string
+  qcTimestamp?: string
   notes?: string
-  template: {
+  qcFormTemplate: {
     name: string
     version: string
   }
-  qcItems: Array<{
+  itemResults: Array<{
     id: string
-    templateItem: {
-      text: string
+    qcFormTemplateItem: {
+      checklistItem: string
       itemType: string
-      category: string
+      section: string
     }
-    value: string
-    passed?: boolean
+    resultValue: string
+    isConformant?: boolean
     notes?: string
+    attachedDocument?: {
+      id: string
+      filename: string
+      originalName: string
+      size: number
+      mimeType: string
+    }
   }>
 }
 
 interface QCOrderIntegrationProps {
   orderId: string
   orderStatus: string
+  orderDetails?: {
+    poNumber?: string
+    customerName?: string
+    buildNumbers?: string[]
+    productType?: string
+    jobId?: string
+    sinkDimensions?: {
+      length?: number
+      width?: number
+      depth?: number
+    }
+  }
 }
 
-export function QCOrderIntegration({ orderId, orderStatus }: QCOrderIntegrationProps) {
+export function QCOrderIntegration({ orderId, orderStatus, orderDetails }: QCOrderIntegrationProps) {
   const { toast } = useToast()
   const router = useRouter()
   const [qcResults, setQcResults] = useState<QCResult[]>([])
@@ -132,11 +152,7 @@ export function QCOrderIntegration({ orderId, orderStatus }: QCOrderIntegrationP
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
-        return 'bg-yellow-100 text-yellow-700'
-      case 'IN_PROGRESS':
-        return 'bg-blue-100 text-blue-700'
-      case 'COMPLETED':
+      case 'PASSED':
         return 'bg-green-100 text-green-700'
       case 'FAILED':
         return 'bg-red-100 text-red-700'
@@ -147,12 +163,10 @@ export function QCOrderIntegration({ orderId, orderStatus }: QCOrderIntegrationP
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
+      case 'PASSED':
         return CheckCircle
       case 'FAILED':
         return XCircle
-      case 'IN_PROGRESS':
-        return ClipboardCheck
       default:
         return AlertTriangle
     }
@@ -212,142 +226,20 @@ export function QCOrderIntegration({ orderId, orderStatus }: QCOrderIntegrationP
                 }
               </CardDescription>
             </div>
-            {qcResults.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportQC}
-                className="flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Export CSV
-              </Button>
-            )}
           </div>
         </CardHeader>
         <CardContent>
           {qcResults.length > 0 ? (
-            <ScrollArea className="h-[600px]">
-              <div className="space-y-4">
-                {qcResults.map((result) => {
-                  const StatusIcon = getStatusIcon(result.status)
-                  
-                  return (
-                    <Card key={result.id} className="border-l-4 border-l-blue-400">
-                      <CardContent className="pt-4">
-                        <div className="space-y-4">
-                          {/* Header */}
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2">
-                                <StatusIcon className={`w-5 h-5 ${
-                                  result.status === 'COMPLETED' ? 'text-green-500' :
-                                  result.status === 'FAILED' ? 'text-red-500' :
-                                  result.status === 'IN_PROGRESS' ? 'text-blue-500' : 'text-yellow-500'
-                                }`} />
-                                <h4 className="font-medium">{result.template.name}</h4>
-                                <Badge className={getStatusColor(result.status)}>
-                                  {result.status}
-                                </Badge>
-                              </div>
-                              
-                              <div className="flex items-center gap-4 text-sm text-slate-600">
-                                <div className="flex items-center gap-2">
-                                  <User className="w-4 h-4" />
-                                  Inspector: {result.inspector.fullName}
-                                </div>
-                                {result.completedAt && (
-                                  <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4" />
-                                    Completed: {format(new Date(result.completedAt), "MMM dd, yyyy 'at' HH:mm")}
-                                  </div>
-                                )}
-                                <div className="flex items-center gap-2">
-                                  <FileText className="w-4 h-4" />
-                                  Version: {result.template.version}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Inspector Notes */}
-                          {result.notes && (
-                            <div className="bg-slate-50 rounded-md p-3">
-                              <h5 className="font-medium text-sm mb-1">Inspector Notes</h5>
-                              <p className="text-sm text-slate-700">{result.notes}</p>
-                            </div>
-                          )}
-
-                          {/* QC Items Summary */}
-                          <div className="space-y-3">
-                            <h5 className="font-medium text-sm">Inspection Items</h5>
-                            
-                            {/* Group items by category */}
-                            {Object.entries(
-                              result.qcItems.reduce((acc, item) => {
-                                const category = item.templateItem.category || 'General'
-                                if (!acc[category]) acc[category] = []
-                                acc[category].push(item)
-                                return acc
-                              }, {} as Record<string, typeof result.qcItems>)
-                            ).map(([category, items]) => (
-                              <div key={category} className="space-y-2">
-                                <h6 className="text-sm font-medium text-slate-700">{category}</h6>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-4">
-                                  {items.map((item) => (
-                                    <div key={item.id} className="flex items-center justify-between text-sm">
-                                      <span className="text-slate-600 truncate flex-1">
-                                        {item.templateItem.text}
-                                      </span>
-                                      <div className="flex items-center gap-2 ml-2">
-                                        {item.templateItem.itemType === 'PASS_FAIL' ? (
-                                          item.passed ? (
-                                            <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                                              Pass
-                                            </Badge>
-                                          ) : (
-                                            <Badge variant="secondary" className="bg-red-100 text-red-700 text-xs">
-                                              Fail
-                                            </Badge>
-                                          )
-                                        ) : (
-                                          <span className="text-xs text-slate-500 max-w-20 truncate">
-                                            {item.value || 'N/A'}
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Item Notes */}
-                          {result.qcItems.some(item => item.notes) && (
-                            <div className="space-y-2">
-                              <h5 className="font-medium text-sm">Additional Notes</h5>
-                              <div className="space-y-2 ml-4">
-                                {result.qcItems
-                                  .filter(item => item.notes)
-                                  .map((item) => (
-                                    <div key={item.id} className="text-sm">
-                                      <span className="font-medium text-slate-700">
-                                        {item.templateItem.text}:
-                                      </span>
-                                      <span className="text-slate-600 ml-2">{item.notes}</span>
-                                    </div>
-                                  ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            </ScrollArea>
+            <div className="space-y-6">
+              {qcResults.map((result) => (
+                <QCCertificateDocument 
+                  key={result.id}
+                  qcResult={result}
+                  orderId={orderId}
+                  orderDetails={orderDetails}
+                />
+              ))}
+            </div>
           ) : (
             <div className="text-center py-8">
               {hasQCTemplate ? (

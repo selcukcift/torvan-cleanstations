@@ -15,6 +15,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -30,6 +31,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import {
   Plus,
   Search,
   Filter,
@@ -44,7 +55,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Shield
+  Shield,
+  Trash2,
+  Factory,
+  BarChart3,
+  Timer,
+  Target
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -96,6 +112,8 @@ export function AdminDashboard() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalOrders, setTotalOrders] = useState(0)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [orderToDelete, setOrderToDelete] = useState<{ id: string; poNumber: string } | null>(null)
   const ordersPerPage = 15
 
   const [stats, setStats] = useState({
@@ -105,14 +123,25 @@ export function AdminDashboard() {
     overdueOrders: 0
   })
 
+  const [productionStats, setProductionStats] = useState({
+    inProduction: 0,
+    completedToday: 0,
+    avgCycleTime: 0,
+    qualityScore: 0
+  })
+
+  const [activeTab, setActiveTab] = useState("orders")
+
   useEffect(() => {
     fetchOrders()
+    fetchProductionStats()
   }, [currentPage, statusFilter, searchTerm, dateFilter])
 
   // Auto-refresh when window regains focus
   useEffect(() => {
     const handleFocus = () => {
       fetchOrders()
+      fetchProductionStats()
     }
 
     window.addEventListener('focus', handleFocus)
@@ -122,6 +151,7 @@ export function AdminDashboard() {
   // Also refresh when component mounts
   useEffect(() => {
     fetchOrders()
+    fetchProductionStats()
   }, [])
 
   const fetchOrders = async () => {
@@ -185,6 +215,35 @@ export function AdminDashboard() {
     setStats(stats)
   }
 
+  const fetchProductionStats = async () => {
+    try {
+      const response = await nextJsApiClient.get('/production/metrics?days=1')
+      
+      if (response.data.success && response.data.data.length > 0) {
+        const todayMetrics = response.data.data[0]
+        
+        // Also fetch current production orders
+        const productionResponse = await nextJsApiClient.get('/orders', {
+          params: {
+            status: 'READY_FOR_PRODUCTION,TESTING_COMPLETE,PACKAGING_COMPLETE'
+          }
+        })
+        
+        if (productionResponse.data.success) {
+          setProductionStats({
+            inProduction: productionResponse.data.data.length,
+            completedToday: todayMetrics.ordersCompleted || 0,
+            avgCycleTime: Math.round(todayMetrics.avgCycleTime || 0),
+            qualityScore: Math.round(todayMetrics.qualityScore || 0)
+          })
+        }
+      }
+    } catch (error: any) {
+      // Silent fail for production stats as it's not critical
+      console.warn('Could not fetch production stats:', error)
+    }
+  }
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setCurrentPage(1)
@@ -199,6 +258,39 @@ export function AdminDashboard() {
     router.push("/orders/create")
   }
 
+  const handleDeleteOrder = async () => {
+    if (!orderToDelete) return
+
+    try {
+      const response = await nextJsApiClient.delete(`/orders/${orderToDelete.id}`)
+      
+      toast({
+        title: "Order Deleted",
+        description: `Order ${orderToDelete.poNumber} has been permanently deleted.`,
+      })
+      
+      // Refresh the orders list
+      fetchOrders()
+      
+      // Close the dialog
+      setDeleteDialogOpen(false)
+      setOrderToDelete(null)
+    } catch (error: any) {
+      console.error("Error deleting order:", error)
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || "Failed to delete order. Please try again."
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      })
+    }
+  }
+
+  const openDeleteDialog = (order: any) => {
+    setOrderToDelete({ id: order.id, poNumber: order.poNumber })
+    setDeleteDialogOpen(true)
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -207,14 +299,20 @@ export function AdminDashboard() {
           <h2 className="text-2xl font-bold">Admin Dashboard</h2>
           <p className="text-slate-600">Complete system overview and management</p>
         </div>
-        <Button onClick={createNewOrder}>
-          <Plus className="w-4 h-4 mr-2" />
-          Create New Order
-        </Button>
+        <div className="flex space-x-2">
+          <Button variant="outline" onClick={() => router.push("/production")}>
+            <Factory className="w-4 h-4 mr-2" />
+            Production Dashboard
+          </Button>
+          <Button onClick={createNewOrder}>
+            <Plus className="w-4 h-4 mr-2" />
+            Create New Order
+          </Button>
+        </div>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Statistics - Combined Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-slate-600">
@@ -267,6 +365,63 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold text-red-600">{stats.overdueOrders}</span>
               <Activity className="w-8 h-8 text-red-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Production Statistics */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              In Production
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-orange-600">{productionStats.inProduction}</span>
+              <Factory className="w-8 h-8 text-orange-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              Completed Today
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-green-600">{productionStats.completedToday}</span>
+              <Shield className="w-8 h-8 text-green-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              Avg Cycle Time
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-blue-600">{productionStats.avgCycleTime}h</span>
+              <Timer className="w-8 h-8 text-blue-500 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-slate-600">
+              Quality Score
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-purple-600">{productionStats.qualityScore}%</span>
+              <Target className="w-8 h-8 text-purple-500 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -413,6 +568,13 @@ export function AdminDashboard() {
                               <FileText className="w-4 h-4 mr-2" />
                               Export BOM
                             </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => openDeleteDialog(order)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete Order
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -455,6 +617,34 @@ export function AdminDashboard() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete order <strong>{orderToDelete?.poNumber}</strong> and all associated data including:
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-3">
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+              <li>Order configurations and BOM</li>
+              <li>Quality control tasks and results</li>
+              <li>Assembly tasks and history</li>
+              <li>Comments and notifications</li>
+              <li>All associated files and documents</li>
+            </ul>
+            <p className="text-red-600 font-semibold mt-4 text-sm">This action cannot be undone.</p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setOrderToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteOrder} className="bg-red-600 hover:bg-red-700">
+              Delete Order
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
