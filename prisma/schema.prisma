@@ -1013,6 +1013,16 @@ model ProductionTask {
   completedAt   DateTime?
   completedBy   String?
   
+  // Testing task specific fields
+  testType        String? // 'pass_fail', 'measurement', 'calibration', 'setup'
+  testResult      String? // 'PASS', 'FAIL'
+  expectedResult  String?
+  measuredValue   Float?
+  unit           String?
+  minValue       Float?
+  maxValue       Float?
+  basinNumber    Int?
+  
   order         Order    @relation(fields: [orderId], references: [id])
   completer     User?    @relation("UserCompletedProdTasks", fields: [completedBy], references: [id])
   

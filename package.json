@@ -23,9 +23,10 @@
     "test:all": "npm run test && npm run test:e2e",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "node scripts/seed.js",
-    "prisma:seed:all": "node scripts/seed-all.js",
-    "db:reset": "prisma migrate reset --force && npm run prisma:seed:all",
+    "prisma:seed": "node prisma/seed.js",
+    "prisma:seed:legacy": "node scripts/seed.js",
+    "db:reset": "prisma migrate reset --force && npm run prisma:seed",
+    "db:seed": "npm run prisma:seed",
     "test:db": "node test-db-connection.js"
   },
   "devDependencies": {
@@ -102,6 +103,6 @@
     "zustand": "^5.0.5"
   },
   "prisma": {
-    "seed": "node scripts/seed.js"
+    "seed": "node prisma/seed.js"
   }
 }

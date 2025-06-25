@@ -62,10 +62,10 @@ export function canAccessOrder(user: AuthUser, order: any): boolean {
     return true
   }
   
-  // Assemblers can access orders assigned to them or in specific statuses
+  // Assemblers can only access orders assigned to them in production-related statuses
   if (user.role === 'ASSEMBLER') {
-    return order.currentAssignee === user.id || 
-           ['READY_FOR_PRODUCTION', 'TESTING_COMPLETE'].includes(order.orderStatus)
+    return order.currentAssignee === user.id && 
+           ['READY_FOR_PRODUCTION', 'TESTING_COMPLETE', 'PACKAGING_COMPLETE'].includes(order.orderStatus)
   }
   
   // QC can access orders ready for QC and completed QC orders
@@ -75,7 +75,12 @@ export function canAccessOrder(user: AuthUser, order: any): boolean {
   
   // Procurement can access orders that need parts management
   if (user.role === 'PROCUREMENT_SPECIALIST') {
-    return ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION'].includes(order.orderStatus)
+    return ['ORDER_CREATED', 'SINK_BODY_EXTERNAL_PRODUCTION', 'READY_FOR_PRE_QC', 'READY_FOR_PRODUCTION'].includes(order.orderStatus)
+  }
+  
+  // Service Department can access all orders (they might need to order parts for any order)
+  if (user.role === 'SERVICE_DEPARTMENT') {
+    return true
   }
   
   return false

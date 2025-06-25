@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-06-25T01:22:31.955Z",
+  "system": "Consolidated Seeding Modules",
+  "summary": "Replacement of 40+ scattered scripts with 5 focused modules",
+  "modules": [
+    "CoreDataSeeder",
+    "UserManagementSeeder",
+    "MedicalDeviceSeeder",
+    "QualityControlSeeder",
+    "WorkflowSeeder"
+  ],
+  "executionLog": [
+    {
+      "timestamp": "2025-06-25T01:22:29.583Z",
+      "seeder": "CoreDataSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "categories": 0,
+        "subcategories": 0,
+        "totalItems": 0
+      },
+      "duration": 117
+    },
+    {
+      "timestamp": "2025-06-25T01:22:29.593Z",
+      "seeder": "UserManagementSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "users": 0,
+        "totalItems": 0
+      },
+      "duration": 127
+    },
+    {
+      "timestamp": "2025-06-25T01:22:31.907Z",
+      "seeder": "MedicalDeviceSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "parts": 0,
+        "assemblies": 129,
+        "components": 196,
+        "totalItems": 325
+      },
+      "duration": 2441
+    },
+    {
+      "timestamp": "2025-06-25T01:22:31.927Z",
+      "seeder": "QualityControlSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "qcTemplates": 4,
+        "qcItems": 18,
+        "totalItems": 22
+      },
+      "duration": 2461
+    },
+    {
+      "timestamp": "2025-06-25T01:22:31.955Z",
+      "seeder": "WorkflowSeeder",
+      "status": "ERROR",
+      "data": "\nInvalid `this.prisma.notificationPreference.findUnique()` invocation in\n/media/selcuk/project files/Clean-stations/scripts/consolidated-seeding-modules/workflow-seeder.js:183:67\n\n  180 const preferences = rolePreferences[user.role] || rolePreferences['ASSEMBLER'];\n  181 \n  182 for (const notificationType of preferences.types) {\n→ 183   const existing = await this.prisma.notificationPreference.findUnique({\n          where: {\n            userId_notificationType: {\n              userId: \"cmc9ug5g50000j5w9fero5z7o\",\n              notificationType: \"ORDER_STATUS_CHANGED\"\n                                ~~~~~~~~~~~~~~~~~~~~~~\n            }\n          }\n        })\n\nInvalid value for argument `notificationType`. Expected NotificationType.",
+      "duration": 2489
+    }
+  ],
+  "performance": {
+    "totalDuration": 2489,
+    "modulesExecuted": 5,
+    "averageTimePerModule": 497.8
+  },
+  "improvements": [
+    "Reduced script complexity from 40+ files to 5 focused modules",
+    "Implemented proper dependency management",
+    "Added transaction support and rollback capability",
+    "Centralized logging and error handling",
+    "Eliminated script duplication and redundancy"
+  ]
+}

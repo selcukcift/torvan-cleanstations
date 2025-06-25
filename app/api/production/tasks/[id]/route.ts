@@ -9,7 +9,10 @@ const UpdateTaskSchema = z.object({
   photos: z.array(z.string()).optional(),
   notes: z.string().optional(),
   startedAt: z.string().optional(),
-  completedAt: z.string().optional()
+  completedAt: z.string().optional(),
+  // Testing task specific fields
+  testResult: z.string().optional(), // 'PASS' or 'FAIL'
+  measuredValue: z.number().optional()
 })
 
 export async function GET(
@@ -150,6 +153,15 @@ export async function PUT(
       updateData.completedAt = new Date(validatedData.completedAt)
       updateData.completedBy = user.id
     }
+    
+    // Handle testing specific fields
+    if (validatedData.testResult !== undefined) {
+      updateData.testResult = validatedData.testResult
+    }
+    
+    if (validatedData.measuredValue !== undefined) {
+      updateData.measuredValue = validatedData.measuredValue
+    }
 
     // Update task
     const updatedTask = await prisma.productionTask.update({
@@ -178,38 +190,57 @@ export async function PUT(
         where: { orderId: existingTask.orderId }
       })
 
-      const allCompleted = allTasks.every(t => 
+      // Separate production and testing tasks
+      const productionTasks = allTasks.filter(t => t.category !== 'testing')
+      const testingTasks = allTasks.filter(t => t.category === 'testing')
+      
+      // Check if current task completion affects overall progress
+      const updatedTasks = allTasks.map(t => 
+        t.id === params.id ? { ...t, completed: true } : t
+      )
+      
+      const productionComplete = productionTasks.every(t => 
+        t.id === params.id ? true : t.completed
+      )
+      
+      const testingComplete = testingTasks.every(t => 
         t.id === params.id ? true : t.completed
       )
 
-      if (allCompleted) {
-        // Determine next status based on current status
-        let nextStatus = existingTask.order.orderStatus
+      let nextStatus = existingTask.order.orderStatus
+      
+      // Progress through stages based on task completion
+      if (existingTask.order.orderStatus === 'READY_FOR_PRODUCTION' && productionComplete) {
+        // All production tasks done - ready for testing (but don't auto-advance if no testing tasks)
+        if (testingTasks.length > 0) {
+          nextStatus = 'READY_FOR_PRODUCTION' // Stay in production phase until testing also done
+        } else {
+          nextStatus = 'TESTING_COMPLETE' // No testing tasks, skip to complete
+        }
+      } else if (existingTask.order.orderStatus === 'READY_FOR_PRODUCTION' && productionComplete && testingComplete) {
+        nextStatus = 'TESTING_COMPLETE'
+      }
+
+      if (nextStatus !== existingTask.order.orderStatus) {
+        await prisma.order.update({
+          where: { id: existingTask.orderId },
+          data: { orderStatus: nextStatus }
+        })
+
+        // Create history log
+        const completionType = productionComplete && testingComplete ? 'assembly and testing' : 
+                              productionComplete ? 'production' : 'testing'
         
-        if (existingTask.order.orderStatus === 'READY_FOR_PRODUCTION') {
-          nextStatus = 'TESTING_COMPLETE'
-        } else if (existingTask.order.orderStatus === 'TESTING_COMPLETE') {
-          nextStatus = 'PACKAGING_COMPLETE'
-        }
-
-        if (nextStatus !== existingTask.order.orderStatus) {
-          await prisma.order.update({
-            where: { id: existingTask.orderId },
-            data: { orderStatus: nextStatus }
-          })
-
-          // Create history log
-          await prisma.orderHistoryLog.create({
-            data: {
-              orderId: existingTask.orderId,
-              userId: user.id,
-              action: 'PRODUCTION_MILESTONE',
-              oldStatus: existingTask.order.orderStatus,
-              newStatus: nextStatus,
-              notes: `All ${existingTask.category} tasks completed`
-            }
-          })
-        }
+        await prisma.orderHistoryLog.create({
+          data: {
+            orderId: existingTask.orderId,
+            userId: user.id,
+            action: 'PRODUCTION_MILESTONE',
+            oldStatus: existingTask.order.orderStatus,
+            newStatus: nextStatus,
+            notes: `All ${completionType} tasks completed`
+          }
+        })
       }
     }
 

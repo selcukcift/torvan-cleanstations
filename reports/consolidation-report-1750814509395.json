@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-06-25T01:21:49.395Z",
+  "system": "Consolidated Seeding Modules",
+  "summary": "Replacement of 40+ scattered scripts with 5 focused modules",
+  "modules": [
+    "CoreDataSeeder",
+    "UserManagementSeeder",
+    "MedicalDeviceSeeder",
+    "QualityControlSeeder",
+    "WorkflowSeeder"
+  ],
+  "executionLog": [
+    {
+      "timestamp": "2025-06-25T01:21:48.860Z",
+      "seeder": "CoreDataSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "categories": 0,
+        "subcategories": 0,
+        "totalItems": 0
+      },
+      "duration": 126
+    },
+    {
+      "timestamp": "2025-06-25T01:21:48.890Z",
+      "seeder": "UserManagementSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "users": 7,
+        "totalItems": 7
+      },
+      "duration": 156
+    },
+    {
+      "timestamp": "2025-06-25T01:21:49.384Z",
+      "seeder": "MedicalDeviceSeeder",
+      "status": "ERROR",
+      "data": "\nInvalid `this.prisma.assembly.create()` invocation in\n/media/selcuk/project files/Clean-stations/scripts/consolidated-seeding-modules/medical-device-seeder.js:100:36\n\n   97 });\n   98 \n   99 if (!existing) {\n→ 100   await this.prisma.assembly.create({\n          data: {\n            assemblyId: \"ASSY-2783\",\n            name: \"2\\\" PEGBOARD CLOSED GROMET\",\n            type: \"ASSEMBLY\",\n                  ~~~~~~~~~~\n            categoryCode: undefined,\n            subcategoryCode: undefined,\n            requiresSerialTracking: false,\n            isOutsourced: false\n          }\n        })\n\nInvalid value for argument `type`. Expected AssemblyType.",
+      "duration": 650
+    },
+    {
+      "timestamp": "2025-06-25T01:21:49.390Z",
+      "seeder": "QualityControlSeeder",
+      "status": "ERROR",
+      "data": "\nInvalid `this.prisma.qcFormTemplate.create()` invocation in\n/media/selcuk/project files/Clean-stations/scripts/consolidated-seeding-modules/quality-control-seeder.js:227:59\n\n  224 });\n  225 \n  226 if (!existing) {\n→ 227   const template = await this.prisma.qcFormTemplate.create({\n          data: {\n            name: \"Final Quality Control - CleanStation T2\",\n            description: \"Comprehensive final quality control inspection for CleanStation T2 series\",\n            appliesToProductFamily: \"MDRD_T2_SINK\",\n            version: \"2.1\",\n            isActive: true,\n            items: {\n              create: [\n                {\n                  section: \"Visual Inspection\",\n                  checklistItem: \"Overall finish quality and surface integrity\",\n                  itemType: \"PASS_FAIL\",\n                  isRequired: true,\n                  order: 1,\n                  toleranceSpec: \"No visible scratches, dents, or surface defects\"\n                },\n                {\n                  section: \"Visual Inspection\",\n                  checklistItem: \"Basin alignment and levelness verification\",\n                  itemType: \"NUMERIC_INPUT\",\n                  isRequired: true,\n                  order: 2,\n                  toleranceSpec: \"Basin level within ±2mm tolerance\"\n                },\n                {\n                  section: \"Functional Testing\",\n                  checklistItem: \"Drainage system flow rate test\",\n                  itemType: \"NUMERIC_INPUT\",\n                  isRequired: true,\n                  order: 3,\n                  toleranceSpec: \"Flow rate 15-25 L/min per basin\"\n                },\n                {\n                  section: \"Functional Testing\",\n                  checklistItem: \"Faucet operation and water pressure test\",\n                  itemType: \"PASS_FAIL\",\n                  isRequired: true,\n                  order: 4,\n                  toleranceSpec: \"Smooth operation, no leaks, adequate pressure\"\n                },\n                {\n                  section: \"Electrical Safety\",\n                  checklistItem: \"Ground continuity test (if applicable)\",\n                  itemType: \"NUMERIC_INPUT\",\n                  isRequired: false,\n                  order: 5,\n                  toleranceSpec: \"Ground resistance < 0.1 ohm\"\n                },\n                {\n                  section: \"Documentation\",\n                  checklistItem: \"Serial number verification and recording\",\n                  itemType: \"TEXT_INPUT\",\n                  isRequired: true,\n                  order: 6,\n                  toleranceSpec: \"Serial number must match BOM and be legible\"\n                },\n                {\n                  section: \"Compliance\",\n                  checklistItem: \"Medical device labeling completeness\",\n                  itemType: \"PASS_FAIL\",\n                  isRequired: true,\n                  order: 7,\n                  toleranceSpec: \"All required FDA/CE markings present and correct\"\n                }\n              ]\n            }\n          }\n        })\n\nUnknown argument `toleranceSpec`. Available options are marked with ?.",
+      "duration": 656
+    },
+    {
+      "timestamp": "2025-06-25T01:21:49.394Z",
+      "seeder": "WorkflowSeeder",
+      "status": "ERROR",
+      "data": "\nInvalid `this.prisma.taskTemplate.create()` invocation in\n/media/selcuk/project files/Clean-stations/scripts/consolidated-seeding-modules/workflow-seeder.js:117:40\n\n  114 });\n  115 \n  116 if (!existing) {\n→ 117   await this.prisma.taskTemplate.create({\n          data: {\n            name: \"Standard Assembly Task - CleanStation T2\",\n            description: \"Standard assembly workflow for CleanStation T2 series sinks\",\n            estimatedHours: 4.5,\n            ~~~~~~~~~~~~~~\n            assignedToRole: \"ASSEMBLER\",\n            workInstructions: \"Follow CleanStation T2 assembly manual sections 1-8. Ensure all welds meet specification and torque values are per drawing.\",\n            requiredSkills: [\n              \"TIG Welding\",\n              \"Precision Assembly\",\n              \"Blueprint Reading\"\n            ],\n            safetyRequirements: \"Safety glasses, welding helmet, cut-resistant gloves required\",\n        ?   id?: String,\n        ?   appliesToAssemblyType?: AssemblyType | Null,\n        ?   appliesToProductFamily?: String | Null,\n        ?   version?: String,\n        ?   isActive?: Boolean,\n        ?   createdAt?: DateTime,\n        ?   updatedAt?: DateTime,\n        ?   steps?: TaskTemplateStepCreateNestedManyWithoutTaskTemplateInput\n          }\n        })\n\nUnknown argument `estimatedHours`. Available options are marked with ?.",
+      "duration": 660
+    }
+  ],
+  "performance": {
+    "totalDuration": 661,
+    "modulesExecuted": 5,
+    "averageTimePerModule": 132.2
+  },
+  "improvements": [
+    "Reduced script complexity from 40+ files to 5 focused modules",
+    "Implemented proper dependency management",
+    "Added transaction support and rollback capability",
+    "Centralized logging and error handling",
+    "Eliminated script duplication and redundancy"
+  ]
+}

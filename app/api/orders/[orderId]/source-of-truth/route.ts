@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderSingleSourceOfTruth, updateOrderWorkflowState, generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
-import { getAuthUser } from '@/lib/auth'
+import { getAuthUser, canAccessOrder } from '@/lib/auth'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface RouteParams {
   params: Promise<{
@@ -23,6 +26,31 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
         { status: 401 }
+      )
+    }
+
+    // Check if user has access to this order
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: {
+        id: true,
+        orderStatus: true,
+        createdById: true,
+        currentAssignee: true
+      }
+    })
+
+    if (!order) {
+      return NextResponse.json(
+        { success: false, message: 'Order not found' },
+        { status: 404 }
+      )
+    }
+
+    if (!canAccessOrder(user, order)) {
+      return NextResponse.json(
+        { success: false, message: 'Access denied' },
+        { status: 403 }
       )
     }
 

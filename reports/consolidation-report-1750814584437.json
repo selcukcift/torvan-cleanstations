@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-06-25T01:23:04.437Z",
+  "system": "Consolidated Seeding Modules",
+  "summary": "Replacement of 40+ scattered scripts with 5 focused modules",
+  "modules": [
+    "CoreDataSeeder",
+    "UserManagementSeeder",
+    "MedicalDeviceSeeder",
+    "QualityControlSeeder",
+    "WorkflowSeeder"
+  ],
+  "executionLog": [
+    {
+      "timestamp": "2025-06-25T01:23:02.769Z",
+      "seeder": "CoreDataSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "categories": 0,
+        "subcategories": 0,
+        "totalItems": 0
+      },
+      "duration": 117
+    },
+    {
+      "timestamp": "2025-06-25T01:23:02.780Z",
+      "seeder": "UserManagementSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "users": 0,
+        "totalItems": 0
+      },
+      "duration": 127
+    },
+    {
+      "timestamp": "2025-06-25T01:23:04.362Z",
+      "seeder": "MedicalDeviceSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "parts": 0,
+        "assemblies": 0,
+        "components": 0,
+        "totalItems": 0
+      },
+      "duration": 1709
+    },
+    {
+      "timestamp": "2025-06-25T01:23:04.371Z",
+      "seeder": "QualityControlSeeder",
+      "status": "SUCCESS",
+      "data": {
+        "qcTemplates": 0,
+        "qcItems": 0,
+        "totalItems": 0
+      },
+      "duration": 1718
+    },
+    {
+      "timestamp": "2025-06-25T01:23:04.437Z",
+      "seeder": "WorkflowSeeder",
+      "status": "ERROR",
+      "data": "\nInvalid `this.prisma.notificationPreference.create()` invocation in\n/media/selcuk/project files/Clean-stations/scripts/consolidated-seeding-modules/workflow-seeder.js:193:52\n\n  190 });\n  191 \n  192 if (!existing) {\n→ 193   await this.prisma.notificationPreference.create({\n          data: {\n            userId: \"cmc9ug5k50002j5w9qcqe06o1\",\n            notificationType: \"INVENTORY_LOW\",\n            inAppEnabled: true,\n            emailEnabled: true,\n            frequency: \"DAILY_DIGEST\",\n                       ~~~~~~~~~~~~~~\n            isActive: true\n          }\n        })\n\nInvalid value for argument `frequency`. Expected NotificationFrequency.",
+      "duration": 1784
+    }
+  ],
+  "performance": {
+    "totalDuration": 1784,
+    "modulesExecuted": 5,
+    "averageTimePerModule": 356.8
+  },
+  "improvements": [
+    "Reduced script complexity from 40+ files to 5 focused modules",
+    "Implemented proper dependency management",
+    "Added transaction support and rollback capability",
+    "Centralized logging and error handling",
+    "Eliminated script duplication and redundancy"
+  ]
+}

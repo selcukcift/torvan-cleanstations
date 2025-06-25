@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { generateBOMForOrder } from '@/lib/bomService.native'
 import { generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
+import { getAuthUser } from '@/lib/auth'
 
 // Validation schemas
 const CustomerInfoSchema = z.object({
@@ -119,9 +120,6 @@ const OrderCreateSchema = z.object({
   message: "All build numbers must have corresponding sink configurations",
   path: ["configurations"]
 })
-
-// Use the centralized auth utility
-import { getAuthUser } from '@/lib/auth'
 
 // Helper function to save BOM items recursively
 async function saveBomItemsRecursive(
@@ -696,15 +694,15 @@ export async function GET(request: NextRequest) {
         }
       }
     } else if (user.role === 'ASSEMBLER') {
-      // Assemblers see orders assigned to them or in specific statuses
+      // Assemblers see only orders assigned to them in production-related statuses
       where = {
-        OR: [
-          { currentAssignee: user.id },
-          { orderStatus: { in: ['READY_FOR_PRODUCTION', 'TESTING_COMPLETE'] } }
-        ]
+        currentAssignee: user.id,
+        orderStatus: { in: ['READY_FOR_PRODUCTION', 'TESTING_COMPLETE', 'PACKAGING_COMPLETE'] }
       }
       if (status) {
+        // If specific status is requested, still require assignment
         where.orderStatus = status
+        where.currentAssignee = user.id
       }
     } else if (user.role === 'QC_PERSON') {
       // QC sees orders ready for QC

@@ -20,6 +20,13 @@ export async function GET(request: NextRequest) {
     // Authenticate user
     const user = await getAuthUser()
     
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const page = parseInt(searchParams.get('page') || '1')
@@ -35,6 +42,9 @@ export async function GET(request: NextRequest) {
     } else if (user.role === 'PROCUREMENT_SPECIALIST' || user.role === 'ADMIN') {
       // Procurement and admin can see all orders
       // No additional filter needed
+    } else if (user.role === 'ASSEMBLER' || user.role === 'QC_PERSON' || user.role === 'PRODUCTION_COORDINATOR') {
+      // Production staff can see approved and ordered service orders (for visibility into parts availability)
+      where.status = { in: ['APPROVED', 'ORDERED', 'RECEIVED'] }
     } else {
       return NextResponse.json(
         { success: false, message: 'Insufficient permissions' },

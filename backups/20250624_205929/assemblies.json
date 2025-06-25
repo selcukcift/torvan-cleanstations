@@ -1,0 +1,7032 @@
+{
+  "metadata": {
+    "generated_at": "2025-06-05T21:11:41.064198",
+    "source_file": "final.json",
+    "version": "1.0.0",
+    "description": "Assembly definitions - buildable products with component references (includes 128 pegboard kit combinations)",
+    "total_assemblies": 318
+  },
+  "assemblies": {
+    "2783": {
+      "name": "2\" PEGBOARD CLOSED GROMET",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "15862": {
+      "name": "POWERCORD FOR CBD, BLACK CABLE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "95400": {
+      "name": "CHECK VALVE INLET: SWIVEL NUT G 3/4 FEMALE THREAD, OUTLET: G 3/4 MALE THREAD, DN 12 , P: MAX. 10 BAR",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.006",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "14629990": {
+      "name": "10K NTC G1/4 TEMPERATURE SENSOR WITH SEAL AND 300 MM CABLE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.004",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR1": {
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN BASIN",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-ESK1": {
+      "name": "CONTROL BOX ONLY FOR 1 ESINK BASIN",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR1-ESK1": {
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR2": {
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-ESK2": {
+      "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR1-ESK2": {
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR2-ESK1": {
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-EDR3": {
+      "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CTRL-ESK3": {
+      "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.016",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PWBRACKETSLT": {
+      "name": "WIRE BASKET SLOT BRACKET SET, TILT-ADJUST (L & R)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.001",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PWBRACKET": {
+      "name": "WIRE BASKET SLOT BRACKET SET, RIGHT ANGLE (L& R)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.001",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-TS7": {
+      "name": "ESINK TOUCHSCREEN",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "CM3-PANEL-UE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CM3-MODULE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CS-33723-06",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "101020083",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "QM-NBF940-50",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CS-33715-16CM",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "C146959-AL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "9864K25",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "91698A204",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "93625A101",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "95610A110",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1916",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1930",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TS7-SHELL",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-EMERG-BTN-M5.1": {
+      "name": "EMERGENCY STOP PUSH BUTTON SWITCH, 1NO 1NC SWITCH",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.003",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-VALVE-PLATE-AUK": {
+      "name": "ESINK TEMPERATURE MIXING AND FILLING ASSEMBLY",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-PROVALVES",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PFX146332",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PCT-223-12P",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "2926438",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "9683",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "95400",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "70501",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "95403",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "10972",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "14629990",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "12F1960RINGB",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "12F1960RINGR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "12F1960RING",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "12PF196090",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "UAB280LFCA",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "UAB362LFCA",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "UAB120LFCA",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEXA-WHITE-1/2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEXA-BLUE-1/2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEXA-RED-1/2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEX-FLANGE-THIN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "AEKS8-832-130",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-MV-AKM-MNT-PLT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "9262K783",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-DRAIN-VALVE": {
+      "name": "ELECTRONIC DRAIN SOLENOID WITH TAILPIECE AND RUBBER COUPLINGS",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "59800",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-FP-STR-1.5M",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CK115",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "112X4RBSINKTLPC",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "E0508-WHITE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1212010001",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "M8-DUST-CAP-F",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "PFX146332": {
+      "name": "3/8 C X 1/2 FIP 60 STAINLESS STEEL SINK CONNECTOR",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "B-0230-K": {
+      "name": "1/2\" NPT NIPPLE, LOCK NUT & WASHER, SHORT ELBOW (1/2\" NPT FEMALE X MALE)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "B-0133-A10-B08": {
+      "name": "PRE-RINSE COMBO FAUCET, SPRING ACTION, 8\" WALL MOUNT BASE, 10\" ADD-ON NOZZLE, WALL BRACKET, WITH SPRAY VALVE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "012442-40NS": {
+      "name": "ETERNA CARTRIDGE W/ SPRING CHECK, LESS HANDLE, LTC (COLD) NEW-STYLE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "012443-40NS": {
+      "name": "ETERNA CARTRIDGE W/ SPRING CHECK, LESS HANDLE, RTC (HOT) NEW-STYLE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "B-2342-WB": {
+      "name": "10\" WRIST BLADE FAUCET",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.007",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "209L-DW-NS": {
+      "name": "PRESS-IN INDEX, T&S DISTILLED WATER, WHITE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.008",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "209L-AIR-NS": {
+      "name": "PRESS-IN INDEX, T&S AIR, ORANGE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.008",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "DER-1899-14-CC": {
+      "name": "SINGLE LEVER MIXING VALVE WITH FLEX HOSE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.009",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-EDR-TEMP-KIT": {
+      "name": "TEMPERATURE MONITORING KIT FOR EDRAIN",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "AEKS8-832-80",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TEMP-CF",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-FLT-UC",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-MS-FW",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-BH-MS-375",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BSN-TEMP-PROBE": {
+      "name": "TEMPERATURE PROBE (IN BASIN), TT08-10KC8-T105-1500",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.010",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-PWRBAR": {
+      "name": "TRIPP LITE POWER BAR PS-615-HG",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.011",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-LEVELING-CASTOR-475": {
+      "name": "LEVELING CASTER, 2200LBS CAPACITY, 4.75\" OVERALL HEIGHT",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "LLC500A3-RK3": {
+      "name": "OVERFLOW SENSOR OPTICAL, ASSEMBLED WITH A 2.2K RESISTOR INLINE VCC",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.013",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "0617110-2500": {
+      "name": "**MOTOR CABLES *PVC-FREE CABLE 2500MM LENGTH***",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "0617102-1000": {
+      "name": "**MOTOR CABLES *PVC-FREE CABLE 1000MM LENGTH***",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "DL270CA00300455": {
+      "name": "DL27 ACTUACTOR 300MM",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-CBD6SH00040A-709": {
+      "name": "CONTROL BOX - 4 CHANNEL",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "DPF1C00-012016": {
+      "name": "DESK PANEL HAPTIC PUSH BUTTON WITH LED DISPLAY",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "DPF1K00-010006": {
+      "name": "UP / DOWN BUTTON BLACK",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.014",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-DI-GOOSENECK-FAUCET-KIT": {
+      "name": "GOOSENECK TREATED WATER FAUCET KIT, PVC",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-DI-GOOSENECK-FAUCET",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "5076K42",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "5218K795",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-HS-CLMP-1.5-2": {
+      "name": "GEAR HOSE CLAMP 1.5-2\"",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.017",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "FLX-CMD-1.5X25": {
+      "name": "1.5\" FLEXTHANE FLEX HOSE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.017",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-DRAIN-BSKT": {
+      "name": "SS STRAINER ASSY WITH BASKET, GALVANIZED SHELL AND BRASS TAILPIECE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "PW-105R3-06": {
+      "name": "RIGHT ANGLE POWER CABLE - SJT",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "PW-105R3-03": {
+      "name": "POWER CABLE SJT 3FT",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-BSN-DRAIN-BTN": {
+      "name": "PV7FWY0SS-3R1 BUTTON WITH RJ45 AND DRAIN SYMBOL LASERED, O-RING AND NUT",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "LLC500D3L": {
+      "name": "EDRAIN SYSTEM GEN 1, LIQUID LEVEL SENSOR, -25 TO +80DEGC, M10",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "2369024-3": {
+      "name": "22MM O-RING FOR PUSH BUTTONS",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OHL-LED-6000K-24V": {
+      "name": "SUNSTAR 20301 ALUMINUM EXTRUSION WITH LED STRIP 6000K 24V ALL LENGTHS WITH M8 3PIN FEMALE",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.018",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-ESK": {
+      "name": "MCU BOARD FOR ESINK SYSTEM",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.019",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-EDR": {
+      "name": "MCU BOARD FOR EDRAIN SYSTEM",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.020",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-OHL": {
+      "name": "MCU BOARD FOR OVERHEAD LIGHT",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.021",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-BSNL": {
+      "name": "MCU BOARD FOR BASIN LIGHT SYSTEM",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.022",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-DOSE": {
+      "name": "MCU BOARD FOR DOSING PUMP",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.023",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-ESOM-F4-01-FLUSH": {
+      "name": "MCU BOARD FOR FLUSHING PUMP",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.024",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-DOSINGESK-EXR": {
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-CON-01D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - BASIN DISPENSING TUBESET",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-CON-02D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - MOUNTED ON SINK",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-CON-03D": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - INTAKE TUBESET",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-KIT-ESK-DOSE": {
+      "name": "DOSING PUMP TUBESET FOR ESINK - COMPLETE ASSEMBLY",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T8-DOSINGESK": {
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP MODULE (ESINK COMPATIBLE)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.026",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-UPG-LIFTER-FH-HA": {
+      "name": "UPGRADE KIT TO ENABLE HEIGHT ADJUSTABLE LIFTERS (DL27 COMPATIBLE ONLY)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "0617110-2500",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "0617102-1000",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "TP101000DK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-CBD6SH00040A-709",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "15862",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-EDR-1BSN": {
+      "name": "UPGRADE KIT TO UPGRADE MANUAL PULL DRAIN SINK TO E-DRAIN (SINGLE BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-CTRL-EDR-RK3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN-COVER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-EDR-2BSN": {
+      "name": "UPGRADE KIT TO UPGRADE MANUAL PULL DRAIN SINK TO E-DRAIN (DUAL BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-CTRL-EDR2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN-COVER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-UPG-CTRL-BOX-BRKT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-EDR-3BSN": {
+      "name": "UPGRADE KIT TO UPGRADE MANUAL PULL DRAIN SINK TO E-DRAIN (TRIPLE BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-CTRL-EDR3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN-COVER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-UPG-CTRL-BOX-BRKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-CTRL-ESK-RK3",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-ESK-1BSN": {
+      "name": "UPGRADE KIT TO UPGRADE FROM E-DRAIN TO E-SINK (SINGLE BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-TS7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EMERGSTOP-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-VALVE-PLATE-AUK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CAT5E-10BK",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-ESK-2BSN": {
+      "name": "UPGRADE KIT TO UPGRADE FROM E-DRAIN TO E-SINK (DUAL BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-CTRL-ESK2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-UPG-CTRL-BOX-BRKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TS7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EMERGSTOP-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-VALVE-PLATE-AUK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CAT5E-10BK",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-UPG-ESK-3BSN": {
+      "name": "UPGRADE KIT TO UPGRADE FROM E-DRAIN TO E-SINK (TRIPLE BASIN)",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-CTRL-ESK3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-UPG-CTRL-BOX-BRKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TS7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EMERGSTOP-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-VALVE-PLATE-AUK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CAT5E-10BK",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-CTRL-EDR-RK3": {
+      "name": "E-DRAIN V1 CONTROL BOX UPGRADE KIT - SINGLE BASIN",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-RFK-BRD-MNT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-CTRL-RK3-SHELL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EDRAIN-BOARD-R3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "52-67001-7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DC11.0031.201",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T4072014031-001",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "LRS-100-24",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-CTRL-ESK-RK3": {
+      "name": "E-SINK V1 CONTROL BOX UPGRADE KIT - SINGLE BASIN",
+      "type": "SERVICE_PART",
+      "category_code": "719",
+      "subcategory_code": "719.027",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-RFK-BRD-MNT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-CTRL-RK3-SHELL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ESINK-BOARD-R3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "52-67001-7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DC11.0031.201",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T4072014031-001",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "LRS-100-24",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-BINRAIL-24-KIT": {
+      "name": "BIN RAIL, 24\" KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-BINRAIL-24",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-BINRAIL-36-KIT": {
+      "name": "BIN RAIL, 36\" KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-BINRAIL-36",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-BINRAIL-48-KIT": {
+      "name": "BIN RAIL, 48\" KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-BINRAIL-48",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-PFW1236FM-KIT": {
+      "name": "WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 36\"W X 12\"D WITH BRACKETS",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-PFW1236FM",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKETSLT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKET",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-PFW1218FM-KIT": {
+      "name": "WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18\"W X 12\"D WITH BRACKETS",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-PFW1218FM",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKETSLT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKET",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-PFW1818FM-KIT": {
+      "name": "WIRE BASKET KIT, SLOT BRACKET HELD, CHROME, 18\"W X 18\"D WITH BRACKETS",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-PFW1818FM",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKETSLT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-PWBRACKET",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-SSSHELF-1812": {
+      "name": "STAINLESS STEEL SLOT SHELF, 18\"W X 12\"D",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-SSSHELF-1812-BOLT-ON-KIT": {
+      "name": "STAINLESS STEEL SHELF, 18\"W X 12\"D BOLT ON (FOR SOLID PEGBOARD) KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-SSSHELF-1812-BOLT-ON",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-SSSHELF-3612": {
+      "name": "STAINLESS STEEL SLOT SHELF, 36\"W X 12\"D",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-SSSHELF-3612-BOLT-ON-KIT": {
+      "name": "STAINLESS STEEL SLOT SHELF, 36\"W X 12\"D BOLT ON (FOR SOLID PEGBOARD) KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-SSSHELF-3612-BOLT-ON",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "832-NL-NT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OHL-INSTRO-KIT": {
+      "name": "OVERHEAD LIGHT SHELF WITH LED LIGHT (ONLY FOR INSTROSINK)",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-SSSHELF-2712-INSTRO",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-OHL-LED",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-B110505": {
+      "name": "BLUE, 10-7/8\" X 5-1/2\" X 5\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-B110807": {
+      "name": "BLUE, 10-7/8\" X 8-1/8\" X 7\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-B111105": {
+      "name": "BLUE, 10-7/8\" X 11\" X 5\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "B210-BLUE": {
+      "name": "BLUE PLASTIC BIN, 5.75\"X4.125\"X3\"",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-LT-SSSHELF-LRG": {
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 10\"X20\", FOR LARGE SCOPE",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-LT-SSSHELF-SML": {
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 6\"X10\", FOR SMALL SCOPE",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-SSSHELF-LGHT-1812-KIT": {
+      "name": "STAINLESS STEEL SLOT SHELF WITH UNDERLIGHT, 18\"W X 12\"D KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-SSSHELF-1812",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-OHL-LED",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-SSSHELF-LGHT-3612-KIT": {
+      "name": "STAINLESS STEEL SLOT SHELF WITH UNDERLIGHT, 36\"W X 12\"D KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-SSSHELF-3612",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-OHL-LED",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-CUST-SHELF-HA-SML": {
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-CUST-SHELF-HA-LRG": {
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-RAIL-SHELF-ADDER-SML": {
+      "name": "RAIL SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-RAIL-SHELF-ADDER-LRG": {
+      "name": "RAIL SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-FOOTREST-RAIL-KIT": {
+      "name": "FOOT RAIL REST KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-CROSSRAIL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 TRUSS SCREW PH",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 SS FLAT WASHER",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-DOSINGESK-BTMSHELF": {
+      "name": "BOTTOM SHELF FOR DOSING PUMP",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.702",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-1BRUSH-ORG-PB-KIT": {
+      "name": "SINGLE BRUSH HOLDER, STAY-PUT PEGBOARD MOUNT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-1BRUSH-ORG-PB",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "21651",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "90015A286",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-6BRUSH-ORG-PB-KIT": {
+      "name": "6 BRUSH ORGANIZER, STAY-PUT PEGBOARD MOUNT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-6BRUSH-ORG-PB",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "21651",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "90015A286",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-WRK-FLW-PB": {
+      "name": "PEGBOARD MOUNT WORKFLOW INDICATOR (SET OF 3)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PPRACK-2066": {
+      "name": "STAINLESS STEEL PEEL POUCH RACK, 20.5 X 6 X 6",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PB-SS-1L-SHLF": {
+      "name": "ONE LITRE DOUBLE BOTTLE HOLDER, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PB-SS-2G-SHLF": {
+      "name": "ONE GALLON DOUBLE DETERGENT HOLDER, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PB-SS-1GLOVE": {
+      "name": "SINGLE GLOVE DISPENSER, STAINLESS STEEL, 6\"W X 11\"H",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PB-SS-2GLOVE": {
+      "name": "DOUBLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 11\"H",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-PB-SS-3GLOVE": {
+      "name": "TRIPLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 17\"H",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-SC-2020-SS": {
+      "name": "SINK STAGING COVER FOR 20X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-SC-2420-SS": {
+      "name": "SINK STAGING COVER FOR 24X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-SC-3020-SS": {
+      "name": "SINK STAGING COVER FOR 30X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-AER-TUBEORG": {
+      "name": "AER TUBING ORGANIZER",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.703",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MLIGHT-PB-KIT": {
+      "name": "MAGNIFYING LIGHT, 5\" LENS, PEGBOARD MOUNT KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.704",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-MLIGHT-CCLAMP",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-MAG-LIGHT-PB-BRKT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-DIM-MLIGHT-PB-KIT": {
+      "name": "DIMMABLE MAGNIFYING LIGHT, 5\" LENS, PEGBOARD MOUNT KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.704",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-DIM-MLIGHT-CCLAMP",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-MAG-LIGHT-PB-BRKT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-TASKLIGHT-PB": {
+      "name": "GOOSENECK 27\" LED TASK LIGHT, 10DEG FOCUSING BEAM, IP65 HEAD, 24VDC, PB MOUNT",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.704",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-TASKLIGHT-PB-MAG-KIT": {
+      "name": "GOOSENECK LED TASK LIGHT WITH MAGNIFIER, FOCUSING BEAM, PB MOUNT KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.704",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-OA-TASKLIGHT-PB",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "ACC 14085",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-MNT-ARM": {
+      "name": "WALL MONITOR PIVOT, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MNT-ARM-1EXT": {
+      "name": "WALL MONITOR ARM, 1 EXTENSION, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MNT-ARM-2EXT": {
+      "name": "WALL MONITOR ARM, 2 EXTENSION, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-KB-MOUSE-ARM": {
+      "name": "WALL KEYBOARD ARM, KEYBOARD MOUNT WITH SLIDE-OUT MOUSE TRAY",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-2H-CPUSM": {
+      "name": "CPU HOLDER, VERTICAL, SMALL (80-063-200)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-2H-CPULG": {
+      "name": "CPU HOLDER, VERTICAL, LARGE (97-468-202)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-2H-CPUUV": {
+      "name": "CPU HOLDER, TETHERED, UNIVERSAL (80-105-064)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MMA-PB": {
+      "name": "MONITOR MOUNT ARM, SINGLE, PB MOUNT (45-353-026)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MMA-DUAL": {
+      "name": "MONITOR MOUNT ADAPTER, DUAL MONITOR (97-783)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MMA-LTAB": {
+      "name": "MONITOR MOUNT ADAPTER, TABLET, LOCKING (45-460-026)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MMA-LAP": {
+      "name": "MONITOR MOUNT ADAPTER, LAPTOP TRAY (50-193-200)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T-OA-MNT-SINGLE-COMBO-PB": {
+      "name": "COMBO ARM, KEYBOARD & MONITOR MOUNT FOR PEGBOARD (BLACK)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.705",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-STD-FAUCET-WB-KIT": {
+      "name": "10\" WRIST BLADE, SWING SPOUT, WALL MOUNTED FAUCET KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "B-2342-WB",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "B-0230-K",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PFX146332",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-PRE-RINSE-FAUCET-KIT": {
+      "name": "PRE-RINSE OVERHEAD SPRAY UNIT KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "B-0133-A10-B08",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "B-0230-K",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PFX146332",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-WATERGUN-TURRET-KIT": {
+      "name": "WATER GUN KIT & TURRET, TREATED WATER COMPATIBLE",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-CLEANING-GUN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "BL-4500-02",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "BL-4249",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-WTR-GN-HLDR-1",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-WATERGUN-ROSETTE-KIT": {
+      "name": "WATER GUN KIT & ROSETTE, TREATED WATER COMPATIBLE",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-CLEANING-GUN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DSP-HOLDER",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-AIRGUN-TURRET-KIT": {
+      "name": "AIR GUN KIT & TURRET",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-CLEANING-GUN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "BL-4350-01",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "BL-5500-07",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-WTR-GN-HLDR-1",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-AIRGUN-ROSETTE-KIT": {
+      "name": "AIR GUN KIT & ROSETTE",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-CLEANING-GUN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DSP-HOLDER",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-MS-1026": {
+      "name": "ST24 P-TRAP DISINFECTION DRAIN UNIT",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-SINK-STRAINER": {
+      "name": "SINK STRAINER WITH TORVAN LOGO",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-BASIN-LIGHT-EDR-KIT": {
+      "name": "BASIN LIGHT 27W WHITE LED WITH PUSH BUTTON",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-BASIN-LIGHT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-LIGHT-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-TERMCON-F",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-MF-STR-3M",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "50785K144",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "91367A929",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-BASIN-LIGHT-ESK-KIT": {
+      "name": "BASIN LIGHT 27W WHITE LED (ONLY COMPATIBLE WITH ESINK)",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-BASIN-LIGHT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-TERMCON-F",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-MF-STR-3M",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "50785K144",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "91367A929",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-EYEWASH-FAUCET-MNT": {
+      "name": "EYEWASH FAUCET ATTACHMENT S19-200B",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.706",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OA-2D-152012-STACKED-KIT": {
+      "name": "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.707",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OA-2D-152012-STACKED",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-OA-UHMW-LINER",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-OA-PO-SHLF-1212": {
+      "name": "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)",
+      "type": "SIMPLE",
+      "category_code": "720",
+      "subcategory_code": "720.707",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-STD-MANUAL-EN-KIT": {
+      "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN ENGLISH",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.701",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-USER-MANUAL-EN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PREINST-MANUAL-EN",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-STD-MANUAL-FR-KIT": {
+      "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN FRENCH",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.701",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-USER-MANUAL-FR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PREINST-MANUAL-FR",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-STD-MANUAL-SP-KIT": {
+      "name": "STANDARD SINK MANUAL AND PREINSTALL SITE PREP IN SPANISH",
+      "type": "KIT",
+      "category_code": "720",
+      "subcategory_code": "720.701",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-USER-MANUAL-SP",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PREINST-MANUAL-EN",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-1B-INSTRO-HA": {
+      "name": "SINGLE BOWL 34\" X 30\" HEIGHT ADJUSTABLE INTRUMENT SINK",
+      "type": "COMPLEX",
+      "category_code": "721",
+      "subcategory_code": "721.709",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-INSTRO-FRAME-1B",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-INSTRO-BASE-1B",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DL14-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PWRBAR-KIT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BODY-48-60-HA": {
+      "name": "DOUBLE BOWL HEIGHT ADJUSTABLE ENDOSCOPE SINK, NO COUNTERTOP SPACE (COVERS 48\" UP TO 60\")",
+      "type": "COMPLEX",
+      "category_code": "721",
+      "subcategory_code": "721.709",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-48-60-FRAME",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-LINAKFRAME-8",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CROSSRAIL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CASTERPLATE-PAIR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PWRBAR-KIT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BODY-61-72-HA": {
+      "name": "DOUBLE BOWL HEIGHT ADJUSTABLE MDRD SINK (COVERS 60\" UP TO 120\")",
+      "type": "COMPLEX",
+      "category_code": "721",
+      "subcategory_code": "721.709",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-61-72-FRAME",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-LINAKFRAME-8",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CROSSRAIL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CASTERPLATE-PAIR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PWRBAR-KIT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BODY-73-120-HA": {
+      "name": "TRIPLE BOWL HEIGHT ADJUSTABLE MDRD SINK (COVERS 72\" UP TO 120\")",
+      "type": "COMPLEX",
+      "category_code": "721",
+      "subcategory_code": "721.709",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-73-120-FRAME",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-LINAKFRAME-8",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CROSSRAIL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CASTERPLATE-PAIR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PWRBAR-KIT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-48-60-FRAME": {
+      "name": "SINK FRAME (COVERS 48\" UP TO 60\")",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-61-72-FRAME": {
+      "name": "SINK FRAME (COVERS 61\" UP TO 72\")",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-73-120-FRAME": {
+      "name": "SINK FRAME (COVERS 73\" UP TO 120\")",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-LINAKFRAME-8": {
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 8IN BASIN ALLOWED OVER LIFTERS)",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-LINAKFRAME-10": {
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 10IN BASIN ALLOWED OVER LIFTERS)",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-CROSSRAIL": {
+      "name": "MOUNTING TUBE FRAME (CUSTOM LENGTH AS SPECIFIED ON DRAWING)",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-INSTRO-FRAME-1B": {
+      "name": "SINGLE BOWL SINK HEIGHT ADJUS, 36\" INSTRO SINK FRAME",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-INSTRO-BASE-1B": {
+      "name": "INSTRO SINK BASE SHELF",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-CASTERPLATE-PAIR": {
+      "name": "MOUNTING PLATE FOR CASTERS AND LINAK LEGS, SET OF 2 PLATES (1 LEFT AND 1 RIGHT)",
+      "type": "COMPLEX",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-CASTERPLATE-LEFT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CASTERPLATE-RIGHT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "9563K43",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-PWRBAR-KIT": {
+      "name": "9 PORT POWER BAR WITH MOUNTING BRACKET",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.710",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-PWRBAR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-POWER-STRIP-BRKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 RIVNUTS",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "8-32 FLAT HEAD SCREWS 1.25\"",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-SEISMIC-FEET": {
+      "name": "STAINLESS STEEL ADJUSTABLE SEISMIC FEET 1-5/8\"OD X 6\"H",
+      "type": "SIMPLE",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-DL27-KIT": {
+      "name": "HEIGHT ADJUSTABLE ELECTROMECHANICAL COLUMN KIT (DL27)",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-CBD6SH00040A-709",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DL270CA00300455",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DPF1K00-010006",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "0617102-1000",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "0617110-2500",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "914759",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "15862",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DPF1C00-012016",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-DL14-KIT": {
+      "name": "HEIGHT ADJUSTABLE ELECTROMECHANICAL COLUMN KIT (DL14)",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-CBD6SH00040A-709",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DPF1C00-012016",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "914759",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "15862",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "0617102-1000",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DL14000A0E660525",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-LC1-KIT": {
+      "name": "HEIGHT ADJUSTABLE ELECTROMECHANICAL TRIPLE COLUMN KIT (LC1)",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T-CBD6SH00040A-709",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "DPF1C00-012016",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "914759",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CAB0964764",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "15862",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "CAB0617102-1550",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "J42099",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1053W8012",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "TP101000DK",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-DL27-FH-KIT": {
+      "name": "FIXED HEIGHT DL27 COLUMN KIT",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "DL270CA00300455",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-DL14-FH-KIT": {
+      "name": "FIXED HEIGHT DL14 COLUMN KIT",
+      "type": "KIT",
+      "category_code": "721",
+      "subcategory_code": "721.711",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "DL14000A0E660525",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-BASIN20X20X8": {
+      "name": "SINK BASIN 20X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category_code": "722",
+      "subcategory_code": "722.712",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-BASIN24X20X8": {
+      "name": "SINK BASIN 24X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category_code": "722",
+      "subcategory_code": "722.712",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-BASIN24X20X10": {
+      "name": "SINK BASIN 24X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category_code": "722",
+      "subcategory_code": "722.712",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-BASIN30X20X8": {
+      "name": "SINK BASIN 30X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category_code": "722",
+      "subcategory_code": "722.712",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-BASIN30X20X10": {
+      "name": "SINK BASIN 30X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category_code": "722",
+      "subcategory_code": "722.712",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-BSN-EDR-KIT": {
+      "name": "EDRAIN BASIN KIT WITH OVERFLOW PROTECTION",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.713",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-BOTTOM-FILL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-HOSE-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-OA-SINK-STRAINER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-ETCH",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EDR-TEMP-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEX-FLANGE-THIN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-DRAIN-BTN-COVER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BSN-ESK-DI-KIT": {
+      "name": "ESINK KIT FOR DI WATER (NO BOTTOM FILL)",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.713",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-HOSE-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-OA-SINK-STRAINER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-ETCH",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-VALVE-PLATE-AUK-DI",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEX-FLANGE-THIN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EMERGSTOP-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TS7",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BSN-ESK-KIT": {
+      "name": "ESINK BASIN KIT WITH AUTOMATED DOSING",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.713",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-DRAIN-VALVE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-HOSE-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-OVFL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ESK-TEMP-KIT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-OA-SINK-STRAINER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-BSN-ETCH",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-VALVE-PLATE-AUK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-PEX-FLANGE-THIN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-DRAIN-BSKT-SEAL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-EMERGSTOP-BTN",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TS7",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T8-KIT-ESK-DOSE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T8-DOSINGESK",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-ADW-CROSSRAIL",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-OA-DOSINGESK-BTMSHELF",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-DRAIN-HOSE-KIT": {
+      "name": "DRAINAGE HOSE 1.5\" WITH CLAMPS TO SECURE",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "FLX-CMD-1.5X25",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-HS-CLMP-1.5-2",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BOTTOM-FILL": {
+      "name": "BOTTOM FILLING MANUAL THERMOSTAT WITH CHECK VALVE",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "DER-1899-14-CC",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PFX146332",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-NIPPLE-1/2",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "92105",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "12PF196090",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "95400",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "6.65E+11",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-BSN-OVFL": {
+      "name": "IN-BASIN OPTICAL OVERFLOW SENSOR",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "01SPBB010001V-GP",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "LL-NUT-PLA",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "LLC500A3",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "SFR25H0002201FR500",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PCT-223-CLEAR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-FP-STR-1.5M",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-VALVE-PLATE-AUK-DI": {
+      "name": "DI WATER SPECIFIC VALVE PLATE, DOES NOT SUPPORT TEMPERATURE CONTROLLED MODES WITH E-SINK",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "9683",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "95400",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "76902",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PCT-223-12P",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "2926438",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-POWER-STRIP-BRKT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-TMP-DSPLY-MNT-BRKT",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ESK-TEMP-KIT": {
+      "name": "ESINK BASIN TEMPERATURE PROBE KIT",
+      "type": "KIT",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-BSN-TEMP-PROBE",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "G-INS-M12-S68N-PNES-GY",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "A-INL-M12-P-GY",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PCT-222-CLEAR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-MF-STR-3M",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-EMERGSTOP-BTN": {
+      "name": "EMERGENCY BUTTON KIT FOR ESINK SYSTEM (INCLUDES BUTTON AND CABLE)",
+      "type": "COMPLEX",
+      "category_code": "722",
+      "subcategory_code": "722.714",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-EMERG-BTN-M5.1",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M5.1-CONNECTOR",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-FP-STR-1.5M",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "PCT-223-CLEAR",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-PB-3436": {
+      "name": "34X36 PEGBOARD (COVERS 34\" - 47\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-4836": {
+      "name": "48X36 PEGBOARD (COVERS 48\" - 59\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-6036": {
+      "name": "60X36 PEGBOARD (COVERS 60\" - 71\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-7236": {
+      "name": "72X36 PEGBOARD (COVERS 72\" - 83\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-8436": {
+      "name": "84X36 PEGBOARD (COVERS 84\" - 95\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-9636": {
+      "name": "96X36 PEGBOARD (COVERS 95\" - 107\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-10836": {
+      "name": "108X36 PEGBOARD (COVERS 108\" - 119\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-PB-12036": {
+      "name": "120X36 PEGBOARD (COVERS 120\" - 130\")",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.715",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-OHL-MDRD-KIT": {
+      "name": "OVERHEAD LIGHT HOUSING AND MOUNTING BRACKET WITH LED LIGHT (LENGTH AS PER DRAWING)",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-OHL-HOUSING",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T-OA-OHL-LED",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-PB-PERF-KIT": {
+      "name": "PERFORRATED PEGBOARD OF CUSTOM DIMENSIONS KIT",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-PB-SOLID-KIT": {
+      "name": "SOLID PEGBOARD OF CUSTOM DIMENSIONS KIT",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-CUST-POST-1104": {
+      "name": "11\u201d HIGH VERTICAL POST BRACKETS \u00bc X 4\" FLAT BAR\u201d WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CUST-POST-1404": {
+      "name": "14\u201d HIGH VERTICAL POST BRACKETS \u00bc X 4\" FLAT BAR\u201d WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-CUST-POST-1804": {
+      "name": "18\u201d HIGH VERTICAL POST BRACKETS \u00bc X 4\" FLAT BAR\u201d WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": []
+    },
+    "T2-ADW-OHL-HOUSING": {
+      "name": "OVERHEAD LIGHT HOUSING (CUSTOM LENGTH FROM 60\" UP TO 120\")",
+      "type": "COMPLEX",
+      "category_code": "723",
+      "subcategory_code": "723.717",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "ADW-T2-OHL-HOUSING",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "9600K21",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 NYLON NUT",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 TRUSS SCREW PH",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 NYLON FLAT WASHER",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "1/4-20 SS FLAT WASHER",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T-OA-OHL-LED": {
+      "name": "OVERHEAD LED LIGHT FOR SINKS 6000K 24VDC (CUSTOM LENGTH)",
+      "type": "COMPLEX",
+      "category_code": "723",
+      "subcategory_code": "723.717",
+      "can_order": true,
+      "is_kit": false,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-OHL-LED-6000K-24V",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-FP-STR-0.30M",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "T2-M8-3P-MF-STR-3M",
+          "quantity": 1,
+          "notes": null
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-GREEN-PERF-KIT": {
+      "name": "34X36 GREEN PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-BLACK-PERF-KIT": {
+      "name": "34X36 BLACK PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-YELLOW-PERF-KIT": {
+      "name": "34X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-GREY-PERF-KIT": {
+      "name": "34X36 GREY PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-RED-PERF-KIT": {
+      "name": "34X36 RED PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-BLUE-PERF-KIT": {
+      "name": "34X36 BLUE PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-ORANGE-PERF-KIT": {
+      "name": "34X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-WHITE-PERF-KIT": {
+      "name": "34X36 WHITE PERFORATED PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-GREEN-SOLID-KIT": {
+      "name": "34X36 GREEN SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-BLACK-SOLID-KIT": {
+      "name": "34X36 BLACK SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-YELLOW-SOLID-KIT": {
+      "name": "34X36 YELLOW SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-GREY-SOLID-KIT": {
+      "name": "34X36 GREY SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-RED-SOLID-KIT": {
+      "name": "34X36 RED SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-BLUE-SOLID-KIT": {
+      "name": "34X36 BLUE SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-ORANGE-SOLID-KIT": {
+      "name": "34X36 ORANGE SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-3436-WHITE-SOLID-KIT": {
+      "name": "34X36 WHITE SOLID PEGBOARD KIT (COVERS 34\" - 47\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-3436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-GREEN-PERF-KIT": {
+      "name": "48X36 GREEN PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-BLACK-PERF-KIT": {
+      "name": "48X36 BLACK PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-YELLOW-PERF-KIT": {
+      "name": "48X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-GREY-PERF-KIT": {
+      "name": "48X36 GREY PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-RED-PERF-KIT": {
+      "name": "48X36 RED PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-BLUE-PERF-KIT": {
+      "name": "48X36 BLUE PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-ORANGE-PERF-KIT": {
+      "name": "48X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-WHITE-PERF-KIT": {
+      "name": "48X36 WHITE PERFORATED PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-GREEN-SOLID-KIT": {
+      "name": "48X36 GREEN SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-BLACK-SOLID-KIT": {
+      "name": "48X36 BLACK SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-YELLOW-SOLID-KIT": {
+      "name": "48X36 YELLOW SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-GREY-SOLID-KIT": {
+      "name": "48X36 GREY SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-RED-SOLID-KIT": {
+      "name": "48X36 RED SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-BLUE-SOLID-KIT": {
+      "name": "48X36 BLUE SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-ORANGE-SOLID-KIT": {
+      "name": "48X36 ORANGE SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-4836-WHITE-SOLID-KIT": {
+      "name": "48X36 WHITE SOLID PEGBOARD KIT (COVERS 48\" - 59\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-4836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-GREEN-PERF-KIT": {
+      "name": "60X36 GREEN PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-BLACK-PERF-KIT": {
+      "name": "60X36 BLACK PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-YELLOW-PERF-KIT": {
+      "name": "60X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-GREY-PERF-KIT": {
+      "name": "60X36 GREY PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-RED-PERF-KIT": {
+      "name": "60X36 RED PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-BLUE-PERF-KIT": {
+      "name": "60X36 BLUE PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-ORANGE-PERF-KIT": {
+      "name": "60X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-WHITE-PERF-KIT": {
+      "name": "60X36 WHITE PERFORATED PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-GREEN-SOLID-KIT": {
+      "name": "60X36 GREEN SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-BLACK-SOLID-KIT": {
+      "name": "60X36 BLACK SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-YELLOW-SOLID-KIT": {
+      "name": "60X36 YELLOW SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-GREY-SOLID-KIT": {
+      "name": "60X36 GREY SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-RED-SOLID-KIT": {
+      "name": "60X36 RED SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-BLUE-SOLID-KIT": {
+      "name": "60X36 BLUE SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-ORANGE-SOLID-KIT": {
+      "name": "60X36 ORANGE SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-6036-WHITE-SOLID-KIT": {
+      "name": "60X36 WHITE SOLID PEGBOARD KIT (COVERS 60\" - 71\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-6036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-GREEN-PERF-KIT": {
+      "name": "72X36 GREEN PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-BLACK-PERF-KIT": {
+      "name": "72X36 BLACK PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-YELLOW-PERF-KIT": {
+      "name": "72X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-GREY-PERF-KIT": {
+      "name": "72X36 GREY PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-RED-PERF-KIT": {
+      "name": "72X36 RED PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-BLUE-PERF-KIT": {
+      "name": "72X36 BLUE PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-ORANGE-PERF-KIT": {
+      "name": "72X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-WHITE-PERF-KIT": {
+      "name": "72X36 WHITE PERFORATED PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-GREEN-SOLID-KIT": {
+      "name": "72X36 GREEN SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-BLACK-SOLID-KIT": {
+      "name": "72X36 BLACK SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-YELLOW-SOLID-KIT": {
+      "name": "72X36 YELLOW SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-GREY-SOLID-KIT": {
+      "name": "72X36 GREY SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-RED-SOLID-KIT": {
+      "name": "72X36 RED SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-BLUE-SOLID-KIT": {
+      "name": "72X36 BLUE SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-ORANGE-SOLID-KIT": {
+      "name": "72X36 ORANGE SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-7236-WHITE-SOLID-KIT": {
+      "name": "72X36 WHITE SOLID PEGBOARD KIT (COVERS 72\" - 83\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-7236",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-GREEN-PERF-KIT": {
+      "name": "84X36 GREEN PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-BLACK-PERF-KIT": {
+      "name": "84X36 BLACK PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-YELLOW-PERF-KIT": {
+      "name": "84X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-GREY-PERF-KIT": {
+      "name": "84X36 GREY PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-RED-PERF-KIT": {
+      "name": "84X36 RED PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-BLUE-PERF-KIT": {
+      "name": "84X36 BLUE PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-ORANGE-PERF-KIT": {
+      "name": "84X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-WHITE-PERF-KIT": {
+      "name": "84X36 WHITE PERFORATED PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-GREEN-SOLID-KIT": {
+      "name": "84X36 GREEN SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-BLACK-SOLID-KIT": {
+      "name": "84X36 BLACK SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-YELLOW-SOLID-KIT": {
+      "name": "84X36 YELLOW SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-GREY-SOLID-KIT": {
+      "name": "84X36 GREY SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-RED-SOLID-KIT": {
+      "name": "84X36 RED SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-BLUE-SOLID-KIT": {
+      "name": "84X36 BLUE SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-ORANGE-SOLID-KIT": {
+      "name": "84X36 ORANGE SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-8436-WHITE-SOLID-KIT": {
+      "name": "84X36 WHITE SOLID PEGBOARD KIT (COVERS 84\" - 95\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-8436",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-GREEN-PERF-KIT": {
+      "name": "96X36 GREEN PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-BLACK-PERF-KIT": {
+      "name": "96X36 BLACK PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-YELLOW-PERF-KIT": {
+      "name": "96X36 YELLOW PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-GREY-PERF-KIT": {
+      "name": "96X36 GREY PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-RED-PERF-KIT": {
+      "name": "96X36 RED PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-BLUE-PERF-KIT": {
+      "name": "96X36 BLUE PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-ORANGE-PERF-KIT": {
+      "name": "96X36 ORANGE PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-WHITE-PERF-KIT": {
+      "name": "96X36 WHITE PERFORATED PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-GREEN-SOLID-KIT": {
+      "name": "96X36 GREEN SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-BLACK-SOLID-KIT": {
+      "name": "96X36 BLACK SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-YELLOW-SOLID-KIT": {
+      "name": "96X36 YELLOW SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-GREY-SOLID-KIT": {
+      "name": "96X36 GREY SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-RED-SOLID-KIT": {
+      "name": "96X36 RED SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-BLUE-SOLID-KIT": {
+      "name": "96X36 BLUE SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-ORANGE-SOLID-KIT": {
+      "name": "96X36 ORANGE SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-9636-WHITE-SOLID-KIT": {
+      "name": "96X36 WHITE SOLID PEGBOARD KIT (COVERS 95\" - 107\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-9636",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-GREEN-PERF-KIT": {
+      "name": "10X836 GREEN PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-BLACK-PERF-KIT": {
+      "name": "10X836 BLACK PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-YELLOW-PERF-KIT": {
+      "name": "10X836 YELLOW PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-GREY-PERF-KIT": {
+      "name": "10X836 GREY PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-RED-PERF-KIT": {
+      "name": "10X836 RED PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-BLUE-PERF-KIT": {
+      "name": "10X836 BLUE PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-ORANGE-PERF-KIT": {
+      "name": "10X836 ORANGE PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-WHITE-PERF-KIT": {
+      "name": "10X836 WHITE PERFORATED PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-GREEN-SOLID-KIT": {
+      "name": "10X836 GREEN SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-BLACK-SOLID-KIT": {
+      "name": "10X836 BLACK SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-YELLOW-SOLID-KIT": {
+      "name": "10X836 YELLOW SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-GREY-SOLID-KIT": {
+      "name": "10X836 GREY SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-RED-SOLID-KIT": {
+      "name": "10X836 RED SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-BLUE-SOLID-KIT": {
+      "name": "10X836 BLUE SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-ORANGE-SOLID-KIT": {
+      "name": "10X836 ORANGE SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-10836-WHITE-SOLID-KIT": {
+      "name": "10X836 WHITE SOLID PEGBOARD KIT (COVERS 108\" - 119\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-10836",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-GREEN-PERF-KIT": {
+      "name": "12X036 GREEN PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-BLACK-PERF-KIT": {
+      "name": "12X036 BLACK PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-YELLOW-PERF-KIT": {
+      "name": "12X036 YELLOW PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-GREY-PERF-KIT": {
+      "name": "12X036 GREY PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-RED-PERF-KIT": {
+      "name": "12X036 RED PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-BLUE-PERF-KIT": {
+      "name": "12X036 BLUE PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-ORANGE-PERF-KIT": {
+      "name": "12X036 ORANGE PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-WHITE-PERF-KIT": {
+      "name": "12X036 WHITE PERFORATED PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-GREEN-SOLID-KIT": {
+      "name": "12X036 GREEN SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREEN"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-BLACK-SOLID-KIT": {
+      "name": "12X036 BLACK SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLACK"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-YELLOW-SOLID-KIT": {
+      "name": "12X036 YELLOW SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "YELLOW"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-GREY-SOLID-KIT": {
+      "name": "12X036 GREY SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "GREY"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-RED-SOLID-KIT": {
+      "name": "12X036 RED SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "RED"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-BLUE-SOLID-KIT": {
+      "name": "12X036 BLUE SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "BLUE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-ORANGE-SOLID-KIT": {
+      "name": "12X036 ORANGE SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "ORANGE"
+        }
+      ]
+    },
+    "T2-ADW-PB-12036-WHITE-SOLID-KIT": {
+      "name": "12X036 WHITE SOLID PEGBOARD KIT (COVERS 120\" - 130\")",
+      "type": "KIT",
+      "category_code": "723",
+      "subcategory_code": "723.716",
+      "can_order": true,
+      "is_kit": true,
+      "status": "ACTIVE",
+      "components": [
+        {
+          "part_id": "T2-ADW-PB-12036",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "22MP20026",
+          "quantity": 1,
+          "notes": null
+        },
+        {
+          "part_id": "708.77",
+          "quantity": 1,
+          "notes": "WHITE"
+        }
+      ]
+    }
+  }
+}

@@ -108,7 +108,8 @@
       "Bash(sudo rm:*)",
       "Bash(timeout 10s npm run dev)",
       "Bash(touch:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(timeout 15s npm run dev)"
     ],
     "deny": []
   },
