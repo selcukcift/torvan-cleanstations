@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -9,15 +10,15 @@ import { ComprehensiveOrderView } from "@/components/procurement/ComprehensiveOr
 import { ArrowLeft, AlertCircle } from "lucide-react"
 
 interface ProcurementOrderPageProps {
-  params: {
+  params: Promise<{
     orderId: string
-  }
+  }>
 }
 
 export default function ProcurementOrderPage({ params }: ProcurementOrderPageProps) {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const { orderId } = params
+  const { orderId } = use(params)
 
   // Check authentication
   if (status === "loading") {

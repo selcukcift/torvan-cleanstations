@@ -121,7 +121,7 @@ export function ProductionDocumentManagement() {
   })
   
   // Document preview state
-  const [previewDocument, setPreviewDocument] = useState<ProductionDocument | null>(null)
+  const [selectedDocument, setSelectedDocument] = useState<ProductionDocument | null>(null)
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -233,7 +233,7 @@ export function ProductionDocumentManagement() {
   }
 
   const previewDocument = async (document: ProductionDocument) => {
-    setPreviewDocument(document)
+    setSelectedDocument(document)
     setPreviewDialogOpen(true)
   }
 
@@ -566,35 +566,35 @@ export function ProductionDocumentManagement() {
         <DialogContent className="sm:max-w-[800px] max-h-[600px]">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
-              {previewDocument && documentTypeIcons[previewDocument.type]}
-              <span>{previewDocument?.title}</span>
+              {selectedDocument && documentTypeIcons[selectedDocument.type]}
+              <span>{selectedDocument?.title}</span>
             </DialogTitle>
             <DialogDescription>
-              {previewDocument && `${documentTypeLabels[previewDocument.type]} - Version ${previewDocument.version}`}
+              {selectedDocument && `${documentTypeLabels[selectedDocument.type]} - Version ${selectedDocument.version}`}
             </DialogDescription>
           </DialogHeader>
           <div className="max-h-[400px] overflow-y-auto">
-            {previewDocument && (
+            {selectedDocument && (
               <div className="space-y-4">
                 <div className="bg-slate-50 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">Document Information</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-slate-600">Order:</p>
-                      <p className="font-medium">{previewDocument.order.poNumber}</p>
+                      <p className="font-medium">{selectedDocument.order.poNumber}</p>
                     </div>
                     <div>
                       <p className="text-slate-600">Customer:</p>
-                      <p className="font-medium">{previewDocument.order.customerName}</p>
+                      <p className="font-medium">{selectedDocument.order.customerName}</p>
                     </div>
                     <div>
                       <p className="text-slate-600">Created:</p>
-                      <p className="font-medium">{format(new Date(previewDocument.createdAt), 'MMM dd, yyyy HH:mm')}</p>
+                      <p className="font-medium">{format(new Date(selectedDocument.createdAt), 'MMM dd, yyyy HH:mm')}</p>
                     </div>
                     <div>
                       <p className="text-slate-600">Status:</p>
-                      <Badge className={getStatusColor(previewDocument.approved)} variant="outline">
-                        {previewDocument.approved ? 'Approved' : 'Pending'}
+                      <Badge className={getStatusColor(selectedDocument.approved)} variant="outline">
+                        {selectedDocument.approved ? 'Approved' : 'Pending'}
                       </Badge>
                     </div>
                   </div>
@@ -602,7 +602,7 @@ export function ProductionDocumentManagement() {
                 <div>
                   <h4 className="font-medium mb-2">Document Content</h4>
                   <div className="bg-white border rounded-lg p-4 min-h-[200px]">
-                    <pre className="whitespace-pre-wrap text-sm">{previewDocument.content}</pre>
+                    <pre className="whitespace-pre-wrap text-sm">{selectedDocument.content}</pre>
                   </div>
                 </div>
               </div>
@@ -612,18 +612,18 @@ export function ProductionDocumentManagement() {
             <Button variant="outline" onClick={() => setPreviewDialogOpen(false)}>
               Close
             </Button>
-            {previewDocument && (
+            {selectedDocument && (
               <>
                 <Button 
                   variant="outline"
-                  onClick={() => downloadDocument(previewDocument.id, previewDocument.title)}
+                  onClick={() => downloadDocument(selectedDocument.id, selectedDocument.title)}
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
-                {!previewDocument.approved && (
+                {!selectedDocument.approved && (
                   <Button onClick={() => {
-                    approveDocument(previewDocument.id)
+                    approveDocument(selectedDocument.id)
                     setPreviewDialogOpen(false)
                   }}>
                     <CheckCircle2 className="w-4 h-4 mr-2" />

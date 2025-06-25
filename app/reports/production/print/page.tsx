@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { nextJsApiClient } from "@/lib/api"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { ArrowLeft, Printer } from "lucide-react"
 import { PrintableProductionReport } from "@/components/reports/PrintableProductionReport"
 import { useToast } from "@/hooks/use-toast"
 
-export default function PrintReportPage() {
+function PrintReportContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { toast } = useToast()
@@ -147,5 +147,13 @@ export default function PrintReportPage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function PrintReportPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PrintReportContent />
+    </Suspense>
   )
 }

@@ -3,7 +3,7 @@
  * Allows administrators to manually trigger deadline checking
  */
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { deadlineChecker } from '@/lib/deadlineChecker'
 

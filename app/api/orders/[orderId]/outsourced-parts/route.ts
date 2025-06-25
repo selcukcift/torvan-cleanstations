@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthUser } from "@/lib/auth"
+import { OutsourcedPartsService } from "@/lib/outsourcedPartsService"
 import { z } from "zod"
 
 // Schema for creating outsourced part
@@ -73,85 +74,41 @@ export async function GET(
 
     console.log('📦 Fetching outsourced parts for order:', orderId)
     
-    // Extract outsourced parts from procurementData JSON
-    const procurementData = order.procurementData as any
-    let outsourcedParts: any[] = []
-
-    if (procurementData?.outsourcedParts) {
-      outsourcedParts = procurementData.outsourcedParts.map((part: any) => ({
-        id: part.id || part.partNumber,
-        partNumber: part.partNumber,
-        partName: part.partName,
-        quantity: part.quantity,
-        supplier: part.supplier || 'Sink Body Manufacturer',
-        status: part.status || 'PENDING',
-        notes: part.notes,
-        category: part.category,
-        markedAt: part.createdAt || new Date(),
-        markedBy: order.createdBy
-      }))
-    }
+    // Use the new OutsourcedPartsService for schema-based tracking
+    const outsourcedParts = await OutsourcedPartsService.getOutsourcedPartsForOrder(orderId)
+    const allReceived = await OutsourcedPartsService.areAllOutsourcedPartsReceived(orderId)
     
-    // Fallback: Also check order history logs for backwards compatibility
+    // If no parts found in new schema, fallback to legacy procurementData approach
     if (outsourcedParts.length === 0) {
-      const orderHistory = await prisma.orderHistoryLog.findMany({
-        where: { 
-          orderId: orderId,
-          action: 'PART_MARKED_FOR_OUTSOURCING'
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              fullName: true,
-              email: true
-            }
-          }
-        }
-      })
+      const procurementData = order.procurementData as Record<string, unknown>
+      let legacyOutsourcedParts: Array<Record<string, unknown>> = []
+
+      if (procurementData?.outsourcedParts) {
+        legacyOutsourcedParts = (procurementData.outsourcedParts as Array<Record<string, unknown>>).map((part: Record<string, unknown>) => ({
+          id: part.id || part.partNumber,
+          partNumber: part.partNumber,
+          partName: part.partName,
+          quantity: part.quantity,
+          supplier: part.supplier || 'Sink Body Manufacturer',
+          status: part.status || 'PENDING_ORDER',
+          notes: part.notes,
+          category: part.category,
+          markedAt: part.createdAt || new Date(),
+          markedBy: order.createdBy
+        }))
+      }
       
-      // Convert history logs to outsourced parts format
-      outsourcedParts = orderHistory.map(log => {
-        try {
-          // Parse JSON data from notes field
-          if (log.notes?.startsWith('OUTSOURCED_PART_DATA:')) {
-            const jsonData = log.notes.substring('OUTSOURCED_PART_DATA:'.length)
-            const partData = JSON.parse(jsonData)
-            
-            return {
-              id: log.id,
-              partNumber: partData.partNumber,
-              partName: partData.partName,
-              quantity: partData.quantity,
-              supplier: partData.supplier,
-              status: 'SENT',
-              notes: partData.notes,
-              markedAt: log.createdAt,
-              markedBy: log.user
-            }
-          }
-        } catch (error) {
-          console.error('Error parsing outsourced part data:', error)
-        }
-        
-        // Fallback to regex parsing for old format
-        return {
-          id: log.id,
-          partNumber: log.notes?.match(/Part\s+([^\s]+)/)?.[1] || 'Unknown',
-          partName: log.notes?.match(/Part\s+[^\s]+\s+\(([^)]+)\)/)?.[1] || 'Unknown Part',
-          quantity: 1,
-          supplier: 'Sink Body Manufacturer',
-          status: 'SENT',
-          notes: log.notes,
-          markedAt: log.createdAt,
-          markedBy: log.user
-        }
+      return NextResponse.json({
+        success: true,
+        data: legacyOutsourcedParts,
+        allReceived: legacyOutsourcedParts.every(part => ['RECEIVED', 'CANCELLED'].includes(part.status))
       })
     }
 
     return NextResponse.json({
       success: true,
       data: outsourcedParts,
+      allReceived
     })
   } catch (error) {
     console.error("Error fetching outsourced parts:", error)

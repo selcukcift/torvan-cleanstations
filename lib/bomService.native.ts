@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { CustomPartNumberGenerator } from './customPartGenerator'
 
 const prisma = new PrismaClient()
 
@@ -18,6 +19,9 @@ interface BOMItem {
   isPlaceholder?: boolean
   isChild?: boolean
   indentLevel?: number
+  isCustom?: boolean
+  customPartSpec?: any
+  customGeneratedPartNumber?: string
 }
 
 interface BOMResult {
@@ -961,25 +965,34 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       if ((pegboardType || pegboardTypeId) && !hasAddedSpecificPegboardKit) {
         if (pegboardSizePartNumber) {
           if (pegboardSizePartNumber.startsWith('720.215.002 T2-ADW-PB-')) {
-            // Custom pegboard size
-            let partDetails = await prisma.part.findUnique({ where: { partId: pegboardSizePartNumber } })
-            if (!partDetails) {
-              partDetails = {
-                partId: pegboardSizePartNumber,
-                name: `Custom Pegboard Panel ${pegboardSizePartNumber.substring('720.215.002 T2-ADW-PB-'.length)}`,
-                type: 'CUSTOM_PART_AUTOGEN' as any
+            // Custom pegboard size - parse dimensions
+            const dimensions = pegboardSizePartNumber.substring('720.215.002 T2-ADW-PB-'.length).split('x')
+            if (dimensions.length === 2) {
+              const width = parseInt(dimensions[0])
+              const length = parseInt(dimensions[1])
+              
+              // Generate using new service
+              const customPart = await CustomPartNumberGenerator.generate({
+                type: 'pegboard',
+                width,
+                length
+              })
+              
+              const bomItem: BOMItem = {
+                id: customPart.partNumber,
+                partNumber: customPart.partNumber,
+                name: CustomPartNumberGenerator.generateDisplayName(customPart.spec),
+                quantity: 1,
+                category: 'PEGBOARD_PANEL',
+                type: 'CUSTOM',
+                components: [],
+                isCustom: true,
+                customPartSpec: customPart.spec,
+                customGeneratedPartNumber: customPart.partNumber
               } as any
+              
+              bom.push(bomItem)
             }
-            bom.push({
-              id: partDetails!.partId,
-              partNumber: pegboardSizePartNumber,
-              name: partDetails!.name,
-              quantity: 1,
-              category: 'PEGBOARD_PANEL',
-              type: partDetails!.type,
-              components: [],
-              isCustom: true
-            } as any)
           } else {
             // Standard pegboard size assembly
             await addItemToBOMRecursive(pegboardSizePartNumber, 1, 'PEGBOARD_SIZE', bom, new Set())
@@ -1024,23 +1037,36 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
       for (const basin of basins) {
         if (basin.basinSizePartNumber) {
           if (basin.basinSizePartNumber.startsWith('720.215.001 T2-ADW-BASIN-')) {
-            let partDetails = await prisma.part.findUnique({ where: { partId: basin.basinSizePartNumber } })
-            if (!partDetails) {
-              partDetails = {
-                partId: basin.basinSizePartNumber,
-                name: `Custom Basin ${basin.basinSizePartNumber.substring('720.215.001 T2-ADW-BASIN-'.length)}`,
-                type: 'CUSTOM_PART_AUTOGEN' as any
+            // Custom basin size - parse dimensions
+            const dimensions = basin.basinSizePartNumber.substring('720.215.001 T2-ADW-BASIN-'.length).split('x')
+            if (dimensions.length === 3) {
+              const width = parseInt(dimensions[0])
+              const length = parseInt(dimensions[1])
+              const depth = parseInt(dimensions[2])
+              
+              // Generate using new service
+              const customPart = await CustomPartNumberGenerator.generate({
+                type: 'basin',
+                width,
+                length,
+                depth
+              })
+              
+              const bomItem: BOMItem = {
+                id: customPart.partNumber,
+                partNumber: customPart.partNumber,
+                name: CustomPartNumberGenerator.generateDisplayName(customPart.spec),
+                quantity: 1,
+                category: 'BASIN_PANEL',
+                type: 'CUSTOM',
+                components: [],
+                isCustom: true,
+                customPartSpec: customPart.spec,
+                customGeneratedPartNumber: customPart.partNumber
               } as any
+              
+              bom.push(bomItem)
             }
-            bom.push({
-              id: partDetails!.partId,
-              name: partDetails!.name,
-              quantity: 1,
-              category: 'BASIN_PANEL',
-              type: partDetails!.type,
-              components: [],
-              isCustom: true
-            } as any)
           } else {
             await addItemToBOMRecursive(basin.basinSizePartNumber, 1, 'BASIN_SIZE_ASSEMBLY', bom, new Set())
           }

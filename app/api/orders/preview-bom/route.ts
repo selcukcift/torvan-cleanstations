@@ -220,9 +220,19 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error generating BOM preview:', error)
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
-    console.error('Request body was:', JSON.stringify(body, null, 2))
+    console.error('❌ Error generating BOM preview:', error)
+    console.error('❌ Error message:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    console.error('❌ Request body was:', JSON.stringify(body, null, 2))
+    
+    // Check if it's a specific type of error
+    if (error instanceof Error && error.message.includes('PrismaClientKnownRequestError')) {
+      console.error('❌ Database Error:', error.message)
+    }
+    
+    if (error instanceof Error && error.message.includes('Cannot read properties')) {
+      console.error('❌ Property Access Error - likely missing data:', error.message)
+    }
     
     if (error instanceof z.ZodError) {
       console.error('❌ BOM Preview Validation Error:')

@@ -22,6 +22,8 @@ model Part {
   manufacturerName       String?
   revision               String                 @default("1")
   unitOfMeasure          String?
+  requiresSerialTracking Boolean                @default(false)
+  isOutsourced           Boolean                @default(false)
   assemblyComponents     AssemblyComponent[]
   inventoryItems         InventoryItem[]
   serviceOrderItems      ServiceOrderItem[]     @relation("PartServiceOrders")
@@ -43,6 +45,8 @@ model Assembly {
   customAttributes  Json?
   isOrderable       Boolean             @default(false)
   revision          String              @default("1")
+  requiresSerialTracking Boolean        @default(false)
+  isOutsourced      Boolean             @default(false)
   childOfAssemblies AssemblyComponent[] @relation("ChildComponents")
   components        AssemblyComponent[] @relation("ParentComponents")
   subcategories     Subcategory[]       @relation("SubcategoryAssemblies")
@@ -117,6 +121,7 @@ model User {
   completedProdTasks      ProductionTask[]         @relation("UserCompletedProdTasks")
   approvedProdDocs        ProductionDocument[]     @relation("UserApprovedProdDocs")
   productionSyncs         ProductionWorkstationSync[] @relation("UserProductionSyncs")
+  bomItemOutsourcedUpdates BomItem[]               @relation("BomItemOutsourcedUpdates")
 }
 
 model Order {
@@ -261,9 +266,22 @@ model BomItem {
   isCustom           Boolean   @default(false)
   parentId           String?
   bomId              String
+  serialNumber       String?
+  batchNumber        String?
+  customPartSpec     Json?
+  customGeneratedPartNumber String?
+  // Outsourced parts tracking
+  outsourcedStatus   String?   // PENDING_ORDER, ORDERED, IN_TRANSIT, RECEIVED, DELAYED, CANCELLED
+  outsourcedSupplier String?
+  outsourcedExpectedDelivery DateTime?
+  outsourcedTrackingNumber String?
+  outsourcedNotes    String?
+  outsourcedUpdatedBy String?
+  outsourcedUpdatedAt DateTime?
   bom                Bom       @relation(fields: [bomId], references: [id])
   parent             BomItem?  @relation("ParentChildBomItem", fields: [parentId], references: [id])
   children           BomItem[] @relation("ParentChildBomItem")
+  outsourcedUpdater  User?     @relation("BomItemOutsourcedUpdates", fields: [outsourcedUpdatedBy], references: [id])
 }
 
 model OrderHistoryLog {
@@ -359,6 +377,7 @@ model OrderQcResult {
   overallStatus    QcStatus            @default(PENDING)
   notes            String?
   externalJobId    String?
+  digitalSignature String?
   itemResults      OrderQcItemResult[]
   order            Order               @relation(fields: [orderId], references: [id])
   qcFormTemplate   QcFormTemplate      @relation(fields: [qcFormTemplateId], references: [id])
@@ -820,10 +839,15 @@ enum OrderStatus {
   ORDER_CREATED
   SINK_BODY_EXTERNAL_PRODUCTION
   READY_FOR_PRE_QC
+  PRE_QC_REJECTED
+  ASSEMBLY_REWORK_PRE_QC
   READY_FOR_PRODUCTION
+  ASSEMBLY_ON_HOLD_PARTS_ISSUE
   TESTING_COMPLETE
   PACKAGING_COMPLETE
   READY_FOR_FINAL_QC
+  FINAL_QC_REJECTED
+  ASSEMBLY_REWORK_FINAL_QC
   READY_FOR_SHIP
   SHIPPED
 }

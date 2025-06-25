@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { nextJsApiClient } from "@/lib/api"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { CopyConfiguration } from "./CopyConfiguration"
 
 interface ConfigurationStepProps {
   buildNumbers: string[]
@@ -69,6 +70,38 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
   const updateConfig = (updates: any) => {
     if (currentBuildNumber) {
       updateSinkConfiguration(currentBuildNumber, updates)
+    }
+  }
+
+  const handleCopyConfiguration = (sourceBuildNumber: string, targetBuildNumber: string) => {
+    const sourceConfig = configurations[sourceBuildNumber]
+    if (sourceConfig && targetBuildNumber) {
+      // Deep clone the configuration to avoid reference issues
+      const clonedConfig = JSON.parse(JSON.stringify(sourceConfig))
+      
+      // Generate new IDs for basins, faucets, and sprayers to avoid conflicts
+      if (clonedConfig.basins) {
+        clonedConfig.basins = clonedConfig.basins.map((basin: any) => ({
+          ...basin,
+          id: `basin-${Date.now()}-${Math.random()}`
+        }))
+      }
+      
+      if (clonedConfig.faucets) {
+        clonedConfig.faucets = clonedConfig.faucets.map((faucet: any) => ({
+          ...faucet,
+          id: `faucet-${Date.now()}-${Math.random()}`
+        }))
+      }
+      
+      if (clonedConfig.sprayers) {
+        clonedConfig.sprayers = clonedConfig.sprayers.map((sprayer: any) => ({
+          ...sprayer,
+          id: `sprayer-${Date.now()}-${Math.random()}`
+        }))
+      }
+      
+      updateSinkConfiguration(targetBuildNumber, clonedConfig)
     }
   }
 
@@ -478,10 +511,22 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
       {/* Sidebar */}
       <div className="w-64 border-r bg-slate-50/50">
         <div className="p-4 border-b">
-          <h3 className="font-semibold text-lg">Configure {currentBuildNumber}</h3>
-          <p className="text-sm text-slate-600 mt-1">
-            {currentBuildIndex + 1} of {buildNumbers.length} sinks
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-lg">Configure {currentBuildNumber}</h3>
+              <p className="text-sm text-slate-600 mt-1">
+                {currentBuildIndex + 1} of {buildNumbers.length} sinks
+              </p>
+            </div>
+            {buildNumbers.length > 1 && (
+              <CopyConfiguration
+                buildNumbers={buildNumbers}
+                currentBuildNumber={currentBuildNumber}
+                configurations={configurations}
+                onCopyConfiguration={handleCopyConfiguration}
+              />
+            )}
+          </div>
         </div>
         
         <ScrollArea className={buildNumbers.length > 1 ? "h-[calc(100%-8rem)]" : "h-[calc(100%-4rem)]"}>

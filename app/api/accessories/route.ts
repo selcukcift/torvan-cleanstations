@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     // Handle general accessories request with pagination
     const searchTerm = searchParams.get('search') || ''
-    const categoryFilter = searchParams.get('category') || ''
+    // const categoryFilter = searchParams.get('category') // TODO: Implement category filtering || ''
     
     const result = await accessoriesService.getAllAccessories({ 
       search: searchTerm, 
