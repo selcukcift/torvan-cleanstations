@@ -196,26 +196,41 @@ function buildOrderConfiguration(order: any): OrderConfiguration {
  */
 async function generateBOMData(orderConfiguration: OrderConfiguration): Promise<BOMData> {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3005'
-    const response = await fetch(`${baseUrl}/api/orders/preview-bom`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+    console.log('🔧 Generating BOM data using direct service call')
+    
+    // Import the BOM service dynamically to avoid circular dependencies
+    const { generateBOMForOrder } = await import('./bomService.native')
+    
+    // Transform orderConfiguration to the format expected by generateBOMForOrder
+    const bomOrderData = {
+      customer: {
+        language: orderConfiguration.customerInfo.language as 'EN' | 'FR' | 'ES'
       },
-      body: JSON.stringify(orderConfiguration)
+      buildNumbers: orderConfiguration.sinkSelection.buildNumbers,
+      configurations: orderConfiguration.configurations,
+      accessories: orderConfiguration.accessories
+    }
+    
+    console.log('🔧 BOM Order Data:', {
+      buildNumbers: bomOrderData.buildNumbers,
+      configurationsCount: Object.keys(bomOrderData.configurations).length,
+      accessoriesCount: Object.keys(bomOrderData.accessories).length
     })
     
-    if (!response.ok) {
-      throw new Error(`BOM API error: ${response.status} ${response.statusText}`)
+    // Generate BOM directly using the service
+    const bomResult = await generateBOMForOrder(bomOrderData)
+    
+    console.log('✅ BOM generated successfully:', {
+      hierarchicalItems: bomResult.hierarchical?.length || 0,
+      flattenedItems: bomResult.flattened?.length || 0,
+      totalItems: bomResult.totalItems || 0
+    })
+    
+    return {
+      hierarchical: bomResult.hierarchical || [],
+      flattened: bomResult.flattened || [],
+      totalItems: bomResult.totalItems || 0
     }
-    
-    const bomResponse = await response.json()
-    
-    if (!bomResponse.success) {
-      throw new Error(`BOM generation failed: ${bomResponse.message}`)
-    }
-    
-    return bomResponse.data.bom
     
   } catch (error) {
     console.error('❌ BOM generation failed:', error)

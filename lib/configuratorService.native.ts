@@ -323,11 +323,11 @@ export async function getBasinSizeOptions(): Promise<{ standardSizes: BasinSizeO
         type: 'SIMPLE',
         assemblyId: { 
           in: [
-            'T2-ADW-BASIN20X20X8',
-            'T2-ADW-BASIN24X20X8', 
-            'T2-ADW-BASIN24X20X10',
-            'T2-ADW-BASIN30X20X8',
-            'T2-ADW-BASIN30X20X10'
+            'ASSY-T2-ADW-BASIN20X20X8',
+            'ASSY-T2-ADW-BASIN24X20X8', 
+            'ASSY-T2-ADW-BASIN24X20X10',
+            'ASSY-T2-ADW-BASIN30X20X8',
+            'ASSY-T2-ADW-BASIN30X20X10'
           ] 
         }
       },
@@ -397,7 +397,7 @@ export async function getFaucetTypeOptions(basinType?: string): Promise<{ option
     const faucetAssemblies = await prisma.assembly.findMany({
       where: {
         categoryCode: '720',
-        subcategoryCode: '720.706',
+        subcategoryCode: '720.702',
         type: 'KIT',
         assemblyId: { 
           in: [

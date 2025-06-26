@@ -469,8 +469,10 @@ async function addItemToBOMRecursive(
         )
       } else if (part) {
         // Check if this part itself is an assembly that needs further expansion
+        // Use ASSY- prefix convention for assembly lookup
+        const possibleAssemblyId = part.partId.startsWith('ASSY-') ? part.partId : `ASSY-${part.partId}`
         const subAssembly = await prisma.assembly.findUnique({
-          where: { assemblyId: part.partId },
+          where: { assemblyId: possibleAssemblyId },
           include: { components: { include: { childPart: true, childAssembly: true } } }
         })
 
@@ -492,13 +494,15 @@ async function addItemToBOMRecursive(
               if (!subPart) continue
 
               // Check if this subPart is an assembly again
+              // Use ASSY- prefix convention for assembly lookup
+              const possibleDeeperAssemblyId = subPart.partId.startsWith('ASSY-') ? subPart.partId : `ASSY-${subPart.partId}`
               const deeperSubAssembly = await prisma.assembly.findUnique({
-                where: { assemblyId: subPart.partId }
+                where: { assemblyId: possibleDeeperAssemblyId }
               })
 
               if (deeperSubAssembly) {
                 await addItemToBOMRecursive(
-                  subPart.partId,
+                  deeperSubAssembly.assemblyId,
                   subComponentLink.quantity * quantity,
                   'SUB_COMPONENT_ASSEMBLY',
                   subAssemblyBomItem.components!,
@@ -741,22 +745,37 @@ function flattenBOMForDisplay(hierarchicalBom: BOMItem[]): BOMItem[] {
   
   function flattenRecursive(items: BOMItem[], parentLevel = 0) {
     for (const item of items) {
-      // Add the item itself
+      // Ensure level information is preserved from generation
+      const actualLevel = item.level !== undefined ? item.level : parentLevel
+      
+      // Add the item itself with comprehensive level information
       flattened.push({
         ...item,
-        isChild: parentLevel > 0,
-        indentLevel: parentLevel
+        isChild: actualLevel > 0,
+        indentLevel: actualLevel,
+        level: actualLevel,
+        hasChildren: (item.components && item.components.length > 0) || (item.children && item.children.length > 0)
       })
       
       // Recursively add children (handle both 'components' and 'children' properties)
       const childItems = item.components || item.children || []
       if (childItems.length > 0) {
-        flattenRecursive(childItems, parentLevel + 1)
+        flattenRecursive(childItems, actualLevel + 1)
       }
     }
   }
   
   flattenRecursive(hierarchicalBom)
+  
+  // Add debug information about flattening
+  console.log(`🔧 BOM Service: Flattened ${flattened.length} items`)
+  const levelCounts = {}
+  flattened.forEach(item => {
+    const level = item.indentLevel || 0
+    levelCounts[level] = (levelCounts[level] || 0) + 1
+  })
+  console.log(`🔧 BOM Service: Level distribution:`, levelCounts)
+  
   return flattened
 }
 
@@ -1149,7 +1168,32 @@ export async function generateBOMForOrder(orderData: OrderData): Promise<BOMResu
   }
 
   // 12. Return hierarchical BOM structure
-  console.log(`Generated BOM with ${bom.length} top-level items`)
+  console.log(`🔧 BOM Service: Generated BOM with ${bom.length} top-level items`)
+  
+  // Debug hierarchical structure depth
+  function countHierarchicalDepth(items: BOMItem[]): { maxDepth: number, itemCounts: Record<number, number> } {
+    const itemCounts: Record<number, number> = {}
+    let maxDepth = 0
+    
+    function analyzeDepth(bomItems: BOMItem[], currentLevel = 0) {
+      bomItems.forEach(item => {
+        const level = item.level !== undefined ? item.level : currentLevel
+        maxDepth = Math.max(maxDepth, level)
+        itemCounts[level] = (itemCounts[level] || 0) + 1
+        
+        const children = item.components || item.children || []
+        if (children.length > 0) {
+          analyzeDepth(children, level + 1)
+        }
+      })
+    }
+    
+    analyzeDepth(items)
+    return { maxDepth, itemCounts }
+  }
+  
+  const hierarchicalAnalysis = countHierarchicalDepth(bom)
+  console.log(`🔧 BOM Service: Hierarchical structure - Max depth: ${hierarchicalAnalysis.maxDepth}, Items per level:`, hierarchicalAnalysis.itemCounts)
   
   // Return both hierarchical and flattened versions for different display needs
   const flattenedBOM = flattenBOMForDisplay(bom)

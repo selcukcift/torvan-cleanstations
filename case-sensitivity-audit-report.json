@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-06-26T00:55:42.151Z",
+  "summary": {
+    "totalIssues": 0,
+    "caseMismatchIssues": 0,
+    "notFoundIssues": 0
+  },
+  "specificCheck": {
+    "searchId": "T2-oa-po-shlf-1212",
+    "exactAssemblyMatch": false,
+    "exactPartMatch": false,
+    "caseInsensitivePartMatch": "T2-OA-PO-SHLF-1212"
+  },
+  "issues": [],
+  "recommendations": []
+}

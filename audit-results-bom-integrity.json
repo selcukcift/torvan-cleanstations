@@ -1,0 +1,910 @@
+{
+  "emptyComponentArrays": [
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN BASIN",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 ESINK BASIN",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK2",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2-ESK1",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "012442-40NS",
+      "name": "ETERNA CARTRIDGE W/ SPRING CHECK, LESS HANDLE, LTC (COLD) NEW-STYLE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "012443-40NS",
+      "name": "ETERNA CARTRIDGE W/ SPRING CHECK, LESS HANDLE, RTC (HOT) NEW-STYLE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "209L-DW-NS",
+      "name": "PRESS-IN INDEX, T&S DISTILLED WATER, WHITE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "209L-AIR-NS",
+      "name": "PRESS-IN INDEX, T&S AIR, ORANGE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "LLC500A3-RK3",
+      "name": "OVERFLOW SENSOR OPTICAL, ASSEMBLED WITH A 2.2K RESISTOR INLINE VCC",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-2783",
+      "name": "2\" PEGBOARD CLOSED GROMET",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-15862",
+      "name": "POWERCORD FOR CBD, BLACK CABLE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-95400",
+      "name": "CHECK VALVE INLET: SWIVEL NUT G 3/4 FEMALE THREAD, OUTLET: G 3/4 MALE THREAD, DN 12 , P: MAX. 10 BAR",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-14629990",
+      "name": "10K NTC G1/4 TEMPERATURE SENSOR WITH SEAL AND 300 MM CABLE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PWBRACKETSLT",
+      "name": "WIRE BASKET SLOT BRACKET SET, TILT-ADJUST (L & R)",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PWBRACKET",
+      "name": "WIRE BASKET SLOT BRACKET SET, RIGHT ANGLE (L& R)",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-SSSHELF-1812",
+      "name": "STAINLESS STEEL SLOT SHELF, 18\"W X 12\"D",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-SSSHELF-3612",
+      "name": "STAINLESS STEEL SLOT SHELF, 36\"W X 12\"D",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-B110505",
+      "name": "BLUE, 10-7/8\" X 5-1/2\" X 5\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-B110807",
+      "name": "BLUE, 10-7/8\" X 8-1/8\" X 7\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-B111105",
+      "name": "BLUE, 10-7/8\" X 11\" X 5\" HANGING AND STACKING BIN",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-B210-BLUE",
+      "name": "BLUE PLASTIC BIN, 5.75\"X4.125\"X3\"",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-LT-SSSHELF-LRG",
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 10\"X20\", FOR LARGE SCOPE",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-LT-SSSHELF-SML",
+      "name": "STAINLESS STEEL LEAK TESTER PEGBOARD SHELF, 6\"X10\", FOR SMALL SCOPE",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-CUST-SHELF-HA-SML",
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-CUST-SHELF-HA-LRG",
+      "name": "HEIGHT ADJUSTABLE BOTTOM SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-RAIL-SHELF-ADDER-SML",
+      "name": "RAIL SHELF ADDER (LENGTHS LESS THEN 84\")",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-RAIL-SHELF-ADDER-LRG",
+      "name": "RAIL SHELF ADDER (LENGTHS GREATER THEN 84\")",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-CROSSRAIL",
+      "name": "MOUNTING TUBE FRAME (CUSTOM LENGTH AS SPECIFIED ON DRAWING)",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-DOSINGESK-BTMSHELF",
+      "name": "BOTTOM SHELF FOR DOSING PUMP",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-WRK-FLW-PB",
+      "name": "PEGBOARD MOUNT WORKFLOW INDICATOR (SET OF 3)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PPRACK-2066",
+      "name": "STAINLESS STEEL PEEL POUCH RACK, 20.5 X 6 X 6",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PB-SS-1L-SHLF",
+      "name": "ONE LITRE DOUBLE BOTTLE HOLDER, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PB-SS-2G-SHLF",
+      "name": "ONE GALLON DOUBLE DETERGENT HOLDER, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PB-SS-1GLOVE",
+      "name": "SINGLE GLOVE DISPENSER, STAINLESS STEEL, 6\"W X 11\"H",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PB-SS-2GLOVE",
+      "name": "DOUBLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 11\"H",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-PB-SS-3GLOVE",
+      "name": "TRIPLE GLOVE DISPENSER, STAINLESS STEEL, 10\"W X 17\"H",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-SC-2020-SS",
+      "name": "SINK STAGING COVER FOR 20X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-SC-2420-SS",
+      "name": "SINK STAGING COVER FOR 24X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-SC-3020-SS",
+      "name": "SINK STAGING COVER FOR 30X20 BASIN, STAINLESS STEEL",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-AER-TUBEORG",
+      "name": "AER TUBING ORGANIZER",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-TASKLIGHT-PB",
+      "name": "GOOSENECK 27\" LED TASK LIGHT, 10DEG FOCUSING BEAM, IP65 HEAD, 24VDC, PB MOUNT",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MNT-ARM",
+      "name": "WALL MONITOR PIVOT, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MNT-ARM-1EXT",
+      "name": "WALL MONITOR ARM, 1 EXTENSION, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MNT-ARM-2EXT",
+      "name": "WALL MONITOR ARM, 2 EXTENSION, SINGLE MONITOR MOUNT",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-KB-MOUSE-ARM",
+      "name": "WALL KEYBOARD ARM, KEYBOARD MOUNT WITH SLIDE-OUT MOUSE TRAY",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-2H-CPUSM",
+      "name": "CPU HOLDER, VERTICAL, SMALL (80-063-200)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-2H-CPULG",
+      "name": "CPU HOLDER, VERTICAL, LARGE (97-468-202)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-2H-CPUUV",
+      "name": "CPU HOLDER, TETHERED, UNIVERSAL (80-105-064)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MMA-PB",
+      "name": "MONITOR MOUNT ARM, SINGLE, PB MOUNT (45-353-026)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MMA-DUAL",
+      "name": "MONITOR MOUNT ADAPTER, DUAL MONITOR (97-783)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MMA-LTAB",
+      "name": "MONITOR MOUNT ADAPTER, TABLET, LOCKING (45-460-026)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MMA-LAP",
+      "name": "MONITOR MOUNT ADAPTER, LAPTOP TRAY (50-193-200)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T-OA-MNT-SINGLE-COMBO-PB",
+      "name": "COMBO ARM, KEYBOARD & MONITOR MOUNT FOR PEGBOARD (BLACK)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-B-2342-WB",
+      "name": "10\" WRIST BLADE FAUCET",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-B-0230-K",
+      "name": "1/2\" NPT NIPPLE, LOCK NUT & WASHER, SHORT ELBOW (1/2\" NPT FEMALE X MALE)",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-PFX146332",
+      "name": "3/8 C X 1/2 FIP 60 STAINLESS STEEL SINK CONNECTOR",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-B-0133-A10-B08",
+      "name": "PRE-RINSE COMBO FAUCET, SPRING ACTION, 8\" WALL MOUNT BASE, 10\" ADD-ON NOZZLE, WALL BRACKET, WITH SPRAY VALVE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-MS-1026",
+      "name": "ST24 P-TRAP DISINFECTION DRAIN UNIT",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-SINK-STRAINER",
+      "name": "SINK STRAINER WITH TORVAN LOGO",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-EYEWASH-FAUCET-MNT",
+      "name": "EYEWASH FAUCET ATTACHMENT S19-200B",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-PO-SHLF-1212",
+      "name": "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)",
+      "type": "SIMPLE",
+      "category": "720"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-INSTRO-FRAME-1B",
+      "name": "SINGLE BOWL SINK HEIGHT ADJUS, 36\" INSTRO SINK FRAME",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-INSTRO-BASE-1B",
+      "name": "INSTRO SINK BASE SHELF",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-48-60-FRAME",
+      "name": "SINK FRAME (COVERS 48\" UP TO 60\")",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-LINAKFRAME-8",
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 8IN BASIN ALLOWED OVER LIFTERS)",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-61-72-FRAME",
+      "name": "SINK FRAME (COVERS 61\" UP TO 72\")",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-73-120-FRAME",
+      "name": "SINK FRAME (COVERS 73\" UP TO 120\")",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-LINAKFRAME-10",
+      "name": "LINAK FRAME TO GET MIN HEIGHT OF 35IN, (ONLY 10IN BASIN ALLOWED OVER LIFTERS)",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-PWRBAR",
+      "name": "TRIPP LITE POWER BAR PS-615-HG",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-LEVELING-CASTOR-475",
+      "name": "LEVELING CASTER, 2200LBS CAPACITY, 4.75\" OVERALL HEIGHT",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T2-SEISMIC-FEET",
+      "name": "STAINLESS STEEL ADJUSTABLE SEISMIC FEET 1-5/8\"OD X 6\"H",
+      "type": "SIMPLE",
+      "category": "721"
+    },
+    {
+      "assemblyId": "ASSY-T-CBD6SH00040A-709",
+      "name": "CONTROL BOX - 4 CHANNEL",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-DL270CA00300455",
+      "name": "DL27 ACTUACTOR 300MM",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-DPF1K00-010006",
+      "name": "UP / DOWN BUTTON BLACK",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-0617102-1000",
+      "name": "**MOTOR CABLES *PVC-FREE CABLE 1000MM LENGTH***",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-0617110-2500",
+      "name": "**MOTOR CABLES *PVC-FREE CABLE 2500MM LENGTH***",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-DPF1C00-012016",
+      "name": "DESK PANEL HAPTIC PUSH BUTTON WITH LED DISPLAY",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-BASIN20X20X8",
+      "name": "SINK BASIN 20X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category": "722"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-BASIN24X20X8",
+      "name": "SINK BASIN 24X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category": "722"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-BASIN24X20X10",
+      "name": "SINK BASIN 24X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category": "722"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-BASIN30X20X8",
+      "name": "SINK BASIN 30X20X8, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category": "722"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-BASIN30X20X10",
+      "name": "SINK BASIN 30X20X10, WITH BOTTOM FILL, BACK CENTER DRAIN 3.5IN AND OVERFLOW SENSOR PORTS (STOCK)",
+      "type": "SIMPLE",
+      "category": "722"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-DRAIN-BTN",
+      "name": "PV7FWY0SS-3R1 BUTTON WITH RJ45 AND DRAIN SYMBOL LASERED, O-RING AND NUT",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-DRAIN-BSKT",
+      "name": "SS STRAINER ASSY WITH BASKET, GALVANIZED SHELL AND BRASS TAILPIECE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-KIT-ESK-DOSE",
+      "name": "DOSING PUMP TUBESET FOR ESINK - COMPLETE ASSEMBLY",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-DOSINGESK",
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP MODULE (ESINK COMPATIBLE)",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-FLX-CMD-1.5X25",
+      "name": "1.5\" FLEXTHANE FLEX HOSE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-HS-CLMP-1.5-2",
+      "name": "GEAR HOSE CLAMP 1.5-2\"",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-DER-1899-14-CC",
+      "name": "SINGLE LEVER MIXING VALVE WITH FLEX HOSE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-TEMP-PROBE",
+      "name": "TEMPERATURE PROBE (IN BASIN), TT08-10KC8-T105-1500",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-EMERG-BTN-M5.1",
+      "name": "EMERGENCY STOP PUSH BUTTON SWITCH, 1NO 1NC SWITCH",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-3436",
+      "name": "34X36 PEGBOARD (COVERS 34\" - 47\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-4836",
+      "name": "48X36 PEGBOARD (COVERS 48\" - 59\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-6036",
+      "name": "60X36 PEGBOARD (COVERS 60\" - 71\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-7236",
+      "name": "72X36 PEGBOARD (COVERS 72\" - 83\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-8436",
+      "name": "84X36 PEGBOARD (COVERS 84\" - 95\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-9636",
+      "name": "96X36 PEGBOARD (COVERS 95\" - 107\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-10836",
+      "name": "108X36 PEGBOARD (COVERS 108\" - 119\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-ADW-PB-12036",
+      "name": "120X36 PEGBOARD (COVERS 120\" - 130\")",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-CUST-POST-1104",
+      "name": "11” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-CUST-POST-1404",
+      "name": "14” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-CUST-POST-1804",
+      "name": "18” HIGH VERTICAL POST BRACKETS ¼ X 4\" FLAT BAR” WELDED TO BACK SPLASH",
+      "type": "SIMPLE",
+      "category": "723"
+    },
+    {
+      "assemblyId": "ASSY-T2-OHL-LED-6000K-24V",
+      "name": "SUNSTAR 20301 ALUMINUM EXTRUSION WITH LED STRIP 6000K 24V ALL LENGTHS WITH M8 3PIN FEMALE",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-PW-105R3-06",
+      "name": "RIGHT ANGLE POWER CABLE - SJT",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-PW-105R3-03",
+      "name": "POWER CABLE SJT 3FT",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-LLC500D3L",
+      "name": "EDRAIN SYSTEM GEN 1, LIQUID LEVEL SENSOR, -25 TO +80DEGC, M10",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-2369024-3",
+      "name": "22MM O-RING FOR PUSH BUTTONS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-ESK",
+      "name": "MCU BOARD FOR ESINK SYSTEM",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-EDR",
+      "name": "MCU BOARD FOR EDRAIN SYSTEM",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-OHL",
+      "name": "MCU BOARD FOR OVERHEAD LIGHT",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-BSNL",
+      "name": "MCU BOARD FOR BASIN LIGHT SYSTEM",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-DOSE",
+      "name": "MCU BOARD FOR DOSING PUMP",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T-ESOM-F4-01-FLUSH",
+      "name": "MCU BOARD FOR FLUSHING PUMP",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-DOSINGESK-EXR",
+      "name": "TORVAN PUMP SYSTEM DOSING PUMP",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-CON-01D",
+      "name": "DOSING PUMP TUBESET FOR ESINK - BASIN DISPENSING TUBESET",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-CON-02D",
+      "name": "DOSING PUMP TUBESET FOR ESINK - MOUNTED ON SINK",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T8-CON-03D",
+      "name": "DOSING PUMP TUBESET FOR ESINK - INTAKE TUBESET",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR2",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR3",
+      "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK2",
+      "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK3",
+      "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "category": "719"
+    }
+  ],
+  "missingAssemblyReferences": [],
+  "missingPartReferences": [],
+  "missingDatabaseRelationships": [
+    {
+      "assemblyId": "T2-CTRL-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 ESINK BASIN",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK2",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2-ESK1",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN BASIN",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-DRAIN-BTN",
+      "name": "PV7FWY0SS-3R1 BUTTON WITH RJ45 AND DRAIN SYMBOL LASERED, O-RING AND NUT",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-TEMP-PROBE",
+      "name": "TEMPERATURE PROBE (IN BASIN), TT08-10KC8-T105-1500",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR2",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR3",
+      "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK2",
+      "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK3",
+      "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
+      "type": "SERVICE_PART",
+      "reason": "Critical assembly has no component relationships in DB"
+    }
+  ],
+  "hardcodedComponents": [
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK1",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK1",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK2",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK2",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2-ESK1",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR3",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK3",
+      "location": "bomService.native.ts",
+      "reason": "Components hardcoded in switch statement"
+    }
+  ],
+  "criticalAssembliesAffected": [
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN BASIN",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 ESINK BASIN",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK1",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 1 ESINK BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK2",
+      "name": "CONTROL BOX ONLY FOR 1 EDRAIN AND 2 ESINK BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2-ESK1",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN AND 1 ESINK BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-DRAIN-BTN",
+      "name": "PV7FWY0SS-3R1 BUTTON WITH RJ45 AND DRAIN SYMBOL LASERED, O-RING AND NUT",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-BSN-TEMP-PROBE",
+      "name": "TEMPERATURE PROBE (IN BASIN), TT08-10KC8-T105-1500",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR2",
+      "name": "CONTROL BOX ONLY FOR 2 EDRAIN BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR3",
+      "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK2",
+      "name": "CONTROL BOX ONLY FOR 2 ESINK BASINS",
+      "reason": "Critical assembly with empty components"
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK3",
+      "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
+      "reason": "Critical assembly with empty components"
+    }
+  ]
+}

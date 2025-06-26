@@ -81,15 +81,36 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { orderId } = await params
     console.error(`❌ Error fetching single source of truth for order ${orderId}:`, error)
 
-    if (error instanceof Error && error.message.includes('not found')) {
-      return NextResponse.json(
-        { success: false, message: 'Single source of truth not found for this order' },
-        { status: 404 }
-      )
+    // More specific error handling
+    if (error instanceof Error) {
+      if (error.message.includes('not found')) {
+        return NextResponse.json(
+          { success: false, message: 'Single source of truth not found for this order' },
+          { status: 404 }
+        )
+      }
+      
+      if (error.message.includes('BOM generation failed')) {
+        return NextResponse.json(
+          { success: false, message: 'Failed to generate BOM for single source of truth', details: error.message },
+          { status: 500 }
+        )
+      }
+      
+      if (error.message.includes('Rate limit')) {
+        return NextResponse.json(
+          { success: false, message: 'Rate limit exceeded. Please try again later.' },
+          { status: 429 }
+        )
+      }
     }
 
     return NextResponse.json(
-      { success: false, message: 'Failed to retrieve single source of truth' },
+      { 
+        success: false, 
+        message: 'Failed to retrieve single source of truth',
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
+      },
       { status: 500 }
     )
   }

@@ -55,12 +55,12 @@ export async function GET(
     if (formType) {
       // Map form types to template names
       const templateNameMap: { [key: string]: string } = {
-        'Pre-Production Check': 'Pre-Production Check',
-        'Final QC': 'Final Quality Check',
-        'Production Check': 'Production Check',
+        'Pre-Production Check': 'Pre-Production Quality Check - CleanStation T2',
+        'Final QC': 'Final Quality Control - CleanStation T2',
+        'Production Check': 'In-Process Quality Check - Assembly',
         'Basin Production Check': 'Basin Production Check',
         'Packaging Verification': 'Packaging Verification',
-        'End-of-Line Testing': 'End-of-Line Testing'
+        'End-of-Line Testing': 'T2 Sink EOL Testing'
       };
       
       const templateName = templateNameMap[formType] || formType;

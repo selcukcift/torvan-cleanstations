@@ -1,0 +1,221 @@
+{
+  "timestamp": "2025-06-25T22:34:46.038Z",
+  "variantsToUpdate": [
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR2",
+      "hardcodedId": "T2-CTRL-EDR2",
+      "components": [
+        {
+          "part_id": "Q13404-02",
+          "quantity": 1
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1
+        },
+        {
+          "part_id": "4995",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-M8-3P-MP-STR-0.61M",
+          "quantity": 8
+        },
+        {
+          "part_id": "HDR-150-24",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-EDRAIN-BOARD-R3",
+          "quantity": 4
+        },
+        {
+          "part_id": "T2-CTRL-BOX-BRKT",
+          "quantity": 1
+        },
+        {
+          "part_id": "1201578",
+          "quantity": 4
+        },
+        {
+          "part_id": "E7512-L-BLUE",
+          "quantity": 8
+        },
+        {
+          "part_id": "M8-DUST-CAP-M",
+          "quantity": 4
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 4
+        },
+        {
+          "part_id": "T2-BSN-OHL-BTN",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK2",
+      "hardcodedId": "T2-CTRL-ESK2",
+      "components": [
+        {
+          "part_id": "Q13404-02",
+          "quantity": 1
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1
+        },
+        {
+          "part_id": "4995",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-M8-3P-MP-STR-0.61M",
+          "quantity": 8
+        },
+        {
+          "part_id": "HDR-150-24",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-ESINK-BOARD-R3",
+          "quantity": 2
+        },
+        {
+          "part_id": "T2-CTRL-BOX-BRKT",
+          "quantity": 1
+        },
+        {
+          "part_id": "1201578",
+          "quantity": 4
+        },
+        {
+          "part_id": "E7512-L-BLUE",
+          "quantity": 8
+        },
+        {
+          "part_id": "M8-DUST-CAP-M",
+          "quantity": 2
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 2
+        },
+        {
+          "part_id": "T2-BSN-OHL-BTN",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR3",
+      "hardcodedId": "T2-CTRL-EDR3",
+      "components": [
+        {
+          "part_id": "Q13404-02",
+          "quantity": 1
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1
+        },
+        {
+          "part_id": "4995",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-M8-3P-MP-STR-0.61M",
+          "quantity": 11
+        },
+        {
+          "part_id": "HDR-150-24",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-EDRAIN-BOARD-R3",
+          "quantity": 6
+        },
+        {
+          "part_id": "T2-CTRL-BOX-BRKT",
+          "quantity": 1
+        },
+        {
+          "part_id": "1201578",
+          "quantity": 4
+        },
+        {
+          "part_id": "E7512-L-BLUE",
+          "quantity": 11
+        },
+        {
+          "part_id": "M8-DUST-CAP-M",
+          "quantity": 6
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 6
+        },
+        {
+          "part_id": "T2-BSN-OHL-BTN",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK3",
+      "hardcodedId": "T2-CTRL-ESK3",
+      "components": [
+        {
+          "part_id": "Q13404-02",
+          "quantity": 1
+        },
+        {
+          "part_id": "PW-105R3-06",
+          "quantity": 1
+        },
+        {
+          "part_id": "4995",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-M8-3P-MP-STR-0.61M",
+          "quantity": 11
+        },
+        {
+          "part_id": "HDR-150-24",
+          "quantity": 1
+        },
+        {
+          "part_id": "T2-ESINK-BOARD-R3",
+          "quantity": 3
+        },
+        {
+          "part_id": "T2-CTRL-BOX-BRKT",
+          "quantity": 1
+        },
+        {
+          "part_id": "1201578",
+          "quantity": 4
+        },
+        {
+          "part_id": "E7512-L-BLUE",
+          "quantity": 11
+        },
+        {
+          "part_id": "M8-DUST-CAP-M",
+          "quantity": 3
+        },
+        {
+          "part_id": "T-ESOM-F4-01",
+          "quantity": 3
+        },
+        {
+          "part_id": "T2-BSN-OHL-BTN",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}

@@ -27,6 +27,7 @@ import {
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { toTitleCase } from "@/lib/utils"
+import BOMPDFExport from "./BOMPDFExport"
 
 interface BOMItem {
   assemblyId: string
@@ -318,6 +319,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     const itemsToUse = bomItems || previewBomItems
     if (itemsToUse && itemsToUse.length > 0) {
       // Start with all items collapsed for cleaner initial view
+      // Consider expanding first level by default to show immediate children
       setExpandedItems(new Set())
       
       // Run debug function to understand BOM structure
@@ -421,12 +423,19 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
 
   const expandAll = () => {
     const allItemIds = new Set<string>()
-    const collectIds = (items: BOMItem[]) => {
+    const collectIds = (items: BOMItem[], level: number = 0) => {
       if (!items) return
-      items.forEach(item => {
-        if (item.children && item.children.length > 0) {
-          allItemIds.add(item.id)
-          collectIds(item.children)
+      items.forEach((item, index) => {
+        // Use same ID generation logic as renderBOMItem
+        const itemId = item.id || item.assemblyId || item.partNumber || `${item.name}-${index}`
+        
+        // Check all possible child properties like renderBOMItem does
+        const childItems = item.children || item.subItems || item.components || []
+        const hasChildren = childItems.length > 0
+        
+        if (hasChildren) {
+          allItemIds.add(itemId)
+          collectIds(childItems, level + 1)
         }
       })
     }
@@ -528,32 +537,46 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
     if (showDebugInfo) {
       console.log('🔍 BOM Debug Information:')
       console.log('Raw BOM Items:', actualBomItems)
-      console.log('Processed Items Count:', processedItems.length)
-      console.log('Processed Items:', processedItems)
+      console.log('Aggregated Items Count:', aggregatedBomItems.length)
+      console.log('Aggregated Items:', aggregatedBomItems)
       
-      // Count items in hierarchical structure
-      const countHierarchicalItems = (items: BOMItem[]): { count: number, totalQty: number } => {
-        if (!items || items.length === 0) return { count: 0, totalQty: 0 }
+      // Count items in hierarchical structure with depth analysis
+      const countHierarchicalItems = (items: BOMItem[], level: number = 0): { count: number, totalQty: number, maxDepth: number, levelCounts: Record<number, number> } => {
+        if (!items || items.length === 0) return { count: 0, totalQty: 0, maxDepth: level, levelCounts: {} }
         
         let count = 0
         let totalQty = 0
+        let maxDepth = level
+        const levelCounts: Record<number, number> = { [level]: items.length }
         
         items.forEach(item => {
           count += 1
           totalQty += item.quantity || 0
           
-          const childItems = item.children || item.subItems || []
+          const childItems = item.children || item.subItems || item.components || []
           if (childItems.length > 0) {
-            const childStats = countHierarchicalItems(childItems)
+            const childStats = countHierarchicalItems(childItems, level + 1)
             count += childStats.count
             totalQty += childStats.totalQty
+            maxDepth = Math.max(maxDepth, childStats.maxDepth)
+            
+            // Merge level counts
+            Object.keys(childStats.levelCounts).forEach(childLevel => {
+              const levelNum = parseInt(childLevel)
+              levelCounts[levelNum] = (levelCounts[levelNum] || 0) + childStats.levelCounts[levelNum]
+            })
           }
         })
         
-        return { count, totalQty }
+        return { count, totalQty, maxDepth, levelCounts }
       }
       
       const hierarchicalStats = countHierarchicalItems(actualBomItems || [])
+      console.log('🌳 Hierarchical Structure Analysis:')
+      console.log('  - Total Items:', hierarchicalStats.count)
+      console.log('  - Maximum Depth:', hierarchicalStats.maxDepth)
+      console.log('  - Items per Level:', hierarchicalStats.levelCounts)
+      console.log('  - Has Grandchildren:', hierarchicalStats.maxDepth >= 2 ? '✅ YES' : '❌ NO')
       console.log('Hierarchical Stats (All Items):', hierarchicalStats)
       
       // Hierarchical stats (no duplication)
@@ -780,22 +803,17 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
               <Folder className="w-4 h-4" />
               Collapse All
             </Button>
-            {orderId && (
-              <Button
-                onClick={handleExportPDF}
-                variant="outline"
-                size="sm"
-                disabled={exporting}
-                className="flex items-center gap-2"
-              >
-                {exporting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Download className="w-4 h-4" />
-                )}
-                {exporting ? 'Exporting...' : 'Export PDF'}
-              </Button>
-            )}
+            <BOMPDFExport
+              orderId={orderId}
+              bomData={{
+                hierarchical: actualBomItems,
+                flattened: aggregatedBomItems,
+                totalItems: getHierarchicalStats.uniqueItems
+              }}
+              orderInfo={orderData}
+              customerInfo={customerInfo}
+              disabled={!actualBomItems || actualBomItems.length === 0}
+            />
           </div>
         </div>
       )}

@@ -158,6 +158,19 @@ export default function ProcurementPage() {
               }
             } catch (error) {
               console.error(`Failed to check procurement for order ${order.id}:`, error)
+              
+              // Return order with basic info even if procurement check fails
+              return {
+                ...order,
+                procurementNeeded: false,
+                procurementSummary: {
+                  totalParts: 0,
+                  partsSent: 0,
+                  partsReceived: 0,
+                  partsPending: 0
+                },
+                procurementError: error instanceof Error ? error.message : 'Unknown error'
+              }
             }
             
             return order

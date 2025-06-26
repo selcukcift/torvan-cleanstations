@@ -242,7 +242,7 @@ export function BOMDisplay({
             </CardHeader>
             <CardContent className="p-0">
               <BOMViewer
-                bomItems={buildBOM?.hierarchical || buildBOM?.flattened || []}
+                bomItems={buildBOM?.hierarchical || []}
                 orderData={{
                   customerInfo,
                   sinkSelection: { ...sinkSelection, buildNumbers: [buildNumber] },
@@ -304,7 +304,7 @@ export function BOMDisplay({
       </div>
       
       <BOMViewer
-        bomItems={bomData.bom?.hierarchical || bomData.bom?.flattened || []}
+        bomItems={bomData.bom?.hierarchical || []}
         orderData={{
           customerInfo,
           sinkSelection,

@@ -1,0 +1,5624 @@
+{
+  "timestamp": "2025-06-26T01:00:36.777Z",
+  "summary": {
+    "totalAssemblies": 318,
+    "assembliesWithComponents": 179,
+    "assembliesWithSubAssemblies": 179,
+    "maxDepth": 2,
+    "depthDistribution": {
+      "1": 162,
+      "2": 17
+    }
+  },
+  "topDeepestAssemblies": [
+    {
+      "assemblyId": "T2-UPG-EDR-1BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR-RK3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-EDR-2BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR2",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-EDR-3BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-ESK-RK3",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-1BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-2BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-ESK2",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-3BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-ESK3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-OHL-INSTRO-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-OA-SSSHELF-2712-INSTRO",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-SSSHELF-LGHT-1812-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T-OA-SSSHELF-1812",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-SSSHELF-LGHT-3612-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T-OA-SSSHELF-3612",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-1B-INSTRO-HA",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-INSTRO-FRAME-1B",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-INSTRO-BASE-1B",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DL14-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-PWRBAR-KIT",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    }
+  ],
+  "testResults": [
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "analysis": {
+        "depth": 1,
+        "children": [
+          {
+            "id": "Q13404-02",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "PW-105R3-06",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "4995",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-M8-3P-MP-STR-0.61M",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "HDR-150-24",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-EDRAIN-BOARD-R3",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-CTRL-BOX-BRKT",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "1201578",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "E7512-L-BLUE",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "M8-DUST-CAP-M",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T-ESOM-F4-01",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-OHL-BTN",
+            "type": "part",
+            "depth": 1
+          }
+        ],
+        "hasSubAssemblies": true
+      }
+    },
+    {
+      "assemblyId": "T2-BSN-EDR-KIT",
+      "analysis": {
+        "depth": 2,
+        "children": [
+          {
+            "id": "T2-BOTTOM-FILL",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-DRAIN-VALVE",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-HOSE-KIT",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-BSN-DRAIN-BTN",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-OVFL",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-OA-SINK-STRAINER",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-ETCH",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-EDR-TEMP-KIT",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-PEX-FLANGE-THIN",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-DRAIN-BTN-COVER",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT-SEAL",
+            "type": "part",
+            "depth": 1
+          }
+        ],
+        "hasSubAssemblies": true
+      }
+    },
+    {
+      "assemblyId": "T2-BSN-ESK-KIT",
+      "analysis": {
+        "depth": 2,
+        "children": [
+          {
+            "id": "T2-DRAIN-VALVE",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-HOSE-KIT",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-BSN-OVFL",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-ESK-TEMP-KIT",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-OA-SINK-STRAINER",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-ETCH",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-VALVE-PLATE-AUK",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-PEX-FLANGE-THIN",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT-SEAL",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-EMERGSTOP-BTN",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-TS7",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T8-KIT-ESK-DOSE",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T8-DOSINGESK",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-ADW-CROSSRAIL",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-OA-DOSINGESK-BTMSHELF",
+            "type": "assembly",
+            "depth": 1
+          }
+        ],
+        "hasSubAssemblies": true
+      }
+    },
+    {
+      "assemblyId": "T2-UPG-EDR-1BSN",
+      "analysis": {
+        "depth": 2,
+        "children": [
+          {
+            "id": "T2-CTRL-EDR-RK3",
+            "type": "assembly",
+            "depth": 2
+          },
+          {
+            "id": "T2-DRAIN-VALVE",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-DRAIN-BTN",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT",
+            "type": "assembly",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-DRAIN-BTN-COVER",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-DRAIN-BSKT-SEAL",
+            "type": "part",
+            "depth": 1
+          },
+          {
+            "id": "T2-BSN-OVFL",
+            "type": "assembly",
+            "depth": 1
+          }
+        ],
+        "hasSubAssemblies": true
+      }
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-PO-SHLF-1212",
+      "analysis": {
+        "depth": 1,
+        "children": [
+          {
+            "id": "T2-OA-PO-SHLF-1212",
+            "type": "assembly",
+            "depth": 1,
+            "circular": true
+          }
+        ],
+        "hasSubAssemblies": true
+      }
+    }
+  ],
+  "allAnalysis": [
+    {
+      "assemblyId": "T2-UPG-EDR-1BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR-RK3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-EDR-2BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR2",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-EDR-3BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-EDR3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-ESK-RK3",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-1BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-2BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-ESK2",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-ESK-3BSN",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-CTRL-ESK3",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-UPG-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-ELEC-R-SWTCH-BRKT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "CAT5E-10BK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-OHL-INSTRO-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-OA-SSSHELF-2712-INSTRO",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-SSSHELF-LGHT-1812-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T-OA-SSSHELF-1812",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-SSSHELF-LGHT-3612-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T-OA-SSSHELF-3612",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-1B-INSTRO-HA",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-INSTRO-FRAME-1B",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-INSTRO-BASE-1B",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DL14-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-PWRBAR-KIT",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BODY-48-60-HA",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-48-60-FRAME",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-LINAKFRAME-8",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CROSSRAIL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CASTERPLATE-PAIR",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-PWRBAR-KIT",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BODY-61-72-HA",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-61-72-FRAME",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-LINAKFRAME-8",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CROSSRAIL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CASTERPLATE-PAIR",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-PWRBAR-KIT",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BODY-73-120-HA",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-73-120-FRAME",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-LINAKFRAME-8",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CROSSRAIL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CASTERPLATE-PAIR",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-PWRBAR-KIT",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BSN-EDR-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-BOTTOM-FILL",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-HOSE-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-OA-SINK-STRAINER",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-ETCH",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDR-TEMP-KIT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEX-FLANGE-THIN",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-DRAIN-BTN-COVER",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BSN-ESK-DI-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-HOSE-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-OA-SINK-STRAINER",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-ETCH",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK-DI",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEX-FLANGE-THIN",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-BSN-ESK-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-DRAIN-VALVE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-HOSE-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-BSN-OVFL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESK-TEMP-KIT",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-OA-SINK-STRAINER",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-ETCH",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-VALVE-PLATE-AUK",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-PEX-FLANGE-THIN",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-DRAIN-BSKT-SEAL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EMERGSTOP-BTN",
+          "type": "assembly",
+          "depth": 2
+        },
+        {
+          "id": "T2-TS7",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T8-KIT-ESK-DOSE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T8-DOSINGESK",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-ADW-CROSSRAIL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-OA-DOSINGESK-BTMSHELF",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-OHL-MDRD-KIT",
+      "depth": 2,
+      "children": [
+        {
+          "id": "T2-ADW-OHL-HOUSING",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-OHL-LED",
+          "type": "assembly",
+          "depth": 2
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-CTRL-ESK1",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK1",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR1-ESK2",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-CTRL-EDR2-ESK1",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-UPG-LIFTER-FH-HA",
+      "depth": 1,
+      "children": [
+        {
+          "id": "0617110-2500",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "0617102-1000",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "TP101000DK",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-CBD6SH00040A-709",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "15862",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-PFW1236FM-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-OA-PFW1236FM",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKETSLT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKET",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-PFW1218FM-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-OA-PFW1218FM",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKETSLT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKET",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-PFW1818FM-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-OA-PFW1818FM",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKETSLT",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T-OA-PWBRACKET",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-FOOTREST-RAIL-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-CROSSRAIL",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "1/4-20 TRUSS SCREW PH",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1/4-20 SS FLAT WASHER",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T-OA-TASKLIGHT-PB-MAG-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-OA-TASKLIGHT-PB",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "ACC 14085",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-OA-STD-FAUCET-WB-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "B-2342-WB",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "B-0230-K",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "PFX146332",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-OA-PRE-RINSE-FAUCET-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "B-0133-A10-B08",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "B-0230-K",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "PFX146332",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-DL27-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-CBD6SH00040A-709",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DL270CA00300455",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DPF1K00-010006",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "0617102-1000",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "0617110-2500",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "914759",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "15862",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DPF1C00-012016",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-LC1-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-CBD6SH00040A-709",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DPF1C00-012016",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "914759",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "CAB0964764",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "15862",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "CAB0617102-1550",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "J42099",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1053W8012",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "TP101000DK",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-DL27-FH-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "DL270CA00300455",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-3436-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-3436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-4836-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-4836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-6036-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-6036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-7236-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-7236",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-8436-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-8436",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-9636-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-9636",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-10836-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-10836",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-GREEN-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-BLACK-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-YELLOW-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-GREY-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-RED-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-BLUE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-ORANGE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-WHITE-PERF-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-GREEN-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-BLACK-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-YELLOW-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-GREY-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-RED-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-BLUE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-ORANGE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "T2-ADW-PB-12036-WHITE-SOLID-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-ADW-PB-12036",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "22MP20026",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "708.77",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T-OA-OHL-LED",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-OHL-LED-6000K-24V",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-FP-STR-0.30M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MF-STR-3M",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-OA-PO-SHLF-1212",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-OA-PO-SHLF-1212",
+          "type": "assembly",
+          "depth": 1,
+          "circular": true
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-DL14-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T-CBD6SH00040A-709",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DPF1C00-012016",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "914759",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "15862",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "0617102-1000",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "DL14000A0E660525",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-PWRBAR-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-PWRBAR",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-POWER-STRIP-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "8-32 RIVNUTS",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "8-32 PAN HEAD SCREWS 1/2\"",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "8-32 FLAT HEAD SCREWS 1.25\"",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-BOTTOM-FILL",
+      "depth": 1,
+      "children": [
+        {
+          "id": "DER-1899-14-CC",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "PFX146332",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-NIPPLE-1/2",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "92105",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "12PF196090",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "95400",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "6.65E+11",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-DRAIN-HOSE-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "FLX-CMD-1.5X25",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-HS-CLMP-1.5-2",
+          "type": "assembly",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-VALVE-PLATE-AUK-DI",
+      "depth": 1,
+      "children": [
+        {
+          "id": "9683",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "95400",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "76902",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PCT-223-12P",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "2926438",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-POWER-STRIP-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-TMP-DSPLY-MNT-BRKT",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-EMERGSTOP-BTN",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-EMERG-BTN-M5.1",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "T2-M5.1-CONNECTOR",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-FP-STR-1.5M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PCT-223-CLEAR",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-ESK-TEMP-KIT",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-BSN-TEMP-PROBE",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "G-INS-M12-S68N-PNES-GY",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "A-INL-M12-P-GY",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PCT-222-CLEAR",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MF-STR-3M",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-VALVE-PLATE-AUK",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-PROVALVES",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PFX146332",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "PCT-223-12P",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "2926438",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "9683",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "95400",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "70501",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "95403",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "10972",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "14629990",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "12F1960RINGB",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "12F1960RINGR",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "12F1960RING",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "12PF196090",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "UAB280LFCA",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "UAB362LFCA",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "UAB120LFCA",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEXA-WHITE-1/2",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEXA-BLUE-1/2",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEXA-RED-1/2",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-PEX-FLANGE-THIN",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "AEKS8-832-130",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-MV-AKM-MNT-PLT-1",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "9262K783",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR-RK3",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-RFK-BRD-MNT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-RK3-SHELL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "52-67001-7",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "DC11.0031.201",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T4072014031-001",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "LRS-100-24",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR2",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-EDR3",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-EDRAIN-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK-RK3",
+      "depth": 1,
+      "children": [
+        {
+          "id": "T2-RFK-BRD-MNT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-RK3-SHELL",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "52-67001-7",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "DC11.0031.201",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T4072014031-001",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "LRS-100-24",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK2",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    },
+    {
+      "assemblyId": "ASSY-T2-CTRL-ESK3",
+      "depth": 1,
+      "children": [
+        {
+          "id": "Q13404-02",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "PW-105R3-06",
+          "type": "assembly",
+          "depth": 1
+        },
+        {
+          "id": "4995",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-M8-3P-MP-STR-0.61M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "HDR-150-24",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-ESINK-BOARD-R3",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-CTRL-BOX-BRKT",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "1201578",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "E7512-L-BLUE",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "M8-DUST-CAP-M",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T-ESOM-F4-01",
+          "type": "part",
+          "depth": 1
+        },
+        {
+          "id": "T2-BSN-OHL-BTN",
+          "type": "part",
+          "depth": 1
+        }
+      ],
+      "hasSubAssemblies": true
+    }
+  ]
+}

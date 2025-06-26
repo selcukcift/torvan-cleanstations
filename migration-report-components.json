@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-06-25T22:33:59.872Z",
+  "migratedControlBoxes": 5,
+  "skippedControlBoxes": 4,
+  "validationIssues": 0,
+  "migratedAssemblies": [
+    "T2-CTRL-EDR1",
+    "T2-CTRL-ESK1",
+    "T2-CTRL-EDR1-ESK1",
+    "T2-CTRL-EDR2",
+    "T2-CTRL-ESK2",
+    "T2-CTRL-EDR3",
+    "T2-CTRL-ESK3",
+    "T2-CTRL-EDR1-ESK2",
+    "T2-CTRL-EDR2-ESK1"
+  ],
+  "backupLocation": "/media/selcuk/project files/Clean-stations/resources/assemblies.json.backup",
+  "sourceData": "/media/selcuk/project files/Clean-stations/extracted-hardcoded-components.json"
+}

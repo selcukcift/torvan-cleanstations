@@ -5,9 +5,8 @@
     "version": "1.0.0",
     "description": "Assembly definitions - buildable products with component references (includes 128 pegboard kit combinations)",
     "total_assemblies": 318,
-    "last_updated": "2025-06-25T22:35:25.454Z",
-    "migration_notes": "Migrated 5 control box component definitions from hardcoded logic",
-    "assy_migration_notes": "Updated 4 ASSY- prefix control box variants with components"
+    "last_updated": "2025-06-25T22:33:59.867Z",
+    "migration_notes": "Migrated 5 control box component definitions from hardcoded logic"
   },
   "assemblies": {
     "T2-CTRL-EDR1": {
@@ -5910,12 +5909,7 @@
       "can_order": true,
       "is_kit": false,
       "status": "ACTIVE",
-      "components": [
-        {
-          "part_id": "T2-OA-PO-SHLF-1212",
-          "quantity": 1
-        }
-      ]
+      "components": []
     },
     "ASSY-T2-ADW-INSTRO-FRAME-1B": {
       "name": "SINGLE BOWL SINK HEIGHT ADJUS, 36\" INSTRO SINK FRAME",
@@ -7205,56 +7199,7 @@
       "can_order": true,
       "is_kit": false,
       "status": "ACTIVE",
-      "components": [
-        {
-          "part_id": "Q13404-02",
-          "quantity": 1
-        },
-        {
-          "part_id": "PW-105R3-06",
-          "quantity": 1
-        },
-        {
-          "part_id": "4995",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-M8-3P-MP-STR-0.61M",
-          "quantity": 8
-        },
-        {
-          "part_id": "HDR-150-24",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-EDRAIN-BOARD-R3",
-          "quantity": 4
-        },
-        {
-          "part_id": "T2-CTRL-BOX-BRKT",
-          "quantity": 1
-        },
-        {
-          "part_id": "1201578",
-          "quantity": 4
-        },
-        {
-          "part_id": "E7512-L-BLUE",
-          "quantity": 8
-        },
-        {
-          "part_id": "M8-DUST-CAP-M",
-          "quantity": 4
-        },
-        {
-          "part_id": "T-ESOM-F4-01",
-          "quantity": 4
-        },
-        {
-          "part_id": "T2-BSN-OHL-BTN",
-          "quantity": 1
-        }
-      ]
+      "components": []
     },
     "ASSY-T2-CTRL-EDR3": {
       "name": "CONTROL BOX ONLY FOR 3 EDRAIN BASINS",
@@ -7264,56 +7209,7 @@
       "can_order": true,
       "is_kit": false,
       "status": "ACTIVE",
-      "components": [
-        {
-          "part_id": "Q13404-02",
-          "quantity": 1
-        },
-        {
-          "part_id": "PW-105R3-06",
-          "quantity": 1
-        },
-        {
-          "part_id": "4995",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-M8-3P-MP-STR-0.61M",
-          "quantity": 11
-        },
-        {
-          "part_id": "HDR-150-24",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-EDRAIN-BOARD-R3",
-          "quantity": 6
-        },
-        {
-          "part_id": "T2-CTRL-BOX-BRKT",
-          "quantity": 1
-        },
-        {
-          "part_id": "1201578",
-          "quantity": 4
-        },
-        {
-          "part_id": "E7512-L-BLUE",
-          "quantity": 11
-        },
-        {
-          "part_id": "M8-DUST-CAP-M",
-          "quantity": 6
-        },
-        {
-          "part_id": "T-ESOM-F4-01",
-          "quantity": 6
-        },
-        {
-          "part_id": "T2-BSN-OHL-BTN",
-          "quantity": 1
-        }
-      ]
+      "components": []
     },
     "ASSY-T2-CTRL-ESK-RK3": {
       "name": "E-SINK V1 CONTROL BOX UPGRADE KIT - SINGLE BASIN",
@@ -7379,56 +7275,7 @@
       "can_order": true,
       "is_kit": false,
       "status": "ACTIVE",
-      "components": [
-        {
-          "part_id": "Q13404-02",
-          "quantity": 1
-        },
-        {
-          "part_id": "PW-105R3-06",
-          "quantity": 1
-        },
-        {
-          "part_id": "4995",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-M8-3P-MP-STR-0.61M",
-          "quantity": 8
-        },
-        {
-          "part_id": "HDR-150-24",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-ESINK-BOARD-R3",
-          "quantity": 2
-        },
-        {
-          "part_id": "T2-CTRL-BOX-BRKT",
-          "quantity": 1
-        },
-        {
-          "part_id": "1201578",
-          "quantity": 4
-        },
-        {
-          "part_id": "E7512-L-BLUE",
-          "quantity": 8
-        },
-        {
-          "part_id": "M8-DUST-CAP-M",
-          "quantity": 2
-        },
-        {
-          "part_id": "T-ESOM-F4-01",
-          "quantity": 2
-        },
-        {
-          "part_id": "T2-BSN-OHL-BTN",
-          "quantity": 1
-        }
-      ]
+      "components": []
     },
     "ASSY-T2-CTRL-ESK3": {
       "name": "CONTROL BOX ONLY FOR 3 ESINK BASINS",
@@ -7438,56 +7285,7 @@
       "can_order": true,
       "is_kit": false,
       "status": "ACTIVE",
-      "components": [
-        {
-          "part_id": "Q13404-02",
-          "quantity": 1
-        },
-        {
-          "part_id": "PW-105R3-06",
-          "quantity": 1
-        },
-        {
-          "part_id": "4995",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-M8-3P-MP-STR-0.61M",
-          "quantity": 11
-        },
-        {
-          "part_id": "HDR-150-24",
-          "quantity": 1
-        },
-        {
-          "part_id": "T2-ESINK-BOARD-R3",
-          "quantity": 3
-        },
-        {
-          "part_id": "T2-CTRL-BOX-BRKT",
-          "quantity": 1
-        },
-        {
-          "part_id": "1201578",
-          "quantity": 4
-        },
-        {
-          "part_id": "E7512-L-BLUE",
-          "quantity": 11
-        },
-        {
-          "part_id": "M8-DUST-CAP-M",
-          "quantity": 3
-        },
-        {
-          "part_id": "T-ESOM-F4-01",
-          "quantity": 3
-        },
-        {
-          "part_id": "T2-BSN-OHL-BTN",
-          "quantity": 1
-        }
-      ]
+      "components": []
     }
   }
 }
