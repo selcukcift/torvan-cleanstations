@@ -234,9 +234,9 @@ export async function POST(
         });
 
         // Trigger notifications for QC completion and status change (async, non-blocking)
-        setImmediate(() => {
+        setImmediate(async () => {
           // Trigger order status change notifications
-          notificationTriggerService.triggerOrderStatusChange(
+          await notificationTriggerService.triggerOrderStatusChange(
             orderId, 
             order.orderStatus, 
             newStatus, 
@@ -246,7 +246,7 @@ export async function POST(
           })
 
           // Trigger assembly milestone notification for QC completion
-          notificationTriggerService.sendNotificationToRoles(
+          await notificationTriggerService.sendNotificationToRoles(
             ['PRODUCTION_COORDINATOR', 'ADMIN'],
             'ASSEMBLY_MILESTONE',
             {
@@ -259,7 +259,17 @@ export async function POST(
           ).catch(error => {
             console.error('Failed to trigger QC milestone notification:', error)
           })
-        })
+
+          // Create a general notification for the user who performed the QC
+          await prisma.notification.create({
+            data: {
+              message: `Your QC for order ${order.poNumber} (${template.name}) was ${validatedData.overallStatus}`,
+              linkToOrder: orderId,
+              type: 'QC_COMPLETION',
+              recipientId: user.id,
+            },
+          });
+        });
       }
 
       // Return the complete result

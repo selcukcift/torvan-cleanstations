@@ -13,13 +13,27 @@ import {
   TruckIcon,
   FileText,
   Search,
-  ArrowRight
+  ArrowRight,
+  Check,
+  Hourglass
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast"
+import { nextJsApiClient } from "@/lib/api"
+import { BOMViewer } from "@/components/order/BOMViewer"
 
 interface Order {
   id: string
@@ -57,6 +71,7 @@ interface DashboardStats {
 
 export function ProcurementSpecialistDashboard() {
   const router = useRouter()
+  const { toast } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([])
   const [stats, setStats] = useState<DashboardStats>({
@@ -66,6 +81,9 @@ export function ProcurementSpecialistDashboard() {
     urgentItems: 0
   })
   const [loading, setLoading] = useState(true)
+  const [selectedOrderForBOM, setSelectedOrderForBOM] = useState<Order | null>(null)
+  const [bomData, setBomData] = useState<any>(null)
+  const [bomLoading, setBomLoading] = useState(false)
 
   useEffect(() => {
     loadDashboardData()
@@ -84,15 +102,10 @@ export function ProcurementSpecialistDashboard() {
         // STRICT filtering - only ORDER_CREATED status orders need procurement
         const procurementOrders = allOrders.filter((order: Order) => {
           const isNewOrder = order.orderStatus === "ORDER_CREATED"
+          const isPartsSent = order.orderStatus === "SINK_BODY_EXTERNAL_PRODUCTION"
           
-          // Debug: Log all orders for troubleshooting
-          console.log(`[${new Date().toLocaleTimeString()}] Order ${order.poNumber}: status=${order.orderStatus}, needsProcurement=${isNewOrder}`)
-          
-          return isNewOrder
+          return isNewOrder || isPartsSent
         })
-        
-        console.log(`[${new Date().toLocaleTimeString()}] Found ${procurementOrders.length} orders needing procurement out of ${allOrders.length} total orders`)
-        console.log(`[${new Date().toLocaleTimeString()}] Procurement orders:`, procurementOrders.map(o => ({ po: o.poNumber, status: o.orderStatus })))
         
         setOrders(procurementOrders.slice(0, 5)) // Show latest 5
         setStats(prev => ({ ...prev, pendingOrders: procurementOrders.length }))
@@ -128,10 +141,45 @@ export function ProcurementSpecialistDashboard() {
     }
   }
 
+  const handleViewBOM = async (order: Order) => {
+    setSelectedOrderForBOM(order);
+    setBomLoading(true);
+    setBomData(null);
+    try {
+      const response = await nextJsApiClient.get(`/orders/${order.id}/bom`); // Assuming this endpoint exists
+      if (response.data.success) {
+        setBomData(response.data.data);
+      } else {
+        toast({ title: "Error", description: "Failed to load BOM data", variant: "destructive" });
+      }
+    } catch (error) {
+      console.error("Error loading BOM:", error);
+      toast({ title: "Error", description: "Failed to load BOM data", variant: "destructive" });
+    } finally {
+      setBomLoading(false);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const response = await nextJsApiClient.put(`/orders/${orderId}/status`, { newStatus });
+      if (response.data.success) {
+        toast({ title: "Success", description: `Order status updated to ${newStatus}` });
+        loadDashboardData(); // Refresh data
+      } else {
+        toast({ title: "Error", description: response.data.message || "Failed to update order status", variant: "destructive" });
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast({ title: "Error", description: "Failed to update order status", variant: "destructive" });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
       ORDER_CREATED: { label: "New", className: "bg-blue-100 text-blue-700" },
-      SINK_BODY_EXTERNAL_PRODUCTION: { label: "External Production", className: "bg-purple-100 text-purple-700" },
+      SINK_BODY_EXTERNAL_PRODUCTION: { label: "Parts Sent", className: "bg-purple-100 text-purple-700" },
+      READY_FOR_PRE_QC: { label: "Ready for Pre-QC", className: "bg-green-100 text-green-700" },
       PENDING: { label: "Pending", className: "bg-yellow-100 text-yellow-700" },
       IN_PROGRESS: { label: "In Progress", className: "bg-orange-100 text-orange-700" },
       COMPLETED: { label: "Completed", className: "bg-green-100 text-green-700" },
@@ -304,10 +352,53 @@ export function ProcurementSpecialistDashboard() {
                           </p>
                         </div>
                         {getStatusBadge(order.orderStatus)}
+                        
+                        {order.orderStatus === "ORDER_CREATED" && (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" onClick={() => handleViewBOM(order)}>
+                                <FileText className="h-4 w-4 mr-1" /> Review BOM
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl">
+                              <DialogHeader>
+                                <DialogTitle>Bill of Materials for {selectedOrderForBOM?.poNumber}</DialogTitle>
+                                <DialogDescription>Review the generated BOM before approving for production.</DialogDescription>
+                              </DialogHeader>
+                              <div className="min-h-[300px]">
+                                {bomLoading ? (
+                                  <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin" /></div>
+                                ) : bomData ? (
+                                  <BOMViewer bomData={bomData} />
+                                ) : (
+                                  <Alert><AlertDescription>No BOM data available.</AlertDescription></Alert>
+                                )}
+                              </div>
+                              <DialogFooter>
+                                <Button 
+                                  onClick={() => handleUpdateOrderStatus(order.id, "SINK_BODY_EXTERNAL_PRODUCTION")}
+                                  disabled={bomLoading || !bomData}
+                                >
+                                  <Check className="h-4 w-4 mr-2" /> Approve BOM for Production
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        )}
+
+                        {order.orderStatus === "SINK_BODY_EXTERNAL_PRODUCTION" && (
+                          <Button 
+                            size="sm" 
+                            onClick={() => handleUpdateOrderStatus(order.id, "READY_FOR_PRE_QC")}
+                          >
+                            <TruckIcon className="h-4 w-4 mr-1" /> Confirm Parts Arrival
+                          </Button>
+                        )}
+
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => router.push(`/procurement/orders/${order.id}`)}
+                          onClick={() => router.push(`/orders/${order.id}`)}
                         >
                           <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -360,6 +451,21 @@ export function ProcurementSpecialistDashboard() {
                       <div className="flex items-center gap-3">
                         {getPriorityBadge(request.priority)}
                         {getStatusBadge(request.status)}
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleServiceRequestAction(request.id, 'APPROVE')}
+                          className="flex items-center gap-1"
+                        >
+                          <Check className="h-4 w-4" /> Approve & Fulfill
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleServiceRequestAction(request.id, 'REJECT')}
+                          className="flex items-center gap-1 text-red-600 border-red-200 hover:bg-red-50"
+                        >
+                          <X className="h-4 w-4" /> Reject
+                        </Button>
                         <Button size="sm" variant="outline">
                           <ExternalLink className="h-4 w-4" />
                         </Button>

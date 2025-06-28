@@ -40,7 +40,8 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         username: values.username,
         password: values.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: router.query.callbackUrl as string || '/dashboard'
       })
 
       if (result?.error) {
@@ -49,30 +50,6 @@ export default function LoginPage() {
           title: "Login Failed",
           description: "Invalid credentials. Please try again.",
         })
-        return
-      }
-
-      if (result?.ok) {
-        // Add small delay to ensure JWT token is properly set
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        // Get user session to determine role-based redirection
-        const session = await getSession()
-        const userRole = session?.user?.role
-        
-        toast({
-          variant: "success",
-          title: "Login Successful",
-          description: "Welcome back!",
-        })
-
-        // Role-based redirection
-        if (userRole === 'PROCUREMENT_SPECIALIST') {
-          router.push('/procurement')
-        } else {
-          router.push('/dashboard')
-        }
-        router.refresh()
       }
 
     } catch (error: any) {

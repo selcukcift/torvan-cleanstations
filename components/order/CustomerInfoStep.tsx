@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { DatePicker } from "@/components/ui/date-picker"
+import { DatePickerSimple } from "@/components/ui/date-picker-simple"
 import { Upload, FileText, X } from "lucide-react"
 
 export function CustomerInfoStep() {
@@ -112,10 +112,11 @@ export function CustomerInfoStep() {
 
             <div className="space-y-2">
               <Label htmlFor="wantDate">Desired Delivery Date *</Label>
-              <DatePicker
+              <DatePickerSimple
                 date={customerInfo.wantDate}
                 onDateChange={handleDateChange}
                 className="w-full"
+                minDate={new Date()} // Can't select past dates
               />
             </div>
 

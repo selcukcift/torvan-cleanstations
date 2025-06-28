@@ -1,18 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog"
 import {
   AlertDialog,
@@ -26,6 +29,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Table,
   TableBody,
   TableCell,
@@ -33,474 +42,321 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { 
+import {
   Plus,
   Edit,
   Trash2,
-  Save,
-  X,
-  FileText,
+  MoreHorizontal,
   Loader2,
-  ArrowUp,
-  ArrowDown
 } from "lucide-react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
+import { useForm, useFieldArray, Controller } from "react-hook-form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
-interface WorkInstructionStep {
-  id?: string
-  stepNumber: number
-  description: string
-  notes?: string
-}
+// Zod Schemas (mirroring API)
+const WorkInstructionStepSchema = z.object({
+  id: z.string().optional(),
+  stepNumber: z.number().int().positive(),
+  title: z.string().min(1, "Step title is required"),
+  description: z.string().min(1, "Step description is required"),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  images: z.array(z.string()).optional(),
+  videos: z.array(z.string()).optional(),
+  checkpoints: z.array(z.string()).optional(),
+  _action: z.enum(['create', 'update', 'delete']).optional(),
+});
 
-interface WorkInstruction {
-  id?: string
-  title: string
-  description?: string
-  steps: WorkInstructionStep[]
-  createdAt?: string
-  updatedAt?: string
-}
+const WorkInstructionSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional().nullable(),
+  assemblyId: z.string().optional().nullable(),
+  version: z.string().default("1.0"),
+  isActive: z.boolean().default(true),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  steps: z.array(WorkInstructionStepSchema).min(1, "At least one step is required"),
+});
+
+type WorkInstruction = z.infer<typeof WorkInstructionSchema>;
 
 export default function WorkInstructionsPage() {
-  const { toast } = useToast()
-  const [instructions, setInstructions] = useState<WorkInstruction[]>([])
-  const [editingInstruction, setEditingInstruction] = useState<WorkInstruction | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [showDialog, setShowDialog] = useState(false)
+  const { toast } = useToast();
+  const [workInstructions, setWorkInstructions] = useState<WorkInstruction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [showFormDialog, setShowFormDialog] = useState(false);
+  const [editingInstruction, setEditingInstruction] = useState<WorkInstruction | null>(null);
+
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<WorkInstruction>({
+    resolver: zodResolver(WorkInstructionSchema),
+    defaultValues: { steps: [] }
+  });
+
+  const { fields: stepFields, append: appendStep, remove: removeStep } = useFieldArray({
+    control,
+    name: "steps",
+  });
 
   useEffect(() => {
-    fetchInstructions()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    fetchWorkInstructions();
+  }, [fetchWorkInstructions]);
 
-  const fetchInstructions = async () => {
+  const fetchWorkInstructions = useCallback(async () => {
     try {
-      setLoading(true)
-      const response = await nextJsApiClient.get('/v1/admin/work-instructions')
-      
-      if (response.data.success) {
-        setInstructions(response.data.instructions)
-      }
-    } catch (error) {
-      console.error('Error fetching work instructions:', error)
-      toast({
-        title: "Error",
-        description: "Failed to load work instructions",
-        variant: "destructive"
-      })
+      setLoading(true);
+      const response = await nextJsApiClient.get('/v1/admin/work-instructions');
+      setWorkInstructions(response.data.workInstructions);
+    } catch {
+      toast({ title: "Error", description: "Failed to load work instructions", variant: "destructive" });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [toast]);
 
   const handleCreateInstruction = () => {
-    const newInstruction: WorkInstruction = {
+    setEditingInstruction(null);
+    reset({
       title: "",
       description: "",
-      steps: [{ stepNumber: 1, description: "" }]
-    }
-    setEditingInstruction(newInstruction)
-    setShowDialog(true)
-  }
+      assemblyId: null,
+      version: "1.0",
+      isActive: true,
+      estimatedMinutes: null,
+      steps: [{ stepNumber: 1, title: "", description: "", estimatedMinutes: null }],
+    });
+    setShowFormDialog(true);
+  };
 
   const handleEditInstruction = (instruction: WorkInstruction) => {
-    setEditingInstruction({ ...instruction })
-    setShowDialog(true)
-  }
+    setEditingInstruction(instruction);
+    reset(instruction);
+    setShowFormDialog(true);
+  };
 
-  const handleSaveInstruction = async () => {
-    if (!editingInstruction) return
-
-    if (!editingInstruction.title.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Instruction title is required",
-        variant: "destructive"
-      })
-      return
-    }
-
-    if (editingInstruction.steps.length === 0) {
-      toast({
-        title: "Validation Error",
-        description: "At least one step is required",
-        variant: "destructive"
-      })
-      return
-    }
-
+  const onSubmit = async (data: WorkInstruction) => {
     try {
-      setSaving(true)
-      
-      if (editingInstruction.id) {
-        // Update existing instruction
-        const response = await nextJsApiClient.put(`/v1/admin/work-instructions/${editingInstruction.id}`, editingInstruction)
-        if (response.data.success) {
-          toast({
-            title: "Success",
-            description: "Work instruction updated successfully"
-          })
-        }
+      setSaving(true);
+      let response;
+      if (editingInstruction) {
+        // Mark existing steps for update/delete and new ones for create
+        const updatedSteps = data.steps.map(step => {
+          const existingStep = editingInstruction.steps.find(s => s.id === step.id);
+          if (existingStep) {
+            return { ...step, _action: 'update' };
+          } else {
+            return { ...step, _action: 'create' };
+          }
+        });
+        // Identify steps to be deleted
+        const stepsToDelete = editingInstruction.steps.filter(existingStep => 
+          !data.steps.some(newStep => newStep.id === existingStep.id)
+        ).map(step => ({ ...step, _action: 'delete' }));
+
+        response = await nextJsApiClient.put(`/v1/admin/work-instructions/${editingInstruction.id}`, { ...data, steps: [...updatedSteps, ...stepsToDelete] });
       } else {
-        // Create new instruction
-        const response = await nextJsApiClient.post('/v1/admin/work-instructions', editingInstruction)
-        if (response.data.success) {
-          toast({
-            title: "Success",
-            description: "Work instruction created successfully"
-          })
-        }
+        response = await nextJsApiClient.post('/v1/admin/work-instructions', data);
       }
-      
-      setShowDialog(false)
-      setEditingInstruction(null)
-      await fetchInstructions()
-    } catch (error) {
-      console.error('Error saving work instruction:', error)
-      toast({
-        title: "Error",
-        description: "Failed to save work instruction",
-        variant: "destructive"
-      })
+      toast({ title: "Success", description: response.data.message });
+      setShowFormDialog(false);
+      fetchWorkInstructions();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.response?.data?.message || "Failed to save work instruction", variant: "destructive" });
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
-  const handleDeleteInstruction = async (instructionId: string) => {
+  const handleDeleteInstruction = async (id: string) => {
     try {
-      const response = await nextJsApiClient.delete(`/v1/admin/work-instructions/${instructionId}`)
-      if (response.data.success) {
-        toast({
-          title: "Success",
-          description: "Work instruction deleted successfully"
-        })
-        await fetchInstructions()
-      }
-    } catch (error) {
-      console.error('Error deleting work instruction:', error)
-      toast({
-        title: "Error",
-        description: "Failed to delete work instruction",
-        variant: "destructive"
-      })
+      await nextJsApiClient.delete(`/v1/admin/work-instructions/${id}`);
+      toast({ title: "Success", description: "Work instruction deleted successfully" });
+      fetchWorkInstructions();
+    } catch {
+      toast({ title: "Error", description: "Failed to delete work instruction", variant: "destructive" });
     }
-  }
-
-  const handleAddStep = () => {
-    if (!editingInstruction) return
-
-    const newStep: WorkInstructionStep = {
-      stepNumber: editingInstruction.steps.length + 1,
-      description: ""
-    }
-
-    setEditingInstruction({
-      ...editingInstruction,
-      steps: [...editingInstruction.steps, newStep]
-    })
-  }
-
-  const handleRemoveStep = (stepIndex: number) => {
-    if (!editingInstruction) return
-
-    const updatedSteps = editingInstruction.steps.filter((_, index) => index !== stepIndex)
-    // Renumber steps
-    updatedSteps.forEach((step, index) => {
-      step.stepNumber = index + 1
-    })
-
-    setEditingInstruction({
-      ...editingInstruction,
-      steps: updatedSteps
-    })
-  }
-
-  const handleMoveStep = (stepIndex: number, direction: 'up' | 'down') => {
-    if (!editingInstruction) return
-
-    const steps = [...editingInstruction.steps]
-    const newIndex = direction === 'up' ? stepIndex - 1 : stepIndex + 1
-    
-    if (newIndex < 0 || newIndex >= steps.length) return
-
-    // Swap steps
-    const temp = steps[stepIndex]
-    steps[stepIndex] = steps[newIndex]
-    steps[newIndex] = temp
-
-    // Renumber steps
-    steps.forEach((step, index) => {
-      step.stepNumber = index + 1
-    })
-
-    setEditingInstruction({
-      ...editingInstruction,
-      steps
-    })
-  }
-
-  const handleStepChange = (stepIndex: number, field: keyof WorkInstructionStep, value: string) => {
-    if (!editingInstruction) return
-
-    const updatedSteps = [...editingInstruction.steps]
-    updatedSteps[stepIndex] = {
-      ...updatedSteps[stepIndex],
-      [field]: value
-    }
-
-    setEditingInstruction({
-      ...editingInstruction,
-      steps: updatedSteps
-    })
-  }
+  };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    )
+    return <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin" /></div>;
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Work Instructions</h1>
-          <p className="text-slate-600">Create and manage step-by-step work instructions</p>
+          <h2 className="text-2xl font-bold">Work Instruction Management</h2>
+          <p className="text-slate-600">Create and manage detailed work instructions for assembly and production.</p>
         </div>
         <Button onClick={handleCreateInstruction} className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          New Instruction
+          <Plus className="w-4 h-4" /> New Instruction
         </Button>
       </div>
 
-      {/* Instructions Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Work Instructions</CardTitle>
-          <CardDescription>{instructions.length} instructions available</CardDescription>
+          <CardTitle>All Work Instructions</CardTitle>
+          <CardDescription>{workInstructions.length} instructions available</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Steps</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {instructions.map((instruction) => (
-                <TableRow key={instruction.id}>
-                  <TableCell className="font-medium">{instruction.title}</TableCell>
-                  <TableCell>{instruction.description || '-'}</TableCell>
-                  <TableCell>{instruction.steps.length}</TableCell>
-                  <TableCell>
-                    {instruction.createdAt ? new Date(instruction.createdAt).toLocaleDateString() : '-'}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditInstruction(instruction)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Work Instruction</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete &ldquo;{instruction.title}&rdquo;? This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => instruction.id && handleDeleteInstruction(instruction.id)}
-                              className="bg-red-500 hover:bg-red-600"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              
-              {instructions.length === 0 && (
+          <ScrollArea className="h-[600px]">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">
-                    <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                    <p>No work instructions created yet</p>
-                  </TableCell>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Version</TableHead>
+                  <TableHead>Steps</TableHead>
+                  <TableHead>Est. Time (min)</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {workInstructions.length === 0 ? (
+                  <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">No work instructions found.</TableCell></TableRow>
+                ) : (
+                  workInstructions.map((instruction) => (
+                    <TableRow key={instruction.id}>
+                      <TableCell className="font-medium">{instruction.title}</TableCell>
+                      <TableCell>v{instruction.version}</TableCell>
+                      <TableCell>{instruction.steps.length}</TableCell>
+                      <TableCell>{instruction.estimatedMinutes || 'N/A'}</TableCell>
+                      <TableCell><Badge variant={instruction.isActive ? "default" : "secondary"}>{instruction.isActive ? 'Active' : 'Inactive'}</Badge></TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEditInstruction(instruction)}><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-600"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>This action cannot be undone. This will permanently delete the work instruction.</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDeleteInstruction(instruction.id!)} className="bg-red-500 hover:bg-red-600">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         </CardContent>
       </Card>
 
-      {/* Create/Edit Dialog */}
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <Dialog open={showFormDialog} onOpenChange={setShowFormDialog}>
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>
-              {editingInstruction?.id ? 'Edit Work Instruction' : 'Create New Work Instruction'}
-            </DialogTitle>
-            <DialogDescription>
-              Create step-by-step instructions for assembly tasks
-            </DialogDescription>
+            <DialogTitle>{editingInstruction ? "Edit Work Instruction" : "Create New Work Instruction"}</DialogTitle>
+            <DialogDescription>Define the details and steps for this work instruction.</DialogDescription>
           </DialogHeader>
-          
-          {editingInstruction && (
-            <div className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="instruction-title">Title *</Label>
-                <Input
-                  id="instruction-title"
-                  value={editingInstruction.title}
-                  onChange={(e) => setEditingInstruction({
-                    ...editingInstruction,
-                    title: e.target.value
-                  })}
-                  placeholder="e.g., Basin Installation Procedure"
-                />
+                <Label htmlFor="title">Title *</Label>
+                <Input id="title" {...register("title")} />
+                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
               </div>
-              
               <div>
-                <Label htmlFor="instruction-description">Description</Label>
-                <Textarea
-                  id="instruction-description"
-                  value={editingInstruction.description || ''}
-                  onChange={(e) => setEditingInstruction({
-                    ...editingInstruction,
-                    description: e.target.value
-                  })}
-                  placeholder="Brief description of the work instruction"
-                />
-              </div>
-              
-              {/* Steps */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <Label>Steps</Label>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddStep}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Step
-                  </Button>
-                </div>
-                
-                <div className="space-y-3">
-                  {editingInstruction.steps.map((step, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-start gap-4">
-                        <div className="flex flex-col gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleMoveStep(index, 'up')}
-                            disabled={index === 0}
-                          >
-                            <ArrowUp className="w-4 h-4" />
-                          </Button>
-                          <span className="text-sm font-medium text-center">
-                            {step.stepNumber}
-                          </span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleMoveStep(index, 'down')}
-                            disabled={index === editingInstruction.steps.length - 1}
-                          >
-                            <ArrowDown className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        
-                        <div className="flex-1 space-y-2">
-                          <div>
-                            <Label htmlFor={`step-${index}-description`}>Step Description *</Label>
-                            <Textarea
-                              id={`step-${index}-description`}
-                              value={step.description}
-                              onChange={(e) => handleStepChange(index, 'description', e.target.value)}
-                              placeholder="Describe what to do in this step"
-                              rows={3}
-                            />
-                          </div>
-                          
-                          <div>
-                            <Label htmlFor={`step-${index}-notes`}>Notes (optional)</Label>
-                            <Textarea
-                              id={`step-${index}-notes`}
-                              value={step.notes || ''}
-                              onChange={(e) => handleStepChange(index, 'notes', e.target.value)}
-                              placeholder="Additional notes or warnings"
-                              rows={2}
-                            />
-                          </div>
-                        </div>
-                        
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveStep(index)}
-                          className="text-red-600 hover:text-red-700"
-                          disabled={editingInstruction.steps.length === 1}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <Label htmlFor="version">Version</Label>
+                <Input id="version" {...register("version")} />
+                {errors.version && <p className="text-red-500 text-xs mt-1">{errors.version.message}</p>}
               </div>
             </div>
-          )}
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowDialog(false)}>
-              Cancel
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea id="description" {...register("description")} />
+              {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+            </div>
+            <div>
+              <Label htmlFor="assemblyId">Associated Assembly ID (Optional)</Label>
+              <Input id="assemblyId" {...register("assemblyId")} placeholder="e.g., T2-BODY-48-60-HA" />
+              {errors.assemblyId && <p className="text-red-500 text-xs mt-1">{errors.assemblyId.message}</p>}
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="estimatedMinutes">Estimated Time (minutes)</Label>
+                <Input id="estimatedMinutes" type="number" {...register("estimatedMinutes", { valueAsNumber: true })} />
+                {errors.estimatedMinutes && <p className="text-red-500 text-xs mt-1">{errors.estimatedMinutes.message}</p>}
+              </div>
+              <div className="flex items-center space-x-2 mt-6">
+                <Controller
+                  control={control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <Checkbox
+                      id="isActive"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
+                />
+                <Label htmlFor="isActive">Active Instruction</Label>
+              </div>
+            </div>
+
+            <Separator className="my-4" />
+            <h3 className="text-lg font-semibold">Steps</h3>
+            {errors.steps && <p className="text-red-500 text-xs mt-1">{errors.steps.message}</p>}
+            <div className="space-y-4">
+              {stepFields.map((field, index) => (
+                <Card key={field.id} className="p-4">
+                  <CardHeader className="flex flex-row items-center justify-between p-0 mb-4">
+                    <CardTitle className="text-md">Step {index + 1}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => removeStep(index)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 space-y-3">
+                    <div>
+                      <Label htmlFor={`steps.${index}.title`}>Step Title *</Label>
+                      <Input id={`steps.${index}.title`} {...register(`steps.${index}.title`)} />
+                      {errors.steps?.[index]?.title && <p className="text-red-500 text-xs mt-1">{errors.steps[index]?.title?.message}</p>}
+                    </div>
+                    <div>
+                      <Label htmlFor={`steps.${index}.description`}>Description *</Label>
+                      <Textarea id={`steps.${index}.description`} {...register(`steps.${index}.description`)} />
+                      {errors.steps?.[index]?.description && <p className="text-red-500 text-xs mt-1">{errors.steps[index]?.description?.message}</p>}
+                    </div>
+                    <div>
+                      <Label htmlFor={`steps.${index}.estimatedMinutes`}>Estimated Step Time (minutes)</Label>
+                      <Input id={`steps.${index}.estimatedMinutes`} type="number" {...register(`steps.${index}.estimatedMinutes`, { valueAsNumber: true })} />
+                      {errors.steps?.[index]?.estimatedMinutes && <p className="text-red-500 text-xs mt-1">{errors.steps[index]?.estimatedMinutes?.message}</p>}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <Button type="button" variant="outline" onClick={() => appendStep({ stepNumber: stepFields.length + 1, title: "", description: "" })} className="flex items-center gap-2 mt-4">
+              <Plus className="w-4 h-4" /> Add Step
             </Button>
-            <Button onClick={handleSaveInstruction} disabled={saving}>
-              {saving ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Save className="w-4 h-4 mr-2" />
-              )}
-              {editingInstruction?.id ? 'Update' : 'Create'} Instruction
-            </Button>
-          </DialogFooter>
+
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="outline" onClick={() => setShowFormDialog(false)}>Cancel</Button>
+              <Button type="submit" disabled={saving}>
+                {saving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                {editingInstruction ? "Update Instruction" : "Create Instruction"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

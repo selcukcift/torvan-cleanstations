@@ -63,7 +63,7 @@ export function NotificationBell() {
   const fetchNotifications = async (unreadOnly: boolean) => {
     try {
       setIsLoading(true)
-      const response = await nextJsApiClient.get('/notifications', {
+      const response = await nextJsApiClient.get('/v1/notifications', {
         params: {
           limit: unreadOnly ? 5 : 10,
           unreadOnly
@@ -106,8 +106,8 @@ export function NotificationBell() {
 
   const handleMarkOneRead = async (notificationId: string) => {
     try {
-      const response = await nextJsApiClient.patch('/notifications', {
-        notificationId
+      const response = await nextJsApiClient.put('/v1/notifications', {
+        notificationIds: [notificationId]
       })
 
       if (response.data.success) {
@@ -136,8 +136,8 @@ export function NotificationBell() {
 
   const handleMarkAllRead = async () => {
     try {
-      const response = await nextJsApiClient.patch('/notifications', {
-        markAll: true
+      const response = await nextJsApiClient.put('/v1/notifications', {
+        notificationIds: notifications.filter(n => !n.isRead).map(n => n.id)
       })
 
       if (response.data.success) {
@@ -148,9 +148,8 @@ export function NotificationBell() {
         setUnreadCount(0)
         
         toast({
-          variant: "success",
           title: "Success",
-          description: `Marked ${response.data.count} notifications as read`
+          description: `Marked all notifications as read`
         })
       }
     } catch (error: any) {

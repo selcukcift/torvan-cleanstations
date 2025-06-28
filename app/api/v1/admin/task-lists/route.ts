@@ -1,153 +1,101 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { getAuthUser } from '@/lib/auth'
-import { z } from 'zod'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 
-const prisma = new PrismaClient()
+const TaskTemplateStepPartSchema = z.object({
+  partId: z.string().min(1, "Part ID is required"),
+  quantity: z.number().int().positive().default(1),
+  notes: z.string().optional().nullable(),
+});
 
-// Validation schemas
-const TaskItemSchema = z.object({
-  taskNumber: z.number().int().positive(),
-  title: z.string().min(1, 'Task title is required'),
-  description: z.string().optional(),
-  workInstructionId: z.string().optional(),
-  estimatedDuration: z.number().int().positive().optional(),
-  requiredToolIds: z.array(z.string()).optional(),
-  requiredPartIds: z.array(z.string()).optional(),
-  dependencies: z.array(z.string()).optional()
-})
+const TaskTemplateStepToolSchema = z.object({
+  toolId: z.string().min(1, "Tool ID is required"),
+  notes: z.string().optional().nullable(),
+});
 
-const TaskListCreateSchema = z.object({
-  name: z.string().min(1, 'Task list name is required'),
-  description: z.string().optional(),
-  assemblyType: z.string().min(1, 'Assembly type is required'),
+const TaskTemplateStepSchema = z.object({
+  stepNumber: z.number().int().positive(),
+  title: z.string().min(1, "Step title is required"),
+  description: z.string().optional().nullable(),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  workInstructionId: z.string().optional().nullable(),
+  qcFormTemplateItemId: z.string().optional().nullable(),
+  requiredParts: z.array(TaskTemplateStepPartSchema).optional(),
+  requiredTools: z.array(TaskTemplateStepToolSchema).optional(),
+});
+
+const TaskTemplateCreateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional().nullable(),
+  appliesToAssemblyType: z.string().optional().nullable(),
+  appliesToProductFamily: z.string().optional().nullable(),
+  version: z.string().default("1.0"),
   isActive: z.boolean().default(true),
-  tasks: z.array(TaskItemSchema).optional().default([])
-})
+  steps: z.array(TaskTemplateStepSchema).min(1, "At least one step is required"),
+});
 
-const TaskListUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional(),
-  assemblyType: z.string().optional(),
-  isActive: z.boolean().optional(),
-  tasks: z.array(TaskItemSchema).optional()
-})
-
-// GET /api/v1/admin/task-lists - Get all task lists
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
-
-    const taskLists = await prisma.taskList.findMany({
+    const taskTemplates = await prisma.taskTemplate.findMany({
       include: {
-        tasks: {
+        steps: {
+          orderBy: { stepNumber: 'asc' },
           include: {
-            workInstruction: {
-              select: {
-                id: true,
-                title: true
-              }
-            }
+            requiredParts: true,
+            requiredTools: true,
           },
-          orderBy: {
-            taskNumber: 'asc'
-          }
-        }
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      taskLists
-    })
+        createdAt: 'desc',
+      },
+    });
+    return NextResponse.json({ taskTemplates });
   } catch (error) {
-    console.error('Error fetching task lists:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error fetching task templates:", error);
+    return NextResponse.json({ message: "Failed to fetch task templates" }, { status: 500 });
   }
 }
 
-// POST /api/v1/admin/task-lists - Create new task list
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
+    const body = await request.json();
+    const validatedData = TaskTemplateCreateSchema.parse(body);
 
-    const body = await request.json()
-    const validatedData = TaskListCreateSchema.parse(body)
+    const { steps, ...rest } = validatedData;
 
-    const taskList = await prisma.taskList.create({
+    const newTaskTemplate = await prisma.taskTemplate.create({
       data: {
-        name: validatedData.name,
-        description: validatedData.description,
-        assemblyType: validatedData.assemblyType,
-        isActive: validatedData.isActive,
-        tasks: {
-          create: validatedData.tasks.map(task => ({
-            taskNumber: task.taskNumber,
-            title: task.title,
-            description: task.description,
-            workInstructionId: task.workInstructionId,
-            estimatedDuration: task.estimatedDuration,
-            requiredToolIds: task.requiredToolIds || [],
-            requiredPartIds: task.requiredPartIds || [],
-            dependencies: task.dependencies || []
-          }))
-        }
+        ...rest,
+        steps: {
+          create: steps.map(step => ({
+            stepNumber: step.stepNumber,
+            title: step.title,
+            description: step.description,
+            estimatedMinutes: step.estimatedMinutes,
+            workInstructionId: step.workInstructionId,
+            qcFormTemplateItemId: step.qcFormTemplateItemId,
+            ...(step.requiredParts && { requiredParts: { create: step.requiredParts } }),
+            ...(step.requiredTools && { requiredTools: { create: step.requiredTools } }),
+          })),
+        },
       },
       include: {
-        tasks: {
+        steps: {
           include: {
-            workInstruction: {
-              select: {
-                id: true,
-                title: true
-              }
-            }
+            requiredParts: true,
+            requiredTools: true,
           },
-          orderBy: {
-            taskNumber: 'asc'
-          }
-        }
-      }
-    })
+        },
+      },
+    });
 
-    return NextResponse.json({
-      success: true,
-      taskList,
-      message: 'Task list created successfully'
-    }, { status: 201 })
+    return NextResponse.json({ message: "Task list created successfully", taskTemplate: newTaskTemplate }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: 'Validation error',
-        details: error.errors
-      }, { status: 400 })
+      return NextResponse.json({ message: "Validation Error", errors: error.errors }, { status: 400 });
     }
-
-    console.error('Error creating task list:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error creating task list:", error);
+    return NextResponse.json({ message: "Failed to create task list" }, { status: 500 });
   }
 }

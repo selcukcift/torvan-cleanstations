@@ -128,7 +128,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // If trying to access protected pages without authentication, redirect to login
-  const protectedPaths = ['/dashboard', '/orders', '/service-orders', '/procurement']
+  const protectedPaths = ['/dashboard', '/orders', '/service-orders', '/procurement', '/admin']
   const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
   
   if (isProtectedPath && !token) {
@@ -139,5 +139,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*', '/orders/:path*', '/service-orders/:path*', '/procurement/:path*', '/api/:path*']
+  matcher: ['/', '/login', '/dashboard/:path*', '/orders/:path*', '/service-orders/:path*', '/procurement/:path*', '/admin/:path*', '/api/:path*']
 }

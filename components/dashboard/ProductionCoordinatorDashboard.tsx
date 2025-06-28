@@ -18,7 +18,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select"
-import { DatePicker } from "@/components/ui/date-picker"
+import { DatePickerSimple } from "@/components/ui/date-picker-simple"
 import {
   Collapsible,
   CollapsibleContent,
@@ -2223,7 +2223,7 @@ export function ProductionCoordinatorDashboard() {
                 {/* Date From */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">From Date</label>
-                  <DatePicker
+                  <DatePickerSimple
                     date={dateFromFilter}
                     onDateChange={setDateFromFilter}
                     placeholder="Select start date"
@@ -2233,7 +2233,7 @@ export function ProductionCoordinatorDashboard() {
                 {/* Date To */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">To Date</label>
-                  <DatePicker
+                  <DatePickerSimple
                     date={dateToFilter}
                     onDateChange={setDateToFilter}
                     placeholder="Select end date"

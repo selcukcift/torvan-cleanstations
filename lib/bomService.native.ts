@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomPartNumberGenerator } from './customPartGenerator'
+import { assemblyMapper } from './assemblyMapper'
 
 const prisma = new PrismaClient()
 
@@ -98,7 +99,7 @@ async function getAssemblyDetails(assemblyId: string) {
   console.log(`🔍 getAssemblyDetails: Querying database for ${assemblyId}`)
   try {
     const result = await prisma.assembly.findUnique({
-      where: { assemblyId },
+      where: { assemblyId: assemblyId },
       include: {
         components: {
           include: {
@@ -120,13 +121,22 @@ async function getAssemblyDetails(assemblyId: string) {
 }
 
 /**
- * Get part details by ID
+ * Get part details (for items that might be Parts instead of Assemblies)
  */
 async function getPartDetails(partId: string) {
-  return prisma.part.findUnique({
-    where: { partId }
-  })
+  console.log(`🔍 getPartDetails: Querying database for ${partId}`)
+  try {
+    const result = await prisma.part.findUnique({
+      where: { partId: partId }
+    })
+    console.log(`🔍 getPartDetails: Found ${partId}:`, result ? 'YES' : 'NO')
+    return result
+  } catch (error) {
+    console.error(`❌ getPartDetails: Database error for ${partId}:`, error)
+    throw error
+  }
 }
+
 
 /**
  * Add control box with dynamic components based on basin configuration
@@ -141,15 +151,30 @@ async function addControlBoxWithDynamicComponents(
   const assembly = await getAssemblyDetails(controlBoxId)
   if (!assembly) {
     console.warn(`Control box with ID ${controlBoxId} not found in database.`)
-    bomList.push({
-      id: controlBoxId,
-      name: `Unknown Control Box: ${controlBoxId}`,
-      quantity: quantity,
-      category: category || 'UNKNOWN',
-      type: 'UNKNOWN',
-      components: [],
-      isPlaceholder: true,
-    })
+    
+    // Try enhanced lookup with resource files as fallback
+    const fallbackAssembly = assemblyMapper.enhancedAssemblyLookup(controlBoxId)
+    if (fallbackAssembly) {
+      console.log(`✅ Found control box ${controlBoxId} in resource files: ${fallbackAssembly.name}`)
+      bomList.push({
+        id: fallbackAssembly.id,
+        name: fallbackAssembly.name,
+        quantity: quantity,
+        category: category || 'CONTROL_BOX',
+        type: fallbackAssembly.type,
+        components: [],
+        isPlaceholder: false,
+      })
+      return
+    }
+    
+    // Create enhanced placeholder with resolution suggestion
+    const placeholder = assemblyMapper.createPlaceholderAssembly(controlBoxId, category)
+    bomList.push(placeholder)
+    
+    if (placeholder.resolutionSuggestion) {
+      console.warn(`💡 Suggestion: Consider using ${placeholder.resolutionSuggestion} instead of ${controlBoxId}`)
+    }
     return
   }
 
@@ -418,15 +443,47 @@ async function addItemToBOMRecursive(
   const assembly = await getAssemblyDetails(assemblyId)
   if (!assembly) {
     console.warn(`Assembly with ID ${assemblyId} not found in database.`)
-    bomList.push({
-      id: assemblyId,
-      name: `Unknown Assembly: ${assemblyId}`,
-      quantity: quantity,
-      category: category || 'UNKNOWN',
-      type: 'UNKNOWN',
-      components: [],
-      isPlaceholder: true,
-    })
+    
+    // Check if it's actually a Part instead of Assembly
+    const part = await getPartDetails(assemblyId)
+    if (part) {
+      console.log(`✅ Found ${assemblyId} as a Part instead of Assembly: ${part.name}`)
+      bomList.push({
+        id: part.partId,
+        name: part.name,
+        quantity: quantity,
+        category: category || 'PART',
+        type: part.type || 'COMPONENT',
+        components: [],
+        isPlaceholder: false,
+        isPart: true
+      })
+      return
+    }
+    
+    // Try enhanced lookup with resource files as fallback
+    const fallbackAssembly = assemblyMapper.enhancedAssemblyLookup(assemblyId)
+    if (fallbackAssembly) {
+      console.log(`✅ Found assembly ${assemblyId} in resource files: ${fallbackAssembly.name}`)
+      bomList.push({
+        id: fallbackAssembly.id,
+        name: fallbackAssembly.name,
+        quantity: quantity,
+        category: category || 'ASSEMBLY',
+        type: fallbackAssembly.type,
+        components: [],
+        isPlaceholder: false,
+      })
+      return
+    }
+    
+    // Create enhanced placeholder with resolution suggestion
+    const placeholder = assemblyMapper.createPlaceholderAssembly(assemblyId, category)
+    bomList.push(placeholder)
+    
+    if (placeholder.resolutionSuggestion) {
+      console.warn(`💡 Suggestion: Consider using ${placeholder.resolutionSuggestion} instead of ${assemblyId}`)
+    }
     return
   }
 

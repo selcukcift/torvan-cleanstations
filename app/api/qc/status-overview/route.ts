@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         qcResults: {
           include: {
             qcFormTemplate: {
-              select: { formName: true, formType: true }
+              select: { name: true, appliesToProductFamily: true }
             },
             qcPerformedBy: {
               select: { fullName: true, initials: true }
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
           }
         },
         qcFormTemplate: {
-          select: { formName: true, formType: true }
+          select: { name: true, appliesToProductFamily: true }
         },
         qcPerformedBy: {
           select: { fullName: true, initials: true }
@@ -106,13 +106,7 @@ export async function GET(request: NextRequest) {
         initials: true,
         _count: {
           select: {
-            assignedOrders: {
-              where: {
-                orderStatus: {
-                  in: ['READY_FOR_PRE_QC', 'READY_FOR_FINAL_QC']
-                }
-              }
-            }
+            qcResults: true
           }
         }
       }

@@ -1,240 +1,156 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { getAuthUser } from '@/lib/auth'
-import { z } from 'zod'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 
-const prisma = new PrismaClient()
-
-// Validation schemas
-const TaskItemSchema = z.object({
+const TaskTemplateStepPartSchema = z.object({
   id: z.string().optional(),
-  taskNumber: z.number().int().positive(),
-  title: z.string().min(1, 'Task title is required'),
-  description: z.string().optional(),
-  workInstructionId: z.string().optional(),
-  estimatedDuration: z.number().int().positive().optional(),
-  requiredToolIds: z.array(z.string()).optional(),
-  requiredPartIds: z.array(z.string()).optional(),
-  dependencies: z.array(z.string()).optional()
-})
+  partId: z.string().min(1, "Part ID is required"),
+  quantity: z.number().int().positive().default(1),
+  notes: z.string().optional().nullable(),
+  _action: z.enum(['create', 'update', 'delete']).optional(),
+});
 
-const TaskListUpdateSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional(),
-  assemblyType: z.string().optional(),
+const TaskTemplateStepToolSchema = z.object({
+  id: z.string().optional(),
+  toolId: z.string().min(1, "Tool ID is required"),
+  notes: z.string().optional().nullable(),
+  _action: z.enum(['create', 'update', 'delete']).optional(),
+});
+
+const TaskTemplateStepSchema = z.object({
+  id: z.string().optional(),
+  stepNumber: z.number().int().positive(),
+  title: z.string().min(1, "Step title is required"),
+  description: z.string().optional().nullable(),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  workInstructionId: z.string().optional().nullable(),
+  qcFormTemplateItemId: z.string().optional().nullable(),
+  requiredParts: z.array(TaskTemplateStepPartSchema).optional(),
+  requiredTools: z.array(TaskTemplateStepToolSchema).optional(),
+  _action: z.enum(['create', 'update', 'delete']).optional(),
+});
+
+const TaskTemplateUpdateSchema = z.object({
+  name: z.string().min(1, "Name is required").optional(),
+  description: z.string().optional().nullable(),
+  appliesToAssemblyType: z.string().optional().nullable(),
+  appliesToProductFamily: z.string().optional().nullable(),
+  version: z.string().optional(),
   isActive: z.boolean().optional(),
-  tasks: z.array(TaskItemSchema).optional()
-})
+  steps: z.array(TaskTemplateStepSchema).optional(),
+});
 
-// GET /api/v1/admin/task-lists/[taskListId] - Get single task list
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ taskListId: string }> }
-) {
+export async function GET(request: Request, { params }: { params: { taskListId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
-
-    const { taskListId } = await params
-    const taskList = await prisma.taskList.findUnique({
+    const { taskListId } = params;
+    const taskTemplate = await prisma.taskTemplate.findUnique({
       where: { id: taskListId },
       include: {
-        tasks: {
+        steps: {
+          orderBy: { stepNumber: 'asc' },
           include: {
-            workInstruction: {
-              select: {
-                id: true,
-                title: true
-              }
-            }
+            requiredParts: true,
+            requiredTools: true,
           },
-          orderBy: {
-            taskNumber: 'asc'
-          }
-        }
-      }
-    })
+        },
+      },
+    });
 
-    if (!taskList) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Task list not found' 
-      }, { status: 404 })
+    if (!taskTemplate) {
+      return NextResponse.json({ message: "Task list not found" }, { status: 404 });
     }
 
-    return NextResponse.json({
-      success: true,
-      taskList
-    })
+    return NextResponse.json({ taskTemplate });
   } catch (error) {
-    console.error('Error fetching task list:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error fetching task list:", error);
+    return NextResponse.json({ message: "Failed to fetch task list" }, { status: 500 });
   }
 }
 
-// PUT /api/v1/admin/task-lists/[taskListId] - Update task list
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ taskListId: string }> }
-) {
+export async function PUT(request: Request, { params }: { params: { taskListId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
+    const { taskListId } = params;
+    const body = await request.json();
+    const validatedData = TaskTemplateUpdateSchema.parse(body);
 
-    const { taskListId } = await params
-    const body = await request.json()
-    const validatedData = TaskListUpdateSchema.parse(body)
+    const { steps, ...rest } = validatedData;
 
-    // Check if task list exists
-    const existingTaskList = await prisma.taskList.findUnique({
-      where: { id: taskListId }
-    })
+    const updateData: any = { ...rest };
 
-    if (!existingTaskList) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Task list not found' 
-      }, { status: 404 })
-    }
-
-    // Update task list and tasks in a transaction
-    const taskList = await prisma.$transaction(async (tx) => {
-      // Update the main task list
-      const updatedTaskList = await tx.taskList.update({
-        where: { id: taskListId },
-        data: {
-          name: validatedData.name,
-          description: validatedData.description,
-          assemblyType: validatedData.assemblyType,
-          isActive: validatedData.isActive
-        }
-      })
-
-      // If tasks are provided, replace all tasks
-      if (validatedData.tasks) {
-        // Delete existing tasks
-        await tx.task.deleteMany({
-          where: { taskListId: taskListId }
-        })
-
-        // Create new tasks
-        if (validatedData.tasks.length > 0) {
-          await tx.task.createMany({
-            data: validatedData.tasks.map(task => ({
-              taskListId: taskListId,
-              taskNumber: task.taskNumber,
-              title: task.title,
-              description: task.description,
-              workInstructionId: task.workInstructionId,
-              estimatedDuration: task.estimatedDuration,
-              requiredToolIds: task.requiredToolIds || [],
-              requiredPartIds: task.requiredPartIds || [],
-              dependencies: task.dependencies || []
-            }))
-          })
+    if (steps) {
+      for (const step of steps) {
+        if (step._action === 'create') {
+          await prisma.taskTemplateStep.create({
+            data: {
+              ...step,
+              taskTemplateId: taskListId,
+              requiredParts: step.requiredParts ? { create: step.requiredParts } : undefined,
+              requiredTools: step.requiredTools ? { create: step.requiredTools } : undefined,
+            },
+          });
+        } else if (step._action === 'update') {
+          if (!step.id) throw new Error("Step ID is required for update");
+          await prisma.taskTemplateStep.update({
+            where: { id: step.id },
+            data: {
+              ...step,
+              requiredParts: step.requiredParts ? { 
+                upsert: step.requiredParts.map(rp => ({
+                  where: { id: rp.id || '' }, // Use a dummy ID if not present for create
+                  update: rp,
+                  create: rp,
+                }))
+              } : undefined,
+              requiredTools: step.requiredTools ? { 
+                upsert: step.requiredTools.map(rt => ({
+                  where: { id: rt.id || '' }, // Use a dummy ID if not present for create
+                  update: rt,
+                  create: rt,
+                }))
+              } : undefined,
+            },
+          });
+        } else if (step._action === 'delete') {
+          if (!step.id) throw new Error("Step ID is required for delete");
+          await prisma.taskTemplateStep.delete({
+            where: { id: step.id },
+          });
         }
       }
+    }
 
-      // Return updated task list with tasks
-      return await tx.taskList.findUnique({
-        where: { id: taskListId },
-        include: {
-          tasks: {
-            include: {
-              workInstruction: {
-                select: {
-                  id: true,
-                  title: true
-                }
-              }
-            },
-            orderBy: {
-              taskNumber: 'asc'
-            }
-          }
-        }
-      })
-    })
+    const updatedTaskTemplate = await prisma.taskTemplate.update({
+      where: { id: taskListId },
+      data: updateData,
+      include: {
+        steps: {
+          include: {
+            requiredParts: true,
+            requiredTools: true,
+          },
+        },
+      },
+    });
 
-    return NextResponse.json({
-      success: true,
-      taskList,
-      message: 'Task list updated successfully'
-    })
+    return NextResponse.json({ message: "Task list updated successfully", taskTemplate: updatedTaskTemplate });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: 'Validation error',
-        details: error.errors
-      }, { status: 400 })
+      return NextResponse.json({ message: "Validation Error", errors: error.errors }, { status: 400 });
     }
-
-    console.error('Error updating task list:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error updating task list:", error);
+    return NextResponse.json({ message: "Failed to update task list" }, { status: 500 });
   }
 }
 
-// DELETE /api/v1/admin/task-lists/[taskListId] - Delete task list
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ taskListId: string }> }
-) {
+export async function DELETE(request: Request, { params }: { params: { taskListId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
-
-    const { taskListId } = await params
-    // Check if task list exists
-    const existingTaskList = await prisma.taskList.findUnique({
-      where: { id: taskListId }
-    })
-
-    if (!existingTaskList) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Task list not found' 
-      }, { status: 404 })
-    }
-
-    // Delete task list (tasks will be deleted due to cascade)
-    await prisma.taskList.delete({
-      where: { id: taskListId }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Task list deleted successfully'
-    })
+    const { taskListId } = params;
+    await prisma.taskTemplate.delete({
+      where: { id: taskListId },
+    });
+    return NextResponse.json({ message: "Task list deleted successfully" });
   } catch (error) {
-    console.error('Error deleting task list:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error deleting task list:", error);
+    return NextResponse.json({ message: "Failed to delete task list" }, { status: 500 });
   }
 }

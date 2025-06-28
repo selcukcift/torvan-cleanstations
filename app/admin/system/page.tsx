@@ -66,16 +66,6 @@ interface SystemStats {
   }
 }
 
-interface AuditLogEntry {
-  id: string
-  action: string
-  entityType: string
-  entityId: string
-  userId: string
-  userName: string
-  timestamp: string
-  details?: Record<string, unknown>
-}
 
 export default function AdminSystemPage() {
   const { data: session, status } = useSession()
@@ -83,7 +73,6 @@ export default function AdminSystemPage() {
   
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null)
   const [systemStats, setSystemStats] = useState<SystemStats | null>(null)
-  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

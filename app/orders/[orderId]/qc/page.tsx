@@ -5,10 +5,6 @@ import { useParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
-import { QCFormInterface } from "@/components/qc/QCFormInterface"
-import { QCFormWithDocuments } from "@/components/qc/QCFormWithDocuments"
-import { QCFormInterfaceEnhanced } from "@/components/qc/QCFormInterfaceEnhanced"
-import { QCTabbedInterface } from "@/components/qc/QCTabbedInterface"
 import { QCChecklistInterface } from "@/components/qc/QCChecklistInterface"
 import { QCResultsViewer } from "@/components/qc/QCResultsViewer"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -181,33 +177,18 @@ export default function QCInspectionPage() {
           />
         ) : qcTemplate ? (
           // Show QC form for pending inspections
-          getQCPhase() === 'Pre-Production Check' ? (
-            <QCChecklistInterface
-              orderId={params.orderId as string}
-              orderData={{
-                poNumber: orderData.poNumber,
-                customerName: orderData.customerName,
-                buildNumbers: orderData.buildNumbers,
-                status: orderData.orderStatus
-              }}
-              template={qcTemplate}
-              session={session}
-              orderConfiguration={qcTemplate?.orderConfiguration}
-            />
-          ) : (
-            <QCTabbedInterface
-              orderId={params.orderId as string}
-              orderData={{
-                poNumber: orderData.poNumber,
-                customerName: orderData.customerName,
-                buildNumbers: orderData.buildNumbers,
-                status: orderData.orderStatus
-              }}
-              template={qcTemplate}
-              session={session}
-              orderConfiguration={qcTemplate?.orderConfiguration}
-            />
-          )
+          <QCChecklistInterface
+            orderId={params.orderId as string}
+            orderData={{
+              poNumber: orderData.poNumber,
+              customerName: orderData.customerName,
+              buildNumbers: orderData.buildNumbers,
+              status: orderData.orderStatus
+            }}
+            template={qcTemplate}
+            session={session}
+            orderConfiguration={qcTemplate?.orderConfiguration}
+          />
         ) : null
       )}
 

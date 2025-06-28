@@ -31,6 +31,7 @@ import { WorkInstructionViewer } from "./WorkInstructionViewer"
 import { ToolRequirements } from "./ToolRequirements"
 import { ProductionChecklistInterface } from "../production/ProductionChecklistInterface"
 import { ConfigurationDrivenTasks } from "../production/ConfigurationDrivenTasks"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface AssemblyTask {
   id: string
@@ -42,11 +43,7 @@ interface AssemblyTask {
   order?: number
   requiredTools?: string[]
   requiredParts?: string[]
-  workInstruction?: {
-    id: string
-    title: string
-    steps: string[]
-  }
+  workInstructionId?: string
 }
 
 interface PackagingItem {
@@ -59,6 +56,22 @@ interface PackagingItem {
   basinNumber?: number
 }
 
+interface WorkInstruction {
+  id: string;
+  title: string;
+  steps: { stepNumber: number; title: string; description: string }[];
+}
+
+interface Part {
+  partId: string;
+  name: string;
+}
+
+interface Tool {
+  id: string;
+  name: string;
+}
+
 interface TaskManagementProps {
   orderId: string
   buildNumber?: string
@@ -67,8 +80,8 @@ interface TaskManagementProps {
   onTaskSelect?: (taskId: string) => void
 }
 
-export function TaskManagement({ 
-  orderId, 
+export function TaskManagement({
+  orderId,
   buildNumber,
   userRole,
   viewMode = 'enhanced',
@@ -86,6 +99,9 @@ export function TaskManagement({
   const [activeView, setActiveView] = useState<'tasks' | 'checklist' | 'configuration'>(
     viewMode === 'checklist' ? 'checklist' : 'tasks'
   )
+  const [workInstructions, setWorkInstructions] = useState<WorkInstruction[]>([])
+  const [parts, setParts] = useState<Part[]>([])
+  const [tools, setTools] = useState<Tool[]>([])
 
   const fetchAssemblyData = useCallback(async () => {
     try {
@@ -96,15 +112,30 @@ export function TaskManagement({
       if (orderResponse.data.success) {
         setOrderData(orderResponse.data.data)
         
-        // Generate assembly tasks based on order configuration
-        const tasks = generateAssemblyTasks(orderResponse.data.data)
-        setAssemblyTasks(tasks)
-        
-        // Generate packaging checklist from CLP.T2.001.V01 Section 4
-        const packaging = generatePackagingChecklist(orderResponse.data.data)
-        setPackagingItems(packaging)
-        
-        calculateProgress(tasks, packaging)
+        // Fetch dynamically generated tasks and packaging
+        const tasksResponse = await nextJsApiClient.post('/v1/assembly/tasks/generate', {
+          orderId,
+          buildNumber: buildNumber || orderResponse.data.data.buildNumbers[0]
+        })
+
+        if (tasksResponse.data.success) {
+          setAssemblyTasks(tasksResponse.data.tasks)
+          setPackagingItems(tasksResponse.data.packaging)
+          calculateProgress(tasksResponse.data.tasks, tasksResponse.data.packaging)
+        } else {
+          setError('Failed to generate assembly tasks')
+        }
+
+        // Fetch supporting data for dropdowns
+        const [wiResponse, partsResponse, toolsResponse] = await Promise.all([
+          nextJsApiClient.get('/v1/admin/work-instructions'),
+          nextJsApiClient.get('/v1/parts'),
+          nextJsApiClient.get('/v1/tools'),
+        ]);
+        setWorkInstructions(wiResponse.data.workInstructions);
+        setParts(partsResponse.data.parts);
+        setTools(toolsResponse.data.tools);
+
       } else {
         setError('Failed to fetch order details')
       }
@@ -114,87 +145,11 @@ export function TaskManagement({
     } finally {
       setLoading(false)
     }
-  }, [orderId])
+  }, [orderId, buildNumber])
 
   useEffect(() => {
     fetchAssemblyData()
   }, [fetchAssemblyData])
-
-  const generateAssemblyTasks = (order: any): AssemblyTask[] => {
-    const tasks: AssemblyTask[] = []
-    
-    // Basic assembly tasks based on order configuration
-    tasks.push({
-      id: 'check-dimensions',
-      title: 'Check Final Sink Dimensions & BOM',
-      description: 'Verify dimensions of the entire sink, each basin, and any other dimension mentioned on the drawing',
-      completed: false,
-      required: true,
-      order: 1
-    })
-    
-    tasks.push({
-      id: 'attach-documents',
-      title: 'Attach Final Approved Drawing and Paperwork',
-      description: 'Ensure all documentation is properly attached and accessible',
-      completed: false,
-      required: true,
-      order: 2
-    })
-    
-    // Pegboard installation if applicable
-    if (order.configurations) {
-      tasks.push({
-        id: 'pegboard-installation',
-        title: 'Pegboard Installation',
-        description: 'Install pegboard and verify dimensions match drawing',
-        completed: false,
-        required: true,
-        order: 3
-      })
-    }
-    
-    // Sink faucet holes and mounting
-    tasks.push({
-      id: 'faucet-holes',
-      title: 'Verify Sink Faucet Holes and Mounting',
-      description: 'Check that location of sink faucet holes and mounting holes match drawing/customer order requirements',
-      completed: false,
-      required: true,
-      order: 4
-    })
-    
-    // Mobility components
-    tasks.push({
-      id: 'mobility-components',
-      title: 'Install Mobility Components',
-      description: 'Install lock & levelling castors or levelling feet as specified',
-      completed: false,
-      required: true,
-      order: 5,
-      requiredParts: ['T2-LEVELING-CASTOR-475', 'T2-SEISMIC-FEET']
-    })
-    
-    return tasks
-  }
-
-  const generatePackagingChecklist = (order: any): PackagingItem[] => {
-    // Section 4 items from CLP.T2.001.V01
-    return [
-      { id: 'anti-fatigue-mat', section: 'STANDARD ITEMS', item: 'Anti-Fatigue Mat', completed: false, required: true },
-      { id: 'sink-strainer', section: 'STANDARD ITEMS', item: 'Sink strainer per sink bowl (lasered with Torvan Medical logo)', completed: false, required: true },
-      { id: 'flex-hose', section: 'STANDARD ITEMS', item: 'Ø1.5 Flex Hose (4ft) per sink drain + 2x Hose Clamps', completed: false, required: true },
-      { id: 'temp-sensor', section: 'STANDARD ITEMS', item: '1x Temp. Sensor packed per E-Drain basin', completed: false, required: true, isBasinSpecific: true },
-      { id: 'drain-solenoid', section: 'STANDARD ITEMS', item: '1x Electronic Drain Solenoid per Basin (Wired, tested and labelled)', completed: false, required: true },
-      { id: 'drain-assembly', section: 'STANDARD ITEMS', item: '1x Drain assembly per basin', completed: false, required: true },
-      { id: 'dosing-shelf', section: 'STANDARD ITEMS', item: '1x shelf for dosing pump', completed: false, required: false },
-      { id: 'tubeset', section: 'STANDARD ITEMS', item: '1x Tubeset per dosing pump', completed: false, required: false },
-      { id: 'drain-gasket', section: 'STANDARD ITEMS', item: 'Drain gasket per basin', completed: false, required: true },
-      { id: 'install-manual-en', section: 'STANDARD ITEMS', item: 'Install & Operations Manual: IFU.T2.SinkInstUser', completed: false, required: true },
-      { id: 'install-manual-fr', section: 'STANDARD ITEMS', item: 'Install & Operations Manual French: IFU.T2.SinkInstUserFR', completed: false, required: false },
-      { id: 'esink-manual-fr', section: 'STANDARD ITEMS', item: 'E-Sink Automation Manual French: IFU.T2.ESinkInstUserFR', completed: false, required: false }
-    ]
-  }
 
   const calculateProgress = (tasks: AssemblyTask[], packaging: PackagingItem[]) => {
     const allItems = [...tasks, ...packaging]
@@ -205,27 +160,23 @@ export function TaskManagement({
   }
 
   const handleTaskToggle = (taskId: string, completed: boolean) => {
-    setAssemblyTasks(prev => prev.map(task => 
-      task.id === taskId ? { ...task, completed } : task
-    ))
-    
-    // Recalculate progress
-    const updatedTasks = assemblyTasks.map(task => 
-      task.id === taskId ? { ...task, completed } : task
-    )
-    calculateProgress(updatedTasks, packagingItems)
+    setAssemblyTasks(prev => {
+      const updatedTasks = prev.map(task => 
+        task.id === taskId ? { ...task, completed } : task
+      )
+      calculateProgress(updatedTasks, packagingItems)
+      return updatedTasks
+    })
   }
 
   const handlePackagingToggle = (itemId: string, completed: boolean) => {
-    setPackagingItems(prev => prev.map(item => 
-      item.id === itemId ? { ...item, completed } : item
-    ))
-    
-    // Recalculate progress
-    const updatedPackaging = packagingItems.map(item => 
-      item.id === itemId ? { ...item, completed } : item
-    )
-    calculateProgress(assemblyTasks, updatedPackaging)
+    setPackagingItems(prev => {
+      const updatedPackaging = prev.map(item => 
+        item.id === itemId ? { ...item, completed } : item
+      )
+      calculateProgress(assemblyTasks, updatedPackaging)
+      return updatedPackaging
+    })
   }
 
   const handleCompleteAssembly = async () => {
@@ -241,7 +192,7 @@ export function TaskManagement({
     setSubmitting(true)
     try {
       const response = await nextJsApiClient.put(`/orders/${orderId}/status`, {
-        newStatus: "ReadyForFinalQC",
+        newStatus: "READY_FOR_FINAL_QC",
         notes: "Assembly and packaging completed by assembler"
       })
       
@@ -501,17 +452,21 @@ export function TaskManagement({
                 <CollapsibleContent className="mt-2">
                   <Card className="ml-6">
                     <CardContent className="p-4">
-                      {task.instructions && (
+                      {task.workInstructionId && (
                         <div className="mb-4">
-                          <h5 className="font-medium mb-2">Instructions:</h5>
-                          <ul className="space-y-1 text-sm">
-                            {task.instructions.map((instruction, idx) => (
-                              <li key={idx} className="flex items-start space-x-2">
-                                <span className="text-muted-foreground">{idx + 1}.</span>
-                                <span>{instruction}</span>
-                              </li>
-                            ))}
-                          </ul>
+                          <h5 className="font-medium mb-2">Work Instruction:</h5>
+                          <Select value={task.workInstructionId} onValueChange={(value) => {
+                            // Handle change if needed, though for now it's display only
+                          }}>
+                            <SelectTrigger className="w-[240px]">
+                              <SelectValue placeholder="Select a Work Instruction" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {workInstructions.map(wi => (
+                                <SelectItem key={wi.id} value={wi.id}>{wi.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       )}
                       
@@ -519,9 +474,10 @@ export function TaskManagement({
                         <div className="mb-4">
                           <h5 className="font-medium mb-2">Required Tools:</h5>
                           <div className="flex flex-wrap gap-2">
-                            {task.requiredTools.map((tool, idx) => (
-                              <Badge key={idx} variant="outline">{tool}</Badge>
-                            ))}
+                            {task.requiredTools.map((toolId, idx) => {
+                              const tool = tools.find(t => t.id === toolId);
+                              return <Badge key={idx} variant="outline">{tool ? tool.name : toolId}</Badge>
+                            })}
                           </div>
                         </div>
                       )}
@@ -530,9 +486,10 @@ export function TaskManagement({
                         <div>
                           <h5 className="font-medium mb-2">Required Parts:</h5>
                           <div className="flex flex-wrap gap-2">
-                            {task.requiredParts.map((part, idx) => (
-                              <Badge key={idx} variant="secondary">{part}</Badge>
-                            ))}
+                            {task.requiredParts.map((partId, idx) => {
+                              const part = parts.find(p => p.partId === partId);
+                              return <Badge key={idx} variant="secondary">{part ? part.name : partId}</Badge>
+                            })}
                           </div>
                         </div>
                       )}

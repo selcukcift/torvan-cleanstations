@@ -717,7 +717,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`${level === 0 ? "font-semibold text-gray-900" : level === 1 ? "font-medium text-gray-800" : "text-sm text-gray-700"} truncate`}>
+                <span className={`${level === 0 ? "font-semibold text-gray-900" : level === 1 ? "font-medium text-gray-800" : "text-sm text-gray-700"}`}>
                   {toTitleCase(item.name)}
                 </span>
                 {item.isCustom && (
@@ -732,7 +732,7 @@ export function BOMViewer({ orderId, poNumber, bomItems, orderData, customerInfo
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
                 {displayPartNumber && (
-                  <span className="font-mono truncate">{displayPartNumber}</span>
+                  <span className="font-mono text-gray-400">Part #: {displayPartNumber}</span>
                 )}
                 {item.description && (
                   <span className="text-gray-400 truncate max-w-[300px]" title={item.description}>

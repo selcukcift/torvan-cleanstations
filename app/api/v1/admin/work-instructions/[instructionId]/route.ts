@@ -1,208 +1,128 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { getAuthUser } from '@/lib/auth'
-import { z } from 'zod'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 
-const prisma = new PrismaClient()
-
-// Validation schemas
 const WorkInstructionStepSchema = z.object({
   id: z.string().optional(),
   stepNumber: z.number().int().positive(),
-  description: z.string().min(1, 'Step description is required'),
-  notes: z.string().optional()
-})
+  title: z.string().min(1, "Step title is required"),
+  description: z.string().min(1, "Step description is required"),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  images: z.array(z.string()).optional(),
+  videos: z.array(z.string()).optional(),
+  checkpoints: z.array(z.string()).optional(),
+  _action: z.enum(['create', 'update', 'delete']).optional(),
+});
 
 const WorkInstructionUpdateSchema = z.object({
-  title: z.string().min(1).optional(),
-  description: z.string().optional(),
-  steps: z.array(WorkInstructionStepSchema).optional()
-})
+  title: z.string().min(1, "Title is required").optional(),
+  description: z.string().optional().nullable(),
+  assemblyId: z.string().optional().nullable(),
+  version: z.string().optional(),
+  isActive: z.boolean().optional(),
+  estimatedMinutes: z.number().int().positive().optional().nullable(),
+  steps: z.array(WorkInstructionStepSchema).optional(),
+});
 
-// GET /api/v1/admin/work-instructions/[instructionId] - Get single work instruction
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ instructionId: string }> }
-) {
+export async function GET(request: Request, { params }: { params: { instructionId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
-
-    const { instructionId } = await params
-    const instruction = await prisma.workInstruction.findUnique({
+    const { instructionId } = params;
+    const workInstruction = await prisma.workInstruction.findUnique({
       where: { id: instructionId },
       include: {
-        steps: {
-          orderBy: {
-            stepNumber: 'asc'
-          }
-        }
-      }
-    })
+        steps: { orderBy: { stepNumber: 'asc' } },
+      },
+    });
 
-    if (!instruction) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Work instruction not found' 
-      }, { status: 404 })
+    if (!workInstruction) {
+      return NextResponse.json({ message: "Work instruction not found" }, { status: 404 });
     }
 
-    return NextResponse.json({
-      success: true,
-      instruction
-    })
+    return NextResponse.json({ workInstruction });
   } catch (error) {
-    console.error('Error fetching work instruction:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error fetching work instruction:", error);
+    return NextResponse.json({ message: "Failed to fetch work instruction" }, { status: 500 });
   }
 }
 
-// PUT /api/v1/admin/work-instructions/[instructionId] - Update work instruction
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ instructionId: string }> }
-) {
+export async function PUT(request: Request, { params }: { params: { instructionId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
+    const { instructionId } = params;
+    const body = await request.json();
+    const validatedData = WorkInstructionUpdateSchema.parse(body);
 
-    const { instructionId } = await params
-    const body = await request.json()
-    const validatedData = WorkInstructionUpdateSchema.parse(body)
+    const { steps, ...rest } = validatedData;
 
-    // Check if instruction exists
-    const existingInstruction = await prisma.workInstruction.findUnique({
-      where: { id: instructionId }
-    })
+    const updateData: any = { ...rest };
 
-    if (!existingInstruction) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Work instruction not found' 
-      }, { status: 404 })
-    }
-
-    // Update instruction and steps in a transaction
-    const instruction = await prisma.$transaction(async (tx) => {
-      // Update the main instruction
-      const updatedInstruction = await tx.workInstruction.update({
-        where: { id: instructionId },
-        data: {
-          title: validatedData.title,
-          description: validatedData.description
-        }
-      })
-
-      // If steps are provided, replace all steps
-      if (validatedData.steps) {
-        // Delete existing steps
-        await tx.workInstructionStep.deleteMany({
-          where: { workInstructionId: instructionId }
-        })
-
-        // Create new steps
-        await tx.workInstructionStep.createMany({
-          data: validatedData.steps.map(step => ({
-            workInstructionId: instructionId,
-            stepNumber: step.stepNumber,
-            description: step.description,
-            notes: step.notes
-          }))
-        })
-      }
-
-      // Return updated instruction with steps
-      return await tx.workInstruction.findUnique({
-        where: { id: instructionId },
-        include: {
-          steps: {
-            orderBy: {
-              stepNumber: 'asc'
-            }
+    if (steps) {
+      const stepActions = steps.map(step => {
+        if (step._action === 'create') {
+          // Ensure stepNumber is set for new steps
+          if (!step.stepNumber) {
+            throw new Error("New steps must have a stepNumber");
+          }
+          return prisma.workInstructionStep.create({
+            data: { ...step, workInstructionId: instructionId }
+          });
+        } else if (step._action === 'update') {
+          if (!step.id) {
+            throw new Error("Updated steps must have an ID");
+          }
+          return prisma.workInstructionStep.update({
+            where: { id: step.id },
+            data: step
+          });
+        } else if (step._action === 'delete') {
+          if (!step.id) {
+            throw new Error("Deleted steps must have an ID");
+          }
+          return prisma.workInstructionStep.delete({
+            where: { id: step.id }
+          });
+        } else {
+          // Default to update if no action is specified and ID exists
+          if (step.id) {
+            return prisma.workInstructionStep.update({
+              where: { id: step.id },
+              data: step
+            });
+          } else {
+            // This case should ideally not happen if frontend manages _action correctly
+            throw new Error("Invalid step action or missing ID");
           }
         }
-      })
-    })
+      });
+      await prisma.$transaction(stepActions);
+    }
 
-    return NextResponse.json({
-      success: true,
-      instruction,
-      message: 'Work instruction updated successfully'
-    })
+    const updatedWorkInstruction = await prisma.workInstruction.update({
+      where: { id: instructionId },
+      data: updateData,
+      include: {
+        steps: true,
+      },
+    });
+
+    return NextResponse.json({ message: "Work instruction updated successfully", workInstruction: updatedWorkInstruction });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: 'Validation error',
-        details: error.errors
-      }, { status: 400 })
+      return NextResponse.json({ message: "Validation Error", errors: error.errors }, { status: 400 });
     }
-
-    console.error('Error updating work instruction:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error updating work instruction:", error);
+    return NextResponse.json({ message: "Failed to update work instruction" }, { status: 500 });
   }
 }
 
-// DELETE /api/v1/admin/work-instructions/[instructionId] - Delete work instruction
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ instructionId: string }> }
-) {
+export async function DELETE(request: Request, { params }: { params: { instructionId: string } }) {
   try {
-    const user = await getAuthUser()
-    
-    if (!user || user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Unauthorized' 
-      }, { status: 401 })
-    }
-
-    const { instructionId } = await params
-    // Check if instruction exists
-    const existingInstruction = await prisma.workInstruction.findUnique({
-      where: { id: instructionId }
-    })
-
-    if (!existingInstruction) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Work instruction not found' 
-      }, { status: 404 })
-    }
-
-    // Delete instruction (steps will be deleted due to cascade)
+    const { instructionId } = params;
     await prisma.workInstruction.delete({
-      where: { id: instructionId }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Work instruction deleted successfully'
-    })
+      where: { id: instructionId },
+    });
+    return NextResponse.json({ message: "Work instruction deleted successfully" });
   } catch (error) {
-    console.error('Error deleting work instruction:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    console.error("Error deleting work instruction:", error);
+    return NextResponse.json({ message: "Failed to delete work instruction" }, { status: 500 });
   }
 }

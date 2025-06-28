@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // This endpoint is handled by NextAuth.js
 // Redirect to the appropriate NextAuth endpoint

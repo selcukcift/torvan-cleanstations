@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { createStandardAPIResponse, createStandardErrorResponse } from '@/lib/apiResponse'
 import fs from 'fs/promises'

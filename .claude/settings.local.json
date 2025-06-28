@@ -109,7 +109,9 @@
       "Bash(timeout 10s npm run dev)",
       "Bash(touch:*)",
       "Bash(npx eslint:*)",
-      "Bash(timeout 15s npm run dev)"
+      "Bash(timeout 15s npm run dev)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(timeout 15 npm run dev)"
     ],
     "deny": []
   },

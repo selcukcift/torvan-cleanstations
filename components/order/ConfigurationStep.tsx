@@ -12,7 +12,9 @@ import {
   Info,
   ShowerHead,
   Waves,
-  Trash2
+  Trash2,
+  Archive,
+  FolderOpen
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -508,85 +510,121 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
 
   return (
     <div className="h-[calc(100vh-16rem)] flex gap-4">
-      {/* Sidebar */}
-      <div className="w-64 border-r bg-slate-50/50">
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-lg">Configure {currentBuildNumber}</h3>
-              <p className="text-sm text-slate-600 mt-1">
-                {currentBuildIndex + 1} of {buildNumbers.length} sinks
-              </p>
-            </div>
-            {buildNumbers.length > 1 && (
-              <CopyConfiguration
-                buildNumbers={buildNumbers}
-                currentBuildNumber={currentBuildNumber}
-                configurations={configurations}
-                onCopyConfiguration={handleCopyConfiguration}
-              />
-            )}
-          </div>
-        </div>
-        
-        <ScrollArea className={buildNumbers.length > 1 ? "h-[calc(100%-8rem)]" : "h-[calc(100%-4rem)]"}>
-          <div className="p-4 space-y-2">
-            {SECTIONS.map((section) => {
-              const status = getSectionStatus(section.id)
-              const Icon = section.icon
-              
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => setActiveSection(section.id)}
-                  className={cn(
-                    "w-full flex items-center justify-between p-3 rounded-lg transition-colors",
-                    activeSection === section.id 
-                      ? "bg-white shadow-sm border" 
-                      : "hover:bg-slate-100",
-                    status === 'incomplete' && section.required && "border-red-200"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className="w-5 h-5 text-slate-600" />
-                    <div className="text-left">
-                      <div className="font-medium text-sm">{section.label}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {status === 'complete' && (
-                      <Check className="w-4 h-4 text-green-600" />
-                    )}
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </ScrollArea>
-
-        {/* Navigation - Only show if multiple sinks */}
+      {/* Multi-Sink Sidebar */}
+      <div className="w-72 border-r bg-slate-50/50 flex flex-col">
+        {/* Build Numbers Section */}
         {buildNumbers.length > 1 && (
-          <div className="p-4 border-t bg-white">
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentBuildIndex(Math.max(0, currentBuildIndex - 1))}
-                disabled={currentBuildIndex === 0}
-              >
-                Previous
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => setCurrentBuildIndex(Math.min(buildNumbers.length - 1, currentBuildIndex + 1))}
-                disabled={currentBuildIndex === buildNumbers.length - 1}
-                className="flex-1"
-              >
-                Next Sink
-              </Button>
+          <div className="border-b bg-white">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-lg">Sink Configurations</h3>
+                <CopyConfiguration
+                  buildNumbers={buildNumbers}
+                  currentBuildNumber={currentBuildNumber}
+                  configurations={configurations}
+                  onCopyConfiguration={handleCopyConfiguration}
+                />
+              </div>
+              <ScrollArea className="max-h-48">
+                <div className="space-y-2">
+                  {buildNumbers.map((buildNumber, index) => {
+                    const config = configurations[buildNumber] || {}
+                    const sinkBodyComplete = getSectionStatusForConfig('sink-body', config) === 'complete'
+                    const basinsComplete = getSectionStatusForConfig('basins', config) === 'complete'
+                    const isSelected = buildNumber === currentBuildNumber
+                    
+                    return (
+                      <button
+                        key={buildNumber}
+                        onClick={() => setCurrentBuildIndex(index)}
+                        className={cn(
+                          "w-full p-3 rounded-lg border transition-all text-left",
+                          isSelected 
+                            ? "bg-blue-50 border-blue-200 shadow-sm" 
+                            : "bg-white hover:bg-slate-50 border-slate-200"
+                        )}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm truncate">{buildNumber}</div>
+                            <div className="text-xs text-slate-500 mt-1">
+                              Sink {index + 1} of {buildNumbers.length}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 ml-2">
+                            {sinkBodyComplete && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full" title="Sink Body Complete" />
+                            )}
+                            {basinsComplete && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full" title="Basins Complete" />
+                            )}
+                            {config.faucets?.length > 0 && (
+                              <div className="w-2 h-2 bg-purple-500 rounded-full" title="Faucets Added" />
+                            )}
+                            {config.sprayers?.length > 0 && (
+                              <div className="w-2 h-2 bg-orange-500 rounded-full" title="Sprayers Added" />
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </ScrollArea>
             </div>
           </div>
         )}
+        
+        {/* Configuration Sections Sidebar */}
+        <div className="flex-1 flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="font-semibold text-lg">Configure {currentBuildNumber}</h3>
+            <p className="text-sm text-slate-600 mt-1">
+              {buildNumbers.length > 1 ? `Sink ${currentBuildIndex + 1} of ${buildNumbers.length}` : 'Single Sink'}
+            </p>
+          </div>
+          
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-2">
+              {SECTIONS.map((section) => {
+                const status = getSectionStatus(section.id)
+                const Icon = section.icon
+                
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={cn(
+                      "w-full flex items-center justify-between p-3 rounded-lg transition-colors",
+                      activeSection === section.id 
+                        ? "bg-white shadow-sm border" 
+                        : "hover:bg-slate-100",
+                      status === 'incomplete' && section.required && "border-red-200"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-5 h-5 text-slate-600" />
+                      <div className="text-left">
+                        <div className="font-medium text-sm">{section.label}</div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          {status === 'complete' ? 'Complete' : status === 'optional' ? 'Optional' : 'Required'}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {status === 'complete' && (
+                        <Check className="w-4 h-4 text-green-600" />
+                      )}
+                      {status === 'incomplete' && section.required && (
+                        <AlertCircle className="w-4 h-4 text-red-500" />
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </ScrollArea>
+        </div>
       </div>
 
       {/* Main Content Area - Shows only active section */}
@@ -837,95 +875,148 @@ export default function ConfigurationStep({ buildNumbers, onComplete }: Configur
 
                   {/* Drawers & Compartments Configuration */}
                   <div className="space-y-4 border-t pt-4">
-                    <h3 className="text-lg font-medium">Drawers & Compartments</h3>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="add-drawers-compartments"
-                          checked={currentConfig.hasDrawersAndCompartments || (currentConfig.drawersAndCompartments?.length || 0) > 0}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              updateConfig({ hasDrawersAndCompartments: true })
-                            } else {
-                              updateConfig({ hasDrawersAndCompartments: false, drawersAndCompartments: [] })
-                            }
-                          }}
-                        />
-                        <Label htmlFor="add-drawers-compartments" className="text-base font-medium cursor-pointer">
-                          Add Drawers & Compartments
-                        </Label>
-                        <p className="text-sm text-muted-foreground">(Optional)</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-medium">Drawers & Compartments</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Optional storage solutions for your sink</p>
                       </div>
-
-                      {(currentConfig.hasDrawersAndCompartments || (currentConfig.drawersAndCompartments?.length || 0) > 0) && (
-                        <div className="space-y-3 ml-6">
-                          <Label>Available Options</Label>
-                          <Select 
-                            value=""
-                            onValueChange={(value) => {
-                              const current = currentConfig.drawersAndCompartments || []
-                              if (!current.includes(value) && value !== "") {
-                                updateConfig({ 
-                                  drawersAndCompartments: [...current, value]
-                                })
-                              }
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select drawer or compartment to add" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {/* Only show items that haven't been selected yet */}
-                              {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT") && (
-                                <SelectItem value="T2-OA-2D-152012-STACKED-KIT">
-                                  15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT
-                                </SelectItem>
-                              )}
-                              {!(currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212") && (
-                                <SelectItem value="T2-OA-PO-SHLF-1212">
-                                  12"X12" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)
-                                </SelectItem>
-                              )}
-                            </SelectContent>
-                          </Select>
-
-                          {/* Selected Items List */}
-                          {(currentConfig.drawersAndCompartments || []).length > 0 && (
-                            <div className="space-y-2">
-                              <Label className="text-sm text-slate-600">Selected Items</Label>
-                              <div className="space-y-2">
-                                {(currentConfig.drawersAndCompartments || []).map((item: string, index: number) => (
-                                  <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                                    <span className="text-sm font-medium">
-                                      {item === "T2-OA-2D-152012-STACKED-KIT" 
-                                        ? "15 X 20 X 12 TALL STACKED TWO-DRAWER HOUSING WITH INTERIOR LINER KIT"
-                                        : item === "T2-OA-PO-SHLF-1212"
-                                        ? "12\"X12\" PULL OUT SHELF (ONLY COMPATIBLE WITH HA SHELF)"
-                                        : item
-                                      }
-                                    </span>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                                      onClick={() => {
-                                        const current = currentConfig.drawersAndCompartments || []
-                                        const updated = current.filter((_: string, i: number) => i !== index)
-                                        updateConfig({ drawersAndCompartments: updated })
-                                      }}
-                                    >
-                                      <Trash2 className="w-4 h-4 mr-1" />
-                                      Remove
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                      {(currentConfig.drawersAndCompartments?.length || 0) > 0 && (
+                        <div className="text-sm text-muted-foreground">
+                          {currentConfig.drawersAndCompartments?.length} selected
                         </div>
                       )}
                     </div>
+                    
+                    {/* Available Options Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Stacked Drawer Housing */}
+                      <Card className={`transition-all duration-200 ${
+                        (currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT")
+                          ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-200'
+                          : 'hover:shadow-md hover:border-blue-200'
+                      }`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-lg bg-slate-100">
+                              <Archive className="w-6 h-6 text-slate-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-sm mb-1">Stacked Two-Drawer Housing</h4>
+                              <p className="text-xs text-muted-foreground mb-2">15"×20"×12" with interior liner kit</p>
+                              <p className="text-xs text-slate-500">Part: T2-OA-2D-152012-STACKED-KIT</p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-4 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {(currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT") ? (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                  onClick={() => {
+                                    const current = currentConfig.drawersAndCompartments || []
+                                    const updated = current.filter(item => item !== "T2-OA-2D-152012-STACKED-KIT")
+                                    updateConfig({ drawersAndCompartments: updated })
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  Remove
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    const current = currentConfig.drawersAndCompartments || []
+                                    updateConfig({ 
+                                      drawersAndCompartments: [...current, "T2-OA-2D-152012-STACKED-KIT"]
+                                    })
+                                  }}
+                                >
+                                  <Plus className="w-4 h-4 mr-1" />
+                                  Add
+                                </Button>
+                              )}
+                            </div>
+                            {(currentConfig.drawersAndCompartments || []).includes("T2-OA-2D-152012-STACKED-KIT") && (
+                              <div className="flex items-center gap-1">
+                                <Check className="w-4 h-4 text-green-600" />
+                                <span className="text-xs text-green-600 font-medium">Added</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Pull Out Shelf */}
+                      <Card className={`transition-all duration-200 ${
+                        (currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212")
+                          ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-200'
+                          : 'hover:shadow-md hover:border-blue-200'
+                      }`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-lg bg-slate-100">
+                              <FolderOpen className="w-6 h-6 text-slate-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-sm mb-1">Pull Out Shelf</h4>
+                              <p className="text-xs text-muted-foreground mb-2">12"×12" compatible with HA shelf</p>
+                              <p className="text-xs text-slate-500">Part: T2-OA-PO-SHLF-1212</p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-4 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {(currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212") ? (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                  onClick={() => {
+                                    const current = currentConfig.drawersAndCompartments || []
+                                    const updated = current.filter(item => item !== "T2-OA-PO-SHLF-1212")
+                                    updateConfig({ drawersAndCompartments: updated })
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  Remove
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    const current = currentConfig.drawersAndCompartments || []
+                                    updateConfig({ 
+                                      drawersAndCompartments: [...current, "T2-OA-PO-SHLF-1212"]
+                                    })
+                                  }}
+                                >
+                                  <Plus className="w-4 h-4 mr-1" />
+                                  Add
+                                </Button>
+                              )}
+                            </div>
+                            {(currentConfig.drawersAndCompartments || []).includes("T2-OA-PO-SHLF-1212") && (
+                              <div className="flex items-center gap-1">
+                                <Check className="w-4 h-4 text-green-600" />
+                                <span className="text-xs text-green-600 font-medium">Added</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Summary */}
+                    {(currentConfig.drawersAndCompartments?.length || 0) > 0 && (
+                      <Alert>
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>
+                          Selected {currentConfig.drawersAndCompartments?.length} drawer/compartment option{(currentConfig.drawersAndCompartments?.length || 0) > 1 ? 's' : ''}.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                   </div>
 
                   {/* Section Navigation */}

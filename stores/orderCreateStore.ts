@@ -224,8 +224,9 @@ export const useOrderCreateStore = create<OrderCreateState>()(
     }),
     {
       name: 'order-create-state',
-      // Only persist form data, not current step
+      // Persist form data and current step
       partialize: (state) => ({
+        currentStep: state.currentStep,
         customerInfo: state.customerInfo,
         sinkSelection: state.sinkSelection,
         configurations: state.configurations,

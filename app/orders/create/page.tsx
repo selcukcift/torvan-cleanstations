@@ -32,10 +32,15 @@ export default function CreateOrderPage() {
       router.push('/dashboard')
       return
     }
+  }, [status, isAuthenticated, user, router])
 
-    // Reset form when page loads
-    resetForm()
-  }, [status, isAuthenticated, user, router, resetForm])
+  // Only reset form on initial mount
+  useEffect(() => {
+    return () => {
+      // Optionally reset form when leaving the page
+      // resetForm()
+    }
+  }, [])
 
   if (!user || !['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.role)) {
     return null
@@ -55,6 +60,17 @@ export default function CreateOrderPage() {
           ]}
           actions={
             <QuickActions>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  if (confirm('Are you sure you want to start over? All current progress will be lost.')) {
+                    resetForm()
+                  }
+                }}
+              >
+                Start Over
+              </Button>
               <Button variant="outline" size="sm" asChild>
                 <a href="/dashboard" className="flex items-center">
                   <Eye className="h-4 w-4 mr-2" />
