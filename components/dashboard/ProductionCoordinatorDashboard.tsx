@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -134,7 +134,7 @@ const PC_RELEVANT_STATUSES = [
 export function ProductionCoordinatorDashboard() {
   const router = useRouter()
   const { toast } = useToast()
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -207,12 +207,12 @@ export function ProductionCoordinatorDashboard() {
   const [serviceRequestsLoading, setServiceRequestsLoading] = useState(false)
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
+    if (status === 'authenticated' && user) {
       fetchOrders()
       // Clear selection when filters change
       setSelectedOrders([])
     }
-  }, [currentPage, statusFilter, searchTerm, customerNameFilter, buildNumberFilter, dateFromFilter, dateToFilter, dateTypeFilter, status, session])
+  }, [currentPage, statusFilter, searchTerm, customerNameFilter, buildNumberFilter, dateFromFilter, dateToFilter, dateTypeFilter, status, isLoaded, user])
 
   // Clear selection when bulk actions mode is turned off
   useEffect(() => {
@@ -224,22 +224,22 @@ export function ProductionCoordinatorDashboard() {
   // Auto-refresh when window regains focus (useful when returning from order creation)
   useEffect(() => {
     const handleFocus = () => {
-      if (status === 'authenticated' && session?.user) {
+      if (status === 'authenticated' && user) {
         fetchOrders()
       }
     }
 
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
-  }, [status, session])
+  }, [status, isLoaded, user])
 
   // Also refresh when component mounts - but only after session is ready
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
+    if (status === 'authenticated' && user) {
       fetchOrders()
       fetchAssignableUsers()
     }
-  }, [status, session])
+  }, [status, isLoaded, user])
 
   const fetchAssignableUsers = async () => {
     try {
@@ -942,7 +942,7 @@ export function ProductionCoordinatorDashboard() {
   }
 
   // Don't render if not authenticated
-  if (status === 'unauthenticated' || !session?.user) {
+  if (status === 'unauthenticated' || !user) {
     return null
   }
 

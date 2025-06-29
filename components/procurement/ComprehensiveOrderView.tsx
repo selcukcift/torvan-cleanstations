@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -69,7 +69,7 @@ const FEET_PATTERNS = [
 ]
 
 export function ComprehensiveOrderView({ orderId }: ComprehensiveOrderViewProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   
   const [order, setOrder] = useState<Order | null>(null)

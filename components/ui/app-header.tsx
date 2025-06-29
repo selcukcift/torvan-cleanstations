@@ -3,7 +3,7 @@
 import { User, Menu, X } from "lucide-react"
 import { useState } from "react"
 import { LogoutButton } from "@/components/ui/logout-button"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { NotificationBell } from "@/components/notifications/NotificationBell"
 import { useNavigation } from "@/hooks/use-navigation"
@@ -20,8 +20,7 @@ export function AppHeader({
   showUserInfo = true,
   className = ""
 }: AppHeaderProps) {
-  const { data: session } = useSession()
-  const user = session?.user
+  const { user, isLoaded } = useUser()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { isActive } = useNavigation()
 
@@ -57,7 +56,7 @@ export function AppHeader({
                     Dashboard
                   </a>
                 </Button>
-                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.role)) && (
+                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.publicMetadata?.role as string)) && (
                   <Button 
                     variant={isActive("/orders/create") ? "secondary" : "ghost"} 
                     size="sm" 
@@ -68,7 +67,7 @@ export function AppHeader({
                     </a>
                   </Button>
                 )}
-                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.role)) && (
+                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.publicMetadata?.role as string)) && (
                   <Button 
                     variant={isActive("/procurement") ? "secondary" : "ghost"} 
                     size="sm" 
@@ -90,15 +89,15 @@ export function AppHeader({
                 {/* User Avatar */}
                 <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
-                    {user.initials}
+                    {user.firstName?.charAt(0) || user.username?.charAt(0) || 'U'}
                   </span>
                 </div>
                 
                 {/* User Info */}
                 <div className="text-right">
-                  <p className="text-sm font-medium text-slate-900">{user.name}</p>
+                  <p className="text-sm font-medium text-slate-900">{user.fullName || user.username || 'User'}</p>
                   <p className="text-xs text-slate-500 capitalize">
-                    {user.role.toLowerCase().replace('_', ' ')}
+                    {(user.publicMetadata?.role as string || 'user').toLowerCase().replace('_', ' ')}
                   </p>
                 </div>
               </div>
@@ -136,13 +135,13 @@ export function AppHeader({
               <div className="flex items-center space-x-3 px-2">
                 <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
-                    {user.initials}
+                    {user.firstName?.charAt(0) || user.username?.charAt(0) || 'U'}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{user.name}</p>
+                  <p className="text-sm font-medium text-slate-900">{user.fullName || user.username || 'User'}</p>
                   <p className="text-xs text-slate-500 capitalize">
-                    {user.role.toLowerCase().replace('_', ' ')}
+                    {(user.publicMetadata?.role as string || 'user').toLowerCase().replace('_', ' ')}
                   </p>
                 </div>
               </div>
@@ -159,7 +158,7 @@ export function AppHeader({
                     Dashboard
                   </a>
                 </Button>
-                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.role)) && (
+                {(['PRODUCTION_COORDINATOR', 'ADMIN'].includes(user.publicMetadata?.role as string)) && (
                   <Button 
                     variant={isActive("/orders/create") ? "secondary" : "ghost"} 
                     size="sm" 
@@ -171,7 +170,7 @@ export function AppHeader({
                     </a>
                   </Button>
                 )}
-                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.role)) && (
+                {(['PROCUREMENT_SPECIALIST', 'ADMIN'].includes(user.publicMetadata?.role as string)) && (
                   <Button 
                     variant={isActive("/procurement") ? "secondary" : "ghost"} 
                     size="sm" 

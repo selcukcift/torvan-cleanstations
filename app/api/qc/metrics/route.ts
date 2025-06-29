@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
 import { getAuthUser } from "@/lib/auth"
 import { subDays, startOfDay, endOfDay, format } from "date-fns"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 // GET /api/qc/metrics
 export async function GET(request: Request) {

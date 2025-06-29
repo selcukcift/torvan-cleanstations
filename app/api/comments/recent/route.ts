@@ -2,25 +2,19 @@
  * Recent Comments API
  * Retrieves recent comments across all orders for dashboard widgets
  */
-
+import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { getAuthUser } from '@/lib/auth'
-
-const prisma = new PrismaClient()
-
 // GET /api/comments/recent - Get recent comments across all orders
 export async function GET(request: NextRequest) {
   try {
     const user = await getAuthUser()
-    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
         { status: 401 }
       )
     }
-
     // Only allow certain roles to view cross-order comments
     if (!['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'].includes(user.role)) {
       return NextResponse.json(
@@ -28,7 +22,6 @@ export async function GET(request: NextRequest) {
         { status: 403 }
       )
     }
-
     // Get search parameters
     const { searchParams } = new URL(request.url)
     const includeInternal = searchParams.get('includeInternal') === 'true'
@@ -37,7 +30,6 @@ export async function GET(request: NextRequest) {
     const priority = searchParams.get('priority')
     const category = searchParams.get('category')
     const isResolved = searchParams.get('isResolved')
-
     // Build filter conditions
     const whereConditions: {
       isInternal?: boolean;
@@ -45,24 +37,19 @@ export async function GET(request: NextRequest) {
       category?: string;
       isResolved?: boolean;
     } = {}
-
     // Filter by internal status based on user role and request
     if (!includeInternal || !['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'].includes(user.role)) {
       whereConditions.isInternal = false
     }
-
     if (priority) {
       whereConditions.priority = priority
     }
-
     if (category) {
       whereConditions.category = category
     }
-
     if (isResolved !== null && isResolved !== undefined) {
       whereConditions.isResolved = isResolved === 'true'
     }
-
     // Get recent comments with related data
     const comments = await prisma.orderComment.findMany({
       where: whereConditions,
@@ -98,19 +85,16 @@ export async function GET(request: NextRequest) {
       take: limit,
       skip: offset
     })
-
     // Get statistics for summary
     const stats = await prisma.orderComment.groupBy({
       by: ['priority', 'isResolved'],
       where: whereConditions,
       _count: true
     })
-
     // Get total count for pagination
     const totalCount = await prisma.orderComment.count({
       where: whereConditions
     })
-
     // Calculate summary statistics
     const summary = {
       total: totalCount,
@@ -121,7 +105,6 @@ export async function GET(request: NextRequest) {
         return acc
       }, {} as Record<string, number>)
     }
-
     return NextResponse.json({
       success: true,
       data: {
@@ -136,7 +119,6 @@ export async function GET(request: NextRequest) {
         }
       }
     })
-
   } catch (error) {
     console.error('Error fetching recent comments:', error)
     return NextResponse.json(

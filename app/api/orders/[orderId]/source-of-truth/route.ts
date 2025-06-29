@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderSingleSourceOfTruth, updateOrderWorkflowState, generateOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth'
 import { getAuthUser, canAccessOrder } from '@/lib/auth'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 interface RouteParams {
   params: Promise<{

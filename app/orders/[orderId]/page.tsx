@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { nextJsApiClient } from "@/lib/api"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -480,8 +480,7 @@ export default function OrderDetailsPage() {
   const params = useParams()
   const router = useRouter()
   const { toast } = useToast()
-  const { data: session } = useSession()
-  const user = session?.user
+  const { user, isLoaded } = useUser()
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [statusUpdating, setStatusUpdating] = useState(false)

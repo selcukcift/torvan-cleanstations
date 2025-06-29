@@ -35,7 +35,7 @@ import { format } from "date-fns"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 
 interface QCTemplateItem {
   id: string
@@ -95,7 +95,7 @@ export function QCFormInterfaceEnhanced({
 }: QCFormInterfaceEnhancedProps) {
   const { toast } = useToast()
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const [template, setTemplate] = useState<QCTemplate | null>(templateProp || null)
   const [formData, setFormData] = useState<QCFormData>({})
   const [loading, setLoading] = useState(!templateProp)
@@ -449,7 +449,7 @@ export function QCFormInterfaceEnhanced({
         templateId: template?.id,
         overallStatus: calculatedResult,
         inspectorNotes,
-        digitalSignature: digitalSignature || `${session?.user?.name || 'Inspector'} - ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`,
+        digitalSignature: digitalSignature || `${user?.name || 'Inspector'} - ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`,
         itemResults: Object.entries(formData).map(([itemId, data]) => ({
           qcFormTemplateItemId: itemId,
           resultValue: data.value?.toString() || '',
@@ -596,7 +596,7 @@ export function QCFormInterfaceEnhanced({
               id="digital-signature"
               value={digitalSignature}
               onChange={(e) => setDigitalSignature(e.target.value)}
-              placeholder={`${session?.user?.name || 'Inspector'} - ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`}
+              placeholder={`${user?.name || 'Inspector'} - ${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}`}
             />
             <p className="text-xs text-muted-foreground">
               By submitting this form, I verify that this inspection has been completed according to standards.

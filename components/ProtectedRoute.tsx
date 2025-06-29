@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Loader2 } from "lucide-react"
 
 interface ProtectedRouteProps {
@@ -14,25 +14,28 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ 
   children, 
   allowedRoles,
-  redirectTo = '/login'
+  redirectTo = '/sign-in'
 }: ProtectedRouteProps) {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { user, isLoaded, isSignedIn } = useUser()
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (!isLoaded) return
+
+    if (!isSignedIn) {
       router.push(redirectTo)
       return
     }
 
     // Check role permissions if specified
-    if (status === 'authenticated' && session?.user && allowedRoles && !allowedRoles.includes(session.user.role)) {
+    const userRole = user?.publicMetadata?.role as string
+    if (isSignedIn && user && allowedRoles && userRole && !allowedRoles.includes(userRole)) {
       router.push('/dashboard') // Redirect to dashboard if role not allowed
       return
     }
-  }, [status, session, allowedRoles, router, redirectTo])
+  }, [isLoaded, isSignedIn, user, allowedRoles, router, redirectTo])
 
-  if (status === 'loading') {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
@@ -50,7 +53,7 @@ export default function ProtectedRoute({
     )
   }
 
-  if (status === 'unauthenticated' || !session?.user) {
+  if (!isSignedIn || !user) {
     return null // Router will handle redirect
   }
 
@@ -65,9 +68,10 @@ interface RoleGuardProps {
 }
 
 export function RoleGuard({ children, allowedRoles, fallback }: RoleGuardProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
 
-  if (!session?.user || !allowedRoles.includes(session.user.role)) {
+  const userRole = user?.publicMetadata?.role as string
+  if (!user || !userRole || !allowedRoles.includes(userRole)) {
     return fallback || (
       <div className="p-4 text-center">
         <p className="text-slate-600">You don't have permission to access this content.</p>

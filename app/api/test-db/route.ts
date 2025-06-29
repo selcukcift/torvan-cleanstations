@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    // Require admin authentication for database testing endpoint
+    const user = await getAuthUser(request)
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Admin access required for database testing'
+        },
+        { status: 403 }
+      )
+    }
+
     // Test database connection
     const [partCount, assemblyCount] = await Promise.all([
       prisma.part.count(),

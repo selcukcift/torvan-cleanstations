@@ -2,13 +2,9 @@
  * Test Notification API
  * Send test notifications to verify notification preferences
  */
-
+import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { getAuthUser } from '@/lib/auth'
-
-const prisma = new PrismaClient()
-
 /**
  * POST /api/notifications/test
  * Send a test notification to verify user's notification preferences
@@ -16,24 +12,20 @@ const prisma = new PrismaClient()
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser()
-    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
         { status: 401 }
       )
     }
-
     const body = await request.json()
     const { notificationType } = body
-
     if (!notificationType) {
       return NextResponse.json(
         { success: false, message: 'Notification type is required' },
         { status: 400 }
       )
     }
-
     // Get user's preference for this notification type
     const preference = await prisma.notificationPreference.findUnique({
       where: {
@@ -43,7 +35,6 @@ export async function POST(request: NextRequest) {
         }
       }
     })
-
     // Create test notification based on type
     const testNotifications = {
       ORDER_STATUS_CHANGE: {
@@ -77,18 +68,14 @@ export async function POST(request: NextRequest) {
         data: { alertType: 'MAINTENANCE', scheduledTime: '2025-01-13T23:00:00Z' }
       }
     }
-
     const testNotification = testNotifications[notificationType as keyof typeof testNotifications]
-    
     if (!testNotification) {
       return NextResponse.json(
         { success: false, message: 'Invalid notification type for testing' },
         { status: 400 }
       )
     }
-
     const results = []
-
     // Send in-app notification if enabled
     if (!preference || preference.inAppEnabled) {
       const systemNotification = await prisma.systemNotification.create({
@@ -101,7 +88,6 @@ export async function POST(request: NextRequest) {
           priority: 'NORMAL'
         }
       })
-
       results.push({
         type: 'in-app',
         status: 'sent',
@@ -114,13 +100,11 @@ export async function POST(request: NextRequest) {
         reason: 'In-app notifications disabled for this type'
       })
     }
-
     // Send email notification if enabled
     if (preference?.emailEnabled) {
       // For now, we'll just log the email that would be sent
       // In a real implementation, this would integrate with an email service
       const emailAddress = preference.emailAddress || user.email
-      
       results.push({
         type: 'email',
         status: 'simulated',
@@ -136,7 +120,6 @@ export async function POST(request: NextRequest) {
         reason: 'Email notifications disabled for this type'
       })
     }
-
     return NextResponse.json({
       success: true,
       data: {
@@ -149,17 +132,14 @@ export async function POST(request: NextRequest) {
         } : 'default preferences used'
       }
     })
-
   } catch (error) {
     console.error('Error sending test notification:', error)
-    
     if (error instanceof Error) {
       return NextResponse.json(
         { success: false, message: error.message },
         { status: 400 }
       )
     }
-
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }

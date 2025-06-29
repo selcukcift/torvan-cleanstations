@@ -298,17 +298,21 @@ class DefaultSeedingSystem {
         const components = assemblyData.components || []
         
         for (const component of components) {
+          // Fix field name mapping: part_id -> partId, assembly_id -> assemblyId
+          const partId = component.part_id || null
+          const childAssemblyId = component.assembly_id || null
+          
           // Verify referenced parts/assemblies exist
-          if (component.partId) {
+          if (partId) {
             const partExists = await prisma.part.findUnique({
-              where: { partId: component.partId }
+              where: { partId }
             })
             if (!partExists) continue
           }
 
-          if (component.assemblyId) {
+          if (childAssemblyId) {
             const assemblyExists = await prisma.assembly.findUnique({
-              where: { assemblyId: component.assemblyId }
+              where: { assemblyId: childAssemblyId }
             })
             if (!assemblyExists) continue
           }
@@ -316,8 +320,8 @@ class DefaultSeedingSystem {
           const existingComponent = await prisma.assemblyComponent.findFirst({
             where: {
               parentAssemblyId: assemblyId,
-              childPartId: component.partId || null,
-              childAssemblyId: component.assemblyId || null
+              childPartId: partId,
+              childAssemblyId: childAssemblyId
             }
           })
 
@@ -325,10 +329,10 @@ class DefaultSeedingSystem {
             await prisma.assemblyComponent.create({
               data: {
                 parentAssemblyId: assemblyId,
-                childPartId: component.partId || null,
-                childAssemblyId: component.assemblyId || null,
+                childPartId: partId,
+                childAssemblyId: childAssemblyId,
                 quantity: component.quantity || 1,
-                notes: component.notes
+                notes: component.notes || null
               }
             })
             componentsCreated++

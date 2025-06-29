@@ -2,12 +2,9 @@
  * Notification Preferences API
  * Manage user notification configuration and preferences
  */
-
+import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { getAuthUser } from '@/lib/auth'
-
-const prisma = new PrismaClient()
 
 /**
  * GET /api/notifications/preferences
@@ -16,7 +13,6 @@ const prisma = new PrismaClient()
 export async function GET() {
   try {
     const user = await getAuthUser()
-    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
@@ -81,14 +77,12 @@ export async function GET() {
 
   } catch (error) {
     console.error('Error fetching notification preferences:', error)
-    
     if (error instanceof Error) {
       return NextResponse.json(
         { success: false, message: error.message },
         { status: 400 }
       )
     }
-
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }
@@ -103,7 +97,6 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser()
-    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
@@ -208,14 +201,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error updating notification preferences:', error)
-    
     if (error instanceof Error) {
       return NextResponse.json(
         { success: false, message: error.message },
         { status: 400 }
       )
     }
-
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }
@@ -224,7 +215,6 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper functions
-
 function getRelevantNotificationTypes(userRole: string): string[] {
   const baseTypes = ['SYSTEM_ALERT']
   
@@ -240,7 +230,6 @@ function getRelevantNotificationTypes(userRole: string): string[] {
         'INVENTORY_LOW',
         'DEADLINE_APPROACHING'
       ]
-      
     case 'PRODUCTION_COORDINATOR':
       return [
         'ORDER_STATUS_CHANGE',
@@ -250,7 +239,6 @@ function getRelevantNotificationTypes(userRole: string): string[] {
         'DEADLINE_APPROACHING',
         'SYSTEM_ALERT'
       ]
-      
     case 'PROCUREMENT_SPECIALIST':
       return [
         'ORDER_STATUS_CHANGE',
@@ -258,14 +246,12 @@ function getRelevantNotificationTypes(userRole: string): string[] {
         'INVENTORY_LOW',
         'SYSTEM_ALERT'
       ]
-      
     case 'QC_PERSON':
       return [
         'QC_APPROVAL_REQUIRED',
         'ORDER_STATUS_CHANGE',
         'SYSTEM_ALERT'
       ]
-      
     case 'ASSEMBLER':
       return [
         'TASK_ASSIGNMENT',
@@ -273,13 +259,11 @@ function getRelevantNotificationTypes(userRole: string): string[] {
         'ORDER_STATUS_CHANGE',
         'SYSTEM_ALERT'
       ]
-      
     case 'SERVICE_DEPARTMENT':
       return [
         'SERVICE_REQUEST',
         'SYSTEM_ALERT'
       ]
-      
     default:
       return baseTypes
   }

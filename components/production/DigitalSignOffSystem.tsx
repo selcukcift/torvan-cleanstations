@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -93,7 +93,7 @@ export function DigitalSignOffSystem({
   onSignOffComplete,
   readonly = false
 }: DigitalSignOffSystemProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [complianceRecord, setComplianceRecord] = useState<ComplianceRecord | null>(null)
   const [loading, setLoading] = useState(true)
@@ -146,8 +146,8 @@ export function DigitalSignOffSystem({
       auditTrail: [{
         id: `audit_${Date.now()}`,
         timestamp: new Date().toISOString(),
-        userId: session?.user?.id || 'system',
-        userName: session?.user?.name || 'System',
+        userId: user?.id || 'system',
+        userName: user?.name || 'System',
         action: 'DOCUMENT_CREATED',
         details: `Compliance record created for ${documentTitle}`,
         ipAddress: 'N/A'
@@ -161,8 +161,8 @@ export function DigitalSignOffSystem({
     const entry: AuditEntry = {
       id: `audit_${Date.now()}`,
       timestamp: new Date().toISOString(),
-      userId: session?.user?.id || 'unknown',
-      userName: session?.user?.name || 'Unknown User',
+      userId: user?.id || 'unknown',
+      userName: user?.name || 'Unknown User',
       action,
       details,
       ipAddress: 'Client IP' // In real implementation, get actual IP
@@ -175,7 +175,7 @@ export function DigitalSignOffSystem({
   const generateSignatureHash = (data: any): string => {
     // In real implementation, use proper cryptographic hashing
     const hashInput = JSON.stringify({
-      userId: session?.user?.id,
+      userId: user?.id,
       timestamp: new Date().toISOString(),
       documentData: JSON.stringify(documentData),
       initials: initialsInput
@@ -201,7 +201,7 @@ export function DigitalSignOffSystem({
     }
     
     // Validate user role if required signatures are specified
-    const userRole = session?.user?.role
+    const userRole = user?.role
     const requiredRole = requiredSignatures.find(sig => sig.role === userRole)
     
     if (requiredSignatures.length > 0 && !requiredRole) {
@@ -212,7 +212,7 @@ export function DigitalSignOffSystem({
   }
 
   const createDigitalSignature = async () => {
-    if (!session?.user || readonly) return
+    if (!user || readonly) return
 
     const validation = validateSignature()
     if (!validation.valid) {
@@ -233,10 +233,10 @@ export function DigitalSignOffSystem({
 
       const signatureData: SignatureData = {
         id: `sig_${Date.now()}`,
-        userId: session.user.id || 'unknown',
-        userName: session.user.name || 'Unknown User',
+        userId: user.id || 'unknown',
+        userName: user.name || 'Unknown User',
         userInitials: initialsInput.toUpperCase(),
-        userRole: session.user.role || 'Unknown',
+        userRole: user.role || 'Unknown',
         timestamp: new Date().toISOString(),
         ipAddress: 'Client IP', // Get real IP in production
         deviceInfo: navigator.userAgent,
@@ -406,7 +406,7 @@ export function DigitalSignOffSystem({
   }
 
   const isDocumentSigned = complianceRecord?.signatures.length > 0
-  const canSign = !readonly && !isDocumentSigned && session?.user
+  const canSign = !readonly && !isDocumentSigned && user
 
   return (
     <div className="space-y-6">
@@ -611,7 +611,7 @@ export function DigitalSignOffSystem({
 
             <div className="flex items-center justify-between pt-4 border-t">
               <div className="text-sm text-muted-foreground">
-                Signing as: {session?.user?.name} ({session?.user?.role})
+                Signing as: {user?.name} ({user?.role})
               </div>
               
               <Button

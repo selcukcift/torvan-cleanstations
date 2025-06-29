@@ -111,7 +111,8 @@
       "Bash(npx eslint:*)",
       "Bash(timeout 15s npm run dev)",
       "Bash(timeout 10 npm run dev)",
-      "Bash(timeout 15 npm run dev)"
+      "Bash(timeout 15 npm run dev)",
+      "Bash(./scripts/backup-database.sh:*)"
     ],
     "deny": []
   },

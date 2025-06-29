@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -35,7 +35,7 @@ export function ProcurementTab({
   bomError,
   onStatusChange,
 }: ProcurementTabProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const [outsourcedParts, setOutsourcedParts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [summary, setSummary] = useState<OutsourcedPartSummary>({
@@ -46,7 +46,7 @@ export function ProcurementTab({
   })
 
   // Check if user has permission to view this tab
-  const hasPermission = session?.user?.role === "ADMIN" || session?.user?.role === "PROCUREMENT_SPECIALIST"
+  const hasPermission = user?.role === "ADMIN" || user?.role === "PROCUREMENT_SPECIALIST"
   const isRelevantStatus = ["ORDER_CREATED", "SINK_BODY_EXTERNAL_PRODUCTION"].includes(orderStatus)
 
   useEffect(() => {

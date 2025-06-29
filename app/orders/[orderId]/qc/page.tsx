@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { QCChecklistInterface } from "@/components/qc/QCChecklistInterface"
@@ -12,7 +12,7 @@ import { Loader2, AlertCircle, Info } from "lucide-react"
 
 export default function QCInspectionPage() {
   const params = useParams()
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [orderData, setOrderData] = useState<any>(null)
   const [qcTemplate, setQcTemplate] = useState<any>(null)

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { getOrderSingleSourceOfTruth } from '@/lib/orderSingleSourceOfTruth';
 import { PreQCTemplateGenerator, type OrderConfiguration } from '@/lib/preQcTemplateGenerator';
 import fs from 'fs';
 import path from 'path';
 
-const prisma = new PrismaClient();
 
 // GET /api/orders/[orderId]/qc/template - Find active template for product family
 export async function GET(

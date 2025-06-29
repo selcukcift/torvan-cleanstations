@@ -1,0 +1,23 @@
+CleanStation Database Backup Information
+=======================================
+Backup Date: Sun 29 Jun 2025 03:58:12 PM EDT
+Database Name: torvan-db
+Database Host: localhost:5432
+Database User: postgres
+Original Size: 100K
+Compressed Size: 16K
+Backup File: ./database-backups/torvan-db_backup_20250629_155812.sql.gz
+Backup Command: pg_dump --host=localhost --port=5432 --username=postgres --dbname=torvan-db --clean --if-exists --create --format=plain --encoding=UTF8
+
+Restore Instructions:
+1. Ensure PostgreSQL is installed and running on target system
+2. Create database user if needed: createuser -s postgres
+3. Run restore script: ./scripts/restore-database.sh ./database-backups/torvan-db_backup_20250629_155812.sql.gz
+   OR manually: gunzip -c ./database-backups/torvan-db_backup_20250629_155812.sql.gz | psql -U postgres
+
+Migration Package Contents Needed:
+- This backup file (./database-backups/torvan-db_backup_20250629_155812.sql.gz)
+- package.json (for dependencies)
+- prisma/schema.prisma (for schema validation)
+- .env.template (for environment setup)
+- All migration files in prisma/migrations/

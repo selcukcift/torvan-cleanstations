@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -74,7 +74,7 @@ export function ProductionChecklistInterface({
   onComplete,
   readonly = false
 }: ProductionChecklistInterfaceProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [checklistData, setChecklistData] = useState<ProductionChecklistData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -123,8 +123,8 @@ export function ProductionChecklistInterface({
       buildNumber: buildNumber || '',
       jobId: '',
       numberOfBasins,
-      performedBy: session?.user?.name || '',
-      performedByInitials: session?.user?.email?.substring(0, 2).toUpperCase() || '',
+      performedBy: user?.name || '',
+      performedByInitials: user?.email?.substring(0, 2).toUpperCase() || '',
       timestamp: new Date().toISOString(),
       sections: {
         preProduction: generatePreProductionChecks(config, numberOfBasins),

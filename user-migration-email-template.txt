@@ -1,0 +1,46 @@
+Subject: Action Required: Upgrade to New Torvan Medical CleanStation Login System
+
+Dear [USER_NAME],
+
+We've upgraded our CleanStation workflow system with a new, more secure authentication system. To continue accessing the system, you need to create a new account using your existing email address.
+
+**IMPORTANT: Your existing data, roles, and permissions will be preserved.**
+
+**What You Need to Do:**
+
+1. Go to: http://localhost:3005/sign-up
+2. Sign up using your EXISTING EMAIL ADDRESS: [USER_EMAIL]
+3. Create a new secure password
+4. Your account will be automatically linked to your existing profile
+
+**Your Account Details:**
+- Full Name: [USER_FULL_NAME]
+- Email: [USER_EMAIL] ← Use this email to sign up
+- Current Username: [USERNAME] (you won't need this anymore)
+- Role: [USER_ROLE]
+
+**Benefits of the New System:**
+✅ More secure authentication
+✅ Better password security
+✅ Modern user interface
+✅ All your existing work data preserved
+
+**Timeline:**
+Please complete this migration within the next 7 days. After that, the old login system will be disabled.
+
+**Need Help?**
+If you have any questions or issues during the signup process, please contact your system administrator.
+
+**Technical Notes:**
+- You will log in with your EMAIL address instead of username
+- You can set a new, secure password
+- All your orders, tasks, and data remain unchanged
+- Your role and permissions stay the same
+
+Thank you for your cooperation in this security upgrade.
+
+Best regards,
+Torvan Medical IT Team
+
+---
+This is an automated message regarding your CleanStation workflow system account.

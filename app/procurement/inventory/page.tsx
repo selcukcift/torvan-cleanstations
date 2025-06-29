@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { Package, Layers, BarChart3, AlertCircle, Loader2, Download, FileText } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,7 +23,7 @@ interface InventoryStats {
 }
 
 export default function InventoryBrowserPage() {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
   const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [stats, setStats] = useState<InventoryStats | null>(null)
@@ -33,14 +33,14 @@ export default function InventoryBrowserPage() {
   const [error, setError] = useState<string | null>(null)
 
   // Check user role
-  const userRole = session?.user?.role
+  const userRole = user?.publicMetadata?.role as string
   const hasAccess = ["ADMIN", "PROCUREMENT_SPECIALIST", "PRODUCTION_COORDINATOR"].includes(userRole || "")
 
   useEffect(() => {
-    if (session && hasAccess) {
+    if (isLoaded && user && hasAccess) {
       loadInventoryData()
     }
-  }, [session, hasAccess])
+  }, [isLoaded, user, hasAccess])
 
   const loadInventoryData = async () => {
     try {
@@ -99,7 +99,7 @@ export default function InventoryBrowserPage() {
     }
   }
 
-  if (!session) {
+  if (!isLoaded || !user) {
     return (
       <div className="min-h-screen bg-slate-50">
         <AppHeader />
@@ -107,7 +107,7 @@ export default function InventoryBrowserPage() {
           <Card>
             <CardContent className="text-center py-8">
               <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-              <p className="text-slate-600">Loading session...</p>
+              <p className="text-slate-600">Loading user data...</p>
             </CardContent>
           </Card>
         </div>

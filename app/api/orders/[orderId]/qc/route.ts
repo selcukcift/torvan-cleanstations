@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 import { z } from 'zod';
 import { QcResultSubmissionSchema } from '@/lib/qcValidationSchemas';
 import { notificationTriggerService } from '@/lib/notificationTriggerService';
-
-const prisma = new PrismaClient();
 
 // GET /api/orders/[orderId]/qc - Get existing QC result for this order
 export async function GET(

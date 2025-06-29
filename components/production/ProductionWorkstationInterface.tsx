@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -73,7 +73,7 @@ export function ProductionWorkstationInterface({
   enableTimer = true,
   onTaskComplete
 }: ProductionWorkstationInterfaceProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [tasks, setTasks] = useState<WorkstationTask[]>([])
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
@@ -212,7 +212,7 @@ export function ProductionWorkstationInterface({
       taskId,
       updates,
       timestamp: new Date().toISOString(),
-      userId: session?.user?.id
+      userId: user?.id
     }
 
     if (isOnline) {

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { useSession } from 'next-auth/react'
+import { useUser } from '@clerk/nextjs'
 import { nextJsApiClient } from '@/lib/api'
 import { NotificationItem } from './NotificationItem'
 import { useToast } from '@/hooks/use-toast'
@@ -30,12 +30,12 @@ export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
 
   // Fetch unread notifications on mount and set up auto-refresh
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       // Add a longer delay to prevent blocking dashboard loading
       const timer = setTimeout(() => {
         fetchNotifications(true)
@@ -51,14 +51,14 @@ export function NotificationBell() {
         clearInterval(interval)
       }
     }
-  }, [session?.user])
+  }, [user])
 
   // Fetch all notifications when popover opens
   useEffect(() => {
-    if (isOpen && session?.user) {
+    if (isOpen && user) {
       fetchNotifications(false)
     }
-  }, [isOpen, session?.user])
+  }, [isOpen, user])
 
   const fetchNotifications = async (unreadOnly: boolean) => {
     try {
@@ -167,7 +167,7 @@ export function NotificationBell() {
     }
   }
 
-  if (!session?.user) {
+  if (!user) {
     return null
   }
 

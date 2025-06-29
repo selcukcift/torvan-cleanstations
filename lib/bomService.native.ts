@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from './prisma'
 import { CustomPartNumberGenerator } from './customPartGenerator'
 import { assemblyMapper } from './assemblyMapper'
-
-const prisma = new PrismaClient()
 
 // Types for BOM generation
 interface BOMItem {
@@ -428,9 +426,21 @@ async function addItemToBOMRecursive(
   quantity: number,
   category: string,
   bomList: BOMItem[],
-  processedAssemblies = new Set<string>()
+  processedAssemblies = new Set<string>(),
+  depth: number = 0
 ): Promise<void> {
-  console.log(`🔧 addItemToBOMRecursive: Processing ${assemblyId} (category: ${category})`)
+  console.log(`🔧 addItemToBOMRecursive: Processing ${assemblyId} (category: ${category}) at depth ${depth}`)
+  
+  // Safety guard: warn at deep recursion levels
+  if (depth > 20) {
+    console.warn(`⚠️ Deep BOM recursion detected: ${assemblyId} at depth ${depth}`)
+  }
+  
+  // Safety guard: prevent excessive recursion (should never happen with proper circular protection)
+  if (depth > 100) {
+    console.error(`❌ Maximum BOM recursion depth exceeded: ${assemblyId} at depth ${depth}`)
+    throw new Error(`Maximum BOM recursion depth exceeded for assembly: ${assemblyId}`)
+  }
   
   const processKey = `${assemblyId}_${category}`
   if (processedAssemblies.has(processKey)) {
@@ -522,7 +532,8 @@ async function addItemToBOMRecursive(
           componentLink.quantity * quantity,
           'SUB_ASSEMBLY',
           bomItem.components!,
-          new Set(processedAssemblies)
+          processedAssemblies,
+          depth + 1
         )
       } else if (part) {
         // Check if this part itself is an assembly that needs further expansion
@@ -563,7 +574,8 @@ async function addItemToBOMRecursive(
                   subComponentLink.quantity * quantity,
                   'SUB_COMPONENT_ASSEMBLY',
                   subAssemblyBomItem.components!,
-                  new Set(processedAssemblies)
+                  processedAssemblies,
+                  depth + 1
                 )
               } else {
                 subAssemblyBomItem.components!.push({

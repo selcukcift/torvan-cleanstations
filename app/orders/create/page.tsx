@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Save, Eye } from "lucide-react"
 import { useOrderCreateStore } from "@/stores/orderCreateStore"
 import { AppHeader } from "@/components/ui/app-header"
@@ -12,18 +12,16 @@ import { OrderWizard } from "@/components/order/OrderWizard"
 
 export default function CreateOrderPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
-  const isAuthenticated = status === 'authenticated'
-  const user = session?.user
+  const { user, isLoaded } = useUser()
   const { resetForm } = useOrderCreateStore()
 
   useEffect(() => {
-    if (status === 'loading') {
+    if (!isLoaded) {
       return // Wait for auth to load
     }
     
-    if (!isAuthenticated || !user) {
-      router.push('/login')
+    if (!user) {
+      router.push('/sign-in')
       return
     }
 

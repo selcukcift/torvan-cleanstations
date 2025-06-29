@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 export default function TestOrderPage() {
   const [result, setResult] = useState<any>(null)
   const [loading, setLoading] = useState(false)
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
 
   // Redirect to login if not authenticated
@@ -122,8 +122,8 @@ export default function TestOrderPage() {
           
           <div className="mt-4 text-sm text-gray-600">
             <p>Open browser console to see detailed logs</p>
-            <p className="mt-2">Logged in as: {session?.user?.email || 'Unknown'}</p>
-            <p>Role: {session?.user?.role || 'Unknown'}</p>
+            <p className="mt-2">Logged in as: {user?.email || 'Unknown'}</p>
+            <p>Role: {user?.role || 'Unknown'}</p>
           </div>
         </CardContent>
       </Card>

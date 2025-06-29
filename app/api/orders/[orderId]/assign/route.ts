@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { getAuthUser } from '@/lib/auth'
 import { notificationTriggerService } from '@/lib/notificationTriggerService'
-
-const prisma = new PrismaClient()
 
 // Validation schema for assignment
 const AssignmentSchema = z.object({

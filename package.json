@@ -27,7 +27,13 @@
     "prisma:seed:legacy": "node scripts/seed.js",
     "db:reset": "prisma migrate reset --force && npm run prisma:seed",
     "db:seed": "npm run prisma:seed",
-    "test:db": "node test-db-connection.js"
+    "test:db": "node test-db-connection.js",
+    "sync:users": "tsx scripts/sync-users-with-clerk.ts",
+    "clerk:migrate": "node scripts/migrate-to-clerk.js",
+    "clerk:users": "node scripts/migrate-users-to-clerk.js prepare",
+    "clerk:link": "node scripts/migrate-users-to-clerk.js link",
+    "clerk:auto-link": "node scripts/auto-link-clerk-accounts.js prepare",
+    "clerk:status": "node scripts/auto-link-clerk-accounts.js status"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -54,6 +60,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.23.1",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.8.2",
     "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -89,7 +96,6 @@
     "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.522.0",
     "next": "^15.3.3",
-    "next-auth": "^4.24.11",
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.4",
     "react": "^19.1.0",
@@ -97,6 +103,7 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
     "react-pdf": "^9.2.1",
+    "svix": "^1.68.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^3.4.17",
     "zod": "^3.25.45",

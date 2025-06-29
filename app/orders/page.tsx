@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { 
   Package, 
   Search, 
@@ -43,7 +43,7 @@ interface Order {
 
 export default function OrdersListPage() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -51,10 +51,10 @@ export default function OrdersListPage() {
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
 
   useEffect(() => {
-    if (session) {
+    if (isLoaded && user) {
       loadOrders()
     }
-  }, [session])
+  }, [isLoaded, user])
 
   useEffect(() => {
     filterOrders()
@@ -121,7 +121,7 @@ export default function OrdersListPage() {
     return statuses.sort()
   }
 
-  if (!session) {
+  if (!isLoaded || !user) {
     return null
   }
 
@@ -139,7 +139,7 @@ export default function OrdersListPage() {
               </p>
             </div>
             <div className="flex gap-2">
-              {(session.user?.role === 'ADMIN' || session.user?.role === 'PRODUCTION_COORDINATOR') && (
+              {(user?.publicMetadata?.role === 'ADMIN' || user?.publicMetadata?.role === 'PRODUCTION_COORDINATOR') && (
                 <Button onClick={() => router.push('/orders/create')}>
                   <Package className="h-4 w-4 mr-2" />
                   Create Order

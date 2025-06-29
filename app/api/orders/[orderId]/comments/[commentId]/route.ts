@@ -4,11 +4,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { getAuthUser } from '@/lib/auth'
 import { z } from 'zod'
 
-const prisma = new PrismaClient()
 
 // Validation schema for updating comments
 const UpdateCommentSchema = z.object({

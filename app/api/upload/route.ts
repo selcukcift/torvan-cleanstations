@@ -1,26 +1,22 @@
+import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { getAuthUser } from '@/lib/auth'
 
-const prisma = new PrismaClient()
-
-
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser()
-    
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Authentication required' },
         { status: 401 }
       )
     }
-    
+
     console.log('🔍 Upload route - User:', user)
     console.log('🔍 Upload route - User ID:', user.id)
-    
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     const orderId = formData.get('orderId') as string
@@ -32,7 +28,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     if (!orderId) {
       return NextResponse.json(
         { success: false, message: 'Order ID is required' },
@@ -103,7 +99,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // Store file information in database
     console.log('📝 Creating document record with:', {
       docName: file.name,
@@ -112,7 +108,7 @@ export async function POST(request: NextRequest) {
       docType: docType,
       orderId: orderId
     })
-    
+
     const document = await prisma.associatedDocument.create({
       data: {
         docName: file.name,
@@ -133,14 +129,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error uploading file:', error)
-    
     if (error instanceof Error) {
       return NextResponse.json(
         { success: false, message: error.message },
         { status: 400 }
       )
     }
-
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }
@@ -151,7 +145,6 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const user = await getAuthUser()
-    
     const { searchParams } = new URL(request.url)
     const documentId = searchParams.get('documentId')
 
@@ -204,14 +197,12 @@ export async function DELETE(request: NextRequest) {
 
   } catch (error) {
     console.error('Error deleting document:', error)
-    
     if (error instanceof Error) {
       return NextResponse.json(
         { success: false, message: error.message },
         { status: 400 }
       )
     }
-
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }

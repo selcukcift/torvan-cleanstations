@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getAuthUser, checkUserRole } from '@/lib/auth';
 
-const prisma = new PrismaClient();
 
 // GET /api/orders/[orderId]/qc/export - Export QC results as CSV
 export async function GET(

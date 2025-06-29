@@ -1,0 +1,7 @@
+Full Name,Email,Username,Role,Status
+"System Administrator","admin@torvanmedical.com","system_admin","ADMIN","Active"
+"QC Lead Inspector","qc.lead@torvanmedical.com","qc_lead","QC_PERSON","Active"
+"Assembly Technician 1","assembly1@torvanmedical.com","assembly_tech1","ASSEMBLER","Active"
+"Procurement Specialist","procurement@torvanmedical.com","procurement_spec","PROCUREMENT_SPECIALIST","Active"
+"Service Department","service@torvanmedical.com","service_dept","SERVICE_DEPARTMENT","Active"
+"Production Manager","production@torvanmedical.com","production_manager","PRODUCTION_COORDINATOR","Active"

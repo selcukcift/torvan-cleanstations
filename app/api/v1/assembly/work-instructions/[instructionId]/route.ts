@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/authOptions'
+import { getAuthUser } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
 import { createAPIResponse, createSuccessResponse, createErrorResponse, createUnauthorizedResponse, createNotFoundResponse } from '@/lib/apiResponse'
 import { z } from 'zod'
@@ -34,8 +33,8 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const resolvedParams = await params
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    const user = await getAuthUser()
+    if (!user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 
@@ -123,8 +122,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const resolvedParams = await params
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    const user = await getAuthUser()
+    if (!user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 
@@ -265,8 +264,8 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const resolvedParams = await params
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    const user = await getAuthUser()
+    if (!user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 

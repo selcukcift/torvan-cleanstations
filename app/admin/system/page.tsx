@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { 
   Card, 
@@ -68,7 +68,7 @@ interface SystemStats {
 
 
 export default function AdminSystemPage() {
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
   
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null)
@@ -78,24 +78,24 @@ export default function AdminSystemPage() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (status === 'loading') return
+    if (!isLoaded) return
     
-    if (!session?.user || session.user.role !== 'ADMIN') {
+    if (!user || user.publicMetadata?.role !== 'ADMIN') {
       router.push('/dashboard')
       return
     }
-  }, [session, status, router])
+  }, [isLoaded, user, router])
 
   // Fetch system data
   useEffect(() => {
-    if (session?.user?.role === 'ADMIN') {
+    if (user?.publicMetadata?.role === 'ADMIN') {
       fetchSystemData()
       
       // Refresh system health every 30 seconds
       const interval = setInterval(fetchSystemHealth, 30000)
       return () => clearInterval(interval)
     }
-  }, [session]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isLoaded, user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchSystemData = async () => {
     try {
@@ -193,9 +193,9 @@ export default function AdminSystemPage() {
           id: '1',
           action: 'USER_LOGIN',
           entityType: 'User',
-          entityId: session?.user?.id || '',
-          userId: session?.user?.id || '',
-          userName: session?.user?.username || 'admin',
+          entityId: user?.id || '',
+          userId: user?.id || '',
+          userName: user?.username || 'admin',
           timestamp: new Date().toISOString()
         }
       ]
@@ -229,7 +229,7 @@ export default function AdminSystemPage() {
     )
   }
 
-  if (session?.user?.role !== 'ADMIN') {
+  if (user?.role !== 'ADMIN') {
     return null
   }
 

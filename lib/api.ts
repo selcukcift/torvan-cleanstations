@@ -13,13 +13,10 @@ const attachResponseInterceptor = (client: AxiosInstance) => {
     (response) => response,
     async (error) => {
       if (error.response?.status === 401) {
-        // Let NextAuth handle the auth error
-        if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
-          // Import signOut dynamically to avoid SSR issues
-          const { signOut } = await import('next-auth/react')
-          signOut({ callbackUrl: '/login' }).catch(signOutError => {
-            console.error('Error during sign out:', signOutError)
-          })
+        // Let Clerk handle the auth error
+        if (typeof window !== 'undefined' && window.location.pathname !== '/sign-in') {
+          // Redirect to sign-in page
+          window.location.href = '/sign-in'
         }
       }
       return Promise.reject(error)

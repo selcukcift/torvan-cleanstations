@@ -18,7 +18,7 @@ import {
 import { format } from "date-fns"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 
 interface ServiceOrder {
   id: string
@@ -69,17 +69,17 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
 }
 
 export function ServiceOrderHistory() {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [orders, setOrders] = useState<ServiceOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       fetchOrders()
     }
-  }, [session])
+  }, [isLoaded, user])
 
   const fetchOrders = async () => {
     try {
@@ -105,7 +105,7 @@ export function ServiceOrderHistory() {
     setExpandedOrder(expandedOrder === orderId ? null : orderId)
   }
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <Card>
         <CardHeader>

@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient, OrderStatus } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+import { OrderStatus } from '@prisma/client'
 import { getAuthUser, canAccessOrder, checkUserRole } from '@/lib/auth'
 import { generateBOMForOrder } from '@/lib/bomService.native'
 import { z } from 'zod'
-
-const prisma = new PrismaClient()
 
 // Validation schemas
 const BasinConfigSchema = z.object({

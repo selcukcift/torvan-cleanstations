@@ -7,7 +7,7 @@ import { Package, Clipboard, Settings, Wrench } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { AppHeader } from "@/components/ui/app-header"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { ProductionCoordinatorDashboard } from "@/components/dashboard/ProductionCoordinatorDashboard"
 import { AssemblerDashboard } from "@/components/dashboard/AssemblerDashboard"
 import { QCPersonDashboard } from "@/components/dashboard/QCPersonDashboard"
@@ -31,38 +31,38 @@ const roleDescriptions = {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const [loadingTimeout, setLoadingTimeout] = useState(false)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
+    if (isLoaded && !user) {
+      router.push('/sign-in')
     }
-  }, [status, router])
+  }, [isLoaded, user, router])
 
   // Add timeout protection for loading state
   useEffect(() => {
-    console.log('Dashboard: session status:', status, 'session:', session)
+    console.log('Dashboard: user loaded:', isLoaded, 'user:', user)
     
     // More detailed logging
-    if (session) {
-      console.log('Session user:', session.user)
-      console.log('User role:', session.user?.role)
+    if (user) {
+      console.log('Clerk user:', user)
+      console.log('User role:', user.publicMetadata?.role)
     }
     
     // Set timeout regardless of status to catch stuck loading states
     const timeout = setTimeout(() => {
-      if (status === 'loading') {
-        console.warn('Dashboard loading timeout - redirecting to login')
+      if (!isLoaded) {
+        console.warn('Dashboard loading timeout - redirecting to sign-in')
         setLoadingTimeout(true)
-        router.push('/login')
+        router.push('/sign-in')
       }
     }, 10000) // 10 second timeout
 
     return () => clearTimeout(timeout)
-  }, [status, router, session])
+  }, [isLoaded, router, user])
 
-  if (status === 'loading' && !loadingTimeout) {
+  if (!isLoaded && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
@@ -80,19 +80,20 @@ export default function DashboardPage() {
     )
   }
 
-  if (!session?.user) {
+  if (!user) {
     return null
   }
 
-  const user = session.user
+  // Get user role from Clerk's publicMetadata
+  const userRole = user.publicMetadata?.role as string
 
-  const RoleIcon = roleIcons[user.role] || Settings
+  const RoleIcon = roleIcons[userRole] || Settings
 
   // Show role-specific dashboards
   const renderRoleDashboard = () => {
-    console.log('Rendering dashboard for role:', user.role)
+    console.log('Rendering dashboard for role:', userRole)
     
-    switch (user.role) {
+    switch (userRole) {
       case 'ADMIN':
         return <AdminDashboard />
       case 'PRODUCTION_COORDINATOR':
@@ -132,7 +133,7 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            Welcome back, {user.name}!
+            Welcome back, {user.firstName || user.username}!
           </h2>
           <p className="text-slate-600">
             Ready to manage your CleanStation production workflow tasks.
@@ -150,14 +151,14 @@ export default function DashboardPage() {
                 <div>
                   <CardTitle className="text-lg">Your Role</CardTitle>
                   <CardDescription className="text-sm">
-                    {user.role.replace('_', ' ')}
+                    {userRole?.replace('_', ' ') || 'No role assigned'}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600">
-                {roleDescriptions[user.role]}
+                {roleDescriptions[userRole] || 'Role description not available'}
               </p>
             </CardContent>
           </Card>
@@ -170,7 +171,7 @@ export default function DashboardPage() {
                 Common tasks for your role
               </CardDescription>
             </CardHeader>            <CardContent className="space-y-2">
-              {(user.role === 'ADMIN' || user.role === 'PRODUCTION_COORDINATOR') && (
+              {(userRole === 'ADMIN' || userRole === 'PRODUCTION_COORDINATOR') && (
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
@@ -217,7 +218,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-slate-600">Active Session</span>
                 <span className="text-sm font-medium text-slate-900">
-                  {user.username}
+                  {user.firstName || user.username || 'Unknown'}
                 </span>
               </div>
             </CardContent>

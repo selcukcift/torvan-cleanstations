@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { nextJsApiClient } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -107,7 +107,7 @@ const categoryOptions = [
 ]
 
 export function OrderComments({ orderId }: OrderCommentsProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
@@ -137,7 +137,7 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
     isResolved: false
   })
 
-  const userRole = session?.user?.role
+  const userRole = user?.role
   const canViewInternal = ['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'].includes(userRole || '')
   const canCreateInternal = ['ADMIN', 'PRODUCTION_COORDINATOR', 'QC_PERSON'].includes(userRole || '')
 
@@ -286,11 +286,11 @@ export function OrderComments({ orderId }: OrderCommentsProps) {
   }
 
   const canEditComment = (comment: Comment) => {
-    return comment.user.id === session?.user?.id || ['ADMIN', 'PRODUCTION_COORDINATOR'].includes(userRole || '')
+    return comment.user.id === user?.id || ['ADMIN', 'PRODUCTION_COORDINATOR'].includes(userRole || '')
   }
 
   const canDeleteComment = (comment: Comment) => {
-    return comment.user.id === session?.user?.id || userRole === 'ADMIN'
+    return comment.user.id === user?.id || userRole === 'ADMIN'
   }
 
   const getInitials = (name: string) => {

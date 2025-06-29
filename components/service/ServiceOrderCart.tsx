@@ -20,14 +20,14 @@ import {
 import { useServiceCartStore } from "@/stores/serviceCartStore"
 import { useToast } from "@/hooks/use-toast"
 import { nextJsApiClient } from "@/lib/api"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 
 interface ServiceOrderCartProps {
   onOrderCreated?: () => void
 }
 
 export function ServiceOrderCart({ onOrderCreated }: ServiceOrderCartProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   
   // Cart store
@@ -64,7 +64,7 @@ export function ServiceOrderCart({ onOrderCreated }: ServiceOrderCartProps) {
       return
     }
 
-    if (!session?.user) {
+    if (!user) {
       toast({
         title: "Authentication required",
         description: "Please log in to submit a service order",

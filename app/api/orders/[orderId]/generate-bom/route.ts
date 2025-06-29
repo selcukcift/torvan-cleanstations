@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { getAuthUser, canAccessOrder, checkUserRole } from '@/lib/auth'
 import { generateBOMForOrder } from '@/lib/bomService.native'
-
-const prisma = new PrismaClient()
 
 export async function POST(
   request: NextRequest,

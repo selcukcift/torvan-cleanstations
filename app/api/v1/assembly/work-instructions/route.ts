@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/authOptions'
+import { getAuthUser } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
 import { createAPIResponse, createSuccessResponse, createErrorResponse, createUnauthorizedResponse } from '@/lib/apiResponse'
 import { z } from 'zod'
@@ -28,8 +27,8 @@ const WorkInstructionSchema = z.object({
 // GET /api/v1/assembly/work-instructions - List all work instructions
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    const user = await getAuthUser()
+    if (!user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 
@@ -126,8 +125,8 @@ export async function GET(request: NextRequest) {
 // POST /api/v1/assembly/work-instructions - Create new work instruction
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    const user = await getAuthUser()
+    if (!user) {
       return createAPIResponse(createUnauthorizedResponse())
     }
 

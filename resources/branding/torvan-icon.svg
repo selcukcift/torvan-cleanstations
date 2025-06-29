@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="444.58667"
+   height="444.56"
+   viewBox="0 0 444.58667 444.56"
+   sodipodi:docname="torvan-icon.eps"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="444.58667"
+       height="444.56"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-R5">
+      <path
+         id="path2"
+         d="m 926.25,1481.87 555.85,-0.1 V 926.09 h 370.47 v 555.78 l 555.64,-0.1 v 370.52 h -555.64 v 555.68 H 1482.1 V 1852.29 H 926.25 v -370.42"
+         style="fill:#6bc866;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(0.13333333,0,0,-0.13333333,0,444.56)" />
+      <path
+         id="path3"
+         d="m 926.199,1481.77 0.051,372.88 c -305.145,0 -553.492,248.13 -553.441,553.27 0,305.18 248.296,553.36 553.441,553.47 305.12,0 553.35,-248.29 553.35,-553.47 v 0 h 372.88 v 0 c 0,510.78 -415.46,926.28 -926.281,926.28 C 415.43,3334.2 0,2918.7 0,2407.92 0,1897.32 415.57,1481.77 926.199,1481.77"
+         style="fill:#273072;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(0.13333333,0,0,-0.13333333,0,444.56)" />
+      <path
+         id="path4"
+         d="m 2408.21,1852.29 v -372.77 c 305.25,0 553.49,-248.34 553.49,-553.579 0,-304.902 -248.29,-553.152 -553.49,-553.152 -305.14,0 -553.25,248.152 -553.25,553.301 v 0.039 h -372.98 l 0.12,-0.039 c 0,-510.539 415.43,-926.1407813 926.11,-926.09 510.78,-0.140625 926.33,415.551 926.23,926.09 0.1,510.77 -415.45,926.2 -926.23,926.2"
+         style="fill:#b0e19d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(0.13333333,0,0,-0.13333333,0,444.56)" />
+    </g>
+  </g>
+</svg>

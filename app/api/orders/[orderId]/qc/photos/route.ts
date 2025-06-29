@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { getAuthUser } from "@/lib/auth"
 
-const prisma = new PrismaClient()
 
 // GET /api/orders/[orderId]/qc/photos
 export async function GET(

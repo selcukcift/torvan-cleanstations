@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -16,7 +16,7 @@ interface ProcurementOrderPageProps {
 }
 
 export default function ProcurementOrderPage({ params }: ProcurementOrderPageProps) {
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
   const { orderId } = use(params)
 
@@ -38,7 +38,7 @@ export default function ProcurementOrderPage({ params }: ProcurementOrderPagePro
   }
 
   // Check permissions
-  const hasAccess = ["ADMIN", "PROCUREMENT_SPECIALIST"].includes(session.user?.role || "")
+  const hasAccess = ["ADMIN", "PROCUREMENT_SPECIALIST"].includes(user?.role || "")
 
   if (!hasAccess) {
     return (

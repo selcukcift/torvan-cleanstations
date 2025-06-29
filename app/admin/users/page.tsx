@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { 
   Card, 
@@ -92,7 +92,7 @@ const USER_ROLES: { value: UserRole; label: string; description: string }[] = [
 ]
 
 export default function AdminUsersPage() {
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
   const { toast } = useToast()
   
@@ -108,19 +108,19 @@ export default function AdminUsersPage() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (status === 'loading') return
+    if (!isLoaded) return
     
-    if (!session?.user || session.user.role !== 'ADMIN') {
+    if (!user || user.publicMetadata?.role !== 'ADMIN') {
       router.push('/dashboard')
       return
     }
-  }, [session, status, router])
+  }, [isLoaded, user])
 
   useEffect(() => {
-    if (session?.user?.role === 'ADMIN') {
+    if (user?.role === 'ADMIN') {
       fetchUsers()
     }
-  }, [session])
+  }, [isLoaded, user])
 
   const fetchUsers = async () => {
     try {
@@ -302,7 +302,7 @@ export default function AdminUsersPage() {
   }
 
   const handleDeleteUser = async (userId: string, username: string) => {
-    if (userId === session?.user?.id) {
+    if (userId === user?.id) {
       toast({
         title: "Error",
         description: "You cannot delete your own account",
@@ -348,7 +348,7 @@ export default function AdminUsersPage() {
     return new Date(lastLoginAt).toLocaleDateString()
   }
 
-  if (status === 'loading' || loading) {
+  if (!isLoaded || loading) {
     return (
       <div className="container mx-auto p-6">
         <div className="flex items-center justify-center h-64">
@@ -359,7 +359,7 @@ export default function AdminUsersPage() {
     )
   }
 
-  if (session?.user?.role !== 'ADMIN') {
+  if (user?.role !== 'ADMIN') {
     return null
   }
 
@@ -426,8 +426,8 @@ export default function AdminUsersPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getRoleBadgeColor(user.role)}>
-                      {USER_ROLES.find(r => r.value === user.role)?.label || user.role}
+                    <Badge className={getRoleBadgeColor(user.publicMetadata?.role)}>
+                      {USER_ROLES.find(r => r.value === user.publicMetadata?.role)?.label || user.publicMetadata?.role}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -465,7 +465,7 @@ export default function AdminUsersPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleToggleUserStatus(user.id, !user.isActive)}
-                        disabled={user.id === session?.user?.id}
+                        disabled={user.id === user?.id}
                       >
                         {user.isActive ? (
                           <XCircle className="h-4 w-4 text-red-500" />
@@ -480,7 +480,7 @@ export default function AdminUsersPage() {
                             variant="ghost"
                             size="sm"
                             className="text-red-600 hover:text-red-700"
-                            disabled={user.id === session?.user?.id}
+                            disabled={user.id === user?.id}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

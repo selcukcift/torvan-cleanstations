@@ -22,8 +22,9 @@ model Part {
   manufacturerName       String?
   revision               String                 @default("1")
   unitOfMeasure          String?
-  requiresSerialTracking Boolean                @default(false)
-  isOutsourced           Boolean                @default(false)
+  // TODO: Re-add after proper migration
+  // requiresSerialTracking Boolean                @default(false)
+  // isOutsourced           Boolean                @default(false)
   assemblyComponents     AssemblyComponent[]
   inventoryItems         InventoryItem[]
   serviceOrderItems      ServiceOrderItem[]     @relation("PartServiceOrders")
@@ -45,8 +46,9 @@ model Assembly {
   customAttributes  Json?
   isOrderable       Boolean             @default(false)
   revision          String              @default("1")
-  requiresSerialTracking Boolean        @default(false)
-  isOutsourced      Boolean             @default(false)
+  // TODO: Re-add after proper migration
+  // requiresSerialTracking Boolean        @default(false)
+  // isOutsourced      Boolean             @default(false)
   childOfAssemblies AssemblyComponent[] @relation("ChildComponents")
   components        AssemblyComponent[] @relation("ParentComponents")
   subcategories     Subcategory[]       @relation("SubcategoryAssemblies")
@@ -101,6 +103,10 @@ model User {
   lockedUntil             DateTime?
   loginAttempts           Int                      @default(0)
   assignedTaskIds         String[]                 @default([])
+  
+  // Clerk integration fields (ACTIVE)
+  clerkId                 String?                  @unique
+  clerkEmail              String?
   auditLogs               AuditLog[]               @relation("UserAuditLogs")
   uploadedFiles           FileUpload[]             @relation("UserFileUploads")
   inventoryUpdates        InventoryItem[]          @relation("UserInventoryUpdates")

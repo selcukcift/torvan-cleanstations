@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { useSession } from "next-auth/react"
+import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -87,7 +87,7 @@ export function TaskManagement({
   viewMode = 'enhanced',
   onTaskSelect
 }: TaskManagementProps) {
-  const { data: session } = useSession()
+  const { user, isLoaded } = useUser()
   const { toast } = useToast()
   const [assemblyTasks, setAssemblyTasks] = useState<AssemblyTask[]>([])
   const [packagingItems, setPackagingItems] = useState<PackagingItem[]>([])
